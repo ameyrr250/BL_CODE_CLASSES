@@ -28058,55 +28058,124 @@
                     "retType": "LCD_Mini.LCDSettings",
                     "extendsTypes": []
                 },
-                "LCD_Mini.LCDSettings.LOW": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.HIGH": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.LCDInitialize": {
-                    "kind": 2,
-                    "retType": "boolean",
-                    "isInstance": true,
-                    "pyQName": "LCD_Mini.LCDSettings.lcd_initialize"
-                },
-                "LCD_Mini.LCDSettings.CS": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.CS2": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.RST": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.IODIRB": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.OLATB": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
-                "LCD_Mini.LCDSettings.WRITE_BYTE": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true
-                },
                 "LCD_Mini.LCDSettings.__constructor": {
                     "kind": -3,
                     "parameters": [],
+                    "isInstance": true
+                },
+                "LCD_Mini.LCDSettings.LOWval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.lo_wval"
+                },
+                "LCD_Mini.LCDSettings.LOWval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.lo_wval@set"
+                },
+                "LCD_Mini.LCDSettings.HIGHval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.hig_hval"
+                },
+                "LCD_Mini.LCDSettings.HIGHval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.hig_hval@set"
+                },
+                "LCD_Mini.LCDSettings.LCDInitializeval": {
+                    "kind": -2,
+                    "retType": "boolean",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.lcd_initializeval"
+                },
+                "LCD_Mini.LCDSettings.LCDInitializeval@set": {
+                    "kind": -2,
+                    "retType": "boolean",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.lcd_initializeval@set"
+                },
+                "LCD_Mini.LCDSettings.CSval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.csval"
+                },
+                "LCD_Mini.LCDSettings.CSval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.csval@set"
+                },
+                "LCD_Mini.LCDSettings.CS2val": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.cs_2val"
+                },
+                "LCD_Mini.LCDSettings.CS2val@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.cs_2val@set"
+                },
+                "LCD_Mini.LCDSettings.RSTval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.rs_tval"
+                },
+                "LCD_Mini.LCDSettings.RSTval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.rs_tval@set"
+                },
+                "LCD_Mini.LCDSettings.IODIRBval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.iodir_bval"
+                },
+                "LCD_Mini.LCDSettings.IODIRBval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.iodir_bval@set"
+                },
+                "LCD_Mini.LCDSettings.OLATBval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "LCD_Mini.LCDSettings.olat_bval"
+                },
+                "LCD_Mini.LCDSettings.OLATBval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.olat_bval@set"
+                },
+                "LCD_Mini.LCDSettings.WRITE_BYTEval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "LCD_Mini.LCDSettings.WRITE_BYTEval@set": {
+                    "kind": -2,
+                    "retType": "number",
                     "isInstance": true
                 },
                 "LCD_Mini.LCDSettings.__delay_us": {
@@ -31637,6 +31706,250 @@
                     "isInstance": true,
                     "pyQName": "DC_Motor3.DC_MOTOR.motor_rotation"
                 },
+                "IR_Distance": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#33BEBB",
+                        "icon": "↔",
+                        "advanced": true,
+                        "jsDoc": "Custom blocks"
+                    }
+                },
+                "IR_Distance.createIR_Distance": {
+                    "kind": -3,
+                    "retType": "IR_Distance.IR_Distance1",
+                    "attributes": {
+                        "block": "create IR_Distance settings",
+                        "blockSetVariable": "IR_Distance",
+                        "weight": 110,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "create IR_Distance settings",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "parameters": []
+                },
+                "IR_Distance.IR_Distance1": {
+                    "kind": 8,
+                    "retType": "IR_Distance.IR_Distance1",
+                    "extendsTypes": [
+                        "IR_Distance.IR_Distance1",
+                        "bBoard.PinSettings",
+                        "bBoard.IOSettings"
+                    ]
+                },
+                "IR_Distance.IR_Distance1.isInitialized": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "IR_Distance.IR_Distance1.is_initialized"
+                },
+                "IR_Distance.IR_Distance1.__constructor": {
+                    "kind": -3,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "IR_Distance.IR_Distance1.initialize": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "IR_Distance.IR_Distance1.getDistance": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IR_Distance"
+                        },
+                        "blockId": "IRDistance_getDistance",
+                        "block": "$this Get distance on click$clickBoardNum",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "IR_Distance",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Get distance on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IR_Distance.IR_Distance1.get_distance"
+                },
+                "IR_Distance.IR_Distance1.enable": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IR_Distance"
+                        },
+                        "blockId": "IRDistance_enable",
+                        "block": "$this Enable device on click$clickBoardNum",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "IR_Distance",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Enable device on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "IR_Distance.IR_Distance1.disable": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IR_Distance"
+                        },
+                        "blockId": "IRDistance_disable",
+                        "block": "$this Disable device on click$clickBoardNum",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "IR_Distance",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Disable device on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
                 "i": {
                     "kind": 4,
                     "retType": "number"
@@ -31672,7 +31985,7 @@
                 }
             }
         },
-        "sha": "2fe83077ea7d80aba1c8a743e5d481ab24a3bcc1ab62639422c8ad69dcef8205"
+        "sha": "9624a60ec35a5bf97ae2ea0c35765b5a8c31da46e96292fb73faf29de13c5d05"
     },
     "libs/radio": {
         "apis": {
@@ -33088,7 +33401,7 @@
                 }
             }
         },
-        "sha": "d5c8d4b8f434c593c9cc510f410ec3ca14361d82456b19d56dfe76dbf73df854"
+        "sha": "7bb99a9f4c683553b795805ab0400b96d6b248e099ffc08924935099f969e70a"
     },
     "libs/devices": {
         "apis": {
@@ -35125,7 +35438,7 @@
                 }
             }
         },
-        "sha": "a71e558711f35f8e917e535c69498c116a461c05ebdef0c1b5fc95e4aeda1d5b"
+        "sha": "dffc4e640018b011c30766e8bccb25f5ab42bc80a7a3809ad0353e760fa13197"
     },
     "libs/bluetooth": {
         "apis": {
@@ -36076,7 +36389,7 @@
                 }
             }
         },
-        "sha": "489afda83479175596547aa2d4af8b9e1d52d6cfaa1f30ba6813948cbb6cccb7"
+        "sha": "91fa2f5800d4b6b2ac9ab84288ed507581bd734b44f39e1a2f6be10d0905bd7e"
     },
     "libs/servo": {
         "apis": {
@@ -36718,7 +37031,7 @@
                 }
             }
         },
-        "sha": "409b3024419fbaed03022c4d66af526b86c1fd07e97b67bd99f4221b508425b2"
+        "sha": "48ee8f0fcd36bdb53160440d4b1593d2fc7959b95a00b20ce2f4ded1ef41a601"
     },
     "libs/radio-broadcast": {
         "apis": {
@@ -38277,7 +38590,7 @@
                 }
             }
         },
-        "sha": "f0b0be2874642c69a24cdd1708f839df05c86e0d48100ccd969e708a9fda80e2"
+        "sha": "241827c42eac4c3c3d6a6f45e6e1aca83b1bb00c0e367d277708b1b4cd0559b0"
     },
     "libs/microphone": {
         "apis": {
@@ -38443,7 +38756,7 @@
                 }
             }
         },
-        "sha": "a68863015867fb64c7764296b5a3451194bd070b9115e7a9b027e0a08887542d"
+        "sha": "57d94ed03d9616401f2657afc5fd760e77e4e49cad7f3c2044eb7999c5688b00"
     },
     "libs\\blocksprj": {
         "apis": {
@@ -39859,7 +40172,7 @@
                 }
             }
         },
-        "sha": "531965e4821fbefcb36d31c801db560a6177decc0c410cb51c9341e5d8c8f5cc"
+        "sha": "83185e2e033dbf3026af72dfdd81b9b98960f97c5752999a2c9b1156d2e46196"
     },
     "libs\\bluetoothprj": {
         "apis": {
@@ -40810,7 +41123,7 @@
                 }
             }
         },
-        "sha": "d226acb436f7a48a5663cd9d8f74798050421a80a453299bc93b8a65bcc62b0f"
+        "sha": "e91f6e3391db2245e9a52583729b49dd4806c31151afeceb7b4d4057796f0095"
     },
     "libs\\tsprj": {
         "apis": {
@@ -42226,6 +42539,6 @@
                 }
             }
         },
-        "sha": "4f92b3d17aaf8c3313904fdc8bfc2808faef0b275c8b3edd8d8e9bb360ca85df"
+        "sha": "5b5c64bd6fb694a7b69b006ef1025dbb15d72535a3f4033fbe09c45729eec1b9"
     }
 }

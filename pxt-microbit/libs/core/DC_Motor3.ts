@@ -44,7 +44,7 @@ namespace DC_Motor3 {
         this.IN1 = value
       }
 
-      get IN2val() {
+    get IN2val() {
         return this.IN2
       }
     set IN2val(value) {

@@ -28,15 +28,15 @@ namespace LCD_Mini{
    let PINs = new bBoard.PinSettings();
    let SPIs = new bBoard.SPIsetting();
 export class LCDSettings{
-        LOW : number;
-        HIGH : number;
-        LCDInitialize : boolean;
-        CS : number;
-        CS2 : number;
-        RST : number;
-        IODIRB : number;
-        OLATB : number;
-        WRITE_BYTE : number;
+        private LOW : number;
+        private HIGH : number;
+        private LCDInitialize : boolean;
+        private CS : number;
+        private CS2 : number;
+        private RST : number;
+        private IODIRB : number;
+        private OLATB : number;
+        private WRITE_BYTE : number;
 
         constructor(){
         this.LOW = 0; 
@@ -49,6 +49,76 @@ export class LCDSettings{
         this.OLATB = 0x15;
         this.WRITE_BYTE = 0b01000000;
         }
+
+        get LOWval() {
+            return this.LOW
+          }
+        set LOWval(value) {
+            this.LOW = value
+          }
+
+        get HIGHval() {
+            return this.HIGH
+          }
+        set HIGHval(value) {
+            this.HIGH = value
+          }
+
+
+        get LCDInitializeval() {
+            return this.LCDInitialize
+          }
+        set LCDInitializeval(value) {
+            this.LCDInitialize = value
+          }
+
+
+        get CSval() {
+            return this.CS
+          }
+        set CSval(value) {
+            this.CS = value
+          }
+
+
+        get CS2val() {
+            return this.CS2
+          }
+        set CS2val(value) {
+            this.CS2 = value
+          }
+
+
+        get RSTval() {
+            return this.RST
+          }
+        set RSTval(value) {
+            this.RST = value
+          }
+
+
+       	get IODIRBval() {
+            return this.RST
+          }
+        set IODIRBval(value) {
+            this.RST = value
+          }
+
+
+        get OLATBval() {
+            return this.OLATB
+          }
+        set OLATBval(value) {
+            this.OLATB = value
+          }
+
+
+        get WRITE_BYTEval() {
+            return this.WRITE_BYTE
+          }
+        set WRITE_BYTEval(value) {
+            this.WRITE_BYTE = value
+          }
 
         __delay_us(delayuS: number)
         {

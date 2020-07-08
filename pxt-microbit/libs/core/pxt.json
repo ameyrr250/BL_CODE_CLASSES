@@ -61,7 +61,8 @@
         "Servo.ts",
         "airquality2.ts",
         "DC_Motor3.ts",
-        "WiFi_BLE.ts"
+        "WiFi_BLE.ts",
+        "IR_Distance.ts"
 
     ],
     "public": true,
