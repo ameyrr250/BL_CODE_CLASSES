@@ -24914,7 +24914,9 @@
                 "bBoard.I2CSettings": {
                     "kind": 8,
                     "retType": "bBoard.I2CSettings",
-                    "extendsTypes": []
+                    "extendsTypes": [
+                        "bBoard.I2CSettings"
+                    ]
                 },
                 "bBoard.I2CSettings.I2C_WRITE_id": {
                     "kind": 2,
@@ -31950,6 +31952,1720 @@
                     ],
                     "isInstance": true
                 },
+                "IR_Sense_3": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#33BEBB",
+                        "icon": "∿",
+                        "advanced": true,
+                        "jsDoc": "Custom blocks"
+                    }
+                },
+                "IR_Sense_3.createIR_Sense": {
+                    "kind": -3,
+                    "retType": "IR_Sense_3.IR_Sense",
+                    "attributes": {
+                        "block": "create IR_Sense settings",
+                        "blockSetVariable": "IR_Sense",
+                        "weight": 110,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "create IR_Sense settings",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "parameters": []
+                },
+                "IR_Sense_3.IR_Sense": {
+                    "kind": 8,
+                    "retType": "IR_Sense_3.IR_Sense",
+                    "extendsTypes": [
+                        "IR_Sense_3.IR_Sense",
+                        "bBoard.I2CSettings"
+                    ]
+                },
+                "IR_Sense_3.IR_Sense.isInitialized": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.is_initialized"
+                },
+                "IR_Sense_3.IR_Sense.deviceAddress": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.device_address"
+                },
+                "IR_Sense_3.IR_Sense.__constructor": {
+                    "kind": -3,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "IR_Sense_3.IR_Sense.initialize": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "deviceAddr"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "IR_Sense_3.IR_Sense.writeAK9754": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IR_Sense"
+                        },
+                        "blockId": "AK9754_write",
+                        "block": "$this Write array $values to AK9754 register$register on click$clickBoardNum ?",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "IR_Sense_3",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Write array ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "values",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to AK9754 register",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ?",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "values",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "values",
+                            "type": "number[]"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.write_ak9754"
+                },
+                "IR_Sense_3.IR_Sense.isHumanDetected": {
+                    "kind": -1,
+                    "retType": "boolean",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IR_Sense"
+                        },
+                        "blockId": "IR_Sense_3_isHumandDetected",
+                        "block": "$this Has a human been detected on click$clickBoardNum ?",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "IR_Sense_3",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Has a human been detected on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ?",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.is_human_detected"
+                },
+                "IR_Sense_3.IR_Sense.readAK9754": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IR_Sense"
+                        },
+                        "blockId": "AK9754_read",
+                        "block": "$this Read from register$register on click$clickBoardNum ?",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "IR_Sense_3",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Read from register",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ?",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "register"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.read_ak9754"
+                },
+                "IR_Sense_3.IR_Sense.setAK9754Addr": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "deviceAddr"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.set_ak9754_addr"
+                },
+                "IR_Sense_3.IR_Sense.getAK9754Addr": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IR_Sense_3.IR_Sense.get_ak9754_addr"
+                },
+                "IrThermo_3": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#33BEBB",
+                        "icon": "",
+                        "advanced": true,
+                        "jsDoc": "Custom blocks"
+                    }
+                },
+                "IrThermo_3.createIrThermo": {
+                    "kind": -3,
+                    "retType": "IrThermo_3.IrThermo",
+                    "attributes": {
+                        "block": "create IrThermo settings",
+                        "blockSetVariable": "IrThermo",
+                        "weight": 110,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "create IrThermo settings",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "parameters": [],
+                    "pyQName": "IrThermo_3.create_ir_thermo"
+                },
+                "IrThermo_3.IrThermo": {
+                    "kind": 8,
+                    "retType": "IrThermo_3.IrThermo",
+                    "extendsTypes": [
+                        "IrThermo_3.IrThermo",
+                        "bBoard.I2CSettings"
+                    ]
+                },
+                "IrThermo_3.IrThermo.__constructor": {
+                    "kind": -3,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.P_Rval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "IrThermo_3.IrThermo.P_Gval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "IrThermo_3.IrThermo.P_Tval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "IrThermo_3.IrThermo.P_Oval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "IrThermo_3.IrThermo.Eaval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.eaval"
+                },
+                "IrThermo_3.IrThermo.Ebval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.ebval"
+                },
+                "IrThermo_3.IrThermo.Faval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.faval"
+                },
+                "IrThermo_3.IrThermo.Fbval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.fbval"
+                },
+                "IrThermo_3.IrThermo.Gaval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.gaval"
+                },
+                "IrThermo_3.IrThermo.Gbval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.gbval"
+                },
+                "IrThermo_3.IrThermo.Kaval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.kaval"
+                },
+                "IrThermo_3.IrThermo.Haval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.haval"
+                },
+                "IrThermo_3.IrThermo.Hbval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.hbval"
+                },
+                "IrThermo_3.IrThermo.TOdutval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.todutval"
+                },
+                "IrThermo_3.IrThermo.TO0val": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.to_0val"
+                },
+                "IrThermo_3.IrThermo.TA0val": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.ta_0val"
+                },
+                "IrThermo_3.IrThermo.sensorTempval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "IrThermo_3.IrThermo.sensor_tempval"
+                },
+                "IrThermo_3.IrThermo.MLX90632_DEFAULT_ADDRESSval": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "IrThermo_3.IrThermo.P_Rval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.P_Gval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.P_Tval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.P_Oval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.Eaval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.eaval@set"
+                },
+                "IrThermo_3.IrThermo.Ebval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.ebval@set"
+                },
+                "IrThermo_3.IrThermo.Faval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.faval@set"
+                },
+                "IrThermo_3.IrThermo.Fbval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.fbval@set"
+                },
+                "IrThermo_3.IrThermo.Gaval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.gaval@set"
+                },
+                "IrThermo_3.IrThermo.Gbval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.gbval@set"
+                },
+                "IrThermo_3.IrThermo.Kaval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.kaval@set"
+                },
+                "IrThermo_3.IrThermo.Haval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.haval@set"
+                },
+                "IrThermo_3.IrThermo.Hbval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.hbval@set"
+                },
+                "IrThermo_3.IrThermo.TOdutval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.todutval@set"
+                },
+                "IrThermo_3.IrThermo.TO0val@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.to_0val@set"
+                },
+                "IrThermo_3.IrThermo.TA0val@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.ta_0val@set"
+                },
+                "IrThermo_3.IrThermo.sensorTempval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.sensor_tempval@set"
+                },
+                "IrThermo_3.IrThermo.MLX90632_DEFAULT_ADDRESSval@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.begin": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "IrThermo_3.IrThermo.getObjectTemp": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IrThermo"
+                        },
+                        "blockId": "IRThermo_getObjectTemp",
+                        "block": "$this Get surface temperature in Celcius on click$clickBoardNum",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "IrThermo_3",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Get surface temperature in Celcius on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.get_object_temp"
+                },
+                "IrThermo_3.IrThermo.getObjectTempF": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "IrThermo"
+                        },
+                        "blockId": "IRThermo_getObjectTempF",
+                        "block": "$this Get surface temperature in Fahrenheit on click$clickBoardNum",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "IrThermo_3",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Get surface temperature in Fahrenheit on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.get_object_temp_f"
+                },
+                "IrThermo_3.IrThermo.getSensorTemp": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.get_sensor_temp"
+                },
+                "IrThermo_3.IrThermo.gatherSensorTemp": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.gather_sensor_temp"
+                },
+                "IrThermo_3.IrThermo.deviceBusy": {
+                    "kind": -1,
+                    "retType": "boolean",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.device_busy"
+                },
+                "IrThermo_3.IrThermo.eepromBusy": {
+                    "kind": -1,
+                    "retType": "boolean",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.eeprom_busy"
+                },
+                "IrThermo_3.IrThermo.getCyclePosition": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.get_cycle_position"
+                },
+                "IrThermo_3.IrThermo.dataAvailable": {
+                    "kind": -1,
+                    "retType": "boolean",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.data_available"
+                },
+                "IrThermo_3.IrThermo.setBrownOut": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.set_brown_out"
+                },
+                "IrThermo_3.IrThermo.clearNewData": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.clear_new_data"
+                },
+                "IrThermo_3.IrThermo.getStatus": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.get_status"
+                },
+                "IrThermo_3.IrThermo.sleepMode": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.sleep_mode"
+                },
+                "IrThermo_3.IrThermo.stepMode": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.step_mode"
+                },
+                "IrThermo_3.IrThermo.continuousMode": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.continuous_mode"
+                },
+                "IrThermo_3.IrThermo.setSOC": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.set_soc"
+                },
+                "IrThermo_3.IrThermo.setMode": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "mode"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.set_mode"
+                },
+                "IrThermo_3.IrThermo.getMode": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.get_mode"
+                },
+                "IrThermo_3.IrThermo.readRegister16": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "addr"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.read_register16"
+                },
+                "IrThermo_3.IrThermo.readRegister32": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "addr"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.read_register32"
+                },
+                "IrThermo_3.IrThermo.writeRegister16": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "addr"
+                        },
+                        {
+                            "name": "val"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.write_register16"
+                },
+                "IrThermo_3.IrThermo.writeEEPROM": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "addr"
+                        },
+                        {
+                            "name": "val"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "IrThermo_3.IrThermo.write_eeprom"
+                },
+                "Keylock": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#F4B820",
+                        "icon": "",
+                        "advanced": true
+                    }
+                },
+                "Keylock.MotorDirection": {
+                    "kind": 6,
+                    "retType": "Keylock.MotorDirection",
+                    "extendsTypes": [
+                        "Keylock.MotorDirection",
+                        "Number"
+                    ]
+                },
+                "Keylock.MotorDirection.Forward": {
+                    "retType": "Keylock.MotorDirection.Forward",
+                    "attributes": {
+                        "block": "Forward",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Forward",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "Keylock.MotorDirection.Forward",
+                        "Number"
+                    ],
+                    "pyQName": "Keylock.MotorDirection.FORWARD"
+                },
+                "Keylock.MotorDirection.Reverse": {
+                    "retType": "Keylock.MotorDirection.Reverse",
+                    "attributes": {
+                        "block": "Reverse",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Reverse",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "Keylock.MotorDirection.Reverse",
+                        "Number"
+                    ],
+                    "pyQName": "Keylock.MotorDirection.REVERSE"
+                },
+                "Keylock.createkeylock": {
+                    "kind": -3,
+                    "retType": "Keylock.keylock",
+                    "attributes": {
+                        "block": "create keylock settings",
+                        "blockSetVariable": "keylock",
+                        "weight": 110,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "create keylock settings",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "parameters": []
+                },
+                "Keylock.keylock": {
+                    "kind": 8,
+                    "retType": "Keylock.keylock",
+                    "extendsTypes": [
+                        "Keylock.keylock",
+                        "bBoard.PinSettings",
+                        "bBoard.IOSettings"
+                    ]
+                },
+                "Keylock.keylock.__constructor": {
+                    "kind": -3,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "Keylock.keylock.getLockPosition": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "keylock"
+                        },
+                        "blockId": "Keylock_getLockPosition",
+                        "block": "$this Get lock position on click$clickBoardNum",
+                        "weight": 60,
+                        "color": "#0fbc11",
+                        "blockNamespace": "Keylock",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Get lock position on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Keylock.keylock.get_lock_position"
+                },
+                "Line_Follower": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#33BEBB",
+                        "icon": "⇈",
+                        "advanced": true,
+                        "jsDoc": "Custom blocks"
+                    }
+                },
+                "Line_Follower.lineDetection": {
+                    "kind": 6,
+                    "retType": "Line_Follower.lineDetection",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.lineDetection.soft_right_turn": {
+                    "retType": "Line_Follower.lineDetection.soft_right_turn",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.soft_right_turn",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.SOFT_RIGHT_TURN"
+                },
+                "Line_Follower.lineDetection.medium_right_turn": {
+                    "retType": "Line_Follower.lineDetection.medium_right_turn",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.medium_right_turn",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.MEDIUM_RIGHT_TURN"
+                },
+                "Line_Follower.lineDetection.hard_right_turn": {
+                    "retType": "Line_Follower.lineDetection.hard_right_turn",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.hard_right_turn",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.HARD_RIGHT_TURN"
+                },
+                "Line_Follower.lineDetection.hard_left_turn": {
+                    "retType": "Line_Follower.lineDetection.hard_left_turn",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.hard_left_turn",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.HARD_LEFT_TURN"
+                },
+                "Line_Follower.lineDetection.medium_left_turn": {
+                    "retType": "Line_Follower.lineDetection.medium_left_turn",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.medium_left_turn",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.MEDIUM_LEFT_TURN"
+                },
+                "Line_Follower.lineDetection.soft_left_turn": {
+                    "retType": "Line_Follower.lineDetection.soft_left_turn",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.soft_left_turn",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.SOFT_LEFT_TURN"
+                },
+                "Line_Follower.lineDetection.no_correction": {
+                    "retType": "Line_Follower.lineDetection.no_correction",
+                    "extendsTypes": [
+                        "Line_Follower.lineDetection.no_correction",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.lineDetection.NO_CORRECTION"
+                },
+                "Line_Follower.reflection": {
+                    "kind": 6,
+                    "retType": "Line_Follower.reflection",
+                    "extendsTypes": [
+                        "Line_Follower.reflection",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.reflection.reflected": {
+                    "retType": "Line_Follower.reflection.reflected",
+                    "extendsTypes": [
+                        "Line_Follower.reflection.reflected",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.reflection.REFLECTED"
+                },
+                "Line_Follower.reflection.not_reflected": {
+                    "retType": "Line_Follower.reflection.not_reflected",
+                    "extendsTypes": [
+                        "Line_Follower.reflection.not_reflected",
+                        "Number"
+                    ],
+                    "pyQName": "Line_Follower.reflection.NOT_REFLECTED"
+                },
+                "Line_Follower.IRsensor": {
+                    "kind": 6,
+                    "retType": "Line_Follower.IRsensor",
+                    "extendsTypes": [
+                        "Line_Follower.IRsensor",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.IRsensor.U1": {
+                    "retType": "Line_Follower.IRsensor.U1",
+                    "extendsTypes": [
+                        "Line_Follower.IRsensor.U1",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.IRsensor.U2": {
+                    "retType": "Line_Follower.IRsensor.U2",
+                    "extendsTypes": [
+                        "Line_Follower.IRsensor.U2",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.IRsensor.U3": {
+                    "retType": "Line_Follower.IRsensor.U3",
+                    "extendsTypes": [
+                        "Line_Follower.IRsensor.U3",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.IRsensor.U4": {
+                    "retType": "Line_Follower.IRsensor.U4",
+                    "extendsTypes": [
+                        "Line_Follower.IRsensor.U4",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.IRsensor.U5": {
+                    "retType": "Line_Follower.IRsensor.U5",
+                    "extendsTypes": [
+                        "Line_Follower.IRsensor.U5",
+                        "Number"
+                    ]
+                },
+                "Line_Follower.createLineFollower": {
+                    "kind": -3,
+                    "retType": "Line_Follower.LineFollower",
+                    "attributes": {
+                        "block": "create Line Follower settings",
+                        "blockSetVariable": "LineFollower",
+                        "weight": 110,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "create Line Follower settings",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "parameters": [],
+                    "pyQName": "Line_Follower.create_line_follower"
+                },
+                "Line_Follower.LineFollower": {
+                    "kind": 8,
+                    "retType": "Line_Follower.LineFollower",
+                    "extendsTypes": [
+                        "Line_Follower.LineFollower",
+                        "bBoard.PinSettings",
+                        "bBoard.IOSettings"
+                    ]
+                },
+                "Line_Follower.LineFollower.isInitialized": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.is_initialized"
+                },
+                "Line_Follower.LineFollower.__constructor": {
+                    "kind": -3,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "Line_Follower.LineFollower.initialize": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "deviceAddr"
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "Line_Follower.LineFollower.getDirectionEnum": {
+                    "kind": -1,
+                    "retType": "Line_Follower.lineDetection",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "LineFollower"
+                        },
+                        "blockId": "Line_Follower_lineDetection",
+                        "block": "$this $enumName",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "Line_Follower",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "enumName",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "enumName",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "enumName",
+                            "type": "Line_Follower.lineDetection",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_direction_enum"
+                },
+                "Line_Follower.LineFollower.getWhiteDirection": {
+                    "kind": -1,
+                    "retType": "Line_Follower.lineDetection",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "LineFollower"
+                        },
+                        "blockId": "Line_Follower_getWhiteDirection",
+                        "block": "$this Correction required to follow white line (on click$clickBoardNum)",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "Line_Follower",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Correction required to follow white line (on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": ")",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_white_direction"
+                },
+                "Line_Follower.LineFollower.getBlackDirection": {
+                    "kind": -1,
+                    "retType": "Line_Follower.lineDetection",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "LineFollower"
+                        },
+                        "blockId": "Line_Follower_getBlackDirection",
+                        "block": "$this Correction required to follow black line (on click$clickBoardNum)",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "Line_Follower",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Correction required to follow black line (on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": ")",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_black_direction"
+                },
+                "Line_Follower.LineFollower.getU1": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_u1"
+                },
+                "Line_Follower.LineFollower.getU2": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_u2"
+                },
+                "Line_Follower.LineFollower.getU3": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_u3"
+                },
+                "Line_Follower.LineFollower.getU4": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_u4"
+                },
+                "Line_Follower.LineFollower.getU5": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.get_u5"
+                },
+                "Line_Follower.LineFollower.isReflected": {
+                    "kind": -1,
+                    "retType": "boolean",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "LineFollower"
+                        },
+                        "blockId": "Line_Follower_isReflected",
+                        "block": "$this Has light been reflected on $sensorNum on click$clickBoardNum ?",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "Line_Follower",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Has light been reflected on ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "sensorNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " on click",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ?",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "sensorNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "sensorNum",
+                            "type": "Line_Follower.IRsensor",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Line_Follower.LineFollower.is_reflected"
+                },
                 "i": {
                     "kind": 4,
                     "retType": "number"
@@ -31985,7 +33701,7 @@
                 }
             }
         },
-        "sha": "9624a60ec35a5bf97ae2ea0c35765b5a8c31da46e96292fb73faf29de13c5d05"
+        "sha": "d311b2bc616a614c7d298959527215dc666fa3dc8b901822d692bf2194900b9f"
     },
     "libs/radio": {
         "apis": {
@@ -33401,7 +35117,7 @@
                 }
             }
         },
-        "sha": "7bb99a9f4c683553b795805ab0400b96d6b248e099ffc08924935099f969e70a"
+        "sha": "d6f3a8a19f0ec659cb7a1f1664c394c2f3199e7da91944604623b2dbd732bcb2"
     },
     "libs/devices": {
         "apis": {
@@ -35438,7 +37154,7 @@
                 }
             }
         },
-        "sha": "dffc4e640018b011c30766e8bccb25f5ab42bc80a7a3809ad0353e760fa13197"
+        "sha": "bdc01c9960ff9438c23e15ae98a5c72082f8b468446ea930ad4dc54af1d32811"
     },
     "libs/bluetooth": {
         "apis": {
@@ -36389,7 +38105,7 @@
                 }
             }
         },
-        "sha": "91fa2f5800d4b6b2ac9ab84288ed507581bd734b44f39e1a2f6be10d0905bd7e"
+        "sha": "9267302e08ae23b4efe31480b35f1f0dbcafb5777a1d6ccfad905b7b9acb9ec1"
     },
     "libs/servo": {
         "apis": {
@@ -37031,7 +38747,7 @@
                 }
             }
         },
-        "sha": "48ee8f0fcd36bdb53160440d4b1593d2fc7959b95a00b20ce2f4ded1ef41a601"
+        "sha": "7895e9049bb1f92989ad3705a8a62605523bb2ee3eed8310b6c51fc0bd69ecfe"
     },
     "libs/radio-broadcast": {
         "apis": {
@@ -38590,7 +40306,7 @@
                 }
             }
         },
-        "sha": "241827c42eac4c3c3d6a6f45e6e1aca83b1bb00c0e367d277708b1b4cd0559b0"
+        "sha": "5b1f78eef3420f98d1093858949b3c6317090c7178eab27534ff2fb1e68c8a5b"
     },
     "libs/microphone": {
         "apis": {
@@ -38756,7 +40472,7 @@
                 }
             }
         },
-        "sha": "57d94ed03d9616401f2657afc5fd760e77e4e49cad7f3c2044eb7999c5688b00"
+        "sha": "9c4e458030f87958180d7d89b4a0ef20b46d9736c073cdda30ee2d9e255a8457"
     },
     "libs\\blocksprj": {
         "apis": {
@@ -40172,7 +41888,7 @@
                 }
             }
         },
-        "sha": "83185e2e033dbf3026af72dfdd81b9b98960f97c5752999a2c9b1156d2e46196"
+        "sha": "b2daaca1edb875f402006cdf1e8dc9fb44b40bddca77dbcff65c50fa41a877ae"
     },
     "libs\\bluetoothprj": {
         "apis": {
@@ -41123,7 +42839,7 @@
                 }
             }
         },
-        "sha": "e91f6e3391db2245e9a52583729b49dd4806c31151afeceb7b4d4057796f0095"
+        "sha": "6e0d9ab0dcd58b1ce48ba8bd9d0808ad6a6bb38afca6f6f6b575707370ac1db5"
     },
     "libs\\tsprj": {
         "apis": {
@@ -42539,6 +44255,6 @@
                 }
             }
         },
-        "sha": "5b5c64bd6fb694a7b69b006ef1025dbb15d72535a3f4033fbe09c45729eec1b9"
+        "sha": "b0891fa1a82c2f4aeaa0ccadd46c2ab490ecc2a67a7d6997416d15f76f6b2ff2"
     }
 }

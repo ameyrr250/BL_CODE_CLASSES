@@ -62,7 +62,11 @@
         "airquality2.ts",
         "DC_Motor3.ts",
         "WiFi_BLE.ts",
-        "IR_Distance.ts"
+        "IR_Distance.ts",
+        "IR_sense3.ts",
+        "IrThermo_3.ts",
+        "Keylock.ts",
+        "Line_Follower.ts"
 
     ],
     "public": true,

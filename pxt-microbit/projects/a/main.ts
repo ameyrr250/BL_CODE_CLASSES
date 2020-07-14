@@ -1,2 +1,2 @@
-let LCDSettings = LCD_Mini.createLCDSettings()
-LCDSettings.lcd_writeString("this", lineNumber.one, clickBoardID.one)
+let LCDSettings: LCD_Mini.LCDSettings = null
+LCDSettings.lcd_writeString("", lineNumber.one, clickBoardID.one)

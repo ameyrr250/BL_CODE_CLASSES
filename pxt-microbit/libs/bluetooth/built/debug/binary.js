@@ -1,4 +1,4 @@
-// total=24841 new=73.80% cached=0.00% other=26.20%
+// total=25241 new=74.18% cached=0.00% other=25.82%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -91,7 +91,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P10364(s) {
+function _main___P833302(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -101,47 +101,47 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___10667 = (undefined);
-    globals.listeners___10678 = (undefined);
+    globals._intervals___833605 = (undefined);
+    globals.listeners___833616 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___10912 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___10912, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___833850 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___833850, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___10924 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___10924, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___833862 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___833862, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___10934 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___10934, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___833872 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___833872, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___10944 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___10944, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___833882 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___833882, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___10954 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___10954, 2, 0, 2);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C10999_VT);
+    globals.READ_BBOARD_TX_BUFFER___833892 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___833892, 2, 0, 2);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C833937_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_UARTSettings_constructor__P11007_mk(s);
+    s.tmp_1 = bBoard_UARTSettings_constructor__P833945_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 1; return s.tmp_1;
   case 1:
     r0 = s.retval;
-    globals.UARTs___11033 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C10999_VT);
+    globals.UARTs___833971 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C833937_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_UARTSettings_constructor__P11007_mk(s);
+    s.tmp_1 = bBoard_UARTSettings_constructor__P833945_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 2; return s.tmp_1;
   case 2:
     r0 = s.retval;
-    globals.UARTs___11041 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(WiFiSetResponses_SetResponse__C11035_VT);
+    globals.UARTs___833979 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(WiFiSetResponses_SetResponse__C833973_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = WiFiSetResponses_SetResponse_constructor__P11039_mk(s);
+    s.tmp_1 = WiFiSetResponses_SetResponse_constructor__P833977_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 3; return s.tmp_1;
   case 3:
     r0 = s.retval;
-    globals.SetResponseObj___11044 = (s.tmp_0);
+    globals.SetResponseObj___833982 = (s.tmp_0);
     r0 = pxsim_pxtrt.mkMap();
     s.tmp_0 = r0;
     r0 = pxsim_String_.mkEmpty();
@@ -159,108 +159,116 @@ switch (step) {
     r0 = pxsim_String_.mkEmpty();
     s.tmp_5 = r0;
     r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "value", s.tmp_5);
-    globals.MQTTMessageObject___11056 = (s.tmp_0);
+    globals.MQTTMessageObject___833994 = (s.tmp_0);
     r0 = pxsim_Array__mk();
     s.tmp_0 = r0;
-    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___11056);
-    globals.mqttMessageList___11058 = (s.tmp_0);
-    r0 = pxsim_Array_.pop(globals.mqttMessageList___11058);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C11008_VT);
+    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___833994);
+    globals.mqttMessageList___833996 = (s.tmp_0);
+    r0 = pxsim_Array_.pop(globals.mqttMessageList___833996);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C833946_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P11014_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P833952_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 4; return s.tmp_1;
   case 4:
     r0 = s.retval;
-    globals.PINs___11068 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C11008_VT);
+    globals.PINs___834006 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C833946_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P11014_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P833952_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 5; return s.tmp_1;
   case 5:
     r0 = s.retval;
-    globals.PINs___11117 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_SPIsetting__C11017_VT);
+    globals.PINs___834055 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_SPIsetting__C833955_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_SPIsetting_constructor__P11025_mk(s);
+    s.tmp_1 = bBoard_SPIsetting_constructor__P833963_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 6; return s.tmp_1;
   case 6:
     r0 = s.retval;
-    globals.SPIs___11120 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C11026_VT);
+    globals.SPIs___834058 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C833964_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_I2CSettings_constructor__P11031_mk(s);
+    s.tmp_1 = bBoard_I2CSettings_constructor__P833969_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 7; return s.tmp_1;
   case 7:
     r0 = s.retval;
-    globals.i2csettingsobj___11162 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C11008_VT);
+    globals.i2csettingsobj___834100 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C833946_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P11014_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P833952_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 8; return s.tmp_1;
   case 8:
     r0 = s.retval;
-    globals.PINs___11177 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C11026_VT);
+    globals.PINs___834115 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C833964_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_I2CSettings_constructor__P11031_mk(s);
+    s.tmp_1 = bBoard_I2CSettings_constructor__P833969_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 9; return s.tmp_1;
   case 9:
     r0 = s.retval;
-    globals.I2Cs___11180 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C11008_VT);
+    globals.I2Cs___834118 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C833946_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P11014_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P833952_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 10; return s.tmp_1;
   case 10:
     r0 = s.retval;
-    globals.PINs___11208 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C11026_VT);
+    globals.PINs___834146 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C833964_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_I2CSettings_constructor__P11031_mk(s);
+    s.tmp_1 = bBoard_I2CSettings_constructor__P833969_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 11; return s.tmp_1;
   case 11:
     r0 = s.retval;
-    globals.I2Cs___11211 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C11008_VT);
+    globals.I2Cs___834149 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C833946_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P11014_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P833952_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 12; return s.tmp_1;
   case 12:
     r0 = s.retval;
-    globals.PINs___11230 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PWMSettings__C10993_VT);
+    globals.PINs___834168 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PWMSettings__C833931_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PWMSettings_constructor__P10998_mk(s);
+    s.tmp_1 = bBoard_PWMSettings_constructor__P833936_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 13; return s.tmp_1;
   case 13:
     r0 = s.retval;
-    globals.pwms___11233 = (s.tmp_0);
-    s.tmp_0 = console_addListener__P10681_mk(s);
-    s.tmp_0.arg0 = inline__P11277;
-    s.pc = 14; return s.tmp_0;
+    globals.pwms___834171 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C833946_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = bBoard_PinSettings_constructor__P833952_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 14; return s.tmp_1;
   case 14:
+    r0 = s.retval;
+    globals.PINs___834197 = (s.tmp_0);
+    s.tmp_0 = console_addListener__P833619_mk(s);
+    s.tmp_0.arg0 = inline__P834309;
+    s.pc = 15; return s.tmp_0;
+  case 15:
     r0 = s.retval;
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P10364.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"bluetooth.ts","functionName":"<main>","argumentNames":[]}
-_main___P10364.continuations = [  ]
+_main___P833302.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"bluetooth.ts","functionName":"<main>","argumentNames":[]}
+_main___P833302.continuations = [  ]
 
-function _main___P10364_mk(s) {
+function _main___P833302_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P10364, depth: s.depth + 1,
+        parent: s, fn: _main___P833302, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -274,7 +282,7 @@ function _main___P10364_mk(s) {
 
 
 
-function inline__P11277(s) {
+function inline__P834309(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -293,12 +301,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-inline__P11277.info = {"start":345,"length":29,"line":15,"column":24,"endLine":15,"endColumn":53,"fileName":"bluetooth.ts","functionName":"inline","argumentNames":["msg"]}
+inline__P834309.info = {"start":345,"length":29,"line":15,"column":24,"endLine":15,"endColumn":53,"fileName":"bluetooth.ts","functionName":"inline","argumentNames":["msg"]}
 
-function inline__P11277_mk(s) {
+function inline__P834309_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: inline__P11277, depth: s.depth + 1,
+        parent: s, fn: inline__P834309, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -307,7 +315,7 @@ function inline__P11277_mk(s) {
 
 
 
-function bluetooth___log__P11275(s) {
+function bluetooth___log__P834307(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -325,12 +333,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bluetooth___log__P11275.info = {"start":262,"length":58,"line":12,"column":4,"endLine":14,"endColumn":5,"fileName":"bluetooth.ts","functionName":"__log","argumentNames":["msg"]}
+bluetooth___log__P834307.info = {"start":262,"length":58,"line":12,"column":4,"endLine":14,"endColumn":5,"fileName":"bluetooth.ts","functionName":"__log","argumentNames":["msg"]}
 
-function bluetooth___log__P11275_mk(s) {
+function bluetooth___log__P834307_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bluetooth___log__P11275, depth: s.depth + 1,
+        parent: s, fn: bluetooth___log__P834307, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -339,7 +347,7 @@ function bluetooth___log__P11275_mk(s) {
 
 
 
-function console_addListener__P10681(s) {
+function console_addListener__P833619(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -362,28 +370,28 @@ switch (step) {
     { step = 5; continue; }
   case 1:
   case 2:
-    r0 = pxsim_numops_toBoolDecr(globals.listeners___10678);
+    r0 = pxsim_numops_toBoolDecr(globals.listeners___833616);
     s.tmp_3 = r0;
     r0 = pxsim_Boolean__bang(s.tmp_3);
     s.tmp_2 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_2);
     if (!r0) { step = 3; continue; }
     r0 = pxsim_Array__mk();
-    globals.listeners___10678 = (r0);
+    globals.listeners___833616 = (r0);
   case 3:
   case 4:
-    r0 = pxsim_Array__push(globals.listeners___10678, s.arg0);
+    r0 = pxsim_Array__push(globals.listeners___833616, s.arg0);
   case 5:
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-console_addListener__P10681.info = {"start":1217,"length":186,"line":46,"column":4,"endLine":51,"endColumn":5,"fileName":"pxt_modules/core/console.ts","functionName":"addListener","argumentNames":["listener"]}
+console_addListener__P833619.info = {"start":1217,"length":186,"line":46,"column":4,"endLine":51,"endColumn":5,"fileName":"pxt_modules/core/console.ts","functionName":"addListener","argumentNames":["listener"]}
 
-function console_addListener__P10681_mk(s) {
+function console_addListener__P833619_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: console_addListener__P10681, depth: s.depth + 1,
+        parent: s, fn: console_addListener__P833619, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -396,7 +404,7 @@ function console_addListener__P10681_mk(s) {
 
 
 
-function bBoard_PWMSettings_constructor__P10998(s) {
+function bBoard_PWMSettings_constructor__P833936(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -411,19 +419,19 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_PWMSettings__C10993_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_PWMSettings__C833931_VT)) failedCast(r0);
     r0 = (s.arg0).fields["pitchPin"] = (32768);
     r0 = (s.arg0).fields["pitchClick"] = (1);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_PWMSettings_constructor__P10998.info = {"start":11241,"length":113,"line":423,"column":8,"endLine":426,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_PWMSettings_constructor__P833936.info = {"start":11241,"length":113,"line":423,"column":8,"endLine":426,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_PWMSettings_constructor__P10998_mk(s) {
+function bBoard_PWMSettings_constructor__P833936_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_PWMSettings_constructor__P10998, depth: s.depth + 1,
+        parent: s, fn: bBoard_PWMSettings_constructor__P833936, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -432,7 +440,7 @@ function bBoard_PWMSettings_constructor__P10998_mk(s) {
 
 
 
-function bBoard_I2CSettings_constructor__P11031(s) {
+function bBoard_I2CSettings_constructor__P833969(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -447,7 +455,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_I2CSettings__C11026_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_I2CSettings__C833964_VT)) failedCast(r0);
     r0 = (s.arg0).fields["I2C_WRITE_id"] = (1);
     r0 = (s.arg0).fields["I2C_READ_id"] = (2);
     r0 = (s.arg0).fields["I2C_WRITE_NO_MEM_id"] = (3);
@@ -456,12 +464,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_I2CSettings_constructor__P11031.info = {"start":47050,"length":199,"line":1341,"column":12,"endLine":1347,"endColumn":13,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_I2CSettings_constructor__P833969.info = {"start":47050,"length":199,"line":1341,"column":12,"endLine":1347,"endColumn":13,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_I2CSettings_constructor__P11031_mk(s) {
+function bBoard_I2CSettings_constructor__P833969_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_I2CSettings_constructor__P11031, depth: s.depth + 1,
+        parent: s, fn: bBoard_I2CSettings_constructor__P833969, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -470,7 +478,7 @@ function bBoard_I2CSettings_constructor__P11031_mk(s) {
 
 
 
-function bBoard_SPIsetting_constructor__P11025(s) {
+function bBoard_SPIsetting_constructor__P833963(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -485,7 +493,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_SPIsetting__C11017_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_SPIsetting__C833955_VT)) failedCast(r0);
     r0 = (s.arg0).fields["SPI_WRITE_id"] = (1);
     r0 = (s.arg0).fields["SPI_READ_id"] = (2);
     r0 = (s.arg0).fields["SPI_CONFIG_id"] = (3);
@@ -498,12 +506,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_SPIsetting_constructor__P11025.info = {"start":36432,"length":296,"line":1053,"column":8,"endLine":1063,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_SPIsetting_constructor__P833963.info = {"start":36432,"length":296,"line":1053,"column":8,"endLine":1063,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_SPIsetting_constructor__P11025_mk(s) {
+function bBoard_SPIsetting_constructor__P833963_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_SPIsetting_constructor__P11025, depth: s.depth + 1,
+        parent: s, fn: bBoard_SPIsetting_constructor__P833963, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -512,7 +520,7 @@ function bBoard_SPIsetting_constructor__P11025_mk(s) {
 
 
 
-function bBoard_PinSettings_constructor__P11014(s) {
+function bBoard_PinSettings_constructor__P833952(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -527,8 +535,8 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_PinSettings__C11008_VT)) failedCast(r0);
-    s.tmp_0 = bBoard_IOSettings_constructor__P10992_mk(s);
+    if (!checkSubtype(r0, bBoard_PinSettings__C833946_VT)) failedCast(r0);
+    s.tmp_0 = bBoard_IOSettings_constructor__P833930_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.pc = 1; return s.tmp_0;
   case 1:
@@ -537,12 +545,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_PinSettings_constructor__P11014.info = {"start":26542,"length":47,"line":817,"column":8,"endLine":819,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_PinSettings_constructor__P833952.info = {"start":26542,"length":47,"line":817,"column":8,"endLine":819,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_PinSettings_constructor__P11014_mk(s) {
+function bBoard_PinSettings_constructor__P833952_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_PinSettings_constructor__P11014, depth: s.depth + 1,
+        parent: s, fn: bBoard_PinSettings_constructor__P833952, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -552,7 +560,7 @@ function bBoard_PinSettings_constructor__P11014_mk(s) {
 
 
 
-function bBoard_IOSettings_constructor__P10992(s) {
+function bBoard_IOSettings_constructor__P833930(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -567,7 +575,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_IOSettings__C10988_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_IOSettings__C833926_VT)) failedCast(r0);
     r0 = (s.arg0).fields["DIRSET_id"] = (2);
     r0 = (s.arg0).fields["DIRCLR_id"] = (3);
     r0 = (s.arg0).fields["GPIO_id"] = (4);
@@ -580,12 +588,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_IOSettings_constructor__P10992.info = {"start":6069,"length":251,"line":291,"column":8,"endLine":300,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_IOSettings_constructor__P833930.info = {"start":6069,"length":251,"line":291,"column":8,"endLine":300,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_IOSettings_constructor__P10992_mk(s) {
+function bBoard_IOSettings_constructor__P833930_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_IOSettings_constructor__P10992, depth: s.depth + 1,
+        parent: s, fn: bBoard_IOSettings_constructor__P833930, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -594,7 +602,7 @@ function bBoard_IOSettings_constructor__P10992_mk(s) {
 
 
 
-function WiFiSetResponses_SetResponse_constructor__P11039(s) {
+function WiFiSetResponses_SetResponse_constructor__P833977(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -609,7 +617,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, WiFiSetResponses_SetResponse__C11035_VT)) failedCast(r0);
+    if (!checkSubtype(r0, WiFiSetResponses_SetResponse__C833973_VT)) failedCast(r0);
     r0 = (s.arg0).fields["defaultWiFiTimeoutmS"] = (10000);
     r0 = (s.arg0).fields["response"] = (2);
     s.tmp_0 = r0 = s.arg0;
@@ -625,12 +633,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-WiFiSetResponses_SetResponse_constructor__P11039.info = {"start":291,"length":396,"line":11,"column":4,"endLine":17,"endColumn":5,"fileName":"pxt_modules/core/WiFi_BLE.ts","functionName":"inline","argumentNames":["this"]}
+WiFiSetResponses_SetResponse_constructor__P833977.info = {"start":291,"length":396,"line":11,"column":4,"endLine":17,"endColumn":5,"fileName":"pxt_modules/core/WiFi_BLE.ts","functionName":"inline","argumentNames":["this"]}
 
-function WiFiSetResponses_SetResponse_constructor__P11039_mk(s) {
+function WiFiSetResponses_SetResponse_constructor__P833977_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: WiFiSetResponses_SetResponse_constructor__P11039, depth: s.depth + 1,
+        parent: s, fn: WiFiSetResponses_SetResponse_constructor__P833977, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -641,7 +649,7 @@ function WiFiSetResponses_SetResponse_constructor__P11039_mk(s) {
 
 
 
-function bBoard_UARTSettings_constructor__P11007(s) {
+function bBoard_UARTSettings_constructor__P833945(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -656,7 +664,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_UARTSettings__C10999_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_UARTSettings__C833937_VT)) failedCast(r0);
     r0 = (s.arg0).fields["UART_STATUS"] = (0);
     r0 = (s.arg0).fields["UART_INTEN"] = (2);
     r0 = (s.arg0).fields["UART_INTENCLR"] = (3);
@@ -669,12 +677,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_UARTSettings_constructor__P11007.info = {"start":16399,"length":302,"line":562,"column":8,"endLine":572,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_UARTSettings_constructor__P833945.info = {"start":16399,"length":302,"line":562,"column":8,"endLine":572,"endColumn":9,"fileName":"pxt_modules/core/bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_UARTSettings_constructor__P11007_mk(s) {
+function bBoard_UARTSettings_constructor__P833945_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_UARTSettings_constructor__P11007, depth: s.depth + 1,
+        parent: s, fn: bBoard_UARTSettings_constructor__P833945, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -682,7 +690,7 @@ function bBoard_UARTSettings_constructor__P11007_mk(s) {
 
 
 
-const bBoard_UARTSettings__C10999_VT = mkVTable({
+const bBoard_UARTSettings__C833937_VT = mkVTable({
   name: "UARTSettings",
   numFields: 8,
   classNo: 16,
@@ -709,7 +717,7 @@ const bBoard_UARTSettings__C10999_VT = mkVTable({
     "set/UART_CLEAR_RX_DATA": null,
   },
 });
-const WiFiSetResponses_SetResponse__C11035_VT = mkVTable({
+const WiFiSetResponses_SetResponse__C833973_VT = mkVTable({
   name: "SetResponse",
   numFields: 5,
   classNo: 17,
@@ -730,7 +738,7 @@ const WiFiSetResponses_SetResponse__C11035_VT = mkVTable({
     "set/MQTTMessage": null,
   },
 });
-const bBoard_IOSettings__C10988_VT = mkVTable({
+const bBoard_IOSettings__C833926_VT = mkVTable({
   name: "IOSettings",
   numFields: 8,
   classNo: 18,
@@ -757,7 +765,7 @@ const bBoard_IOSettings__C10988_VT = mkVTable({
     "set/ODC_id": null,
   },
 });
-const bBoard_PinSettings__C11008_VT = mkVTable({
+const bBoard_PinSettings__C833946_VT = mkVTable({
   name: "PinSettings",
   numFields: 8,
   classNo: 19,
@@ -784,7 +792,7 @@ const bBoard_PinSettings__C11008_VT = mkVTable({
     "set/ODC_id": null,
   },
 });
-const bBoard_SPIsetting__C11017_VT = mkVTable({
+const bBoard_SPIsetting__C833955_VT = mkVTable({
   name: "SPIsetting",
   numFields: 8,
   classNo: 20,
@@ -811,7 +819,7 @@ const bBoard_SPIsetting__C11017_VT = mkVTable({
     "set/SPI_CONFIG_CS_id": null,
   },
 });
-const bBoard_I2CSettings__C11026_VT = mkVTable({
+const bBoard_I2CSettings__C833964_VT = mkVTable({
   name: "I2CSettings",
   numFields: 4,
   classNo: 21,
@@ -830,7 +838,7 @@ const bBoard_I2CSettings__C11026_VT = mkVTable({
     "set/I2C_READ_NO_MEM_id": null,
   },
 });
-const bBoard_PWMSettings__C10993_VT = mkVTable({
+const bBoard_PWMSettings__C833931_VT = mkVTable({
   name: "PWMSettings",
   numFields: 2,
   classNo: 22,
@@ -848,5 +856,5 @@ const bBoard_PWMSettings__C10993_VT = mkVTable({
 
 const breakpoints = setupDebugger(1, [])
 
-return _main___P10364
+return _main___P833302
 })

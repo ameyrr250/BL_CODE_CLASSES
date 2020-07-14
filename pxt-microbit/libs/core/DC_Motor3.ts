@@ -13,6 +13,7 @@ namespace DC_Motor3 {
   }
     let PINs = new bBoard.PinSettings();
     let pwms = new bBoard.PWMSettings();
+    
 
     export enum MotorDirection {
       //% block="Forward"
