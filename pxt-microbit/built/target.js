@@ -2662,16 +2662,29 @@ var pxtTargetBundle = {
     },
     "bundledpkgs": {
         "core": {
+            "Button_G.ts": "//% weight=100 color=#F4B820 icon=\"\"\r\n//% advanced=true\r\n\r\nnamespace Button_G {\r\n\r\n\r\n    \r\n    export enum Light{\r\n        Off = 0,\r\n        On = 1\r\n    \r\n    }\r\n\r\n\r\n    let PWMs= new bBoard.PWMSettings();\r\n\r\n    //% block=\"create Button_G settings\"\r\n    //% blockSetVariable=\"Button_G\"\r\n    //% weight=110\r\n    export function createButton_G(): Button_G {\r\n        return new Button_G();\r\n   }\r\n\r\n\r\n    export class Button_G extends bBoard.PinSettings{\r\n    \r\n        constructor(){\r\n            super();\r\n        }\r\n    \r\n        //% blockId=ButtonG_SetLight\r\n        //% block=\"$this Turn button light $onOff on click$clickBoardNum\"\r\n        //% blockNamespace=Button_G\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Button_G\"\r\n    setLight(onOff:Light,clickBoardNum:clickBoardID)\r\n {\r\n    this.writePin(onOff,clickIOPin.PWM,clickBoardNum)\r\n }\r\n\r\n    \r\n        //% blockId=ButtonG_SetLight_PWM\r\n        //% block=\"$this Set button light to $PWMValue brightness on click$clickBoardNum\"\r\n        //% PWMValue.min=0 PWMValue.max=100\r\n        //% blockNamespace=Button_G\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Button_G\" \r\n        setLightPWM(PWMValue:number,clickBoardNum:clickBoardID)\r\n        {\r\n            PWMs.PWMOut(clickPWMPin.PWM,PWMValue,clickBoardNum)\r\n        }\r\n\r\n    \r\n        //% blockId=ButtonG_getSwitch\r\n        //% block=\"$this Read button state on click$clickBoardNum\"\r\n        //% blockNamespace=Button_G\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Button_G\"\r\n        getSwitch(clickBoardNum:clickBoardID):number\r\n        {\r\n           return this.digitalReadPin(clickIOPin.INT,clickBoardNum)\r\n        }\r\n\r\n    }\r\n\r\n}\r\n",
             "DC_Motor3.ts": "\r\n\r\n//-------------------------Click Board Blocks Begin -----------------------------------\r\n//% weight=100 color=#EF697B icon=\"\"\r\n//% advanced=true\r\n\r\nnamespace DC_Motor3 {\r\n     //% block=\"create DC_MOTOR settings\"\r\n    //% blockSetVariable=\"DC_MOTOR\"\r\n    //% weight=110\r\n    export function createDC_MOTOR(): DC_MOTOR {\r\n      return new DC_MOTOR();\r\n  }\r\n    let PINs = new bBoard.PinSettings();\r\n    let pwms = new bBoard.PWMSettings();\r\n    \r\n\r\n    export enum MotorDirection {\r\n      //% block=\"Forward\"\r\n      Forward,\r\n      //% block=\"Reverse\"\r\n      Reverse\r\n    }\r\n    \r\n    export class DC_MOTOR extends bBoard.PWMSettings{\r\n    //Motor Click\r\n    private IN1  : number\r\n    private IN2  : number\r\n    private  SLP : number\r\n    private  PWM : number\r\n    isInitialized : Array<number>;\r\n    constructor(){\r\n      super();\r\n        this.IN1 = clickIOPin.AN\r\n        this.IN2 = clickIOPin.RST\r\n        this.SLP = clickIOPin.CS\r\n        this.PWM = clickIOPin.PWM\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];      \r\n    }\r\n    \r\n    get IN1val() {\r\n        return this.IN1\r\n      }\r\n    set IN1val(value) {\r\n        this.IN1 = value\r\n      }\r\n\r\n    get IN2val() {\r\n        return this.IN2\r\n      }\r\n    set IN2val(value) {\r\n        this.IN2 = value\r\n      }\r\n\r\n\r\n      get SLPval() {\r\n        return this.SLP\r\n      }\r\n    set SLPval(value) {\r\n        this.SLP = value\r\n      }\r\n\r\n      get PWMval() {\r\n        return this.PWM\r\n      }\r\n    set PWMval(value) {\r\n        this.PWM = value\r\n      }\r\n    \r\n    \r\n    initialize(clickBoardNum:clickBoardID)\r\n    {\r\n        this.motorRotation(MotorDirection.Forward,clickBoardNum)\r\n        this.isInitialized[clickBoardNum]  = 1\r\n    \r\n    }\r\n    \r\n        //------------------------Motor Click---------------------------------\r\n    \r\n    \r\n    \r\n    motorSpeed(Speed: number,clickBoardNum: clickBoardID): void {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(clickBoardNum)\r\n                \r\n            }\r\n    \r\n            if (Speed > 100) {\r\n                Speed = 100;\r\n            }\r\n            if (Speed < 0) {\r\n                Speed = 0;\r\n            }\r\n            pwms.PWMOut(clickPWMPin.PWM,Speed,clickBoardNum);\r\n           \r\n        }\r\n    \r\n        //% blockId=Motor_speedDirection\r\n        //% block=\"Set $this speed to %speed with direction%direction on click%clickBoardNum\"\r\n        //% Speed.min=0 Speed.max=100\r\n        //% advanced=false\r\n        //% speed.min=0 speed.max=100\r\n        //% blockNamespace=DC_Motor3\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"DC_MOTOR\"\r\n    \r\n        motorSpeedDirection(speed: number,direction: MotorDirection,clickBoardNum: clickBoardID): void {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(clickBoardNum)\r\n                \r\n            }\r\n    \r\n            this.motorRotation(direction,clickBoardNum);\r\n            this.motorSpeed(speed,clickBoardNum)\r\n          \r\n           \r\n        }\r\n    \r\n    \r\n    \r\n        motorRotation(direction: MotorDirection, clickBoardNum: clickBoardID): void {\r\n            switch (direction) {\r\n    \r\n                \r\n                case MotorDirection.Forward:\r\n                  PINs.writePin(1,this.IN1val,clickBoardNum);\r\n                  PINs.writePin(0,this.IN2val,clickBoardNum);\r\n            \r\n                    break;\r\n    \r\n                case MotorDirection.Reverse:\r\n                \r\n                  PINs.writePin(0,this.IN1val,clickBoardNum);\r\n                  PINs.writePin(1,this.IN2val,clickBoardNum);\r\n                    break;\r\n            }\r\n        }\r\n    \r\n      \r\n    }\r\n    }",
             "IR_Distance.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"↔\"\r\n//% advanced=true\r\nnamespace IR_Distance{\r\n\r\n     //% block=\"create IR_Distance settings\"\r\n    //% blockSetVariable=\"IR_Distance\"\r\n    //% weight=110\r\n    export function createIR_Distance(): IR_Distance1 {\r\n        return new IR_Distance1();\r\n    }\r\n\r\n    export class IR_Distance1 extends bBoard.PinSettings{\r\n\r\n\r\n    isInitialized : Array<number>;\r\n    \r\n    constructor(){\r\n        super();\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n\r\n   \r\n        initialize(clickBoardNum:clickBoardID)\r\n        {\r\n            this.enable(clickBoardNum) //Enable the module\r\n            this.isInitialized[clickBoardNum]  = 1\r\n\r\n        }\r\n\r\n       //%blockId=IRDistance_getDistance\r\n        //%block=\"$this Get distance on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=IR_Distance\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Distance\"\r\n    getDistance(clickBoardNum:clickBoardID):number\r\n    {\r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(clickBoardNum)\r\n            \r\n        }\r\n       return 2700-bBoard.analogRead(clickADCPin.AN,clickBoardNum)\r\n    \r\n    }\r\n\r\n         //%blockId=IRDistance_enable\r\n        //%block=\"$this Enable device on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=IR_Distance\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Distance\"\r\n        enable(clickBoardNum:clickBoardID)\r\n        {\r\n            super.setPin(clickIOPin.RST,clickBoardNum); //Enable the module\r\n          \r\n        \r\n        }\r\n\r\n        //%blockId=IRDistance_disable\r\n        //%block=\"$this Disable device on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=IR_Distance\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Distance\"\r\n        disable(clickBoardNum:clickBoardID)\r\n        {\r\n            super.clearPin(clickIOPin.RST,clickBoardNum); //Enable the module\r\n          \r\n        \r\n        }\r\n    }\r\n}",
             "IR_sense3.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\\u223F\"\r\n//% advanced=true\r\nnamespace IR_Sense_3{\r\n    let PINs=new bBoard.PinSettings();\r\n\r\n    //% block=\"create IR_Sense settings\"\r\n    //% blockSetVariable=\"IR_Sense\"\r\n    //% weight=110\r\n    export function createIR_Sense(): IR_Sense {\r\n        return new IR_Sense();\r\n    }\r\n\r\n    export class IR_Sense extends bBoard.I2CSettings{\r\n\r\n    private readonly ST1 = 0x04\r\n    private readonly ST2 = 0x09\r\n    private readonly ST3 = 0x0A\r\n    private readonly ST4 = 0x1F\r\n    private readonly IRL = 0x05\r\n    private readonly IRH = 0x06\r\n    private readonly AK9754_DEVICE_ADDRESS = 0x60\r\n    \r\n    \r\n\r\n    isInitialized : Array<number>;\r\n    deviceAddress : Array<number>;\r\n\r\n    constructor(){\r\n        super();\r\n        createIR_Sense();\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n    \r\n    initialize(deviceAddr:number,clickBoardNum:clickBoardID)\r\n    {\r\n        //setTMP116Addr(deviceAddr,clickBoardNum)\r\n        this.isInitialized[clickBoardNum]  = 1\r\n        this.setAK9754Addr(deviceAddr,clickBoardNum)\r\n        this.writeAK9754([0x20,0xff, 0xfc,0xa9, 0xf8, 0x80, 0xfa, 0xf0, 0x81, 0x0c, 0x80,0xf2, 0xff],clickBoardNum) //Initialize the Config register\r\n    \r\n    }\r\n   \r\n\r\n       \r\n        //%blockId=AK9754_write\r\n        //%block=\"$this Write array $values to AK9754 register$register on click$clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=IR_Sense_3\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Sense\"\r\n        writeAK9754(values:number[],clickBoardNum:clickBoardID)\r\n        {\r\n        \r\n        \r\n            let i2cBuffer = pins.createBuffer(values.length)\r\n\r\n            for (let i=0;i<values.length;i++)\r\n            {\r\n                i2cBuffer.setNumber(NumberFormat.UInt8LE, i, values[i])\r\n           \r\n            }\r\n    \r\n        \r\n            super.i2cWriteBuffer(this.getAK9754Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n         \r\n        }\r\n       \r\n\r\n        \r\n            //%blockId=IR_Sense_3_isHumandDetected\r\n            //%block=\"$this Has a human been detected on click$clickBoardNum ?\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=IR_Sense_3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"IR_Sense\"\r\n            isHumanDetected( clickBoardNum:clickBoardID):boolean\r\n            {\r\n                if(this.isInitialized[clickBoardNum] == 0)\r\n                {\r\n                    this.initialize(this.AK9754_DEVICE_ADDRESS,clickBoardNum)\r\n                    \r\n                }\r\n                if(PINs.digitalReadPin(clickIOPin.INT,clickBoardNum)==0) //If the interrupt pin has gone low (indicating human detected)\r\n                {\r\n                    this.readAK9754(this.IRL,clickBoardNum); //Datasheet indicates that reading from IRL will clear the interrupt. *Need to confirm if other reads are necessary\r\n                    this.readAK9754(this.IRH,clickBoardNum);\r\n                    this.readAK9754(this.ST1,clickBoardNum);\r\n                    this.readAK9754(this.ST2,clickBoardNum);\r\n                    this.readAK9754(this.ST3,clickBoardNum);\r\n                    this.readAK9754(this.ST4,clickBoardNum);\r\n\r\n                    return true;\r\n\r\n                }\r\n                \r\n                \r\n    \r\n        \r\n                return  false\r\n        \r\n                    \r\n            \r\n            }\r\n\r\n        \r\n            //%blockId=AK9754_read\r\n            //%block=\"$this Read from register$register on click$clickBoardNum ?\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=IR_Sense_3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"IR_Sense\"\r\n        readAK9754( register:number, clickBoardNum:clickBoardID):number\r\n        {\r\n            \r\n    \r\n            this.i2cWriteNumber(this.getAK9754Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)\r\n\r\n    \r\n            return  this.I2CreadNoMem(this.getAK9754Addr(clickBoardNum),1,clickBoardNum).getUint8(0)\r\n    \r\n                \r\n        \r\n        }\r\n        \r\n        \r\n        setAK9754Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n            this.deviceAddress[clickBoardNum] = deviceAddr;\r\n        }\r\n        getAK9754Addr(clickBoardNum:clickBoardID):number\r\n        {\r\n            return this.deviceAddress[clickBoardNum];\r\n        }\r\n\r\n    }\r\n\r\n\r\n\r\n}\r\n\r\n\r\n\r\n",
             "IrThermo_3.ts": "  \r\n/*\r\n  This is a library written for the MLX90632 Non-contact thermal sensor\r\n  SparkFun sells these at its website: www.sparkfun.com\r\n  Do you like this library? Help support SparkFun. Buy a board!\r\n  https://www.sparkfun.com/products/14569\r\n  Written by Nathan Seidle @ SparkFun Electronics, December 28th, 2017\r\n  The MLX90632 can remotely measure object temperatures within 1 degree C.\r\n  This library handles the initialization of the MLX90632 and the calculations\r\n  to get the temperatures.\r\n  https://github.com/sparkfun/SparkFun_MLX90632_Arduino_Library\r\n  Development environment specifics:\r\n  Arduino IDE 1.8.3\r\n  This program is distributed in the hope that it will be useful,\r\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\r\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\r\n  GNU General Public License for more details.\r\n  You should have received a copy of the GNU General Public License\r\n  along with this program.  If not, see <http://www.gnu.org/licenses/>.\r\n*/\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace IrThermo_3 {\r\n\r\n    enum status\r\n    {\r\n      SENSOR_SUCCESS,\r\n      SENSOR_ID_ERROR,\r\n      SENSOR_I2C_ERROR,\r\n      SENSOR_INTERNAL_ERROR,\r\n      SENSOR_GENERIC_ERROR,\r\n      SENSOR_TIMEOUT_ERROR\r\n      //...\r\n    } \r\n\r\n     //% block=\"create IrThermo settings\"\r\n    //% blockSetVariable=\"IrThermo\"\r\n    //% weight=110\r\n    export function createIrThermo(): IrThermo {\r\n        return new IrThermo();\r\n    }\r\n    \r\nexport class IrThermo extends bBoard.I2CSettings{\r\n\r\n\r\n//Registers\r\nprivate readonly EE_VERSION =0x240B\r\n\r\n//32 bit constants\r\nprivate readonly EE_P_R =0x240C\r\nprivate readonly EE_P_G =0x240E\r\nprivate readonly EE_P_T =0x2410\r\nprivate readonly EE_P_O =0x2412\r\nprivate readonly EE_Aa =0x2414\r\nprivate readonly EE_Ab =0x2416\r\nprivate readonly EE_Ba =0x2418\r\nprivate readonly EE_Bb =0x241A\r\nprivate readonly EE_Ca =0x241C\r\nprivate readonly EE_Cb =0x241E\r\nprivate readonly EE_Da =0x2420\r\nprivate readonly EE_Db =0x2422\r\nprivate readonly EE_Ea =0x2424\r\nprivate readonly EE_Eb =0x2426\r\nprivate readonly EE_Fa =0x2428\r\nprivate readonly EE_Fb =0x242A\r\nprivate readonly EE_Ga =0x242C\r\n\r\n//16 bit constants\r\nprivate readonly EE_Ha =0x2481\r\nprivate readonly EE_Hb =0x2482\r\nprivate readonly EE_Gb =0x242E\r\nprivate readonly EE_Ka =0x242F\r\nprivate readonly EE_Kb =0x2430\r\n\r\n//Control registers\r\nprivate readonly EE_CONTROL =0x24D4\r\nprivate readonly EE_I2C_ADDRESS =0x24D5\r\nprivate readonly REG_I2C_ADDRESS =0x3000\r\nprivate readonly REG_CONTROL =0x3001\r\nprivate readonly REG_STATUS =0x3FFF\r\n\r\n//User RAM\r\nprivate readonly RAM_1 =0x4000\r\nprivate readonly RAM_2 =0x4001\r\nprivate readonly RAM_3 =0x4002\r\nprivate readonly RAM_4 =0x4003\r\nprivate readonly RAM_5 =0x4004\r\nprivate readonly RAM_6 =0x4005\r\nprivate readonly RAM_7 =0x4006\r\nprivate readonly RAM_8 =0x4007\r\nprivate readonly RAM_9 =0x4008\r\n\r\n//Three measurement modes available\r\nprivate readonly MODE_SLEEP =0b01\r\nprivate readonly MODE_STEP =0b10\r\nprivate readonly MODE_CONTINUOUS =0b11\r\n\r\n//REG_STATUS bits\r\nprivate readonly BIT_DEVICE_BUSY =10\r\nprivate readonly BIT_EEPROM_BUSY =9\r\nprivate readonly BIT_BROWN_OUT =8\r\nprivate readonly BIT_CYCLE_POS =2 //6:2 = 5 bits\r\nprivate readonly BIT_NEW_DATA =0\r\n\r\n//REG_CONTROL bits\r\nprivate readonly BIT_SOC =3\r\nprivate readonly BIT_MODE =1 //2:1 = 2 bits\r\n\r\nprivate readonly I2C_SPEED_STANDARD  =      100000\r\nprivate readonly I2C_SPEED_FAST       =     400000\r\n\r\nprivate readonly MAX_WAIT = 750; //Number of ms to wait before giving up. Some sensor actions take 512ms.\r\n\r\n\r\n\r\n/*\r\n  This is a library written for the MLX90632 Non-contact thermal sensor\r\n  SparkFun sells these at its website: www.sparkfun.com\r\n  Do you like this library? Help support SparkFun. Buy a board!\r\n  https://www.sparkfun.com/products/14569\r\n  Written by Nathan Seidle @ SparkFun Electronics, December 28th, 2017\r\n  The MLX90632 can remotely measure object temperatures within 1 degree C.\r\n  This library handles the initialization of the MLX90632 and the calculations\r\n  to get the temperatures.\r\n  https://github.com/sparkfun/SparkFun_MLX90632_Arduino_Library\r\n  Development environment specifics:\r\n  Arduino IDE 1.8.3\r\n  This program is distributed in the hope that it will be useful,\r\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\r\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\r\n  GNU General Public License for more details.\r\n  You should have received a copy of the GNU General Public License\r\n  along with this program.  If not, see <http://www.gnu.org/licenses/>.\r\n*/\r\n\r\n/*\r\n  TODO:\r\n  check EEPROM write\r\n  check timing - how fast to take reading? Setting the SOC twice may be doubling time\r\n  set emissivity\r\n*/\r\n\r\n//Declare global variables for the calibration values\r\nprivate P_R  : number;\r\nprivate P_G : number;\r\nprivate P_T : number;\r\nprivate P_O : number;\r\nprivate Ea : number;\r\nprivate Eb : number;\r\nprivate Fa : number;\r\nprivate Fb : number;\r\nprivate Ga : number;\r\nprivate Gb : number;\r\nprivate Ka : number;\r\nprivate Ha : number;\r\nprivate Hb : number;\r\n\r\nprivate TOdut : number; //Assume 25C for first iteration\r\nprivate TO0 : number; //object temp from previous calculation\r\nprivate TA0 : number; //ambient temp from previous calculation\r\nprivate sensorTemp :number; //Internal temp of the MLX sensor\r\n\r\n//The default I2C address for the MLX90632 on the SparkX breakout is =0x3B. =0x3A is also possible.\r\nprivate MLX90632_DEFAULT_ADDRESS : number;\r\n\r\n\r\n\r\n\r\nprivate isInitialized : Array<number>;\r\nprivate returnError : Array<number>;\r\n\r\nconstructor(){\r\nsuper();\r\nthis.P_R = 0;\r\nthis.P_G= 0;\r\nthis.P_T= 0;\r\nthis.P_O= 0;\r\nthis.Ea= 0;\r\nthis.Eb= 0;\r\nthis.Fa= 0;\r\nthis.Fb= 0;\r\nthis.Ga= 0;\r\nthis.Gb= 0;\r\nthis.Ka= 0;\r\nthis.Ha= 0;\r\nthis.Hb= 0;\r\n\r\nthis.TOdut = 25.0; //Assume 25C for first iteration\r\nthis.TO0 = 25.0; //object temp from previous calculation\r\nthis.TA0 = 25.0; //ambient temp from previous calculation\r\nthis.sensorTemp; //Internal temp of the MLX sensor\r\nthis.MLX90632_DEFAULT_ADDRESS =0x3A\r\nthis.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\nthis.returnError = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n}\r\n\r\nget P_Rval(){\r\n    return this.P_R;\r\n}\r\n\r\nget P_Gval(){\r\n    return this.P_G;\r\n}\r\n\r\nget P_Tval(){\r\n    return this.P_T;\r\n}\r\n\r\nget P_Oval(){\r\n    return this.P_O;\r\n}\r\n\r\nget Eaval(){\r\n    return this.Ea;\r\n}\r\n\r\nget Ebval(){\r\n    return this.Eb;\r\n}\r\n\r\nget Faval(){\r\n    return this.Fa;\r\n}\r\n\r\nget Fbval(){\r\n    return this.Fb;\r\n}\r\n\r\nget Gaval(){\r\n    return this.Ga;\r\n}\r\n\r\nget Gbval(){\r\n    return this.Gb;\r\n}\r\n\r\nget Kaval(){\r\n    return this.Ka;\r\n}\r\n\r\nget Haval(){\r\n    return this.Ha;\r\n}\r\n\r\nget Hbval(){\r\n    return this.Hb;\r\n}\r\n\r\n\r\nget TOdutval(){\r\n    return this.TOdut;\r\n}\r\n\r\nget TO0val(){\r\n    return this.TO0;\r\n}\r\n \r\nget TA0val(){\r\n    return this.TA0;\r\n}\r\n\r\nget sensorTempval(){\r\n    return this.sensorTemp;\r\n}\r\n\r\n\r\nget MLX90632_DEFAULT_ADDRESSval(){\r\n    return this.MLX90632_DEFAULT_ADDRESS;\r\n}\r\n\r\n\r\nset P_Rval(value){\r\n    this.P_R = value;\r\n}\r\n\r\nset P_Gval(value){\r\n    this.P_G = value;\r\n}\r\n\r\nset P_Tval(value){\r\n    this.P_T = value;\r\n}\r\n\r\nset P_Oval(value){\r\n    this.P_O = value;\r\n}\r\n\r\nset Eaval(value){\r\n    this.Ea = value;\r\n}\r\n\r\nset Ebval(value){\r\n    this.Eb = value;\r\n}\r\n\r\nset Faval(value){\r\n    this.Fa = value;\r\n}\r\n\r\nset Fbval(value){\r\n    this.Fb = value;\r\n}\r\n\r\nset Gaval(value){\r\n    this.Ga = value;\r\n}\r\n\r\nset Gbval(value){\r\n    this.Gb = value;\r\n}\r\n\r\nset Kaval(value){\r\n    this.Ka = value;\r\n}\r\n\r\nset Haval(value){\r\n    this.Ha = value;\r\n}\r\n\r\nset Hbval(value){\r\n    this.Hb = value;\r\n}\r\n\r\n\r\nset TOdutval(value){\r\n    this.TOdut = value;\r\n}\r\n\r\nset TO0val(value){\r\n    this.TO0 = value;\r\n}\r\n\r\nset TA0val(value){\r\n    this.TA0 = value;\r\n}\r\n\r\nset sensorTempval(value){\r\n    this.sensorTemp = value;\r\n}\r\n\r\n\r\nset MLX90632_DEFAULT_ADDRESSval(value){\r\n    this.MLX90632_DEFAULT_ADDRESS = value;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n//This begins the communication with the device\r\n//Returns a status error if anything went wrong\r\n\r\nbegin(clickBoardNum:clickBoardID)\r\n{\r\n\r\n  let deviceAddress = this.MLX90632_DEFAULT_ADDRESS; //Get the I2C address from user\r\n\r\n  //We require caller to begin their I2C port, with the speed of their choice\r\n  //external to the library\r\n  //_i2cPort->begin();\r\n  //We could to a check here to see if user has init the Wire or not. Would\r\n  //need to be for different platforms\r\n\r\n  //Check communication with IC\r\n\r\nlet thisAddress = this.readRegister16(this.EE_I2C_ADDRESS, clickBoardNum);\r\n  \r\n  \r\n  //Wait for eeprom_busy to clear\r\n  let counter = 0;\r\n  while (this.eepromBusy(clickBoardNum))\r\n  {\r\n    control.waitMicros(1);\r\n    counter++;\r\n    if (counter == this.MAX_WAIT)\r\n    {\r\n    \r\n        this.returnError[clickBoardNum]  = status.SENSOR_TIMEOUT_ERROR;\r\n      \r\n    }\r\n  }\r\n\r\n  this.setMode(this.MODE_SLEEP,clickBoardNum); //Before reading EEPROM sensor needs to stop taking readings\r\n\r\n  //Load all the static calibration factors\r\n  let tempValue16;\r\n  let tempValue32;\r\n  tempValue32 =this.readRegister32(this.EE_P_R, clickBoardNum);\r\n  this.P_R = tempValue32 * Math.pow(2, -8);\r\n  tempValue32 =this.readRegister32(this.EE_P_G, clickBoardNum);\r\n  this.P_G = tempValue32 * Math.pow(2, -20);\r\n  tempValue32 =this.readRegister32(this.EE_P_T, clickBoardNum);\r\n  this.P_T = tempValue32 * Math.pow(2, -44);\r\n\r\n  tempValue32 =this.readRegister32(this.EE_P_O, clickBoardNum);\r\n  this.P_O = tempValue32 * Math.pow(2, -8);\r\n\r\n  tempValue32 =this.readRegister32(this.EE_Ea, clickBoardNum);\r\n  this.Ea = tempValue32 * Math.pow(2, -16);\r\n  tempValue32 =this.readRegister32(this.EE_Eb, clickBoardNum);\r\n  this.Eb = tempValue32 * Math.pow(2, -8);\r\n  tempValue32 =this.readRegister32(this.EE_Fa, clickBoardNum);\r\n  this.Fa = tempValue32 * Math.pow(2, -46);\r\n  tempValue32 =this.readRegister32(this.EE_Fb, clickBoardNum);\r\n  this.Fb = tempValue32 * Math.pow(2, -36);\r\n  tempValue32 = this.readRegister32(this.EE_Ga, clickBoardNum);\r\n  this.Ga = tempValue32 * Math.pow(2, -36);\r\n\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Gb, clickBoardNum);\r\n  this.Gb = tempValue16 * Math.pow(2, -10);\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Ka, clickBoardNum);\r\n  this.Ka = tempValue16 * Math.pow(2, -10);\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Ha, clickBoardNum);\r\n  this.Ha = tempValue16 * Math.pow(2, -14); //Ha!\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Hb, clickBoardNum);\r\n  this.Hb = tempValue16 * Math.pow(2, -14);\r\n\r\n  //Note, sensor is in sleep mode\r\n\r\n  \r\n}\r\n\r\n//Read all calibration values and calculate the temperature of the thing we are looking at\r\n//Depending on mode, initiates a measurement\r\n//If in sleep or step mode, clears the new_data bit, sets the SOC bit\r\n     //%blockId=IRThermo_getObjectTemp\r\n    //%block=\"$this Get surface temperature in Celcius on click$clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=IrThermo_3\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"IrThermo\"\r\ngetObjectTemp(clickBoardNum:clickBoardID):number\r\n{\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS;\r\n    if(this.isInitialized[clickBoardNum] == 0)\r\n    {\r\n        this.begin(clickBoardNum)\r\n        this.isInitialized[clickBoardNum] = 1; //Device is initialied\r\n    }\r\n  //If the sensor is not in continuous mode then the tell sensor to take reading\r\n  if(this.getMode(clickBoardNum) != this.MODE_CONTINUOUS){\r\n    this.setSOC(clickBoardNum);\r\n\r\n  } \r\n\r\n  //Write new_data = 0\r\n  this.clearNewData(clickBoardNum);\r\n\r\n  //Check when new_data = 1\r\n  let counter = 0;\r\n  while (this.dataAvailable(clickBoardNum) == false)\r\n  {\r\n    control.waitMicros(1);\r\n    counter++;\r\n    if (counter == this.MAX_WAIT)\r\n    {\r\nbasic.showString(\"E\")\r\n    this.returnError[clickBoardNum]  = status.SENSOR_TIMEOUT_ERROR;\r\n      return (0.0); //Error\r\n    }\r\n  }\r\n\r\n  this.gatherSensorTemp(clickBoardNum );\r\n  if (this.returnError[clickBoardNum]  != status.SENSOR_SUCCESS)\r\n  {\r\n    \r\n    basic.showString(\"F\")\r\n\r\n    return (0.0); //Error\r\n  }\r\n\r\n  let lowerRAM = 0;\r\n  let upperRAM = 0;\r\n\r\n  //Get RAM_6 and RAM_9\r\n  let sixRAM = this.readRegister16(this.RAM_6,clickBoardNum);\r\n  let nineRAM = this.readRegister16(this.RAM_9, clickBoardNum);\r\n\r\n  //Read cycle_pos to get measurement pointer\r\n  let cyclePosition = this.getCyclePosition(clickBoardNum);\r\n\r\n  //If cycle_pos = 1\r\n  //Calculate TA and TO based on RAM_4, RAM_5, RAM_6, RAM_9\r\n  if (cyclePosition == 1)\r\n  {\r\n    lowerRAM = this.readRegister16(this.RAM_4, clickBoardNum);\r\n    upperRAM = this.readRegister16(this.RAM_5, clickBoardNum);\r\n  }\r\n  //If cycle_pos = 2\r\n  //Calculate TA and TO based on RAM_7, RAM_8, RAM_6, RAM_9\r\n  else if (cyclePosition == 2)\r\n  {\r\n    lowerRAM = this.readRegister16(this.RAM_7, clickBoardNum);\r\n    upperRAM = this.readRegister16(this.RAM_8, clickBoardNum);\r\n  }\r\n  else\r\n  {\r\n  \r\n    lowerRAM = this.readRegister16(this.RAM_4, clickBoardNum);\r\n    upperRAM = this.readRegister16(this.RAM_5, clickBoardNum);\r\n  }\r\n\r\n  //Object temp requires 3 iterations\r\n  for (let i = 0 ; i < 3 ; i++)\r\n  {\r\n    let VRta = nineRAM + this.Gb * (sixRAM / 12.0);\r\n\r\n    let AMB = ((sixRAM / 12.0) / VRta )* 524288;\r\n\r\n    //let sensorTemp = P_O + ((AMB - P_R) / P_G )+ (P_T * Math.pow((AMB - P_R), 2));\r\n\r\n    let S = (lowerRAM + upperRAM) / 2.0;\r\n    let VRto = nineRAM + (this.Ka * (sixRAM / 12.0));\r\n    let Sto = ((S / 12.0) / VRto) * 524288;\r\n\r\n    let TAdut = ((AMB - this.Eb) / this.Ea) + 25.0;\r\n\r\n    let ambientTempK = TAdut + 273.15;\r\n\r\n    let bigFraction = Sto / (1 * this.Fa * this.Ha * (1 +( this.Ga * (this.TOdut - this.TO0)) + (this.Fb * (TAdut - this.TA0))));\r\n\r\n    let objectTemp = bigFraction + Math.pow(ambientTempK, 4);\r\n    objectTemp = Math.sqrt(Math.sqrt(Math.abs(objectTemp))); //Take 4th root\r\n    objectTemp = objectTemp - 273.15 - this.Hb;\r\n\r\n    this.TO0 = objectTemp;\r\n\r\n  }\r\n\r\n  return (this.TO0);\r\n}\r\n\r\n     //%blockId=IRThermo_getObjectTempF\r\n    //%block=\"$this Get surface temperature in Fahrenheit on click$clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=IrThermo_3\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"IrThermo\"\r\ngetObjectTempF(clickBoardNum:clickBoardID):number\r\n{\r\n    \r\n  let tempC = this.getObjectTemp(clickBoardNum);\r\n  let tempF = tempC * 9.0/5.0 + 32.0;\r\n  return(tempF);\r\n}\r\n\r\n\r\n\r\ngetSensorTemp(clickBoardNum:clickBoardID ):number\r\n{\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS;\r\n\r\n  //If the sensor is not in continuous mode then the tell sensor to take reading\r\n  if(this.getMode(clickBoardNum) != this.MODE_CONTINUOUS) {\r\n    this.setSOC(clickBoardNum);\r\n  }\r\n  //Write new_data = 0\r\n  this.clearNewData(clickBoardNum);\r\n\r\n  //Wait for new data\r\n  let counter = 0;\r\n  while (this.dataAvailable(clickBoardNum) == false)\r\n  {\r\n    control.waitMicros(1);\r\n    counter++;\r\n    if (counter == this.MAX_WAIT)\r\n    {\r\n        this.returnError[clickBoardNum]  = status.SENSOR_TIMEOUT_ERROR;\r\n      return (0.0); //Error\r\n    }\r\n  }\r\n\r\n  return (this.gatherSensorTemp(clickBoardNum ));\r\n}\r\n\r\n//This reads all the temperature calibration factors for the sensor itself\r\n//This is needed so that it can be called from getObjectTemp *and* users can call getSensorTemp \r\n//without causing a let read\r\ngatherSensorTemp(clickBoardNum:clickBoardID ):number\r\n{\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS;\r\n\r\n  //Get RAM_6 and RAM_9\r\n  let sixRAM = this.readRegister16(this.RAM_6, clickBoardNum);\r\n  \r\n  let nineRAM=  this.readRegister16(this.RAM_9, clickBoardNum);\r\n\r\n\r\n  let VRta = nineRAM + (this.Gb * (sixRAM / 12.0));\r\n\r\n  let AMB = ((sixRAM / 12.0) / VRta) * Math.pow(2, 19);\r\n\r\n  let sensorTemp = this.P_O + ((AMB - this.P_R) / this.P_G) + (this.P_T * Math.pow((AMB - this.P_R), 2));\r\n\r\n  \r\n\r\n  return(sensorTemp);\r\n}\r\n\r\n//Returns true if device is busy doing measurement\r\n//Always true in continuous mode\r\ndeviceBusy(clickBoardNum:clickBoardID):boolean\r\n{\r\n  if (this.getStatus(clickBoardNum) & (1 << this.BIT_DEVICE_BUSY)) {return (true);}\r\n  return (false);\r\n}\r\n\r\n//Returns true if eeprom is busy\r\n//EEPROM is busy during boot up and during EEPROM write/erase\r\neepromBusy(clickBoardNum:clickBoardID):boolean\r\n{\r\n  if (this.getStatus(clickBoardNum) & (1 << this.BIT_EEPROM_BUSY)) \r\n  {return (true);}\r\n  return (false);\r\n}\r\n\r\n//Returns the cycle_pos from status register. cycle_pos is 0 to 31\r\ngetCyclePosition(clickBoardNum:clickBoardID):number\r\n{\r\n  let status = (this.getStatus(clickBoardNum) >> this.BIT_CYCLE_POS); //Shave off last two bits\r\n  status &= 0x1F; //Get lower 5 bits.\r\n  return (status);\r\n}\r\n\r\n//Returns true if new data is available\r\ndataAvailable(clickBoardNum:clickBoardID):boolean\r\n{\r\n  if (this.getStatus(clickBoardNum) & (1 << this.BIT_NEW_DATA)) {return (true);}\r\n  return (false);\r\n}\r\n\r\n//Sets the brown_out bit. Datasheet says 'Customer should set bit to 1'. Ok.\r\nsetBrownOut(clickBoardNum:clickBoardID)\r\n{\r\nlet reg = this.getStatus(clickBoardNum); //Get current bits\r\n  reg |= (1 << this.BIT_BROWN_OUT); //Set the bit\r\n  this.writeRegister16(this.REG_STATUS, reg,clickBoardNum); //Set the mode bits\r\n}\r\n\r\n//Clear the new_data bit. This is done after a measurement is complete\r\nclearNewData(clickBoardNum:clickBoardID)\r\n{\r\n  let reg = this.getStatus(clickBoardNum); //Get current bits\r\n  reg &= ~(1 << this.BIT_NEW_DATA); //Clear the bit\r\n  this.writeRegister16(this.REG_STATUS, reg,clickBoardNum); //Set the mode bits\r\n}\r\n\r\ngetStatus(clickBoardNum:clickBoardID)\r\n{\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\n  let deviceStatus   = this.readRegister16(this.REG_STATUS, clickBoardNum);\r\n\r\n  return (deviceStatus);\r\n}\r\n\r\n\r\n//Changes the mode to sleep\r\nsleepMode(clickBoardNum:clickBoardID)\r\n{\r\n    this.setMode(this.MODE_SLEEP,clickBoardNum);\r\n}\r\n\r\n//Changes the mode to step\r\nstepMode(clickBoardNum:clickBoardID)\r\n{\r\n    this.setMode(this.MODE_STEP,clickBoardNum);\r\n}\r\n\r\n//Changes the mode to continuous read\r\ncontinuousMode(clickBoardNum:clickBoardID)\r\n{\r\n    this.setMode(this.MODE_CONTINUOUS,clickBoardNum);\r\n}\r\n\r\n//Sets the Start of Conversion (SOC) bit\r\nsetSOC(clickBoardNum:clickBoardID)\r\n{\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\n  let reg = this.readRegister16(this.REG_CONTROL, clickBoardNum); //Get current bits\r\n\r\n  reg |= (1 << 3); //Set the bit\r\n  this.writeRegister16(this.REG_CONTROL, reg,clickBoardNum); //Set the bit\r\n\r\n}\r\n\r\n//Sets the sensing mode (3 modes availabe)\r\nsetMode(mode:number,clickBoardNum:clickBoardID )\r\n{\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\n    \r\n  let reg = this.readRegister16(this.REG_CONTROL, clickBoardNum)//Get current bits\r\n   \r\n  reg &= ~(0x0003 << 1); //Clear the mode bits\r\n  reg |= (mode << 1); //Set the bits\r\n  this.writeRegister16(this.REG_CONTROL, reg,clickBoardNum); //Set the mode bits\r\n  \r\n}\r\n\r\n//Returns the mode of the sensor\r\ngetMode(clickBoardNum:clickBoardID )\r\n{\r\n  \r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\nlet mode = this.readRegister16(this.REG_CONTROL, clickBoardNum); //Get current register settings\r\n  \r\n  mode = (mode >> 1) & 0x0003; //Clear all other bits\r\n  return (mode);\r\n}\r\n\r\n\r\n\r\n//Reads two consecutive bytes from a given location\r\n//Stores the result at the provided outputPointer\r\nreadRegister16( addr:number, clickBoardNum:clickBoardID):number\r\n{\r\n    let i2cBuffer = pins.createBuffer(2);\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\n    super.i2cWriteNumber(this.MLX90632_DEFAULT_ADDRESS,addr,NumberFormat.Int16BE,clickBoardNum,true)\r\n\r\n i2cBuffer = super.I2CreadNoMem(this.MLX90632_DEFAULT_ADDRESS,2,clickBoardNum);\r\n\r\n\r\n let msb = i2cBuffer.getUint8(0)\r\n let lsb = i2cBuffer.getUint8(1)\r\n\r\nreturn  (msb << 8 | lsb)\r\n\r\n //return  bBoard.I2CreadNoMem(MLX90632_DEFAULT_ADDRESS,2,clickBoardNum).getNumber(NumberFormat.UInt16BE,0)\r\n}\r\n\r\n//Reads two 16-bit registers and combines them into 32 bits\r\nreadRegister32(addr:number,  clickBoardNum:clickBoardID):number\r\n{\r\n\r\n    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\n \r\n  //For the MLX90632 the first 16-bit chunk is LSB, the 2nd is MSB\r\n  let lower = this.readRegister16(addr,clickBoardNum)\r\n  let upper =this.readRegister16(addr+1,clickBoardNum)\r\n\r\n\r\n  return (upper << 16 | lower)\r\n}\r\n\r\n//Write two bytes to a spot\r\nwriteRegister16(addr:number,  val:number,clickBoardNum:clickBoardID)\r\n{\r\n  this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success\r\nlet i2cBuffer = pins.createBuffer(4)\r\n\r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 0, addr >> 8 )\r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 1, addr & 0xFF)\r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 2, val >> 8) \r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 3, val & 0xFF)\r\n\r\nsuper.i2cWriteBuffer(this.MLX90632_DEFAULT_ADDRESS,i2cBuffer,clickBoardNum);\r\n\r\n  \r\n\r\n \r\n}\r\n\r\n//Write a value to EEPROM\r\n//Requires unlocking the EEPROM, writing =0x0000, unlocking again, then writing value\r\n//The datasheet doesn't go a good job of explaining how writing to EEPROM works.\r\n//This should work but doesn't. It seems the IC is very sensitive to I2C traffic while\r\n//the sensor is recording the new EEPROM.\r\nwriteEEPROM(addr:number,  val:number,clickBoardNum:clickBoardID)\r\n{\r\n  //Put device into halt mode (page 15)\r\n  let originalMode = this.getMode(clickBoardNum);\r\n  this.setMode(this.MODE_SLEEP,clickBoardNum);\r\n\r\n  //Wait for complete\r\n  while (this.deviceBusy(clickBoardNum)) control.waitMicros(1);\r\n\r\n  //Magic unlock (page 17)\r\n  this.writeRegister16(0x3005, 0x554C,clickBoardNum);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n\r\n  //Now we can write to one EEPROM word\r\n  //Write =0x0000 to user's location (page 16) to erase\r\n  this.writeRegister16(addr, 0x0000,clickBoardNum);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n  //while (eepromBusy()) control.waitMicros(1);\r\n  //while (deviceBusy()) control.waitMicros(1);\r\n\r\n  //Magic unlock again\r\n  this.writeRegister16(0x3005, 0x554C,clickBoardNum);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n\r\n  //Now we can write to one EEPROM word\r\n  this.writeRegister16(addr, val,clickBoardNum);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n  //while (eepromBusy()) control.waitMicros(1);\r\n  //while (deviceBusy()) control.waitMicros(1);\r\n\r\n  //Return to original mode\r\n  this.setMode(originalMode,clickBoardNum);\r\n}\r\n\r\n}\r\n}",
+            "K8.ts": "\r\nenum IRSensor {\r\n    //% block=\"left\"\r\n    LEFT = 7,\r\n    //% block=\"middle\"\r\n    MIDDLE = 8,\r\n    //% block=\"right\"\r\n    RIGHT = 9\r\n}\r\n\r\nenum IRColour {\r\n    //% block=\"black\"\r\n    BLACK,\r\n    //% block=\"white\"\r\n    WHITE\r\n}\r\nenum Motor {\r\n    //% block=\"left\"\r\n    LEFT = 0,\r\n    //% block=\"right\"\r\n    RIGHT = 1\r\n}\r\n\r\nenum MotorDirection {\r\n    //% block=\"forward\"\r\n    FORWARD = 0,\r\n    //% block=\"reverse\"\r\n    REVERSE = 1\r\n}\r\n\r\nenum MotorPower {\r\n    //% block=\"on\"\r\n    ON,\r\n    //% block=\"off\"\r\n    OFF\r\n}\r\nenum Comparison {\r\n    //% block=\"closer\"\r\n    CLOSER,\r\n    //% block=\"further\"\r\n    FURTHER\r\n}\r\n\r\n\r\n\r\n//% weight=0 color=#421C52 icon=\"\\uf1b9\"\r\n//% advanced=true\r\n\r\nnamespace k8 {\r\n    export let IR_SENSOR_LEFT = AnalogPin.P0\r\n    export let IR_SENSOR_MIDDLE = AnalogPin.P1\r\n    export let SPEAKER = AnalogPin.P1\r\n    export let IR_SENSOR_RIGHT = AnalogPin.P2\r\n    export let SERVO_2 = AnalogPin.P8\r\n    export let SONAR = DigitalPin.P8\r\n    export let SERVO_1 = AnalogPin.P12\r\n    export let M2_PWR: number = DigitalPin.P13\r\n    export let M2_DIR: number = DigitalPin.P14\r\n    export let M1_PWR: number = DigitalPin.P15\r\n    export let M1_DIR: number = DigitalPin.P16\r\n\r\n    //% block=\"create K8 settings\"\r\n    //% blockSetVariable=\"K8\"\r\n    //% weight=110\r\n    export function createK8(): K8 {\r\n        return new K8();\r\n   }\r\n\r\n\r\n    export class K8{\r\n\r\n        private MAX_PULSE : number;\r\n        private motorState: MotorPower \r\n\r\n    constructor(){\r\n        this.MAX_PULSE = 7800;\r\n        this.motorState = MotorPower.ON;\r\n    }\r\n\r\n    //----line sensor ----\r\n    /**\r\n   * Check if a chosen sensor is reading black or white\r\n   * @param sensor which of the three sensors\r\n   * @param colour whether the sensor looks for black or white\r\n   */\r\n    //% block\r\n    //% blockId=line_check_sensor block=\"$this $sensor| sensor is $colour|\"\r\n    //% weight=60\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    checkSensor(sensor: IRSensor, colour: IRColour = IRColour.WHITE): boolean {\r\n        let read: boolean\r\n        switch (sensor) {\r\n            case IRSensor.LEFT:\r\n                read = pins.analogReadPin(k8.IR_SENSOR_LEFT) > 200\r\n                break\r\n            case IRSensor.MIDDLE:\r\n                read = pins.analogReadPin(k8.IR_SENSOR_MIDDLE) > 200\r\n                break\r\n            case IRSensor.RIGHT:\r\n                read = pins.analogReadPin(k8.IR_SENSOR_RIGHT) > 200\r\n                break\r\n        }\r\n        if (colour == IRColour.WHITE) {\r\n            return !read\r\n        }\r\n        return read\r\n    }\r\n\r\n    /**\r\n     * Displays current status of all line sensors\r\n     */\r\n\r\n    //% groups=\" 'Line Sensor, 'Motion', 'Sonar',\"\r\n\r\n    //%blockId=Line_Sensor\r\n    //%block=\"$this Display Line Sensor Current Status\"\r\n    //%block=\"$this Display Current Status\"\r\n    //%group=\"Line Sensor\"\r\n    //% weight=50\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n\r\n    displaySensors(): void {\r\n        let i: number\r\n        for (i = 0; i < 5; i++)\r\n            led.plot(i, 4)\r\n\r\n        if (this.checkSensor(IRSensor.LEFT)) {\r\n            this.plotBar(4)\r\n        } else {\r\n            this.unplotBar(4)\r\n        }\r\n\r\n        if (this.checkSensor(IRSensor.MIDDLE)) {\r\n            this.plotBar(2)\r\n        } else {\r\n            this.unplotBar(2)\r\n        }\r\n\r\n        if (this.checkSensor(IRSensor.RIGHT)) {\r\n            this.plotBar(0)\r\n        } else {\r\n            this.unplotBar(0)\r\n        }\r\n    }\r\n\r\n    plotBar(x: number) {\r\n        led.plot(x, 1)\r\n        led.plot(x, 2)\r\n        led.plot(x, 3)\r\n    }\r\n    unplotBar(x: number) {\r\n        led.unplot(x, 1)\r\n        led.unplot(x, 2)\r\n        led.unplot(x, 3)\r\n    }\r\n\r\n\r\n \r\n\r\n    /**\r\n    * Returns the distance the robot is from an object (in centimetres)\r\n    * Max range 150cm\r\n    */\r\n    //% block\r\n    //% group=\"Sonar\"\r\n    //% weight=50\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    checkSonar(): number {\r\n        let list = [0, 0, 0, 0, 0];\r\n\r\n        for (let index = 0; index <= 4; index++) {\r\n            list[index] = this.ping()\r\n        }\r\n        list = list.sort()\r\n\r\n        return list[2];\r\n    }\r\n\r\n    /**\r\n     * Test that sonar is closer or further than the threshold in cm.\r\n     */\r\n    //% block\r\n    //% group=\"Sonar\"\r\n    //% blockId=sonar_is block=\"$this sonar is $comparison| than $threshold cm\"\r\n    //% weight=60\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    isSonar(comparison: Comparison = Comparison.FURTHER, threshold: number): boolean {\r\n        let distance = this.checkSonar()\r\n        if (comparison == Comparison.FURTHER) {\r\n            return threshold < distance || distance == 0\r\n        } else {\r\n            return threshold >= this.checkSonar()\r\n        }\r\n      }\r\n\r\n    /**\r\n    * Display the current sonar reading to leds.\r\n    */\r\n    //% block\r\n    //% group=\"Sonar\"\r\n    //% weight=40\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    displaySonar(): void {\r\n        led.plotBarGraph(this.checkSonar(), 80)\r\n    }\r\n\r\n    // d / 39 is the ratio that most resembled actual centimeters\r\n    // The datasheet says use d / 58 but that was off by a factor of 2/3\r\n        ping(): number {\r\n        // send pulse\r\n        pins.setPull(k8.SONAR, PinPullMode.PullNone);\r\n        pins.digitalWritePin(k8.SONAR, 0);\r\n        control.waitMicros(2);\r\n        pins.digitalWritePin(k8.SONAR, 1);\r\n        control.waitMicros(10);\r\n        pins.digitalWritePin(k8.SONAR, 0);\r\n\r\n        // read pulse\r\n        const d = pins.pulseIn(k8.SONAR, PulseValue.High, this.MAX_PULSE);\r\n        return Math.min(150, d / 39)\r\n    }\r\n\r\n\r\n\r\n\r\n/**\r\n *Drives the robot straight at a specified speed\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_drive_straight block=\"$this drive straight |speed: $speed\"\r\n    //% speed.min=-100 speed.max=100\r\n    //% weight=70\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\ndriveStraight(speed: number): void {\r\n    this.motorControl(Motor.LEFT, speed)\r\n    this.motorControl(Motor.RIGHT, speed)\r\n}\r\n\r\n/**\r\n *Turns the robot to the left at a specified speed\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_turn_left block=\"$this turn left |speed: $speed\"\r\n    //% speed.min=0 speed.max=100\r\n    //% weight=60\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\nturnLeft(speed: number): void {\r\n    this.motorControl(Motor.LEFT, 0)\r\n    this.motorControl(Motor.RIGHT, speed)\r\n}\r\n\r\n/**\r\n *Turns the robot to the right at a specified speed\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_turn_right block=\"$this turn right |speed: $speed\"\r\n//% speed.min=0 speed.max=100\r\n//% weight=50\r\n//% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\nturnRight(speed: number): void {\r\n    this.motorControl(Motor.LEFT, speed)\r\n    this.motorControl(Motor.RIGHT, 0)\r\n}\r\n\r\n/**\r\n *Stop the motors\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_stop block=\"$this stop motors\"\r\n    //% weight=45\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\nstop(): void {\r\n    this.motorControl(Motor.LEFT, 0)\r\n    this.motorControl(Motor.RIGHT, 0)\r\n}\r\n\r\n/**\r\n* Control both wheels in one function.\r\n* Speeds range from -100 to 100.\r\n* Negative speeds go backwards, positive go forwards.\r\n*/\r\n//% block\r\n//% group=\"Motion\"\r\n//% blockId=motion_drive block=\"$this drive |left: $leftWheelSpeed|right: $rightWheelSpeed\"\r\n//% leftWheelSpeed.min=-100 leftWheelSpeed.max=100\r\n//% rightWheelSpeed.min=-100 rightWheelSpeed.max=100\r\n//% weight=40\r\n//% advanced=false\r\n//% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\ndrive(leftWheelSpeed: number, rightWheelSpeed: number): void {\r\n    this.motorControl(Motor.LEFT, leftWheelSpeed)\r\n    this.motorControl(Motor.RIGHT, rightWheelSpeed)\r\n}\r\n\r\n/**\r\n* Control the speed and direction of a single wheel\r\n*/\r\n//% block\r\n//% group=\"Motion\"\r\n//% blockId=motion_single block=\"$this drive |wheel: $wheel|speed: $speed\"\r\n//% speed.min=0 speed.max=100\r\n//% weight=30\r\n//% advanced=false\r\n//% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\ndriveWheel(wheel: Motor, speed: number): void {\r\n    this.motorControl(wheel, speed)\r\n}\r\n\r\n/**\r\n* Turn the motors on/off - default on\r\n*/\r\n//% block\r\n//% group=\"Motion\"\r\n//% blockId=motion_power block=\"$this turn motors |power: $power\"\r\n//% weight=20\r\n//% advanced=false\r\n//% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\nsetPowers(power: MotorPower): void {\r\n    if (power == MotorPower.OFF) {\r\n        this.stop()\r\n    }\r\n    this.motorState = power\r\n}\r\n\r\n/**\r\n * Advanced control of an individual motor. PWM is set to constant value.\r\n */\r\nmotorControl(whichMotor: Motor, speed: number): void {\r\n    let motorSpeed: number\r\n    let direction: MotorDirection\r\n\r\n    if (this.motorState == MotorPower.OFF) {\r\n        return\r\n    }\r\n\r\n    direction = speed < 0 ? MotorDirection.REVERSE : MotorDirection.FORWARD\r\n    speed = Math.abs(speed)\r\n\r\n    motorSpeed = this.remapSpeed(speed)\r\n\r\n    if (whichMotor == Motor.LEFT) {\r\n        pins.digitalWritePin(k8.M1_DIR, direction)\r\n        pins.analogSetPeriod(k8.M1_PWR, 512)\r\n        pins.analogWritePin(k8.M1_PWR, motorSpeed)\r\n    } else {\r\n        pins.digitalWritePin(k8.M2_DIR, direction)\r\n        pins.analogSetPeriod(k8.M2_PWR, 512)\r\n        pins.analogWritePin(k8.M2_PWR, motorSpeed)\r\n    }\r\n}\r\n\r\n// Rescale values from 0 - 100 to 0 - 1023\r\nremapSpeed(s: number): number {\r\n    let returnSpeed: number\r\n    if (s <= 0) {\r\n        returnSpeed = 0\r\n    } else if (s >= 100) {\r\n        returnSpeed = 1023\r\n    } else {\r\n    returnSpeed = (23200 + (s * 791)) / 100\r\n    }\r\n    return returnSpeed;\r\n}\r\n\r\n    }\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+            "K8.ts.rej": "diff a/libs/core/k8.ts b/libs/core/k8.ts\t(rejected hunks)\r\n@@ -10 +10 @@ enum IRSensor {\r\n-  \r\n+\r\n@@ -60 +60 @@ namespace k8 {\r\n-    \r\n+\r\n@@ -89 +89 @@ namespace k8 {\r\n- \r\n+\r\n@@ -93 +93 @@ namespace k8 {\r\n-    \r\n+\r\n@@ -95 +95 @@ namespace k8 {\r\n-   \r\n+\r\n@@ -101 +101 @@ namespace k8 {\r\n-    \r\n+\r\n@@ -106 +106 @@ namespace k8 {\r\n- \r\n+\r\n@@ -112 +112 @@ namespace k8 {\r\n- \r\n+\r\n@@ -118 +118 @@ namespace k8 {\r\n- \r\n+\r\n@@ -125 +125 @@ namespace k8 {\r\n- \r\n+\r\n",
             "Keylock.ts": "//% weight=100 color=#F4B820 icon=\"\"\r\n//% advanced=true\r\n\r\nnamespace Keylock {\r\n\r\n\r\n    \r\n    export enum MotorDirection {\r\n        //% block=\"Forward\"\r\n        Forward,\r\n        //% block=\"Reverse\"\r\n        Reverse\r\n    }\r\n\r\n    //% block=\"create keylock settings\"\r\n    //% blockSetVariable=\"keylock\"\r\n    //% weight=110\r\n    export function createkeylock(): keylock {\r\n        return new keylock();\r\n    }\r\n    \r\n    \r\n    \r\n      export class keylock extends bBoard.PinSettings{\r\n    \r\n    \r\n        constructor(){\r\n            super();\r\n        }\r\n\r\n        \r\n        //% blockId=Keylock_getLockPosition\r\n        //% block=\"$this Get lock position on click$clickBoardNum\"\r\n        //% weight=60 color=#0fbc11\r\n        //% blockNamespace=Keylock\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"keylock\"\r\n        getLockPosition(clickBoardNum: clickBoardID): number {\r\n            \r\n          \r\n       \r\n            if(this.digitalReadPin(clickIOPin.AN,clickBoardNum) ==1)\r\n            {\r\n                return 1;\r\n            }\r\n\r\n                   \r\n            if( this.digitalReadPin(clickIOPin.PWM,clickBoardNum) ==1)\r\n            {\r\n                return 2;\r\n            }\r\n\r\n            if( this.digitalReadPin(clickIOPin.INT,clickBoardNum) ==1)\r\n            {\r\n                return 3;\r\n            }\r\n\r\n        return 0;\r\n\r\n           \r\n        }\r\n\r\n      }\r\n\r\n    }",
             "LCD_Mini.ts": "\r\n\r\n\r\n\r\nenum lineNumber{\r\n  \r\n    //% block=\"1\"\r\n    one = 0,\r\n    //% block=\"2\"\r\n    two,\r\n  \r\n\r\n}\r\n\r\n\r\n\r\n//-------------------------Click Board Blocks Begin -----------------------------------\r\n//% weight=100 color=#D400D4 icon=\"\"\r\n//% advanced=true\r\nnamespace LCD_Mini{\r\n    //% block=\"create lcd settings\"\r\n    //% blockSetVariable=\"LCDSettings\"\r\n    //% weight=110\r\n    export function createLCDSettings(): LCDSettings {\r\n        return new LCDSettings();\r\n   }\r\n\r\n   let PINs = new bBoard.PinSettings();\r\n   let SPIs = new bBoard.SPIsetting();\r\nexport class LCDSettings{\r\n        private LOW : number;\r\n        private HIGH : number;\r\n        private LCDInitialize : boolean;\r\n        private CS : number;\r\n        private CS2 : number;\r\n        private RST : number;\r\n        private IODIRB : number;\r\n        private OLATB : number;\r\n        private WRITE_BYTE : number;\r\n\r\n        constructor(){\r\n        this.LOW = 0; \r\n        this.HIGH = 1;\r\n        this.LCDInitialize = false;\r\n        this.CS = clickIOPin.CS;\r\n        this.CS2 = clickIOPin.AN;\r\n        this.RST = clickIOPin.RST;\r\n        this.IODIRB = 0x01;\r\n        this.OLATB = 0x15;\r\n        this.WRITE_BYTE = 0b01000000;\r\n        }\r\n\r\n        get LOWval() {\r\n            return this.LOW\r\n          }\r\n        set LOWval(value) {\r\n            this.LOW = value\r\n          }\r\n\r\n        get HIGHval() {\r\n            return this.HIGH\r\n          }\r\n        set HIGHval(value) {\r\n            this.HIGH = value\r\n          }\r\n\r\n\r\n        get LCDInitializeval() {\r\n            return this.LCDInitialize\r\n          }\r\n        set LCDInitializeval(value) {\r\n            this.LCDInitialize = value\r\n          }\r\n\r\n\r\n        get CSval() {\r\n            return this.CS\r\n          }\r\n        set CSval(value) {\r\n            this.CS = value\r\n          }\r\n\r\n\r\n        get CS2val() {\r\n            return this.CS2\r\n          }\r\n        set CS2val(value) {\r\n            this.CS2 = value\r\n          }\r\n\r\n\r\n        get RSTval() {\r\n            return this.RST\r\n          }\r\n        set RSTval(value) {\r\n            this.RST = value\r\n          }\r\n\r\n\r\n       \tget IODIRBval() {\r\n            return this.RST\r\n          }\r\n        set IODIRBval(value) {\r\n            this.RST = value\r\n          }\r\n\r\n\r\n        get OLATBval() {\r\n            return this.OLATB\r\n          }\r\n        set OLATBval(value) {\r\n            this.OLATB = value\r\n          }\r\n\r\n\r\n        get WRITE_BYTEval() {\r\n            return this.WRITE_BYTE\r\n          }\r\n        set WRITE_BYTEval(value) {\r\n            this.WRITE_BYTE = value\r\n          }\r\n\r\n        __delay_us(delayuS: number)\r\n        {\r\n            control.waitMicros(delayuS)\r\n\r\n        }\r\n\r\n        lcd_sendNibble(nibble: number, RSbit: number, clickBoardNum: clickBoardID){\r\n        let packet = (nibble << 4) | (RSbit << 2);\r\n        this.expander_setOutput(packet, clickBoardNum);\r\n        this.expander_setOutput(packet | (1<<3), clickBoardNum);\r\n        this.__delay_us(1);\r\n        this.expander_setOutput(packet, clickBoardNum);\r\n        this.__delay_us(40);\r\n        }\r\n\r\n\r\n        lcd_sendByte(byte: number, RSbit:number, clickBoardNum: clickBoardID){\r\n        let nibbleHigh = byte >> 4;\r\n        let nibbleLow = byte & 0xF;\r\n        let packetHigh = (nibbleHigh << 4) | (RSbit << 2);\r\n        let packetLow = (nibbleLow << 4) | (RSbit << 2);\r\n        \r\n        this.expander_setOutput(packetHigh,clickBoardNum);\r\n        this.__delay_us(2);\r\n        this.expander_setOutput(packetHigh | (1<<3),clickBoardNum);\r\n        this.__delay_us(2);\r\n        this.expander_setOutput(packetLow,clickBoardNum)\r\n        this.__delay_us(2);\r\n        this.expander_setOutput(packetLow | (1<<3),clickBoardNum);\r\n        this.__delay_us(40);\r\n        }\r\n    \r\n        lcd_returnHome(clickBoardNum: clickBoardID){\r\n            this.lcd_sendByte(0b10, 0,clickBoardNum);\r\n            basic.pause(2)\r\n           \r\n        }\r\n\r\n\r\n        lcd_setAddr(row:number, character:number, clickBoardNum: clickBoardID){\r\n        this.lcd_sendByte(0x80 | (character + (row*40)), 0,clickBoardNum);\r\n        }\r\n\r\n        lcd_writeChar(character:string, clickBoardNum: clickBoardID){\r\n        this.lcd_sendByte(character.charCodeAt(0),1,clickBoardNum);\r\n        }\r\n\r\n        lcd_setContrast(contrast:number, clickBoardNum: clickBoardID){\r\n        this.digipot_setWiper(contrast,clickBoardNum);\r\n        }\r\n\r\n        lcd_setup( clickBoardNum: clickBoardID){\r\n        const PinSet = new bBoard.PinSettings;\r\n        PINs.writePin(this.HIGH,this.RST, clickBoardNum);\r\n        PINs.writePin(this.HIGH,this.CS2, clickBoardNum);\r\n        PINs.writePin(this.HIGH,this.CS, clickBoardNum);\r\n\r\n        this.expander_setup(clickBoardNum);\r\n        this.expander_setOutput(0,clickBoardNum);\r\n        basic.pause(40)\r\n        this.lcd_sendNibble(0b11, 0,clickBoardNum);\r\n        basic.pause(10)\r\n\r\n        this.lcd_sendNibble(0b11,  0,clickBoardNum);\r\n        basic.pause(10)\r\n\r\n        this.lcd_sendNibble(0b11,  0,clickBoardNum);\r\n        basic.pause(10)\r\n\r\n        this.lcd_sendNibble(0x2, 0,clickBoardNum);\r\n        this.lcd_sendByte(0x2C,  0,clickBoardNum);\r\n        this.lcd_sendByte(0b1100,  0,clickBoardNum);\r\n        this.lcd_sendByte(0x06,  0,clickBoardNum);\r\n        this.lcd_sendByte(0x0C,  0,clickBoardNum);\r\n        basic.pause(2)\r\n\r\n        this.lcd_returnHome(clickBoardNum);\r\n        this.lcd_clearDisplay(clickBoardNum);\r\n        }\r\n\r\n\r\n        expander_sendByte(addr:number, byte:number, clickBoardNum: clickBoardID){\r\n        //spi1_master_open(LCD);\r\n        //  LCDMini_nCS_LAT = 0;\r\n        const SPIObj= new bBoard.SPIsetting;\r\n        let cmd=[this.WRITE_BYTE,addr,byte];\r\n        //bBoard.clearPin(CS,clickBoardNum)\r\n        SPIs.SPIWriteArray(cmd,clickBoardNum)\r\n        //bBoard.setPin(CS,clickBoardNum)\r\n        }\r\n\r\n        expander_setup( clickBoardNum: clickBoardID){\r\n        this.expander_sendByte(this.IODIRB, 0,clickBoardNum);\r\n        }\r\n\r\n        expander_setOutput(output:number, clickBoardNum: clickBoardID){\r\n        this.expander_sendByte(this.OLATB, output,clickBoardNum);\r\n        }\r\n\r\n        digipot_setWiper(val:number, clickBoardNum: clickBoardID){\r\n        let cmd = [0,val];\r\n        const SPIObj= new bBoard.SPIsetting;\r\n        // bBoard.clearPin(CS2,clickBoardNum)\r\n        SPIs.spiCS(this.CS2,clickBoardNum)\r\n        SPIs.SPIWriteArray(cmd,clickBoardNum)\r\n        SPIs.spiCS(this.CS,clickBoardNum)\r\n        //bBoard.setPin(CS2,clickBoardNum)\r\n        }\r\n\r\n\r\n        /**\r\n         * Writes string value.\r\n         * @param LCDstring the string\r\n         * @param lineNum the lineNum\r\n         * @param clickBoardNum the clickBoardNum\r\n         */\r\n        //% block=\"$this Write a $LCDstring to line $lineNum on click board $clickBoardNum\"\r\n        //% blockId=LCDWriteString\r\n        //% blockNamespace=LCD_Mini\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"LCDSettings\"\r\n        //% weight=90 blockGap=12 color=#9E4894 icon=\"\"\r\n\r\n        lcd_writeString(LCDstring:string, lineNum: lineNumber, clickBoardNum: clickBoardID) {\r\n            //let LCDstring1=['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x']\r\n            if(this.LCDInitialize == false)\r\n            {\r\n                this.lcd_setup(clickBoardNum);\r\n                this.lcd_setContrast(0x30,clickBoardNum)\r\n                this.LCDInitialize = true; //LCD has been initialized\r\n            }\r\n    \r\n            this.lcd_setAddr(lineNum, 0,clickBoardNum);\r\n            let i = 0;\r\n            for (i = 1; i < 16; i++) {\r\n                if (LCDstring[i]) {\r\n                    this.lcd_writeChar(LCDstring[i],clickBoardNum);\r\n                }\r\n            }\r\n            this.lcd_returnHome(clickBoardNum);\r\n            }\r\n\r\n        //% blockId=LCD_Clear\r\n        //% block=\"Clear $this LCD on click $clickBoardNum\"\r\n        //% weight=80\r\n        //% blockGap=7\r\n        //% blockNamespace=LCD_Mini\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"LCDSettings\"\r\n        lcd_clearDisplay( clickBoardNum: clickBoardID){\r\n            this.lcd_sendByte(1, 0,clickBoardNum);\r\n            basic.pause(2)\r\n            }\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n\r\n",
             "Line_Follower.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB  icon=\"\\u21C8\"\r\n//% advanced=true\r\nnamespace Line_Follower{\r\n\r\n    export enum lineDetection\r\n    {\r\n        soft_right_turn = 0,\r\n        medium_right_turn = 1,\r\n        hard_right_turn = 2,\r\n        hard_left_turn = 3,\r\n        medium_left_turn = 4,\r\n        soft_left_turn = 5,\r\n        no_correction = 6\r\n\r\n    }\r\n\r\n    export enum reflection\r\n    {\r\n        reflected = 0,\r\n        not_reflected =1\r\n       \r\n\r\n\r\n    }\r\n\r\n\r\n    export enum IRsensor\r\n    {\r\n        U1 = 1,\r\n        U2 = 2,\r\n        U3 = 3,\r\n        U4 = 4,\r\n        U5 = 5\r\n    }\r\n\r\n    //% block=\"create Line Follower settings\"\r\n    //% blockSetVariable=\"LineFollower\"\r\n    //% weight=110\r\n    export function createLineFollower(): LineFollower {\r\n        return new LineFollower();\r\n    }\r\n\r\n    export class LineFollower extends bBoard.PinSettings{\r\n   \r\n   \r\n    isInitialized : Array<number>;\r\n    \r\n    constructor(){\r\n        super();\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n \r\n\r\n\r\n     \r\n        initialize(deviceAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n           \r\n            this.isInitialized[clickBoardNum]  = 1\r\n\r\n        \r\n        }\r\n\r\n    //%blockId=Line_Follower_lineDetection\r\n    //%block=\"$this $enumName\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n    getDirectionEnum(enumName:lineDetection)\r\n    {\r\n        return enumName;\r\n    }\r\n    \r\n    //%blockId=Line_Follower_getWhiteDirection\r\n    //%block=\"$this Correction required to follow white line (on click$clickBoardNum)\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n    getWhiteDirection(clickBoardNum:clickBoardID) {\r\n\r\n    let u1_now = this.getU1(clickBoardNum);\r\n    let u2_now = this.getU2(clickBoardNum);\r\n    let u3_now = this.getU3(clickBoardNum);\r\n    let u4_now = this.getU4(clickBoardNum);\r\n    let u5_now = this.getU5(clickBoardNum);\r\n    \r\n    if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n       \r\n        return lineDetection.soft_right_turn\r\n    }\r\n    else if((u5_now == 1) && (u4_now == 1) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n\r\n        return lineDetection.medium_right_turn\r\n    }\r\n    else if((u5_now == 1) && (u4_now == 1) && (u3_now==1) && (u2_now==0) && (u1_now==0)){\r\n\r\n        return lineDetection.hard_right_turn\r\n    }\r\n    else if((u5_now == 1) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==0)){\r\n\r\n        return lineDetection.hard_right_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n\r\n        return lineDetection.hard_left_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==0) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n\r\n        return lineDetection.hard_left_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==1) && (u1_now==1)){\r\n\r\n        return lineDetection.medium_left_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==1)){ \r\n\r\n        return lineDetection.soft_left_turn\r\n    }\r\n    else{\r\n\r\n        return lineDetection.no_correction\r\n  \r\n    }\r\n}\r\n\r\n   \r\n    //%blockId=Line_Follower_getBlackDirection\r\n    //%block=\"$this Correction required to follow black line (on click$clickBoardNum)\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n    getBlackDirection(clickBoardNum:clickBoardID) {\r\n\r\n        let u1_now = this.getU1(clickBoardNum);\r\n        let u2_now = this.getU2(clickBoardNum);\r\n        let u3_now = this.getU3(clickBoardNum);\r\n        let u4_now = this.getU4(clickBoardNum);\r\n        let u5_now = this.getU5(clickBoardNum);\r\n\r\n\r\n        if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n       \r\n            return lineDetection.hard_left_turn\r\n        }\r\n        else if((u5_now == 1) && (u4_now == 1) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n    \r\n            return lineDetection.medium_left_turn\r\n        }\r\n        else if((u5_now == 1) && (u4_now == 1) && (u3_now==1) && (u2_now==0) && (u1_now==0)){\r\n    \r\n            return lineDetection.soft_left_turn\r\n        }\r\n        else if((u5_now == 1) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==0)){\r\n    \r\n            return lineDetection.soft_left_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n    \r\n            return lineDetection.soft_right_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==0) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n    \r\n            return lineDetection.medium_right_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==1) && (u1_now==1)){\r\n    \r\n            return lineDetection.hard_right_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==1)){ \r\n    \r\n            return lineDetection.hard_right_turn\r\n        }\r\n        else{\r\n    \r\n            return lineDetection.no_correction\r\n      \r\n        }\r\n    }\r\n\r\n\r\n\r\ngetU1(clickBoardNum:clickBoardID):number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.RST,clickBoardNum)\r\n\r\n    return reflectedValue\r\n}\r\n\r\ngetU2(clickBoardNum:clickBoardID):number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.AN,clickBoardNum)\r\n\r\n    return reflectedValue\r\n}\r\ngetU3(clickBoardNum:clickBoardID):number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.TX,clickBoardNum)\r\n\r\n    return reflectedValue\r\n}\r\ngetU4(clickBoardNum:clickBoardID):number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.RX,clickBoardNum)\r\n\r\n    return reflectedValue\r\n}\r\n\r\n \r\ngetU5(clickBoardNum:clickBoardID):number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.PWM,clickBoardNum)\r\n\r\n    return reflectedValue\r\n}\r\n\r\n    //%blockId=Line_Follower_isReflected\r\n    //%block=\"$this Has light been reflected on $sensorNum on click$clickBoardNum ?\"\r\n    //% blockGap=7\r\n    //% advanced=true\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n   isReflected(sensorNum:IRsensor,clickBoardNum:clickBoardID):boolean{\r\n        \r\n        let reflectedValue = 1\r\n\r\n        switch (sensorNum)\r\n        {\r\n            case IRsensor.U1:\r\n                reflectedValue = this.getU1(clickBoardNum);\r\n            break;\r\n        \r\n            case IRsensor.U2:\r\n                 reflectedValue = this.getU2(clickBoardNum);\r\n            break;\r\n        \r\n            case IRsensor.U3:\r\n                 reflectedValue = this.getU3(clickBoardNum);\r\n            break;\r\n        \r\n            case IRsensor.U4:\r\n                 reflectedValue = this.getU4(clickBoardNum);\r\n            break;\r\n        \r\n            case IRsensor.U5:\r\n                 reflectedValue = this.getU5(clickBoardNum);\r\n            break;                                \r\n        }\r\n        \r\n        if (reflectedValue == reflection.reflected)\r\n        {\r\n            return true;\r\n        }\r\n\r\n        return false;\r\n    }\r\n\r\n}\r\n\r\n}\r\n\r\n\r\n ",
+            "Motion.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\\u27A0\"\r\n//% advanced=true\r\nnamespace Motion{\r\n\r\n\r\n    \r\n    \r\n    enum motion{\r\n        detected = 1,\r\n        none = 0,\r\n    }\r\n\r\n    export class Motion{\r\n\r\n    //On/Off do not seem to enable/disable the device.\r\n\r\n//      //%blockId=Motion_On\r\n//     //%block=\"Turn on detector on click%clickBoardNum ?\"\r\n//     //% blockGap=7\r\n//     //% advanced=true\r\n// export function turnOn(clickBoardNum:clickBoardID)\r\n// {\r\n//   bBoard.setPin(clickIOPin.RST,clickBoardNum)\r\n\r\n// }\r\n\r\n//   //%blockId=Motion_Off\r\n//     //%block=\"Turn off detector on click%clickBoardNum ?\"\r\n//     //% blockGap=7\r\n//     //% advanced=true\r\n//     export function turnOff(clickBoardNum:clickBoardID)\r\n//     {\r\n//       bBoard.clearPin(clickIOPin.RST,clickBoardNum)\r\n    \r\n//     }\r\n    \r\n    \r\n       //%blockId=Motion_isDetected\r\n        //%block=\"Has motion been detected on click%clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n    isDetected(clickBoardNum:clickBoardID):boolean\r\n    {\r\n        let PINs = new bBoard.PinSettings();\r\n       if(PINs.digitalReadPin(clickIOPin.INT,clickBoardNum) == motion.detected)\r\n       {\r\n        return true\r\n       }\r\n       return false;\r\n    \r\n    }\r\n\r\n}\r\n}",
+            "NFC_Tag_2.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#FF2F92 icon=\"\"\r\n//% advanced=true\r\nnamespace NFC_Tag_2{\r\n\r\n    export enum URICode{\r\n\r\n        //% block=\"Full URL\" \r\n      zero = 0,\r\n      //% block=\"http://www.\"\r\n      one = 1,\r\n      //% block=\"https://www.\"\r\n      two = 2,\r\n      //% block=\"http://\"\r\n      three = 3,\r\n      //% block=\"https://\"\r\n      four = 4\r\n    }\r\n\r\n    //% block=\"create NFC_Tag settings\"\r\n    //% blockSetVariable=\"NFC_Tag\"\r\n    //% weight=110\r\n    export function createNFC_Tag(): NFC_Tag {\r\n        return new NFC_Tag();\r\n    }\r\n\r\n    export class NFC_Tag extends bBoard.I2CSettings{\r\n\r\n    //Address Definitions\r\n    private readonly DEFAULT_I2C_ADDRESS =  0x55  \r\n\r\n\r\n    private readonly COVERING_PAGE_REG = 0x0\r\n    private readonly  USER_START_REG =0x1\r\n\r\n    private readonly NFC_BLOCK_SIZE = 16\r\n    private readonly UID_SIZE = 7\r\n\r\n\r\n    private readonly USER_END_REG  = 0x38 // just the first 8 bytes for the 1K\r\n    private readonly CONFIG_REG\t=   0x3A\r\n\r\n\r\n    private readonly SRAM_START_REG= 0xF8\r\n    private readonly SRAM_END_REG  = 0xFB // just the first 8 bytes\r\n\r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n        constructor(){\r\n            super();\r\n            this.DEFAULT_I2C_ADDRESS =  0x55  \r\n\r\n\r\n            this.COVERING_PAGE_REG = 0x0\r\n            this.USER_START_REG =0x1\r\n\r\n            this.NFC_BLOCK_SIZE = 16\r\n            this.UID_SIZE = 7\r\n\r\n\r\n            this.USER_END_REG  = 0x38 // just the first 8 bytes for the 1K\r\n            this.CONFIG_REG\t=   0x3A\r\n\r\n\r\n            this.SRAM_START_REG= 0xF8\r\n            this.SRAM_END_REG  = 0xFB // just the first 8 bytes\r\n            this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n            this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        }\r\n\r\n  \r\n\r\n     \r\n        initialize(deviceAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n\r\n           \r\n           \r\n            this.isInitialized[clickBoardNum]  = 1\r\n            this.setNT3H2111Addr(deviceAddr,clickBoardNum)\r\n            \r\n            let arrayTest = this.readNT3H2111(16, 0, clickBoardID.one) //Need to read the first page of the tag memory\r\n            arrayTest[0] = this.DEFAULT_I2C_ADDRESS<<1 //Set the very first byte (the i2c address). The chip always returns 0x04 (manufacturer ID) and not the I2C address (0x55)\r\n            arrayTest[12] = 225 //The last 4 bytes are part of the container and need to be set\r\n            arrayTest[13] = 16\r\n            arrayTest[14] = 109\r\n            arrayTest[15] = 0\r\n\r\n            this.writeNT3H2111(arrayTest, 0, clickBoardID.one)//Now write this back to the first block of memory\r\n        \r\n        }\r\n\r\n        readCoveringPage(clickBoardNum:clickBoardID):number[] { //Get the entire covering page from the NT3H2111\r\n    return this.readNT3H2111(this.NFC_BLOCK_SIZE,this.COVERING_PAGE_REG,clickBoardNum);\r\n}\r\n\r\n\r\n        //%blockId=NT3H2111_setURI\r\n        //%block=\"Write URL %URL to NFC device on click%clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=NFC_Tag_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"NFC_Tag\"\r\n    setURI(URL:string,clickBoardNum:clickBoardID)\r\n{\r\n    if(this.isInitialized[clickBoardNum] == 0)\r\n    {\r\n        this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n        \r\n    }\r\n\r\n    //Information found from https://www.remy.org.uk/elec.php?elec=1510617600#smoke\r\n    //https://learn.adafruit.com/adafruit-pn532-rfid-nfc/ndef\r\n let bytesWritten = 0; //Track the amount of bytes written to the chip\r\n\r\n//NDEF Section\r\nlet NDEFHeader = 0xD1; //FirstRecord&LastRecord&ShortPayload&TypeNameFormate=1\r\nlet typeFieldSize = 0x01; //Type field size is 1 byte\r\nlet NDEFpayloadLength = 0; //This will contain the length of the NDEF payload\r\nlet NDEFtypeField = 0x55; //Indicates URI record type\r\nlet NDEFPayload:number[] = []; //This is where the NDEF payload will be stored\r\n\r\n\r\n\r\n//TLV Section\r\nlet TLVType = 0x03; //Indicates TLV block contains an NDEF Message\r\nlet TLVLength = 0; //This will contain the length of the TLV Block\r\nlet TLVValue:number[] = []; //The array that will hold the TLV block (where the NDEF message will live)\r\n\r\nNDEFPayload[0] = 0 ; //URIidentifierCode; //No prepending. User needs to provide entire URL\r\n\r\nfor(let i=0;i<URL.length;i++) //Load the string into the payload one character at a time \r\n{\r\n    NDEFPayload[i+1] = URL.charCodeAt(i)\r\n}\r\nNDEFpayloadLength = NDEFPayload.length; //We can now calculate the length of the NDEF payload\r\n\r\n\r\n\r\n//Let's build the TLV block\r\nTLVValue[0] = TLVType; //The first byte is the Type of the \"TLV\" Block. In this case it is 0x03 because it is an NDEF message\r\nTLVValue[1] = 0; //This will be the TLV Block length. We need to calculate it first\r\nTLVValue[2] = NDEFHeader; //The first byte of the TLV Message is the NDEF Header\r\nTLVValue[3] = typeFieldSize; //The second byte of the TLV Message is the NDEF Field type size which is 1 byte\r\nTLVValue[4] = NDEFpayloadLength; //The third byte of the TLV Message is the NDEF payload length\r\nTLVValue[5] = NDEFtypeField; //In the NDEF Header (Bits 0-2 = 0x01) we inidcated we would use a \"well-known record\". In this case, it will be 0x55 = URI Record\r\n\r\nfor(let i=0;i<NDEFpayloadLength;i++) //Append the NDEF payload one byte at a time\r\n{\r\n    TLVValue[i+6] = NDEFPayload[i];\r\n}\r\n\r\nTLVLength = TLVValue.length - 2; //We can now calculate the TLV Block Length (minus the Type and Length field)\r\nTLVValue[1] = TLVLength; //Now write this length to the TLV length field\r\n\r\n    let loopCounter = 0; \r\n\r\n    while(bytesWritten < TLVValue.length)\r\n    {\r\n\r\n            this.writeBlock(TLVValue.slice(this.NFC_BLOCK_SIZE*loopCounter,Math.min(TLVValue.length-1,this.NFC_BLOCK_SIZE*loopCounter+15)+1), loopCounter+1, clickBoardID.one) \r\n            bytesWritten = bytesWritten + 16; \r\n            loopCounter++;\r\n      \r\n\r\n    }\r\n\r\n    \r\n\r\n\r\n}\r\n//Now we need to append the NDEF payload to our TLVBlock message.\r\n\r\n   // arrayTest = [0x3, 21, 0xd1, 0x1, 17, 0x55, 0x02, 0x62, 0x72, 0x69, 0x6c, 0x6c, 0x69, 0x61, 0x6e, 0x74]\r\n   // NFC_Tag_2.writeNT3H2111(arrayTest, 1, clickBoardID.one)\r\n    //arrayTest = [0x6c, 0x61, 0x62, 0x73, 0x2e, 0x63, 0x61, 0xfe, 0, 0, 0, 0, 0, 0, 0, 0]\r\n   // NFC_Tag_2.writeNT3H2111(arrayTest, 2, clickBoardID.one)\r\n\r\nreadUID(clickBoardNum:clickBoardID):number[] { //Extracts the first 7 bytes of the \r\n    return this.readNT3H2111(this.UID_SIZE, this.COVERING_PAGE_REG, clickBoardNum);\r\n}\r\n\r\n \r\n        //%blockId=NT3H2111_writeBlock\r\n        //%block=\"Write array %values to block %blockAddr on click%clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=NFC_Tag_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"NFC_Tag\"\r\n        writeBlock(values:number[],blockAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n        \r\n            let byte = 0; //Byte to be written\r\n            let i2cBuffer = pins.createBuffer(16+1)\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, blockAddr) //Set the I2C Block address\r\n\r\n        for (let i=0;i<16;i++)\r\n        {\r\n            \r\n                if(i < values.length)\r\n                {\r\n                    byte = values[i];\r\n                }\r\n                else\r\n                {\r\n                    byte = 0; //Zero pad the block\r\n                }\r\n\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, i+1, byte)\r\n           \r\n        }\r\n    \r\n        \r\n        this.i2cWriteBuffer(this.getNT3H2111Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n         \r\n        }\r\n\r\n        //%blockId=NT3H2111_write\r\n        //%block=\"Write array %values to NT3H2111 register%register on click%clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=NFC_Tag_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"NFC_Tag\"\r\n        writeNT3H2111(values:number[],register:number,clickBoardNum:clickBoardID)\r\n        {\r\n        \r\n        \r\n            let i2cBuffer = pins.createBuffer(values.length+1)\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register) \r\n\r\n        for (let i=0;i<values.length;i++)\r\n        {\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, i+1, values[i])\r\n           \r\n        }\r\n    \r\n        \r\n        this.i2cWriteBuffer(this.getNT3H2111Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n         \r\n        }\r\n       \r\n\r\n        \r\n     \r\n            findI2C(  clickBoardNum:clickBoardID)\r\n            {\r\n               \r\n                for(let i=0;i<128;i++)\r\n                {\r\n                    this.i2cWriteNumber(i,0,NumberFormat.UInt8LE,clickBoardNum,false)\r\n                }\r\n                \r\n             \r\n                    \r\n            \r\n            }\r\n\r\n        \r\n            //%blockId=NT3H2111_read\r\n            //%block=\"Read %numBytes bytes from register%register on click%clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=NFC_Tag_2\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"NFC_Tag\"\r\n        readNT3H2111( numBytes:number, register:number,  clickBoardNum:clickBoardID):number[]\r\n        {\r\n           \r\n            \r\n            this.i2cWriteNumber(this.getNT3H2111Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)\r\n           let i2cBuffer = this.I2CreadNoMem(this.getNT3H2111Addr(clickBoardNum) ,numBytes,clickBoardNum);\r\n\r\n            let dataArray:number[] = []; //Create an array to hold our read values\r\n            for(let i=0; i<numBytes;i++)\r\n            {\r\n                dataArray[i] = i2cBuffer.getUint8(i); //Extract byte i from the buffer and store it in position i of our array\r\n            }\r\n           \r\n            \r\n            return  dataArray\r\n    \r\n                \r\n        \r\n        }\r\n        \r\n        \r\n        setNT3H2111Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n            this.deviceAddress[clickBoardNum] = deviceAddr;\r\n        }\r\n        getNT3H2111Addr(clickBoardNum:clickBoardID):number\r\n        {\r\n            return this.deviceAddress[clickBoardNum];\r\n        }\r\n    }\r\n}\r\n\r\n",
+            "Noise.ts": "\r\n\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#F20D0D icon=\"\"\r\n//% advanced=true\r\nnamespace Noise {\r\n\r\n    enum threshold{\r\n        triggered = 0x01\r\n    }\r\n\r\n    let PINs =  new bBoard.PinSettings();\r\n\r\n    //% block=\"create Noise settings\"\r\n    //% blockSetVariable=\"Noise\"\r\n    //% weight=110\r\n    export function createNoise(): Noise {\r\n        return new Noise();\r\n    }\r\n\r\n\r\n    export class Noise extends bBoard.SPIsetting{\r\n    \r\n    \r\n    isInitialized : Array<number>;\r\n\r\n    constructor(){\r\n        super();\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n    \r\n    \r\n    initialize(clickBoardNum:clickBoardID)\r\n    {\r\n     \r\n        this.isInitialized[clickBoardNum]  = 1\r\n        PINs.clearPin(clickIOPin.RST,clickBoardNum) // Enable the device\r\n    \r\n    \r\n    \r\n    }\r\n    \r\n    \r\n        //%blockId=Noise_getNoiseLevel\r\n        //%block=\"$this Get raw noise level on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Noise\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Noise\"\r\n        getNoiseLevel(clickBoardNum:clickBoardID):number\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(clickBoardNum)\r\n                \r\n            }\r\n            return bBoard.analogRead(clickADCPin.AN,clickBoardNum)\r\n        }\r\n\r\n    //%blockId=Noise_isThresholdTriggered\r\n    //%block=\"$this Has noise threshold been triggered on click$clickBoardNum ?\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Noise\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Noise\"\r\n    isThresholdTriggered(clickBoardNum:clickBoardID):boolean\r\n    {   \r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(clickBoardNum)\r\n            \r\n        }\r\n        if(PINs.digitalReadPin(clickIOPin.INT,clickBoardNum) == threshold.triggered)\r\n        {\r\n            return true;\r\n        }\r\n        else\r\n        {\r\n            return false;\r\n        }\r\n     }\r\n           //%blockId=Noise_setThreshold\r\n            //%block=\"$this Set noise threshold to $threshold on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% threshold.min=0 threshold.max=100\r\n            //% blockNamespace=Noise\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Noise\"\r\n            setThreshold(threshold:number,clickBoardNum:clickBoardID)\r\n            {\r\n                if(this.isInitialized[clickBoardNum] == 0)\r\n                {\r\n                    this.initialize(clickBoardNum)\r\n                    \r\n                }\r\n                let config = 0x7000; //DACa, Buffered output, 1x Gain, Shutdown disabled\r\n                if(threshold > 100)\r\n                {\r\n                    threshold = 100\r\n                }\r\n                if(threshold < 0)\r\n                {\r\n                    threshold = 0\r\n                }\r\n                threshold = threshold * 40.96 - 1 //Convert to a 12 bit number\r\n    \r\n                this.write(threshold|config,clickBoardNum);\r\n    \r\n            }\r\n            //%blockId=Noise_write\r\n            //%block=\"$this Write $value on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=Noise\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Noise\"\r\n        write(value:number,clickBoardNum:clickBoardID)\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(clickBoardNum)\r\n                \r\n            }\r\n            let valueArray:number[] = [value>>8,value&0xFF]; //Split the value to be written into a LSB and MSB\r\n            this.spiCS(clickIOPin.CS,clickBoardNum)//Set the CS pin\r\n            this.SPIWriteArray(valueArray,clickBoardNum)\r\n        }\r\n\r\n    }\r\n}",
             "Proximity_2.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"↦\"\r\n//% advanced=true\r\nnamespace Proximity_2{\r\n    enum Proximity2_Interrupts {ALS_INT, PROX_INT, NO_INT};\r\n    let i2csettingsobj= new bBoard.I2CSettings();\r\n\r\n    //% block=\"create Proximity2 settings\"\r\n    //% blockSetVariable=\"Proximity2\"\r\n    //% weight=110\r\n    export function createProximity2Settings(): Proximity2 {\r\n        return new Proximity2();\r\n   }\r\n\r\n    export class Proximity2{\r\n     readonly INTERRUPT_STATUS : number\r\n     readonly MAIN_CONFIGURATION : number\r\n     readonly RECEIVE_CONFIGURATION : number\r\n     readonly TRANSMIT_CONFIGURATION : number\r\n     readonly ADC_HIGH_ALS : number\r\n     readonly ADC_LOW_ALS : number\r\n     readonly ADC_BYTE_PROX : number\r\n     readonly ALS_UPPER_THRESHOLD_HIGH : number\r\n     readonly ALS_UPPER_THRESHOLD_LOW : number\r\n     readonly ALS_LOWER_THRESHOLD_HIGH : number\r\n     readonly ALS_LOWER_THRESHOLD_LOW : number\r\n     readonly THRESHOLD_PERSIST_TIMER : number\r\n     readonly PROX_THRESHOLD_INDICATOR : number\r\n     readonly PROX_THRESHOLD : number\r\n     readonly DIGITAL_GAIN_TRIM_GREEN : number\r\n     readonly DIGITAL_GAIN_TRIM_INFRARED : number\r\n    \r\n     readonly ADDRESS  : number;\r\n    isInitialized : Array<number>;\r\n    \r\n    constructor(){\r\n    this.INTERRUPT_STATUS= 0x00\r\n    this.MAIN_CONFIGURATION = 0x01\r\n    this.RECEIVE_CONFIGURATION=   0x02\r\n    this.TRANSMIT_CONFIGURATION=  0x03\r\n    this.ADC_HIGH_ALS =   0x04\r\n    this.ADC_LOW_ALS= 0x05\r\n    this.ADC_BYTE_PROX=   0x16\r\n    this.ALS_UPPER_THRESHOLD_HIGH =0x06\r\n    this.ALS_UPPER_THRESHOLD_LOW = 0x07\r\n    this.ALS_LOWER_THRESHOLD_HIGH =   0x08\r\n    this.ALS_LOWER_THRESHOLD_LOW =0x09\r\n    this.THRESHOLD_PERSIST_TIMER= 0x0A\r\n    this.PROX_THRESHOLD_INDICATOR =   0x0B\r\n    this.PROX_THRESHOLD = 0x0C\r\n    this.DIGITAL_GAIN_TRIM_GREEN =0x0F\r\n    this.DIGITAL_GAIN_TRIM_INFRARED = 0x10\r\n    \r\n    this.ADDRESS = 0b1001010;\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    \r\n    }\r\n\r\n        //%blockId=Proximity2_ReadProximity\r\n        //%block=\"Get $this proximity reading on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% weight=90   color=#9E4894 icon=\"\"\r\n        //% advanced=false\r\n        //% blockNamespace=Proximity_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"ProximitySettings\"\r\n        Proximity2_Read_Proximity(clickBoardNum:clickBoardID):number\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.Proximity2_Initialize(clickBoardNum)\r\n                \r\n            }\r\n            let val = this.Read_Proximity2_Register(this.ADC_BYTE_PROX,clickBoardNum);\r\n            return val;\r\n        }\r\n        \r\n        \r\n        \r\n        //%blockId=Proximity2_ReadALS\r\n        //%block=\"Get $this ambient light reading on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Proximity_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"ProximitySettings\"\r\n        Proximity2_Read_Als(clickBoardNum:clickBoardID):number\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.Proximity2_Initialize(clickBoardNum)\r\n                \r\n            }\r\n            let val = (this.Read_Proximity2_Register(this.ADC_HIGH_ALS,clickBoardNum) << 8) | this.Read_Proximity2_Register(this.ADC_LOW_ALS,clickBoardNum);\r\n            return val;\r\n        }\r\n    \r\n    \r\n    // Read a byte from register 'reg'\r\n    Read_Proximity2_Register( reg:number,clickBoardNum:clickBoardID):number\r\n    {\r\n        let i2cBuffer = pins.createBuffer(2);\r\n    \r\n        i2csettingsobj.i2cWriteNumber(this.ADDRESS,reg,NumberFormat.Int8LE,clickBoardNum,true)\r\n       \r\n        i2cBuffer = i2csettingsobj.I2CreadNoMem(this.ADDRESS,1,clickBoardNum);\r\n       \r\n       \r\n        return i2cBuffer.getUint8(0)\r\n    }\r\n    \r\n    // Write byte 'byte' to register 'reg'\r\n    Write_Proximity2_Register(reg:number,  byte:number,clickBoardNum:clickBoardID) \r\n    {\r\n        let i2cBuffer = pins.createBuffer(2)\r\n    \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, reg)\r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, byte) \r\n       \r\n    \r\n        i2csettingsobj.i2cWriteBuffer(this.ADDRESS,i2cBuffer,clickBoardNum);\r\n    \r\n       \r\n    }\r\n    \r\n    Proximity2_Read_Interrupt(clickBoardNum:clickBoardID):number\r\n    {\r\n        let val = this.Read_Proximity2_Register(this.INTERRUPT_STATUS,clickBoardNum);\r\n        if (val & 0b1) \r\n        {\r\n            return Proximity2_Interrupts.ALS_INT;\r\n        } \r\n        else if (val & 0b10) \r\n        {\r\n            return Proximity2_Interrupts.PROX_INT;\r\n        } \r\n        else \r\n        {\r\n            return Proximity2_Interrupts.NO_INT;\r\n        }\r\n    }\r\n    \r\n    Proximity2_Set_Threshold(  thresh:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.Write_Proximity2_Register(this.PROX_THRESHOLD, thresh,clickBoardNum);\r\n    }\r\n    \r\n    // Setup the chip for proximity sensing\r\n    Proximity2_Initialize(clickBoardNum:clickBoardID)\r\n    {\r\n        this.isInitialized[clickBoardNum] = 1;\r\n        this.Write_Proximity2_Register(this.MAIN_CONFIGURATION, 0b110000,clickBoardNum);\r\n        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000,clickBoardNum);\r\n        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000,clickBoardNum);\r\n        this.Write_Proximity2_Register(this.TRANSMIT_CONFIGURATION, 0b00001111,clickBoardNum);\r\n    }\r\n    \r\n    Proximity2_Set_Als_Upper_Threshold(thresh:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_HIGH, thresh >> 8,clickBoardNum);;\r\n        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_LOW, thresh & 0xFF,clickBoardNum);\r\n    }\r\n    \r\n    Proximity2_Set_Als_Lower_Threshold(thresh:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_HIGH, thresh >> 8,clickBoardNum);\r\n        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_LOW, thresh & 0xFF,clickBoardNum);\r\n    }\r\n\r\n\r\n    \r\n    }\r\n    \r\n    \r\n    \r\n    \r\n    \r\n    }",
             "README.md": "# core\n\nThe core library.\n\n",
+            "Reed.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Reed{\r\n\r\n    enum reed{\r\n        Activated = 1,\r\n        Not_Activated = 0,\r\n    }\r\n\r\n    //% block=\"create Reed settings\"\r\n    //% blockSetVariable=\"Reed\"\r\n    //% weight=110\r\n    export function createReed(): Reed {\r\n        return new Reed();\r\n    }\r\n\r\n    export class Reed extends bBoard.PinSettings{\r\n\r\n    isInitialized : Array<number>;\r\n    \r\n\r\n    constructor(){\r\n        super();\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n\r\ninitialize(clickBoardNum:clickBoardID)\r\n{\r\n\r\n    this.isInitialized[clickBoardNum]  = 1\r\n    this.setPullDirection(clickIOPin.CS, IOPullDirection.two, clickBoardNum)\r\n}\r\n    \r\n    \r\n    \r\n    \r\n    \r\n       //%blockId=Reed_isActivated\r\n        //%block=\"For $this Has reed been activated on click%clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Reed\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Reed\"\r\n    isActivated(clickBoardNum:clickBoardID):boolean\r\n    {\r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(clickBoardNum)\r\n            \r\n        }\r\n\r\n       if(this.digitalReadPin(clickIOPin.CS,clickBoardNum) == reed.Activated)\r\n       {\r\n        return true\r\n       }\r\n       return false;\r\n    \r\n    }\r\n\r\n    }\r\n}",
+            "Relay.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#66791B  icon=\"\"\r\n//% advanced=true\r\nnamespace Relay {\r\n\r\n    export enum relay\r\n    {\r\n        Relay1 = 1,\r\n        Relay2 = 2\r\n    }\r\n\r\n    export enum onOff\r\n    {\r\n        On = 1,\r\n        Off = 0\r\n    }\r\n\r\n    //% block=\"create Relay settings\"\r\n    //% blockSetVariable=\"Relay\"\r\n    //% weight=110\r\n    export function createkeylock(): Relay {\r\n        return new Relay();\r\n    }\r\n    \r\n\r\n    export class Relay extends bBoard.PinSettings{\r\n        \r\n        \r\n           //%blockId=Relay_relayOn\r\n            //%block=\"$this Turn on relay $relayNum on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=Relay\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Relay\"\r\n        relayOn(relayNum:relay,clickBoardNum:clickBoardID)\r\n        {\r\n            switch(relayNum)\r\n            {\r\n                case relay.Relay1:\r\n                    this.setPin(clickIOPin.PWM,clickBoardNum);\r\n                break;\r\n    \r\n                case relay.Relay2:\r\n                    this.setPin(clickIOPin.CS,clickBoardNum);\r\n                break;\r\n            }\r\n        \r\n        }\r\n    \r\n            //%blockId=Relay_relayOff\r\n            //%block=\"$this Turn off relay $relayNum on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=Relay\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Relay\"\r\n            relayOff(relayNum:relay,clickBoardNum:clickBoardID)\r\n            {\r\n                switch(relayNum)\r\n                {\r\n                    case relay.Relay1:\r\n                        this.clearPin(clickIOPin.PWM,clickBoardNum);\r\n                    break;\r\n        \r\n                    case relay.Relay2:\r\n                        this.clearPin(clickIOPin.CS,clickBoardNum);\r\n                    break;\r\n                }\r\n            \r\n            }\r\n    \r\n    \r\n            //%blockId=Relay_relayOnOff\r\n            //%block=\"$this Turn $onOff relay $relayNum on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=Relay\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Relay\"\r\n            relayOnOff(onOff: onOff,relayNum:relay,clickBoardNum:clickBoardID)\r\n            {\r\n                switch(relayNum)\r\n                {\r\n                    case relay.Relay1:\r\n                        this.writePin(onOff,clickIOPin.PWM,clickBoardNum);\r\n                    break;\r\n        \r\n                    case relay.Relay2:\r\n                        this.writePin(onOff,clickIOPin.CS,clickBoardNum);\r\n                    break;\r\n                }\r\n            \r\n            }\r\n\r\n        }\r\n    }",
             "Servo.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#EF697B icon=\"\"\r\n//% advanced=true\r\nnamespace Servo{\r\n  let PINs = new bBoard.PinSettings();\r\n\r\n  let I2Cs= new bBoard.I2CSettings();\r\n\r\n  //% block=\"create Servo settings\"\r\n    //% blockSetVariable=\"Servo\"\r\n    //% weight=110\r\n    export function createLCDSettings(): Servo {\r\n      return new Servo();\r\n }\r\n\r\n    export class Servo{\r\n    \r\n    readonly PCA9685_DEFAULT_I2C_ADDRESS :number;  \r\n    readonly LTC2497_DEFAULT_I2C_ADDRESS :number;  \r\n    readonly PCA9685_SUBADR1 : number;\r\n    readonly PCA9685_SUBADR2 : number;\r\n    readonly PCA9685_SUBADR3 : number;\r\n    \r\n    readonly PCA9685_MODE1 : number;\r\n    readonly PCA9685_MODE2 : number;\r\n    readonly PCA9685_PRESCALE :number;\r\n    \r\n    readonly LED0_ON_L  : number;\r\n    readonly LED0_ON_H  : number;\r\n    readonly LED0_OFF_L : number;\r\n    readonly LED0_OFF_H : number;\r\n    \r\n    readonly ALLLED_ON_L  : number;\r\n    readonly ALLLED_ON_H  : number;\r\n    readonly ALLLED_OFF_L : number;\r\n    readonly ALLLED_OFF_H : number;\r\n    \r\n    isInitialized : Array<number>;\r\n    deviceAddress : Array<number>;\r\n    \r\n    servoPulseMin : Array<number>;\r\n    servoPulseMax : Array<number>;\r\n    \r\n    servoAngleMin : Array<number>;\r\n    servoAngleMax : Array<number>;\r\n    \r\n    constructor(){\r\n    this.PCA9685_DEFAULT_I2C_ADDRESS =  0x40  \r\n    this.LTC2497_DEFAULT_I2C_ADDRESS =  0x48  \r\n    this.PCA9685_SUBADR1 =0x2 /**< i2c bus address 1 */\r\n    this.PCA9685_SUBADR2 =0x3 /**< i2c bus address 2 */\r\n    this.PCA9685_SUBADR3 =0x4 /**< i2c bus address 3 */\r\n    \r\n    this.PCA9685_MODE1 =0x0 /**< Mode Register 1 */\r\n    this.PCA9685_MODE2 =0x1 /**< Mode Register 2 */\r\n    this.PCA9685_PRESCALE =0xFE /**< Prescaler for PWM output frequency */\r\n    \r\n    this.LED0_ON_L= 0x6 /**< LED0 output and brightness control byte 0 */\r\n    this.LED0_ON_H =0x7 /**< LED0 output and brightness control byte 1 */\r\n    this.LED0_OFF_L =0x8 /**< LED0 output and brightness control byte 2 */\r\n    this.LED0_OFF_H =0x9 /**< LED0 output and brightness control byte 3 */\r\n    \r\n    this.ALLLED_ON_L =0xFA /**< load all the LEDn_ON registers, byte 0 */\r\n    this.ALLLED_ON_H =0xFB /**< load all the LEDn_ON registers, byte 1 */\r\n    this.ALLLED_OFF_L= 0xFC /**< load all the LEDn_OFF registers, byte 0 */\r\n    this.ALLLED_OFF_H =0xFD /**< load all the LEDn_OFF registers, byte 1 */\r\n    \r\n    \r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    \r\n    this.servoPulseMin  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.servoPulseMax = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    \r\n    this.servoAngleMin  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.servoAngleMax = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n      \r\n    }\r\n    \r\n    // you can use this if you'd like to set the pulse length in seconds\r\n    // e.g. setServoPulse(0, 0.001) is a ~1 millisecond pulse width. its not precise!\r\n    setServoPulse( servoNumber:number, pulse:number,clickBoardNum:clickBoardID) {\r\n        \r\n        \r\n        let pulselength = 1000000;   // 1,000,000 us per second\r\n        pulselength =pulselength/ 60;   // 60 Hz\r\n       \r\n        pulselength =pulselength/ 4096;  // 12 bits of resolution\r\n       \r\n        pulse = pulse/pulselength ;  // convert to us\r\n        \r\n        \r\n        this.setPWM(servoNumber, 0, pulse,clickBoardNum);\r\n      }\r\n    \r\n    \r\n     getServoAngleMin(clickBoardNum:clickBoardID):number\r\n      {\r\n        return this.servoAngleMin[clickBoardNum];\r\n      }\r\n      getServoAngleMax(clickBoardNum:clickBoardID):number\r\n      {\r\n        return this.servoAngleMax[clickBoardNum];\r\n      }\r\n      getServoPulseMin(clickBoardNum:clickBoardID):number\r\n      {\r\n        return this.servoPulseMin[clickBoardNum];\r\n      }\r\n      getServoPulseMax(clickBoardNum:clickBoardID):number\r\n      {\r\n        return this.servoPulseMax[clickBoardNum];\r\n      }\r\n    \r\n    \r\n    /*!\r\n     *  @brief  Sends a reset command to the PCA9685 chip over I2C\r\n     */\r\n    reset(clickBoardNum:clickBoardID) {\r\n    \r\n      this.writePCA9685Array([this.PCA9685_MODE1, 0x80],clickBoardNum)\r\n     control.waitMicros(10000)\r\n    \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Puts board into sleep mode\r\n     */\r\n    sleep(clickBoardNum:clickBoardID) {\r\n      let awake = this.readPCA9685(this.PCA9685_MODE1,clickBoardNum);\r\n      let sleep = awake | 0x10; // set sleep bit high\r\n      this.writePCA9685Array([this.PCA9685_MODE1, sleep],clickBoardNum)\r\n      control.waitMicros(5); // wait until cycle ends for sleep to be active\r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Wakes board from sleep\r\n     */\r\n    wakeup(clickBoardNum:clickBoardID) {\r\n      let sleep = this.readPCA9685(this.PCA9685_MODE1,clickBoardNum);\r\n      let wakeup = sleep & ~0x10; // set sleep bit low\r\n      this.writePCA9685Array([this.PCA9685_MODE1, wakeup],clickBoardNum)\r\n    }\r\n    \r\n    /**************************************************************************/\r\n    /*!\r\n        @brief  Sets EXTCLK pin to use the external clock\r\n           @param  prescale Configures the prescale value to be used by the external\r\n       clock\r\n    */\r\n    /**************************************************************************/\r\n    setExtClk(prescale:number,clickBoardNum:clickBoardID) {\r\n      let oldmode = this.readPCA9685(this.PCA9685_MODE1,clickBoardNum)\r\n      let newmode = (oldmode & 0x7F) | 0x10; // sleep\r\n      this.writePCA9685Array([this.PCA9685_MODE1, newmode],clickBoardNum)\r\n     \r\n    \r\n      // This sets both the SLEEP and EXTCLK bits of the MODE1 register to switch to\r\n      // use the external clock.\r\n      this.writePCA9685Array([this.PCA9685_MODE1, (newmode |= 0x40)],clickBoardNum)\r\n    \r\n      this.writePCA9685Array([this.PCA9685_PRESCALE, prescale],clickBoardNum)\r\n    \r\n        control.waitMicros(5000)\r\n        this.writePCA9685Array([this.PCA9685_MODE1, (newmode & ~(0x10) | 0xa0)],clickBoardNum)\r\n    \r\n    \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Sets the PWM frequency for the entire chip, up to ~1.6 KHz\r\n     *  @param  freq Floating point frequency that we will attempt to match\r\n     */\r\n    setPWMFreq(freq:number,clickBoardNum:clickBoardID) {\r\n    \r\n    \r\n        freq *= 0.9; // Correct for overshoot in the frequency setting (see issue #11).\r\n        let prescaleval = 25000000;\r\n        prescaleval /= 4096;\r\n        prescaleval /= freq;\r\n        prescaleval -= 1;\r\n    \r\n    \r\n        let prescale = Math.floor(prescaleval + 0.5);\r\n    \r\n    \r\n        let oldmode = this.readPCA9685(this.PCA9685_MODE1,clickBoardNum)\r\n        let  newmode = (oldmode & 0x7F) | 0x10; // sleep\r\n    \r\n        this.writePCA9685Array([this.PCA9685_MODE1, newmode],clickBoardNum);\r\n        this.writePCA9685Array([this.PCA9685_PRESCALE, prescale],clickBoardNum);\r\n        this.writePCA9685Array([this.PCA9685_MODE1, oldmode],clickBoardNum);\r\n        control.waitMicros(5000)\r\n        this.writePCA9685Array([this.PCA9685_MODE1, (oldmode |0xa0)&0x6F],clickBoardNum);//  This sets the MODE1 register to turn on auto increment.\r\n    \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Sets the output mode of the PCA9685 to either \r\n     *  open drain or push pull / totempole. \r\n     *  Warning: LEDs with integrated zener diodes should\r\n     *  only be driven in open drain mode. \r\n     *  @param  totempole Totempole if true, open drain if false. \r\n     */\r\n    setOutputMode( totempole:boolean, clickBoardNum:clickBoardID) {  \r\n       let oldmode =  this.readPCA9685(this.PCA9685_MODE2,clickBoardNum)\r\n    \r\n    let  newmode = 0;\r\n      if (totempole) {\r\n        newmode = (oldmode&0x7F) | 0x04;\r\n      }\r\n      else {\r\n        newmode = (oldmode&0x7F) & ~0x04;\r\n      }\r\n      let i2cArray:number[] = [this.PCA9685_MODE2, newmode];\r\n      this.writePCA9685Array(i2cArray,clickBoardNum); \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Gets the PWM output of one of the PCA9685 pins\r\n     *  @param  num One of the PWM output pins, from 0 to 15\r\n     *  @return requested PWM output value\r\n     */\r\n    //getPWM( num:number):number {\r\n        \r\n      //_i2c->requestFrom((int)_i2caddr, LED0_ON_L + 4 * num, (int)4);\r\n     // return _i2c->read();\r\n    //}\r\n    \r\n    \r\n    /*!\r\n     *  @brief  Sets the PWM output of one of the PCA9685 pins\r\n     *  @param  num One of the PWM output pins, from 0 to 15\r\n     *  @param  on At what point in the 4096-part cycle to turn the PWM output ON\r\n     *  @param  off At what point in the 4096-part cycle to turn the PWM output OFF\r\n     */\r\n      \r\n    setPWM(servoNumber:number, on:number, off:number,clickBoardNum:clickBoardID)  {\r\n    \r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n          this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS,clickBoardNum);\r\n        }\r\n        servoNumber = Math.clamp(0,15,servoNumber)\r\n     \r\n       \r\n    \r\n        let i2cArray:number [] = []\r\n        i2cArray[0] = this.LED0_ON_L + 4 * servoNumber;\r\n      \r\n        i2cArray[1] = on & 0x00FF;\r\n    \r\n        i2cArray[2] = on >> 8;\r\n        i2cArray[3] = off & 0x00FF;\r\n        i2cArray[4] = off >> 8\r\n        this.writePCA9685Array(i2cArray,clickBoardNum);\r\n    }\r\n    \r\n    /*!\r\n     *   @brief  Helper to set pin PWM output. Sets pin without having to deal with\r\n     * on/off tick placement and properly handles a zero value as completely off and\r\n     * 4095 as completely on.  Optional invert parameter supports inverting the\r\n     * pulse for sinking to ground.\r\n     *   @param  num One of the PWM output pins, from 0 to 15\r\n     *   @param  val The number of ticks out of 4096 to be active, should be a value\r\n     * from 0 to 4095 inclusive.\r\n     *   @param  invert If true, inverts the output, defaults to 'false'\r\n     */\r\n    setPin(servoNumber:number, val:number, invert:boolean,clickBoardNum:clickBoardID) {\r\n    \r\n       \r\n      // Clamp value between 0 and 4095 inclusive.\r\n      val = Math.min(val, 4095);\r\n      if (invert) {\r\n        if (val == 0) {\r\n          // Special value for signal fully on.\r\n          this.setPWM(servoNumber-1, 4096, 0,clickBoardNum);\r\n        } else if (val == 4095) {\r\n          // Special value for signal fully off.\r\n          this.setPWM(servoNumber-1, 0, 4096,clickBoardNum);\r\n        } else {\r\n            this.setPWM(servoNumber-1, 0, 4095 - val,clickBoardNum);\r\n        }\r\n      } else {\r\n        if (val == 4095) {\r\n          // Special value for signal fully on.\r\n          this.setPWM(servoNumber-1, 4096, 0,clickBoardNum);\r\n        } else if (val == 0) {\r\n          // Special value for signal fully off.\r\n          this.setPWM(servoNumber-1, 0, 4096,clickBoardNum);\r\n        } else {\r\n            this.setPWM(servoNumber-1, 0, val,clickBoardNum);\r\n        }\r\n      }\r\n    }\r\n    \r\n            setPCA9685Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n            {\r\n                this.deviceAddress[clickBoardNum] = deviceAddr;\r\n            }\r\n            getPCA9685Addr(clickBoardNum:clickBoardID):number\r\n            {\r\n                return this.deviceAddress[clickBoardNum];\r\n            }\r\n\r\n\r\n\r\n            //%blockId=Servo_initialize\r\n            //%block=\"Initalize $this PCA9685 to i2c address $PCA9685Addr and LTC2497 to i2c address $LTC2497Addr on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% weight=90   color=#9E4894 icon=\"\"\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n            //% advanced=true\r\n            initialize(PCA9685Addr:number, LTC2497Addr:number,clickBoardNum:clickBoardID)\r\n            {\r\n               \r\n                this.isInitialized[clickBoardNum]  = 1;\r\n                this.setPCA9685Addr(PCA9685Addr,clickBoardNum);\r\n                PINs.clearPin(clickIOPin.CS,clickBoardNum);\r\n                this.setPWMFreq(60,clickBoardNum);\r\n            \r\n            }\r\n        \r\n    \r\n    \r\n    \r\n    \r\n\r\n\r\n            //%blockId=Servo_Angle\r\n            //%block=\"Set $this servo $n to $angle on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% weight=90   color=#9E4894 icon=\"\"\r\n            //% advanced=false\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n        setServoAngle( servoNumber:number, angle:number,clickBoardNum:clickBoardID) {\r\n        \r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n            \r\n        }\r\n    \r\n        servoNumber = Math.clamp(1,16,servoNumber)\r\n    \r\n        let angleMin = 0\r\n        let angleMax = 180\r\n        let pulseMin = 1000\r\n        let pulseMax = 2000\r\n    \r\n        let angleRange = (angleMax - angleMin)  \r\n        let pulseRange = (pulseMax - pulseMin)  \r\n        let pulseWidth = (((angle - angleMin) * pulseRange) / angleRange) + pulseMin\r\n    \r\n        this.setServoPulse(servoNumber-1,pulseWidth,clickBoardNum)\r\n      }\r\n    \r\n         //%blockId=Servo_AngleAdjusted\r\n        //%block=\"Set $this servo $n to $angle with pulse range min $pulseMin and max $pulseMax on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n            //% servoNumber.min=1 servoNumber.max=16\r\n        //% servoNumber.defl=1\r\n        //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n        setServoAngleAdjusted( servoNumber:number,  angle:number,pulseMin:number,pulseMax:number,clickBoardNum:clickBoardID) {\r\n        \r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n            \r\n        }\r\n        let angleMin = 0\r\n        let angleMax = 180\r\n    \r\n        let angleRange = (angleMax - angleMin)  \r\n        let pulseRange = (pulseMax - pulseMin)  \r\n        let pulseWidth = (((angle - angleMin) * pulseRange) / angleRange) + pulseMin\r\n        servoNumber = Math.clamp(1,16,servoNumber)\r\n       \r\n        this.setServoPulse(servoNumber-1,pulseWidth,clickBoardNum)\r\n      }\r\n    \r\n     \r\n    \r\n    \r\n    \r\n         //%blockId=Servo_setPWM\r\n        //%block=\"Set $this servo $num to be on $on and off $off on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% servoNumber.min=1 servoNumber.max=16\r\n        //% servoNumber.defl=1\r\n        //% blockNamespace=Servo\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Servo\"\r\n        userSetPWM(servoNumber:number, on:number, off:number,clickBoardNum:clickBoardID)  \r\n        {\r\n          servoNumber = Math.clamp(1,16,servoNumber)\r\n          this.setPWM(servoNumber-1,on,off,clickBoardNum)\r\n        }\r\n    \r\n    \r\n    \r\n    \r\n    \r\n        \r\n            //%blockId=PCA9685_write\r\n            //%block=\"$this Write array $values to PCA9685 register$register on click$clickBoardNum ?\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n            writePCA9685Array(values:number[],clickBoardNum:clickBoardID)\r\n            {\r\n            \r\n            \r\n                let i2cBuffer = pins.createBuffer(values.length)\r\n    \r\n            for (let i=0;i<values.length;i++)\r\n            {\r\n                i2cBuffer.setNumber(NumberFormat.UInt8LE, i, values[i])\r\n               \r\n            }\r\n        \r\n            \r\n                I2Cs.i2cWriteBuffer(this.getPCA9685Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n             \r\n            }\r\n           \r\n    \r\n    \r\n            \r\n            //%blockId=PCA9685_read\r\n            //%block=\"$this Read from register$register on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n          readPCA9685( register:number, clickBoardNum:clickBoardID):number\r\n            {\r\n                \r\n        \r\n                I2Cs.i2cWriteNumber(this.getPCA9685Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)\r\n    \r\n        \r\n                return  I2Cs.I2CreadNoMem(this.getPCA9685Addr(clickBoardNum),1,clickBoardNum).getUint8(0)\r\n        \r\n                    \r\n            \r\n            }\r\n    \r\n    }\r\n    \r\n    \r\n    /*!\r\n     *  @file Adafruit_PWMServoDriver.cpp\r\n     *\r\n     *  @mainpage Adafruit 16-channel PWM & Servo driver\r\n     *\r\n     *  @section intro_sec Introduction\r\n     *\r\n     *  This is a library for the 16-channel PWM & Servo driver.\r\n     *\r\n     *  Designed specifically to work with the Adafruit PWM & Servo driver.\r\n     *\r\n     *  Pick one up today in the adafruit shop!\r\n     *  ------> https://www.adafruit.com/product/815\r\n     *\r\n     *  These displays use I2C to communicate, 2 pins are required to interface.\r\n     *\r\n     *  Adafruit invests time and resources providing this open source code,\r\n     *  please support Adafruit andopen-source hardware by purchasing products\r\n     *  from Adafruit!\r\n     *\r\n     *  @section author Author\r\n     *\r\n     *  Limor Fried/Ladyada (Adafruit Industries).\r\n     *\r\n     *  @section license License\r\n     *\r\n     *  BSD license, all text above must be included in any redistribution\r\n     */\r\n    \r\n    \r\n    /*!\r\n     *  @brief  Setups the I2C interface and hardware\r\n     *  @param  prescale\r\n     *          Sets External Clock (Optional)\r\n     *\r\n     */\r\n      \r\n    \r\n \r\n            \r\n            \r\n    \r\n            \r\n            }\r\n    ",
+            "Stepper_5.ts": "\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#EF697B icon=\"\"\r\n//% advanced=true\r\nnamespace Stepper_5 {\r\n\r\n   export enum Rotation\r\n    {\r\n          \r\n            //% block=\"Forward\"\r\n            Forward = 0,\r\n            //% block=\"Backwards\"\r\n            Backwards = 1\r\n         \r\n    \r\n    }\r\n\r\n\r\n    //% block=\"create Stepper settings\"\r\n    //% blockSetVariable=\"Stepper\"\r\n    //% weight=110\r\n    export function createStepper(): Stepper {\r\n        return new Stepper();\r\n   }\r\n\r\n\r\n    export class Stepper extends bBoard.PinSettings{\r\n\r\n    //% blockId=step\r\n    //% block=\"$this Single step motor $direction on click$clickBoardNum\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Stepper_5\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Stepper\"\r\n    step(direction:Stepper_5.Rotation,clickBoardNum: clickBoardID): void {\r\n        this.setPin(clickIOPin.PWM,clickBoardNum)\r\n        basic.pause(1)\r\n        this.clearPin(clickIOPin.PWM,clickBoardNum)\r\n    }\r\n\r\n    //% blockId=stepNum\r\n    //% block=\"$this Step motor $numSteps times $direction on click$clickBoardNum\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Stepper_5\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Stepper\"\r\n    stepNumber(numSteps: number, direction:Stepper_5.Rotation,clickBoardNum: clickBoardID): void {\r\n        this.writePin(direction,clickIOPin.RST,clickBoardNum)\r\n        for(let i=0;i<numSteps;i++)\r\n        {\r\n            this.setPin(clickIOPin.PWM,clickBoardNum)\r\n            control.waitMicros(500);\r\n            this.clearPin(clickIOPin.PWM,clickBoardNum)\r\n            control.waitMicros(500);\r\n\r\n        }\r\n  \r\n    }\r\n}\r\n}\r\n",
+            "Temp_Log_2.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Temp_Log_2{\r\n\r\n    //% block=\"create Temp_Log settings\"\r\n    //% blockSetVariable=\"Temp_Log\"\r\n    //% weight=110\r\n    export function createTemp_Log(): Temp_Log {\r\n        return new Temp_Log();\r\n    }\r\n\r\n\r\n    export class Temp_Log extends bBoard.I2CSettings{\r\n\r\n    private readonly TMP116_REG_TEMP\t= 0x00;\r\n    private readonly TMP116_REG_CONFIG = 0x01;\r\n    private readonly TMP116_REG_HIGH_LIMIT = 0x02;\r\n    private readonly TMP116_REG_LOW_LIMIT= 0x03;\t\r\n    private readonly TMP116_REG_DEVICE_ID = 0x0F;\r\n    private readonly TMP116_DEVICE_ADDRESS = 0x48;\r\n    \r\n    \r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    constructor(){\r\n        super();\r\n\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n\r\n    initialize(deviceAddr:number,clickBoardNum:clickBoardID)\r\n    {\r\n        //setTMP116Addr(deviceAddr,clickBoardNum)\r\n        this.isInitialized[clickBoardNum]  = 1\r\n        this.setTMP116Addr(deviceAddr,clickBoardNum)\r\n        this.writeTMP116(this.TMP116_REG_CONFIG,0x0220,clickBoardNum) //Initialize the Config register\r\n    \r\n    }\r\n    setTMP116Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.deviceAddress[clickBoardNum] = deviceAddr;\r\n    }\r\n    getTMP116Addr(clickBoardNum:clickBoardID):number\r\n    {\r\n        return this.deviceAddress[clickBoardNum];\r\n    }\r\n    readTMP116Reg(register:number,clickBoardNum:clickBoardID):number{\r\n        return this.readTMP116(this.TMP116_REG_CONFIG,clickBoardNum)\r\n    }\r\n    \r\n    readT(clickBoardNum:clickBoardID):number\r\n    {\r\n        return this.readTemperatureC(clickBoardNum);\r\n    }\r\n    \r\n    \r\n    writeTMP116(register:number,value:number,clickBoardNum:clickBoardID)\r\n    {\r\n    \r\n    \r\n        let i2cBuffer = pins.createBuffer(3)\r\n    \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register)\r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value >> 8) \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, value & 0xFF)\r\n    \r\n        this.i2cWriteBuffer(this.getTMP116Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n     \r\n    }\r\n    //Reads two consecutive bytes from a given location\r\n    //Stores the result at the provided outputPointer\r\n    readTMP116( register:number, clickBoardNum:clickBoardID):number\r\n    {\r\n        let i2cBuffer = pins.createBuffer(2);\r\n    \r\n        this.i2cWriteNumber(this.getTMP116Addr(clickBoardNum),register,NumberFormat.Int8LE,clickBoardNum,true)\r\n    \r\n     i2cBuffer = this.I2CreadNoMem(this.getTMP116Addr(clickBoardNum),2,clickBoardNum);\r\n    let sReturn =  Math.roundWithPrecision(i2cBuffer.getNumber(NumberFormat.Int16BE,0),1)\r\n    \r\n    \r\n    // let msb = i2cBuffer.getUint8(0)\r\n    // let lsb = i2cBuffer.getUint8(1)\r\n    \r\n    //return  (msb << 8 | lsb)\r\n    return sReturn\r\n    \r\n    }\r\n    \r\n    //%blockId=Temp_Log_readTemperatureC\r\n    //%block=\"$this Get temperature in Celcius on click$clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Temp_Log_2\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Temp_Log\"\r\n    readTemperatureC(clickBoardNum:clickBoardID):number\r\n    {\r\n    \r\n    \r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(this.TMP116_DEVICE_ADDRESS,clickBoardNum)\r\n            \r\n        }\r\n        return (this.readTMP116(this.TMP116_REG_TEMP,clickBoardNum) * 0.0078125)\r\n    }\r\n    //%blockId=Temp_Log_readTemperatureF\r\n    //%block=\"$this Get temperature in Fahrenheit on click$clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Temp_Log_2\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Temp_Log\"\r\n    readTemperatureF(clickBoardNum:clickBoardID):number\r\n    {\r\n      \r\n        return ((this.readTemperatureC(clickBoardNum))* 9.0/5.0 + 32.0)\r\n    }\r\n    \r\n    readHighLimit(clickBoardNum:clickBoardID):number\r\n    {\r\n        return  (this.readTMP116(this.TMP116_REG_HIGH_LIMIT,clickBoardNum) * 0.0078125)\r\n    }\r\n    \r\n    readLowLimit(clickBoardNum:clickBoardID): number\r\n    {\r\n    \r\n        return  (this.readTMP116(this.TMP116_REG_LOW_LIMIT,clickBoardNum) * 0.0078125)\r\n    }\r\n    \r\n    writeHighLimit( limit:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.writeTMP116(this.TMP116_REG_HIGH_LIMIT,(limit/0.0078125),clickBoardNum)\r\n        \r\n    }\r\n    \r\n    \r\n    writeLowLimit(limit:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.writeTMP116(this.TMP116_REG_LOW_LIMIT,(limit/0.0078125),clickBoardNum)\r\n        \r\n    \r\n    }\r\n    \r\n    readDeviceId(clickBoardNum:clickBoardID):number\r\n    {\r\n      \r\n        return   (this.readTMP116(this.TMP116_REG_DEVICE_ID,clickBoardNum))\r\n    }\r\n    \r\n    }\r\n\r\n}\r\n    \r\n    ",
+            "Thermo_6.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Thermo_6{\r\n\r\n    //% block=\"create Thermo settings\"\r\n    //% blockSetVariable=\"Thermo\"\r\n    //% weight=110\r\n    export function createThermo(): Thermo {\r\n        return new Thermo();\r\n   }\r\n\r\n    export class Thermo extends bBoard.I2CSettings{\r\n    //Address Definitions\r\nprivate readonly DEFAULT_I2C_ADDRESS =  0x48  \r\nprivate readonly TEMP_REG       = 0x00\r\nprivate readonly CONFIG_REG     = 0x01\r\nprivate readonly THYST_REG       = 0x02\r\nprivate readonly TOS_REG     = 0x03\r\n\r\n\r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    constructor(){\r\n        super();\r\n\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n   \r\n      //%blockId=Thermo6_getTempC\r\n       //%block=\"$this Get the temperature in Celcius on click$clickBoardNum\"\r\n       //% blockGap=7\r\n       //% advanced=false\r\n       //% blockNamespace=Thermo_6\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Thermo\"\r\n       getTempC(clickBoardNum:clickBoardID):number\r\n       {\r\n          \r\n           if(this.isInitialized[clickBoardNum] == 0)\r\n           {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n               \r\n           }\r\n           let temp = this.readMAX31875( this.TEMP_REG, clickBoardNum)\r\n           return temp/256\r\n       \r\n       \r\n       }\r\n   \r\n        //%blockId=Thermo6_getTempF\r\n       //%block=\"$this Get the temperature in Fahrenheit on click$clickBoardNum\"\r\n       //% blockGap=7\r\n       //% advanced=false\r\n       //% blockNamespace=Thermo_6\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Thermo\"\r\n       getTempF(clickBoardNum:clickBoardID):number\r\n       {\r\n          \r\n           if(this.isInitialized[clickBoardNum] == 0)\r\n           {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n               \r\n           }\r\n           let tempC = this.getTempC(clickBoardNum);\r\n           let tempF = tempC * 9.0/5.0 + 32.0;\r\n\r\n           return tempF\r\n       \r\n       \r\n       }\r\n   \r\n        //%blockId=Thermo6_initialize\r\n       //%block=\"$this Initalize with i2c address $deviceAddr on click$clickBoardNum\"\r\n       //% blockGap=7\r\n       //% advanced=true\r\n       //% blockNamespace=Thermo_6\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Thermo\"\r\n   initialize(deviceAddr:number,clickBoardNum:clickBoardID)\r\n   {\r\n      \r\n        this.isInitialized[clickBoardNum]  = 1\r\n       this.setMAX31875Addr(deviceAddr,clickBoardNum)\r\n       this.writeMAX31875(0x0066,this.CONFIG_REG,clickBoardNum) //Set PEC to off, 12 bit resolution and 8 samples/second\r\n   \r\n   \r\n   }\r\n\r\n\r\n    //%blockId=MAX31875_write\r\n   //%block=\"$this Write $value to register$register on click$clickBoardNum\"\r\n   //% blockGap=7\r\n   //% advanced=true\r\n   //% blockNamespace=Thermo_6\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Thermo\"\r\n   writeMAX31875(value:number,register:number,clickBoardNum:clickBoardID)\r\n   {\r\n   \r\n   \r\n       let i2cBuffer = pins.createBuffer(3)\r\n   \r\n       i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register)\r\n       i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value>>8 ) \r\n       i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, value & 0xFF)\r\n\r\n   \r\n       this.i2cWriteBuffer(this.getMAX31875Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n    \r\n   }\r\n   \r\n        //%blockId=MAX31875_read\r\n       //%block=\"$this Read from register$register on click$clickBoardNum\"\r\n       //% blockGap=7\r\n       //% advanced=true\r\n       //% blockNamespace=Thermo_6\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Thermo\"\r\n    readMAX31875( register:number, clickBoardNum:clickBoardID):number\r\n   {\r\n       let i2cBuffer = pins.createBuffer(2);\r\n\r\n       this.i2cWriteNumber(this.getMAX31875Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)\r\n\r\n       i2cBuffer = this.I2CreadNoMem(this.getMAX31875Addr(clickBoardNum),2,clickBoardNum);\r\n\r\n \r\n       let sReturn = Math.roundWithPrecision(i2cBuffer.getNumber(NumberFormat.Int16BE,0),1)\r\n       return  sReturn\r\n\r\n           \r\n   \r\n   }\r\n   \r\n   \r\n   setMAX31875Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n   {\r\n    this.deviceAddress[clickBoardNum] = deviceAddr;\r\n   }\r\n   getMAX31875Addr(clickBoardNum:clickBoardID):number\r\n   {\r\n       return this.deviceAddress[clickBoardNum];\r\n   }\r\n\r\n\r\n}\r\n}",
+            "Touchpad.ts": "/*\r\n    (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this\r\n    software and any derivatives exclusively with Microchip products.\r\n\r\n    THIS SOFTWARE IS SUPPLIED BY MICROCHIP \"AS IS\". NO WARRANTIES, WHETHER\r\n    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED\r\n    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A\r\n    PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATION\r\n    WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION.\r\n\r\n    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,\r\n    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND\r\n    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS\r\n    BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE\r\n    FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN\r\n    ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,\r\n    THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.\r\n\r\n    MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE\r\n    TERMS.\r\n*/\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#F4B820 icon=\"\"\r\n//% advanced=true\r\nnamespace Touchpad{\r\n\r\n    enum gestures{\r\n        No_Gesture = 0x00,\r\n        Single_Click = 0x10,\r\n        Click_Hold = 0x11,\r\n        Double_Click = 0x20,\r\n        Down_Swipe = 0x31,\r\n        Down_Swipe_Hold = 0x32,\r\n        Right_Swipe = 0x41,\r\n        Right_Swipe_Hold = 0x42,\r\n        Up_Swipe = 0x51,\r\n        Up_Swipe_Hold = 0x52,\r\n        Left_Swipe = 0x61,\r\n        Left_Swipe_Hold = 0x62\r\n    }\r\n\r\n    //% block=\"create Touchpad settings\"\r\n    //% blockSetVariable=\"Touchpad\"\r\n    //% weight=110\r\n    export function createTouchpad(): Touchpad {\r\n        return new Touchpad();\r\n   }\r\n\r\n    export class Touchpad extends bBoard.I2CSettings{\r\n    //Address Definitions\r\n    private readonly DEFAULT_I2C_ADDRESS     =      0x25  \r\n    private readonly FWMAJOR        =     0x00\r\n    private readonly FWMINOR        =     0x01\r\n    private readonly APPIDH         =     0x02\r\n    private readonly APPIDL          =    0x03\r\n    private readonly CMD            =     0x04\r\n    private readonly MODE          =      0x05\r\n    private readonly MODECON       =      0x06\r\n    private readonly TOUCH_STATE   =      0x10\r\n    private readonly TOUCH_XREG    =      0x11\r\n    private readonly TOUCH_YREG    =      0x12\r\n    private readonly GESTURESTATE = 0x14\r\n    \r\n    \r\n    //Masks\r\n    private readonly touch_mask = 0x01\r\n    private readonly gesture_mask = 0x02\r\n    \r\n\r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    constructor(){\r\n        super();\r\n\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n    \r\n       //%blockId=Touchpad_initialize\r\n        //%block=\"$this Initalize touchpad with i2c address $deviceAddr on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    initialize(deviceAddr:number,clickBoardNum:clickBoardID)\r\n    {\r\n        //setTMP116Addr(deviceAddr,clickBoardNum)\r\n        this.isInitialized[clickBoardNum]  = 1\r\n        this.setMTCH6102Addr(deviceAddr,clickBoardNum)\r\n        this.writeMTCH6102(0b0011,this.MODE,clickBoardNum) //Set the mode to full \r\n    \r\n    \r\n    }\r\n    \r\n        //%blockId=Touchpad_getX\r\n        //%block=\"$this Get X position on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    getX(clickBoardNum:clickBoardID):number\r\n    {\r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n            \r\n        }\r\n        return this.readMTCH6102( this.TOUCH_XREG,clickBoardNum);\r\n    }\r\n    \r\n        //%blockId=Touchpad_getY\r\n        //%block=\"$this Get Y position on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    getY(clickBoardNum:clickBoardID):number\r\n    {\r\n        if(this.isInitialized[clickBoardNum] == 0)\r\n        {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n            \r\n        }\r\n        return this.readMTCH6102(this.TOUCH_YREG,clickBoardNum);\r\n    }\r\n    \r\n        //%blockId=Touchpad_isTouched\r\n        //%block=\"$this Has touch occured on click$clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    isTouched(clickBoardNum:clickBoardID):boolean\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n                \r\n            }\r\n        \r\n            \r\n            return this.readMTCH6102(this.TOUCH_STATE,clickBoardNum)&this.touch_mask? true:false;\r\n        }\r\n    \r\n        //%blockId=Touchpad_isGesture\r\n        //%block=\"$this Has gesture occured on click$clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        isGesture(clickBoardNum:clickBoardID):boolean\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n                \r\n            }\r\n        \r\n           let  gestureState = this.readMTCH6102(this.TOUCH_STATE,clickBoardNum)\r\n    \r\n           if(((gestureState&this.gesture_mask)>>1) == 1)\r\n           {\r\n               return true\r\n            }\r\n           return false;\r\n        }\r\n    \r\n        //%blockId=Touchpad_getGestureName\r\n        //%block=\"$this Convert gesture ID $gestureID to a friendly name on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        getGestureName(gestureID:number,clickBoardNum:clickBoardID):string\r\n        {\r\n    switch (gestureID)\r\n    {\r\n      \r\n    \r\n        case  gestures.Single_Click:\r\n        return \"Single Click\"\r\n        break;\r\n    \r\n        case  gestures.Click_Hold :\r\n        return \"Click & Hold\"\r\n        break;\r\n    \r\n        case  gestures.Double_Click:\r\n        return \"Double Click\"\r\n        break;\r\n        \r\n        case  gestures.Down_Swipe :\r\n        return \"Down\"\r\n        break;\r\n        \r\n        case  gestures.Down_Swipe_Hold:\r\n        return \"Down Hold\"\r\n        break;\r\n    \r\n        case  gestures.Right_Swipe :\r\n        return \"Right\"\r\n        break;\r\n    \r\n        case  gestures.Right_Swipe_Hold :\r\n        return \"Right Hold\"\r\n        break;\r\n    \r\n        case  gestures.Up_Swipe :\r\n        return \"Up\"\r\n        break;\r\n    \r\n        case  gestures.Up_Swipe_Hold: \r\n        return \"Up Hold\"\r\n        break;\r\n    \r\n        case  gestures.Left_Swipe:\r\n        return \"Left\"\r\n        break;\r\n    \r\n        case  gestures.Left_Swipe_Hold: \r\n        return \"Left Hold\"\r\n        break;\r\n    }\r\n    return \"None\"\r\n        }\r\n    \r\n        //%blockId=Touchpad_getTouchState\r\n        //%block=\"$this Get touch status on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    getTouchState(clickBoardNum:clickBoardID):number\r\n    {\r\n     \r\n        \r\n        return this.readMTCH6102(this.TOUCH_STATE,clickBoardNum);\r\n    }\r\n    \r\n        //%blockId=Touchpad_getGesture\r\n        //%block=\"$this Get gesture on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        getGesture(clickBoardNum:clickBoardID):number\r\n        {\r\n            if(this.isInitialized[clickBoardNum] == 0)\r\n            {\r\n                this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n                \r\n            }\r\n        \r\n            \r\n            return this.readMTCH6102(this.GESTURESTATE,clickBoardNum);\r\n        }\r\n    \r\n        //%blockId=Touchpad_write\r\n        //%block=\"$this Write $value to register$register on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    writeMTCH6102(value:number,register:number,clickBoardNum:clickBoardID)\r\n    {\r\n    \r\n    \r\n        let i2cBuffer = pins.createBuffer(2)\r\n    \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register)\r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value ) \r\n        \r\n    \r\n        this.i2cWriteBuffer(this.getMTCH6102Addr(clickBoardNum),i2cBuffer,clickBoardNum);\r\n     \r\n    }\r\n    \r\n        //%blockId=Touchpad_read\r\n        //%block=\"$this Read from register$register on click$clickBoardNum\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    readMTCH6102( register:number, clickBoardNum:clickBoardID):number\r\n    {\r\n        let i2cBuffer = pins.createBuffer(1);\r\n    \r\n        this.i2cWriteNumber(this.getMTCH6102Addr(clickBoardNum),register,NumberFormat.Int8LE,clickBoardNum,true)\r\n    \r\n    return this.I2CreadNoMem(this.getMTCH6102Addr(clickBoardNum),1,clickBoardNum).getUint8(0);\r\n    \r\n    \r\n    \r\n    }\r\n    \r\n    \r\n    setMTCH6102Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n    {\r\n        this.deviceAddress[clickBoardNum] = deviceAddr;\r\n    }\r\n    getMTCH6102Addr(clickBoardNum:clickBoardID):number\r\n    {\r\n        return this.deviceAddress[clickBoardNum];\r\n    }\r\n    \r\n    }\r\n}\r\n",
+            "Water_Detect.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Water_Detect {\r\n\r\n    //% block=\"create Water_Detect settings\"\r\n    //% blockSetVariable=\"Water_Detect\"\r\n    //% weight=110\r\n    export function createStepper(): Water_Detect {\r\n        return new Water_Detect();\r\n   }\r\n\r\n    export class Water_Detect extends bBoard.PinSettings{\r\n    //% blockId=Water_Detect_isWater\r\n    //% block=\"$this Is water detected on click$clickBoardNum ?\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Water_Detect\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Water_Detect\"\r\n    isWater(clickBoardNum: clickBoardID): number {\r\n           if(this.digitalReadPin(clickIOPin.INT,clickBoardNum) == 1)\r\n           {\r\n               return 1;\r\n           }\r\n           else{\r\n               return 0;\r\n           }\r\n  \r\n    }\r\n  }\r\n}",
             "Weather.ts": " //**\r\n //* Provides access to basic micro:bit functionality.\r\n //*/\r\n//% color=#1E90FF weight=116 icon=\"\\uf00a\"\r\n\r\nenum Weather_I2C_ADDRESS {\r\n    //% block=\"0x76\"\r\n    ADDR_0x76 = 0x76,\r\n    //% block=\"0x77\"\r\n    ADDR_0x77 = 0x77\r\n}\r\n\r\nenum Weather_T {\r\n    //% block=\"C\"\r\n    T_C = 0,\r\n    //% block=\"F\"\r\n    T_F = 1\r\n}\r\n\r\nenum Weather_P {\r\n    //% block=\"Pa\"\r\n    Pa = 0,\r\n    //% block=\"hPa\"\r\n    hPa = 1\r\n}\r\n\r\nenum below_above {\r\n    //% block=\"<=\"\r\n    below = 0,\r\n    //% block=\">=\"\r\n    above = 1\r\n}\r\n\r\n/**\r\n * Weather\r\n */\r\n//% weight=100 color=#70c0f0 icon=\"\\uf042\" block=\"Weather\"\r\n//% advanced=true\r\nnamespace Weather {\r\n       //% block=\"create Weather object\"\r\n    //% blockSetVariable=\"WEATHER\"\r\n    //% weight=110\r\n    export function createWeather(): Weather {\r\n        return new Weather();\r\n       }\r\n\r\n    export class Weather{\r\n\r\n        Weather_I2C_ADDR : number;\r\n        dig_T1 : number;\r\n        dig_T2 : number;\r\n        dig_T3 : number;\r\n        dig_P1 : number;\r\n        dig_P2 : number;\r\n        dig_P3 : number;\r\n        dig_P4 : number;\r\n        dig_P5 : number;\r\n        dig_P6 : number;\r\n        dig_P7 : number;\r\n        dig_P8 : number;\r\n        dig_P9 : number;\r\n        dig_H1 : number;\r\n        dig_H2 : number;\r\n        dig_H3 : number;\r\n        a : number;\r\n        dig_H4 : number;\r\n        dig_H5 : number;\r\n        dig_H6 : number;\r\n        T : number;\r\n        P : number;\r\n        H : number;\r\n\r\n        constructor(){\r\n        this.Weather_I2C_ADDR = Weather_I2C_ADDRESS.ADDR_0x76;\r\n        this.dig_T1 = this.getUInt16LE(0x88);\r\n        this.dig_T2 = this.getInt16LE(0x8A);\r\n        this.dig_T3 = this.getInt16LE(0x8C);\r\n        this.dig_P1 = this.getUInt16LE(0x8E);\r\n        this.dig_P2 = this.getInt16LE(0x90);\r\n        this.dig_P3 = this.getInt16LE(0x92);\r\n        this.dig_P4 = this.getInt16LE(0x94);\r\n        this.dig_P5 = this.getInt16LE(0x96);\r\n        this.dig_P6 = this.getInt16LE(0x98);\r\n        this.dig_P7 = this.getInt16LE(0x9A);\r\n        this.dig_P8 = this.getInt16LE(0x9C);\r\n        this.dig_P9 = this.getInt16LE(0x9E);\r\n        this.dig_H1 = this.getreg(0xA1);\r\n        this.dig_H2 = this.getInt16LE(0xE1);\r\n        this.dig_H3 = this.getreg(0xE3);\r\n        this.a = this.getreg(0xE5);\r\n        this.dig_H4 = (this.getreg(0xE4) << 4) + (this.a % 16);\r\n        this.dig_H5 = (this.getreg(0xE6) << 4) + (this.a >> 4);\r\n        this.dig_H6 = this.getInt8LE(0xE7);\r\n        this.setreg(0xF2, 0x04)\r\n        this.setreg(0xF4, 0x2F)\r\n        this.setreg(0xF5, 0x0C)\r\n        this.T = 0\r\n        this.P = 0\r\n        this.H = 0\r\n        }\r\n        setreg(reg: number, dat: number): void {\r\n            let buf = pins.createBuffer(2);\r\n            buf[0] = reg;\r\n            buf[1] = dat;\r\n            pins.i2cWriteBuffer(this.Weather_I2C_ADDR, buf);\r\n        }\r\n\r\n        getreg(reg: number): number {\r\n            pins.i2cWriteNumber(this.Weather_I2C_ADDR, reg, NumberFormat.UInt8BE);\r\n            return pins.i2cReadNumber(this.Weather_I2C_ADDR, NumberFormat.UInt8BE);\r\n        }\r\n\r\n        getInt8LE(reg: number): number {\r\n            pins.i2cWriteNumber(this.Weather_I2C_ADDR, reg, NumberFormat.UInt8BE);\r\n            return pins.i2cReadNumber(this.Weather_I2C_ADDR, NumberFormat.Int8LE);\r\n        }\r\n\r\n        getUInt16LE(reg: number): number {\r\n            pins.i2cWriteNumber(this.Weather_I2C_ADDR, reg, NumberFormat.UInt8BE);\r\n            return pins.i2cReadNumber(this.Weather_I2C_ADDR, NumberFormat.UInt16LE);\r\n        }\r\n\r\n        getInt16LE(reg: number): number {\r\n            pins.i2cWriteNumber(this.Weather_I2C_ADDR, reg, NumberFormat.UInt8BE);\r\n            return pins.i2cReadNumber(this.Weather_I2C_ADDR, NumberFormat.Int16LE);\r\n        }\r\n\r\n\r\n        get(): void {\r\n            let adc_T = (this.getreg(0xFA) << 12) + (this.getreg(0xFB) << 4) + (this.getreg(0xFC) >> 4)\r\n            let var1 = (((adc_T >> 3) - (this.dig_T1 << 1)) * this.dig_T2) >> 11\r\n            let var2 = (((((adc_T >> 4) - this.dig_T1) * ((adc_T >> 4) - this.dig_T1)) >> 12) * this.dig_T3) >> 14\r\n            let t = var1 + var2\r\n            this.T = Math.idiv((t * 5 + 128) >> 8, 100)\r\n            var1 = (t >> 1) - 64000\r\n            var2 = (((var1 >> 2) * (var1 >> 2)) >> 11) * this.dig_P6\r\n            var2 = var2 + ((var1 * this.dig_P5) << 1)\r\n            var2 = (var2 >> 2) + (this.dig_P4 << 16)\r\n            var1 = (((this.dig_P3 * ((var1 >> 2) * (var1 >> 2)) >> 13) >> 3) + (((this.dig_P2) * var1) >> 1)) >> 18\r\n            var1 = ((32768 + var1) * this.dig_P1) >> 15\r\n            if (var1 == 0)\r\n                return; // avoid exception caused by division by zero\r\n            let adc_P = (this.getreg(0xF7) << 12) + (this.getreg(0xF8) << 4) + (this.getreg(0xF9) >> 4)\r\n            let _p = ((1048576 - adc_P) - (var2 >> 12)) * 3125\r\n            _p = Math.idiv(_p, var1) * 2;\r\n            var1 = (this.dig_P9 * (((_p >> 3) * (_p >> 3)) >> 13)) >> 12\r\n            var2 = (((_p >> 2)) * this.dig_P8) >> 13\r\n            this.P = _p + ((var1 + var2 + this.dig_P7) >> 4)\r\n            let adc_H = (this.getreg(0xFD) << 8) + this.getreg(0xFE)\r\n            var1 = t - 76800\r\n            var2 = (((adc_H << 14) - (this.dig_H4 << 20) - (this.dig_H5 * var1)) + 16384) >> 15\r\n            var1 = var2 * (((((((var1 * this.dig_H6) >> 10) * (((var1 * this.dig_H3) >> 11) + 32768)) >> 10) + 2097152) * this.dig_H2 + 8192) >> 14)\r\n            var2 = var1 - (((((var1 >> 15) * (var1 >> 15)) >> 7) * this.dig_H1) >> 4)\r\n            if (var2 < 0) var2 = 0\r\n            if (var2 > 419430400) var2 = 419430400\r\n            this.H = (var2 >> 12) >> 10\r\n        }\r\n\r\n        /**\r\n         * get humidity\r\n         */\r\n        //% blockId=\"Weather_GET_HUMIDITY\" block=\"$this humidity\"\r\n        //% weight=80 blockGap=8\r\n        //% group=\"HUMIDITY\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n        \r\n        humidity(): number { \r\n            this.get();\r\n            return this.H;\r\n        }\r\n\r\n         //////////////////////////////////////////////////////////\r\n        /**\r\n         * humidity below or above Event\r\n         */\r\n        //% blockId=\"Humidity_Below_Above\" block=\"$this Humidity below or above $u $dat\" dat.defl=30\r\n        //% weight=80 blockGap=8\r\n        //% group=\"HUMIDITY\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n        HumidityBelowAbove( u: below_above, dat: number, body: () => void): void {\r\n             \r\n            this.get();\r\n            control.inBackground(function () {\r\n                while (true) {\r\n                    this.get()\r\n                    if(u == below_above.below)\r\n                    {\r\n                    if (this.H < dat) {\r\n                        body()\r\n                    }\r\n                    }\r\n                    if(u == below_above.above)\r\n                    {\r\n                    if (this.H > dat) {\r\n                        body()\r\n                    }\r\n                    }\r\n                    basic.pause(1000)\r\n                }\r\n            })\r\n        }\r\n        ////////////////////////////////////////////////////////\r\n\r\n\r\n         /**\r\n         * get pressure\r\n         */\r\n        //% blockId=\"Weather_GET_PRESSURE\" block=\"$this pressure $u\"\r\n        //% weight=80 blockGap=8\r\n        //% group=\"PRESSURE\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n        pressure(u: Weather_P): number {\r\n            this.get();\r\n            if (u == Weather_P.Pa) return this.P;\r\n            else return Math.idiv(this.P, 100)\r\n        }\r\n\r\n\r\n        ///////////////////////////////////////////////////////////\r\n        /**\r\n         * Pressure below or above Event\r\n         */\r\n        //% blockId=\"Pressure_Below_Above\"  block=\"$this Pressure below or above $u $dat\" dat.defl=100000\r\n        //% weight=80 blockGap=8\r\n        //% group=\"PRESSURE\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n\r\n        PressureBelowAbove( u: below_above, dat: number, body: () => void): void {\r\n            control.inBackground(function () {\r\n                while (true) {\r\n                    this.get()\r\n                    if(u == below_above.below)\r\n                    {\r\n                    if (this.P < dat) {\r\n                        body()\r\n                    }\r\n                    }\r\n                    if(u == below_above.above)\r\n                    {\r\n                    if (this.P > dat) {\r\n                        body()\r\n                    }\r\n                    }\r\n                    basic.pause(1000)\r\n                }\r\n            })\r\n        }\r\n\r\n\r\n        /**\r\n         * get temperature\r\n         */\r\n        //% blockId=\"Weather_GET_TEMPERATURE\" block=\"$this temperature $u\"\r\n        //% weight=80 blockGap=8\r\n        //% group=\"TEMPERATURE\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n        temperature(u: Weather_T): number {\r\n            this.get();\r\n            if (u == Weather_T.T_C) return this.T;\r\n            else return 32 + Math.idiv(this.T * 9, 5)\r\n        }\r\n\r\n\r\n       \r\n\r\n        /**\r\n         * temperature below or above Event\r\n         */\r\n        //% blockId=\"Temperature_Below_Above\" block=\"$this Temperature below or above $u $dat\" dat.defl=20\r\n        //% weight=80 blockGap=8\r\n        //% group=\"TEMPERATURE\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n\r\n        TemperatureBelowAbove( u: below_above, dat: number, body: () => void): void {\r\n            control.inBackground(function () {\r\n                while (true) {\r\n                    this.get()\r\n                    if(u == below_above.below)\r\n                    {\r\n                    if (this.T < dat) {\r\n                        body()\r\n                    }\r\n                    }\r\n                    if(u == below_above.above)\r\n                    {\r\n                    if (this.T > dat) {\r\n                        body()\r\n                    }\r\n                    }\r\n                    basic.pause(1000)\r\n                }\r\n            })\r\n        }\r\n\r\n        ///////////////////////////////////////////////////////\r\n\r\n\r\n\r\n\r\n\r\n        /**\r\n         * set I2C address\r\n         */\r\n        //% blockId=\"Weather_SET_ADDRESS\" block=\"$this set address $addr\"\r\n        //% weight=20 blockGap=8\r\n        //% group=\"Added Features\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n        Address(addr: Weather_I2C_ADDRESS) {\r\n            this.Weather_I2C_ADDR = addr\r\n        }\r\n\r\n\r\n\r\n        /**\r\n         * power on\r\n         */\r\n        //% blockId=\"Weather_POWER_ON\" block=\"$this Power On\"\r\n        //% weight=22 blockGap=8\r\n        //% group=\"POWER\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n\r\n        PowerOn() {\r\n            this.setreg(0xF4, 0x2F)\r\n        }\r\n\r\n        /**\r\n         * power off\r\n         */\r\n        //% blockId=\"Weather_POWER_OFF\" block=\"$this Power Off\"\r\n        //% weight=21 blockGap=8\r\n        //% group=\"POWER\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n\r\n        PowerOff() {\r\n            this.setreg(0xF4, 0)\r\n        }\r\n\r\n        /**\r\n         * Calculate Dewpoint\r\n         */\r\n        //% block=\"$this Dewpoint\"\r\n        //% weight=60 blockGap=8\r\n        //% group=\"Added Features\"\r\n        //% blockNamespace=Weather\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"WEATHER\"\r\n\r\n        Dewpoint(): number {\r\n            this.get();\r\n            return this.T - Math.idiv(100 - this.H, 5)\r\n        }\r\n\r\n       \r\n        \r\n\r\n    }\r\n\r\n\r\n\r\n     \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n}  ",
             "WiFi_BLE.ts": "namespace WiFiSetResponses{\r\n    let UARTs = new bBoard.UARTSettings();\r\n    export class SetResponse{\r\n    \r\n    readonly defaultWiFiTimeoutmS :number ; \r\n    response : number;\r\n    receivedData : String\r\n    MQTTMessageRetrieveState : number ;\r\n    \r\n    MQTTMessage : String;\r\n    \r\n    constructor(){\r\n    this.defaultWiFiTimeoutmS = 10000; //default time alloted for timeout on WiFi communication\r\n    this.response = 2;\r\n    this.receivedData = \"\"; //A place to store the response from the WiFi clickwhen requestting HTTP data\r\n    this.MQTTMessageRetrieveState = 0; //Track MQTT message retrieval state.\r\n    this.MQTTMessage = \"\"; //Used to store the retrieved message   \r\n    }\r\n    \r\n    clearSerialBuffer() {\r\n        //   serial.clearRxBuffer()\r\n    }\r\n    \r\n    WiFiResponse(\r\n        expectedResponse: string,\r\n        IPDResponseTrue: boolean,\r\n        timeoutmS: number,\r\n        clickBoardNum: clickBoardID\r\n    ) {\r\n        \r\n        let IPDLengthIndexStart = 0; \r\n        let receivedStr = \"\"; //The built string\r\n        let tempIndex = 0; \r\n        this.receivedData = \"\";\r\n        let IPDResponseLength = 0; //IPD Response length\r\n    \r\n    \r\n        let expectedResponseIndex = 0; //The current position of the expected response comparison\r\n    \r\n        let responseState = 0; //Used to track where we are in parsing the response\r\n        let startTime = input.runningTime(); //Get the time when this was called\r\n       \r\n        while (input.runningTime() < (startTime + timeoutmS)) {\r\n            //Do the code below while timeout hasn't occured\r\n          \r\n    \r\n    \r\n            if(UARTs.isUARTDataAvailable(clickBoardNum))\r\n            {\r\n               \r\n                receivedStr = receivedStr + UARTs.getUARTData(clickBoardNum); //Read the serial port for any received responses\r\n              \r\n            }\r\n             \r\n                    switch (responseState) {\r\n                        case 0:\r\n                       \r\n                            if (receivedStr.indexOf(expectedResponse) != -1)\r\n                            {\r\n                               \r\n                                responseState = 1; //Move to the next stage of response comparison\r\n                               \r\n                            }\r\n                            break;\r\n    \r\n                        case 1:\r\n                       \r\n                                    if (IPDResponseTrue == true) {\r\n                                      \r\n                                        expectedResponseIndex = 0; //Reset the expected response index as we need to start over\r\n    \r\n                                        responseState = 3;\r\n                                    } \r\n                                    else {\r\n                                        \r\n                                        this.receivedData = receivedStr\r\n                                        return 1; //Succesfully matched\r\n                                    }\r\n                               \r\n                            break;\r\n                  \r\n    \r\n                        case 3:\r\n                            tempIndex = receivedStr.indexOf(\"+IPD\");\r\n                           \r\n                            if ( tempIndex != -1)\r\n                                  {\r\n                                  \r\n                                      expectedResponseIndex = tempIndex;\r\n                                      responseState = 4;\r\n                                  }\r\n                             \r\n                            break;\r\n    \r\n                        case 4:\r\n                            tempIndex = receivedStr.indexOf(\",\",expectedResponseIndex);\r\n                           \r\n                            if (tempIndex != -1) {\r\n                              \r\n                                IPDLengthIndexStart = tempIndex + 1;\r\n                                responseState = 5;\r\n                            }\r\n                            break;\r\n    \r\n                        case 5:\r\n                            tempIndex = receivedStr.indexOf(\":\",expectedResponseIndex);\r\n                    \r\n                            if (tempIndex != -1) {\r\n                               \r\n                                expectedResponseIndex = tempIndex;\r\n                                IPDResponseLength = parseInt(receivedStr.substr(IPDLengthIndexStart,(expectedResponseIndex - IPDLengthIndexStart))); //Convert the characters we received representing the length of the IPD response to an integer\r\n                                \r\n                                \r\n                             \r\n                                responseState = 6;\r\n                            }\r\n                              \r\n                            break;\r\n    \r\n                        case 6:\r\n                            if(receivedStr.length >= IPDResponseLength){  //Make sure all of the message has arrived\r\n                                this.receivedData = receivedStr.slice(expectedResponseIndex+1); //Remove everything except the message\r\n                                return 1; //Successfully read\r\n    \r\n                            }\r\n                         \r\n                        \r\n    \r\n                            break;\r\n                    } //Switch\r\n               \r\n            \r\n        }\r\n    \r\n        return 0;\r\n    }\r\n    \r\n    \r\n    \r\n    ThingSpeakResponse() {\r\n        let data = 0;\r\n        let dataStr = \"\";\r\n        let responseState = 0; //Used to track where we are in parsing the response\r\n        let currentCharIndex = 0; //Used to track the character we are currently looking at\r\n    \r\n        let expectedResponseStr = \"\\\"feeds\\\"\"; //Used to hold the desired response we are looking for\r\n        let expectedResponseLen = expectedResponseStr.length; //Length of the expected Response we are looking for\r\n        let expectedResponseIndex = 0; //Used to track the character we are currently looking at for the expected response\r\n    \r\n        let receivedDataLen = this.receivedData.length; //Length of the response\r\n    \r\n        for (\r\n            let currentCharIndex = 0;\r\n            currentCharIndex < receivedDataLen;\r\n            currentCharIndex++\r\n        ) {\r\n            switch (responseState) {\r\n                case 0:\r\n                    if (\r\n                        this.receivedData\r\n                            .charAt(currentCharIndex)\r\n                            .compare(\r\n                                expectedResponseStr.charAt(expectedResponseIndex)\r\n                            ) == 0\r\n                    ) {\r\n                        expectedResponseIndex++; //Look at the next character in the expected response next time through\r\n    \r\n                        if (expectedResponseIndex == expectedResponseLen) {\r\n                            expectedResponseStr = \"field1\\\":\\\"\"; //Used to hold the desired response we are looking for\r\n                            expectedResponseLen = expectedResponseStr.length; //Length of the expected Response we are looking for\r\n                            expectedResponseIndex = 0; //Used to track the character we are currently looking at for the expected response\r\n                            responseState = 1; //Move to the next stage of response comparison\r\n                        }\r\n                    }\r\n                    break;\r\n    \r\n                case 1:\r\n                    if (\r\n                        this.receivedData\r\n                            .charAt(currentCharIndex)\r\n                            .compare(\r\n                                expectedResponseStr.charAt(expectedResponseIndex)\r\n                            ) == 0\r\n                    ) {\r\n                        expectedResponseIndex++; //Look at the next character in the expected response next time through\r\n    \r\n                        if (expectedResponseIndex == expectedResponseLen) {\r\n                            expectedResponseStr = \"\\\"\"; //Used to hold the desired response we are looking for\r\n                            expectedResponseLen = expectedResponseStr.length; //Length of the expected Response we are looking for\r\n                            expectedResponseIndex = 0; //Used to track the character we are currently looking at for the expected response\r\n                            responseState = 2; //Move to the next stage of response comparison\r\n                        }\r\n                    }\r\n                    break;\r\n                case 2:\r\n                    if (\r\n                        this.receivedData\r\n                            .charAt(currentCharIndex)\r\n                            .compare(expectedResponseStr.charAt(0)) == 0\r\n                    ) {\r\n                        data = parseInt(dataStr); //Convert the characters we received representing the length of the IPD response to an integer\r\n                        return dataStr;\r\n                    } else {\r\n                        dataStr = dataStr.concat(\r\n                            this.receivedData.charAt(currentCharIndex)\r\n                        );\r\n                    }\r\n                    break;\r\n            }\r\n        }\r\n    \r\n        return \"\";\r\n    \r\n        }\r\n    \r\n        }\r\n    }\r\n\r\n\r\n\r\n\r\n    ///////////////////////////////////////////////////////////////////////////////////////////////////////////\r\n      /**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#FF2F92 icon=\"\"\r\n//% advanced=true\r\nnamespace WiFi_BLE {\r\n    let UARTs = new bBoard.UARTSettings();\r\n\r\n    let SetResponseObj= new WiFiSetResponses.SetResponse();\r\n\r\n\r\n\r\n    //% groups=\" 'Connect' weight=100, 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' \"\r\nlet MQTTMessage = \"\"\r\nlet UARTRawData  = \"\"\r\n\r\n    let flag = true;\r\n\r\n    let BLMQTTMessage = \"\"\r\n    export enum Command\r\n    {\r\n          \r\n            //% block=\"Set Variable\"\r\n            Set_Variable = 0,\r\n            //% block=\"Create Variable\"\r\n            Create_Variable = 1,\r\n             //% block=\"Delete Variable\"\r\n             Delete_Variable = 2,\r\n           //% block=\"Add_Data_Point\"\r\n           Add_Data_Point = 3,\r\n           //% block=\"Delete Data_Point\"\r\n           Delete_Data_Point = 4,\r\n                  //% block=\"Create_Data_Point\"\r\n                  Create_Data_Point = 5\r\n    \r\n    }\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=publishBLMQTT\r\n    //% block=\"BL MQTT publish command %command|variable name %varName|data %data|API key %topic|on click%clickBoardNum\"\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function publishBLMQTT(command:Command,varName: string, data: number,topic: string, clickBoardNum: clickBoardID): void {\r\n        let publishPacketSize = 0\r\n        let controlPacket = pins.createBuffer(1);\r\n        controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x30); //Publish Control Packet header\r\n\r\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\r\n        let topicLength = pins.createBuffer(2);\r\n        topicLength.setNumber(NumberFormat.UInt8LE, 0, topic.length >> 8);\r\n        topicLength.setNumber(NumberFormat.UInt8LE, 1, topic.length & 0xFF);\r\n        let cmd = \"\"\r\n        switch(command)\r\n        {\r\n            case Command.Set_Variable:\r\n                cmd = \"SET_VARIABLE\";\r\n                break;\r\n\r\n            case Command.Create_Variable:\r\n                cmd = \"CREATE_VARIABLE\";\r\n                break;     \r\n            \r\n            case Command.Delete_Variable:\r\n                cmd = \"DELETE_VARIABLE\";\r\n                break;           \r\n\r\n\r\n\r\n        }\r\n        let i = 0\r\n        let encodedByte = 0\r\n        let X = 0\r\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\r\n        let mqttBody = \r\n        \"{\\r\\n\" +\r\n        \"  \\\"key\\\": \\\"\"+topic+\"\\\",\\r\\n\" +\r\n        \"  \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\r\\n\" +\r\n        \"  \\\"name\\\": \\\"\"+varName+\"\\\",\\r\\n\" +\r\n        \"  \\\"value\\\": \\\"\"+data.toString()+\"\\\"\\r\\n\"+\r\n        \"}\" \r\n\r\n\r\n        X = 0x02 + topic.length + mqttBody.length\r\n\r\n        for (i = 0; i < 4; i++) {\r\n            if (X >= 128) {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, 0xFF)\r\n                X -= 127\r\n            }\r\n            else {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, X)\r\n                break;\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n        let remainingLength = pins.createBuffer(i + 1)\r\n        for (let j = 0; j < i + 1; j++) {\r\n            remainingLength.setNumber(NumberFormat.UInt8LE, j, remainingLengthTemp.getNumber(NumberFormat.UInt8LE, j))\r\n\r\n        }\r\n\r\n        publishPacketSize = 1 + remainingLength.length + 2 + topic.length + mqttBody.length\r\n\r\n\r\n\r\n        UARTs.sendString(\"AT+CIPSEND=0,\" + publishPacketSize.toString() + \"\\r\\n\", clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendBuffer(controlPacket, clickBoardNum)\r\n        UARTs.sendBuffer(remainingLength, clickBoardNum)\r\n        UARTs.sendBuffer(topicLength, clickBoardNum)\r\n        UARTs.sendString(topic, clickBoardNum)\r\n        UARTs.sendString(mqttBody, clickBoardNum)\r\n        // UARTs.sendString(\"\\r\\n\",clickBoardNum)\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n        basic.pause(200)\r\n\r\n\r\n        //  UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",clickBoardNum)\r\n        //  SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=connectBLMQTT\r\n    //% block=\"Connect to BL MQTT broker on click%clickBoardNum\"\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function connectBLMQTT(clickBoardNum: clickBoardID): void {\r\n\r\n        let connectPacketSize = 0\r\n        let controlPacket = pins.createBuffer(1);\r\n        controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x10); //Publish Control Packet header\r\n\r\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\r\n        let protocolName = \"MQTT\"\r\n\r\n        let protocolNameLength = pins.createBuffer(2);\r\n        protocolNameLength.setNumber(NumberFormat.UInt8LE, 0, protocolName.length >> 8);\r\n        protocolNameLength.setNumber(NumberFormat.UInt8LE, 1, protocolName.length & 0xFF);\r\n\r\n\r\n        let protocolLevel = pins.createBuffer(1);\r\n        protocolLevel.setNumber(NumberFormat.UInt8LE, 0, 0x04);\r\n\r\n        let protocolFlags = pins.createBuffer(1);\r\n        protocolFlags.setNumber(NumberFormat.UInt8LE, 0, 0x02);\r\n\r\n\r\n        let keepAliveSeconds = 60\r\n\r\n        let keepAlive = pins.createBuffer(2);\r\n        keepAlive.setNumber(NumberFormat.UInt8LE, 0, keepAliveSeconds >> 8);\r\n        keepAlive.setNumber(NumberFormat.UInt8LE, 1, keepAliveSeconds & 0xFF);\r\n\r\n\r\n        let clientID = control.deviceSerialNumber().toString();\r\n        let clientIDLength = pins.createBuffer(2);\r\n        clientIDLength.setNumber(NumberFormat.UInt8LE, 0, clientID.length >> 8);\r\n        clientIDLength.setNumber(NumberFormat.UInt8LE, 1, clientID.length & 0xFF);\r\n\r\n        let i = 0\r\n        let encodedByte = 0\r\n        let X = 0\r\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\r\n\r\n\r\n        X = protocolNameLength.length + protocolName.length + protocolLevel.length + protocolFlags.length + keepAlive.length + clientIDLength.length + clientID.length //Add up all of the bytes to determine the connect packet size\r\n        connectPacketSize = X\r\n\r\n        for (i = 0; i < 4; i++) { //This for loop determines if we need more than one byte to store the remaining length. With MQTT, you can use up to 4 bytes to say how long your remaining length is. \r\n            if (X >= 128) { //If your remaining length is greater than or equal to 128 bytes (making the 8th bit a 1), the MQTT broker automatically knows that the remaining length will expand another byte\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, 0xFF)\r\n                X -= 127\r\n            }\r\n            else {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, X)\r\n                break;\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n        let remainingLength = pins.createBuffer(i + 1) //Now that we've determined \r\n        for (let j = 0; j < i + 1; j++) {\r\n            remainingLength.setNumber(NumberFormat.UInt8LE, j, remainingLengthTemp.getNumber(NumberFormat.UInt8LE, j))\r\n\r\n        }\r\n\r\n        connectPacketSize = controlPacket.length + remainingLength.length + connectPacketSize; //The total size of the packet to send\r\n\r\n\r\n        SetResponseObj.clearSerialBuffer()\r\n\r\n        UARTs.sendString(\"AT+CIPMUX=1\\r\\n\", clickBoardNum)\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n        SetResponseObj.clearSerialBuffer()\r\n        UARTs.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"cloud.brilliantlabs.ca\\\",1883,30\\r\\n\", clickBoardNum)\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n        SetResponseObj.clearSerialBuffer()\r\n        UARTs.sendString(\"AT+CIPSEND=0,\" + connectPacketSize.toString() + \"\\r\\n\", clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendBuffer(controlPacket, clickBoardNum)\r\n        UARTs.sendBuffer(remainingLength, clickBoardNum)\r\n        UARTs.sendBuffer(protocolNameLength, clickBoardNum)\r\n        UARTs.sendString(protocolName, clickBoardNum)\r\n        UARTs.sendBuffer(protocolLevel, clickBoardNum)\r\n        UARTs.sendBuffer(protocolFlags, clickBoardNum)\r\n        UARTs.sendBuffer(keepAlive, clickBoardNum)\r\n        UARTs.sendBuffer(clientIDLength, clickBoardNum)\r\n        UARTs.sendString(clientID, clickBoardNum)\r\n \r\n        // basic.pause(1)\r\n        //UARTs.sendString(\"\\r\\n\", clickBoardNum)\r\n\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n        basic.pause(200)\r\n\r\n\r\n\r\n        \r\n\r\n\r\n\r\n    }\r\n\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=subscribeBLMQTT\r\n    //% block=\"Subscribe to BL MQTT with API Key %topic on click%clickBoardNum\"\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function subscribeBLMQTT(topic: string, clickBoardNum: clickBoardID): void {\r\n        if (topic.indexOf(\"-rsp\") == 0)\r\n        {\r\n            topic = topic + \"-rsp\"; //append -rsp to the API key as this is the proper subscription topic name\r\n        }\r\n        \r\n        let subscribePacketSize = 0\r\n        let controlPacket = pins.createBuffer(1);\r\n        controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x82); //Subscribe Control Packet header\r\n\r\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\r\n        let packetID = pins.createBuffer(2); // packet ID \r\n        packetID.setNumber(NumberFormat.UInt8LE, 0, 0);\r\n        packetID.setNumber(NumberFormat.UInt8LE, 1, 1);\r\n\r\n        let topicLength = pins.createBuffer(2);\r\n\r\n        topicLength.setNumber(NumberFormat.UInt8LE, 0, topic.length >> 8);\r\n        topicLength.setNumber(NumberFormat.UInt8LE, 1, topic.length & 0xFF);\r\n\r\n        let QS = pins.createBuffer(1);\r\n        QS.setNumber(NumberFormat.UInt8LE, 0, 0); //Set QOS to 0\r\n\r\n        let i = 0\r\n        let encodedByte = 0\r\n        let X = 0\r\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\r\n\r\n\r\n        X = 0x02 + 2 + topic.length + 1\r\n\r\n        for (i = 0; i < 4; i++) {\r\n            if (X >= 128) {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, 0xFF)\r\n                X -= 127\r\n            }\r\n            else {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, X)\r\n                break;\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n        let remainingLength = pins.createBuffer(i + 1)\r\n        for (let j = 0; j < i + 1; j++) {\r\n            remainingLength.setNumber(NumberFormat.UInt8LE, j, remainingLengthTemp.getNumber(NumberFormat.UInt8LE, j))\r\n\r\n        }\r\n\r\n        subscribePacketSize = 1 + remainingLength.length + 2 + 2 + topic.length + 1\r\n\r\n\r\n\r\n        UARTs.sendString(\"AT+CIPSEND=0,\" + subscribePacketSize.toString() + \"\\r\\n\", clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendBuffer(controlPacket, clickBoardNum)\r\n        UARTs.sendBuffer(remainingLength, clickBoardNum)\r\n        UARTs.sendBuffer(packetID, clickBoardNum)\r\n        UARTs.sendBuffer(topicLength, clickBoardNum)\r\n        UARTs.sendString(topic, clickBoardNum)\r\n        UARTs.sendBuffer(QS, clickBoardNum) //Quality of service\r\n\r\n\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n        basic.pause(200)\r\n        UARTs.clearUARTRxBuffer(clickBoardNum);\r\n     \r\n\r\n        control.inBackground(function () {\r\n            while(1){\r\n                basic.pause(10000);\r\n                pingBLMQTT(50, clickBoardNum);\r\n\r\n            }\r\n\r\n            \r\n        })\r\n\r\n\r\n    }\r\n    \r\n\r\n   \r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=getBLMQTTMessage\r\n    //% block=\"Get BL MQTT Message with variable name %varName on click%clickBoardNum\"\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function getBLMQTTMessage(varName: string, clickBoardNum: clickBoardID): number {\r\n        let returnValue = 0\r\n        for(let i=0; i < mqttMessageList.length; i++)\r\n        {\r\n            if(mqttMessageList[i].varName == varName)\r\n            {\r\n                returnValue =  parseInt(mqttMessageList[i].value)\r\n                mqttMessageList.removeAt(i);\r\n                return returnValue\r\n            }\r\n        \r\n        }\r\n        return returnValue = null\r\n       \r\n    }\r\n\r\n \r\n\r\n \r\n   \r\n    let MQTTMessageObject ={\r\n        topic:\"\", //Topic\r\n   \r\n        key:\"\", //API Key\r\n \r\n        cmd:\"\", //Command Name\r\n  \r\n        varName:\"\", //Variable name\r\n \r\n        value:\"\" //Value received \r\n   \r\n        \r\n     }\r\n\r\nlet mqttMessageList = [MQTTMessageObject]; //Create a blank array of MQTTMessageObject objects\r\nmqttMessageList.pop(); \r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=isBLMQTTMessage\r\n    //% block=\"Is MQTT Message Available for variable %varName on click%clickBoardNum ?\"\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function isBLMQTTMessage(varName: string, clickBoardNum: clickBoardID): boolean {\r\n        let startIndex = 0;\r\n        let endIndex = 0;\r\n        let remainingLength = 0;\r\n        let topicLength = 0;\r\n     \r\n\r\n        if (UARTRawData.length > 500) {\r\n            UARTRawData = \"\"\r\n        }\r\n       \r\n        if (UARTs.isUARTDataAvailable(clickBoardNum) || UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?\r\n        {\r\n          \r\n            UARTRawData = UARTRawData + UARTs.getUARTData(clickBoardNum); // Retrieve the new data and append it\r\n\r\n            let IPDIndex = UARTRawData.indexOf(\"+IPD,0,\") //Look for the ESP WiFi response +IPD which indicates data was received\r\n            if (IPDIndex != -1) //If +IPD, was found \r\n            {\r\n\r\n     \r\n                startIndex = UARTRawData.indexOf(\":\") //Look for beginning of MQTT message (which comes after the :)\r\n\r\n                if (startIndex != -1) //If a : was found\r\n                {\r\n                    let IPDSizeStr = UARTRawData.substr(IPDIndex + 7, startIndex - IPDIndex - 7) //The length of the IPD message is between the , and the :\r\n\r\n\r\n                    let IPDSize = parseInt(IPDSizeStr)\r\n                    if (UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?\r\n                    {\r\n\r\n                        startIndex += 1; // Add 1 to the start index to get the first character after the \":\"\r\n\r\n                        if (UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet\r\n                        {\r\n                            \r\n                            UARTRawData = UARTRawData.substr(startIndex, startIndex); //Remove all data other than the last character (in case there is no more data)\r\n                            return false; //Not a publish packet\r\n\r\n                        }\r\n                       \r\n                        \r\n\r\n                        remainingLength = UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127) *Need to address this for RL >127\r\n\r\n                        topicLength = UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)\r\n                        MQTTMessageObject.topic = UARTRawData.substr(startIndex + 4,topicLength) //Extract the topic \r\n                      \r\n                        MQTTMessage = UARTRawData.substr(startIndex + 4 + topicLength, remainingLength - topicLength - 2)\r\n\r\n                        startIndex = MQTTMessage.indexOf(\"\\\"key\\\":\")+8; //Retrieve the start of the word \"key\" and then add 8 to bring it to the first character of the key\r\n                        endIndex = MQTTMessage.indexOf(\"\\\"\",startIndex)-1; //Retrieve the end of the key by looking for the ' \" ' and then subtracting 1 to get the last character of the key\r\n\r\n                        MQTTMessageObject.key = MQTTMessage.substr(startIndex,endIndex-startIndex+1)  //Extract the key \r\n                     \r\n                        startIndex = MQTTMessage.indexOf(\"\\\"cmd\\\":\")+8; //Retrieve the start of the word \"cmd\" and then add 8 to bring it to the first character of the command\r\n                        endIndex = MQTTMessage.indexOf(\"\\\"\",startIndex)-1; //Retrieve the end of the command name by looking for the ' \" ' and then subtracting 1 to get the last character of the command\r\n\r\n                        MQTTMessageObject.cmd = MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the command name \r\n                    \r\n                        startIndex = MQTTMessage.indexOf(\"\\\"name\\\":\")+9; //Retrieve the start of the word \"name\" and then add 9 to bring it to the first character of variable name\r\n                        endIndex = MQTTMessage.indexOf(\"\\\"\",startIndex)-1; //Retrieve the end of the variable name by looking for the ' \" ' and then subtracting 1 to get the last character of the name\r\n\r\n                        MQTTMessageObject.varName = MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable name \r\n                    \r\n                        startIndex = MQTTMessage.indexOf(\"\\\"value\\\":\")+9; //Retrieve the start of the word \"value\" and then add 9 to bring it to the first character of variable value\r\n                        endIndex = MQTTMessage.indexOf(\"}\",startIndex)-2; //Retrieve the end of the variable value by looking for the ' \" ' and then subtracting 2 to get the last character of the value\r\n\r\n                        MQTTMessageObject.value = MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable value\r\n                \r\n                        if(MQTTMessageObject.cmd  == \"SET_VARIABLE\") //We are only concerned with the case where an existing variable had a new value added to it (for now)\r\n                        {\r\n                            mqttMessageList.push(MQTTMessageObject); //Add the latest message to our list\r\n                            \r\n                        }\r\n                        \r\n\r\n                        UARTRawData = UARTRawData.substr(IPDSize + startIndex, UARTRawData.length - 1) //Remove all data other than the last character (in case there is no more data)\r\n\r\n                        \r\n\r\n                    }\r\n\r\n\r\n                }\r\n            }\r\n            else\r\n            {\r\n                UARTRawData = \"\"\r\n            }\r\n\r\n\r\n        }\r\n       \r\n        let results = mqttMessageList.filter(tempResults => tempResults.varName === varName)\r\n        if(results.length >= 1) //If a value was found\r\n        {\r\n            return true; \r\n        }\r\n        return false;\r\n\r\n    }\r\n\r\n\r\n let BLpingActive = false; \r\n let PINs = new bBoard.PinSettings();\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=pingBLMQTT\r\n    //// block=\"Ping BL MQTT every %pingInterval seconds on click%clickBoardNum\"\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    //% pingInterval.min=1 pingInterval.max=59\r\n    //% advanced=false\r\n    export function pingBLMQTT(pingInterval: number, clickBoardNum: clickBoardID) {\r\n        if (BLpingActive == false) {\r\n            lastPing = input.runningTime();\r\n            let controlPacket = pins.createBuffer(1);\r\n            controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0xC0); //Subscribe Control Packet header\r\n            let remainingLength = pins.createBuffer(1) //size of remaining Length packet\r\n            remainingLength.setNumber(NumberFormat.UInt8LE, 0, 0x00); //Remaining Length = 0 \r\n\r\n            UARTs.sendString(\"AT+CIPSEND=0,2\\r\\n\", clickBoardNum)\r\n            SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n            UARTs.sendBuffer(controlPacket, clickBoardNum);\r\n            UARTs.sendBuffer(remainingLength, clickBoardNum);\r\n            SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response \"OK\"\r\n\r\n            BLpingActive = true;\r\n        }\r\n        else //If a ping has been sent\r\n        {\r\n            if ((input.runningTime() - lastPing) > pingInterval * 1000) {\r\n                BLpingActive = false;\r\n            }\r\n        }\r\n\r\n\r\n\r\n\r\n    }\r\n    // -------------- 2. WiFi ----------------\r\n    //% blockId=WiFi_BLE_WiFiConnect\r\n    //% block=\"Connect to ssid %ssid| with password %pwd on click%clickBoardNum\"\r\n    //% weight=100\r\n    //% group=\"Connect\"\r\n    //% blockGap=7\r\n    export function WifiConnect(ssid: string, pwd: string,clickBoardNum: clickBoardID): void {\r\n        PINs.clearPin(clickIOPin.RST,clickBoardNum)\r\n        PINs.setPin(clickIOPin.RST,clickBoardNum)\r\n        basic.pause(300)\r\n        UARTs.clearUARTRxBuffer(clickBoardNum);\r\n \r\n\r\n\r\n        UARTs.sendString(\"AT+CWMODE=1\\r\\n\", clickBoardNum); //Put the clickinto station (client) mode\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n       SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\r\n       UARTs.sendString(\"AT+CIPMUX=1\\r\\n\", clickBoardNum);  //Enable multiple connections\r\n       SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n      SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\r\n      UARTs.sendString(\"AT+CWJAP=\\\"\" + ssid + \"\\\",\\\"\" + pwd + \"\\\"\\r\\n\", clickBoardNum);  //Connect to WiFi Network\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n       SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\r\n       UARTs.sendString(\"AT+CIPSTATUS\\r\\n\", clickBoardNum);  //Get information about the connection status\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n       SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\r\n       UARTs.sendString(\"AT+CIFSR\\r\\n\", clickBoardNum);  //Get local IP Address\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n    }\r\n\r\n\r\n    // --------------  Dual Auth----------------\r\n    //% blockId=WiFi_BLE_dualAuth\r\n    //% block=\"PNB-Internet Captive Portal username %username and password %password on click%clickBoardNum\"\r\n    //% weight=90\r\n    //% group=\"Connect\"\r\n    //% blockGap=7\r\n    \r\nexport function dualAuth(\r\n    username: string,\r\n    password: string,\r\n    clickBoardNum: clickBoardID\r\n): void {\r\n    let body =  \"username=\"+username+\"&password=\"+password+\"&buttonClicked=4\"\r\n    let getData =\r\n        \"POST /login.html? HTTP/1.1\\r\\n\" +\r\n        \"Host: auth.gnb.ca\\r\\n\" +\r\n        \"Content-Type: application/x-www-form-urlencoded\\r\\n\" +\r\n        \"cache-control: no-cache\\r\\n\" +\r\n        \"redirect_url: msn.ca\\r\\n\" +\r\n        \"Content-Length: \"+body.length.toString()+\"\\r\\n\\r\\n\" +\r\n        body\r\n\r\n        UARTs.sendString(\"AT+CIPSTART=0,\\\"SSL\\\",\\\"auth.gnb.ca\\\",443\\r\\n\",clickBoardNum) //Make a SSL connection to the auth.gnb.ca\r\n    SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n    UARTs.sendString(\r\n        \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\",clickBoardNum); //Get ready to send a packet and specifiy the size\r\n\r\n    SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n    UARTs.sendString(getData,clickBoardNum); //Send the contents of the packet\r\n    SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n    UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",clickBoardNum); //Close your TCP connection\r\n    SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n}\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=BLTest_set_thingspeak\r\n    //% block=\"Send ThingSpeak key %key| fieldNum %fieldNum| data %data on click%clickBoardNum\"\r\n    //% weight=90\r\n    //% group=\"Thingspeak\"\r\n    //% blockGap=7\r\n    export function sendThingspeak(\r\n        key: string,\r\n        fieldNum: number,\r\n        data: string,\r\n        clickBoardNum: clickBoardID\r\n    ): void {\r\n        let getData =\r\n            \"GET /update?api_key=\" +\r\n            key +\r\n            \"&field\" +\r\n            fieldNum.toString() +\r\n            \"=\" +\r\n            data +\r\n            \"\\r\\n\";\r\n\r\n        UARTs.sendString(\"AT+CIPMUX=1\\r\\n\", clickBoardNum); \r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n        UARTs.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"api.thingspeak.com\\\",80\\r\\n\", clickBoardNum); \r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n        UARTs.sendString(\r\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\", clickBoardNum);\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n        UARTs.sendString(getData, clickBoardNum);\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n        //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */\r\n        // UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",clickBoardNum)\r\n        //response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n    }\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=WiFi_BLE_HTTPSsendCommand\r\n    //% block=\"BL HTTPS command %command|variable name %varName|data %data|API key %topic|on click%clickBoardNum\"\r\n    //% weight=90\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% blockGap=7\r\n    export function HTTPSsendCommand(\r\n        command:Command,\r\n        varName: string,\r\n        data: number,\r\n        topic: string,\r\n        clickBoardNum: clickBoardID\r\n    ): void {\r\n        let cmd = ''\r\n        switch(command)\r\n        {\r\n            case Command.Set_Variable:\r\n                cmd = \"SET_VARIABLE\";\r\n                break;\r\n\r\n            case Command.Create_Variable:\r\n                cmd = \"CREATE_VARIABLE\";\r\n                break;     \r\n            \r\n            case Command.Delete_Variable:\r\n                cmd = \"DELETE_VARIABLE\";\r\n                break;           \r\n\r\n                case Command.Create_Data_Point:\r\n                cmd = \"CREATE_CHART\";\r\n                break;        \r\n\r\n                case Command.Add_Data_Point:\r\n                cmd = \"ADD_DATA_POINT\";\r\n                break;    \r\n                \r\n                case Command.Delete_Variable:\r\n                cmd = \"DELETE_DATA_POINT\";\r\n                break;    \r\n\r\n\r\n\r\n        }\r\n\r\n        let bodyString = \"{\\n    \\\"key\\\": \\\"\"+topic+ \"\\\",\\n   \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\n    \\\"value\\\": \"+data.toString()+\",\\n    \\\"name\\\": \\\"\"+varName+\"\\\"\\n}\";\r\n        if(command = Command.Create_Data_Point)\r\n        {\r\n            bodyString = \"{\\n    \\\"key\\\": \\\"\"+topic+ \"\\\",\\n   \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\n   \\\"type\\\": \\\"LINE\\\",\\n    \\\"value\\\": \"+data.toString()+\",\\n    \\\"name\\\": \\\"\"+varName+\"\\\"\\n}\";\r\n        }\r\n        let getData =\"GET /api? HTTP/1.1\\r\\n\" +\r\n            \"Host: cloud.brilliantlabs.ca\\r\\n\" +\r\n            \"Content-Type: application/json\\r\\n\" +\r\n            \"cache-control: no-cache\\r\\n\" +\r\n            \"Content-Length: \"+bodyString.length.toString()+\"\\r\\n\\r\\n\" + bodyString;\r\n            \r\n        \r\n        if( isConnected(clickBoardNum) == 0){\r\n\r\n            UARTs.sendString(\"AT+CIPSTART=0,\\\"SSL\\\",\\\"cloud.brilliantlabs.ca\\\",443\\r\\n\", clickBoardNum); \r\n            SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n        }\r\n     \r\n\r\n        UARTs.sendString(\r\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\", clickBoardNum);\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n        UARTs.sendString(getData, clickBoardNum);\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n\r\n\r\n    }\r\n\r\n     function isConnected(clickBoardNum: clickBoardID):number{\r\n        UARTs.sendString(\"AT+CIPSTATUS\\r\\n\", clickBoardNum); \r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n        \r\n        let statusStartIndex = SetResponseObj.receivedData.indexOf(\"STATUS:\")\r\n       \r\n        let connected = parseInt(SetResponseObj.receivedData.substr(statusStartIndex+7,1)); //Convert the characters we received representing the length of the IPD response to an integer\r\n      \r\n        if (connected == 3)\r\n        {\r\n          \r\n           \r\n            return 1;\r\n        }\r\n     \r\n        \r\n        return 0;\r\n     }\r\n       \r\n  \r\n    //% blockId=WiFi_BLE_getVariable\r\n    //% block=\"BL HTTPS get variable %varName with API key %key on click%clickBoardNum\"\r\n    //% weight=90\r\n    //% group=\"Brilliant Labs Cloud\"\r\n    //% blockGap=7\r\n    export function BLgetVariable(\r\n        varName: string,\r\n        key: string,\r\n        clickBoardNum: clickBoardID\r\n    ): number {\r\n        let bodyString = \"{\\n    \\\"key\\\": \\\"\"+key+ \"\\\",\\n   \\\"cmd\\\": \\\"GET_VARIABLE\\\",\\n    \\\"name\\\": \\\"\"+varName+\"\\\"\\n}\";\r\n\r\n        let getData =\"GET /api? HTTP/1.1\\r\\n\" +\r\n            \"Host: cloud.brilliantlabs.ca\\r\\n\" +\r\n            \"Content-Type: application/json\\r\\n\" +\r\n            \"cache-control: no-cache\\r\\n\" +\r\n            \"Content-Length: \"+bodyString.length.toString()+\"\\r\\n\\r\\n\" + bodyString;\r\n\r\n            if( isConnected(clickBoardNum) == 0){\r\n\r\n                UARTs.sendString(\"AT+CIPSTART=0,\\\"SSL\\\",\\\"cloud.brilliantlabs.ca\\\",443\\r\\n\", clickBoardNum); \r\n                SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n            }\r\n\r\n        UARTs.sendString(\r\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\", clickBoardNum);\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n        UARTs.sendString(getData, clickBoardNum);\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);\r\n\r\n        let startIndex = SetResponseObj.receivedData.indexOf(\"\\\"\"+varName+\"\\\":\")+varName.length+3; \r\n\r\n        let endIndex = SetResponseObj.receivedData.indexOf(\"}\",startIndex)-1;\r\n      \r\n\r\n        return parseInt(SetResponseObj.receivedData.substr(startIndex,endIndex-startIndex+1))\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=BLTest_get_thingspeak\r\n    //% block=\"Get ThingSpeak ChannelID %ChannelID| fieldNum %fieldNum on click%clickBoardNum\"\r\n    //% weight=90\r\n    //% group=\"Thingspeak\"\r\n    //% blockGap=7\r\n    export function getThingspeak(ChannelID: number, fieldNum: number, clickBoardNum: clickBoardID): string {\r\n        let getData =\r\n            \"GET /channels/\" +\r\n            ChannelID.toString() +\r\n            \"/fields/\" +\r\n            fieldNum.toString() +\r\n            \".json?results=1\\r\\n\";\r\n        let data = \"\";\r\n\r\n        UARTs.sendString(\"AT+CIPMUX=1\\r\\n\", clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"api.thingspeak.com\\\",80\\r\\n\", clickBoardNum); \r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(\r\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\", clickBoardNum\r\n        );\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(getData,clickBoardNum);\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        data = SetResponseObj.ThingSpeakResponse();\r\n\r\n        //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */\r\n        // UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",clickBoardNum)\r\n        // SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\" //Wait for the response \"OK\"\r\n\r\n        return data;\r\n    }\r\n\r\n    //% blockId=BL_set_ifttt\r\n    //% block=\"Send IFTTT key %key|event_name %event|value1 %value1 on click%clickBoardNum\"\r\n    //% group=\"IFTTT\"\r\n    //% weight=90\r\n    export function sendIFTTT(\r\n        key: string,\r\n        eventname: string,\r\n        value1: number,clickBoardNum: clickBoardID\r\n    ): void {\r\n        let getData =\r\n            \"GET /trigger/\" +\r\n            eventname +\r\n            \"/with/key/\" +\r\n            key +\r\n            \"?value1=\" +\r\n            value1.toString() +\r\n            \" HTTP/1.1\\r\\nHost: maker.ifttt.com\\r\\n\\r\\n\";\r\n\r\n        UARTs.sendString(\"AT+CIPMUX=1\\r\\n\", clickBoardNum);  //Multiple connections enabled\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"maker.ifttt.com\\\",80\\r\\n\", clickBoardNum);  //Make a TCP connection to the host\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(\r\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\",clickBoardNum\r\n        ); //Get ready to send a packet and specifiy the size\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(getData,clickBoardNum); //Send the contents of the packet\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\", clickBoardNum);  //Close your TCP connection\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n    }\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=publishAdafruitMQTT\r\n    //% block=\"Publish to Adafruit MQTT topic %string| data %data on click%clickBoardNum\"\r\n    //% group=\"MQTT Adafruit\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function publishAdafruitMQTT(topic: string, data: number,clickBoardNum: clickBoardID): void {\r\n        let publishPacketSize = 0\r\n        let controlPacket = pins.createBuffer(1);\r\n        controlPacket.setNumber(NumberFormat.UInt8LE,0,0x30); //Publish Control Packet header\r\n\r\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\r\n        let topicLength = pins.createBuffer(2);\r\n        topicLength.setNumber(NumberFormat.UInt8LE,0,topic.length >> 8); \r\n        topicLength.setNumber(NumberFormat.UInt8LE,1,topic.length & 0xFF); \r\n\r\n        let i = 0\r\n        let encodedByte = 0\r\n        let X = 0\r\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\r\n\r\n\r\n        X = 0x02 + topic.length + data.toString().length \r\n\r\n        for (i = 0; i < 4; i++) {\r\n            if (X >= 128) {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,0xFF)\r\n                X -= 127\r\n            }\r\n            else {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,X)\r\n                break;\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n        let remainingLength = pins.createBuffer(i + 1)\r\n        for (let j = 0; j < i + 1; j++) {\r\n            remainingLength.setNumber(NumberFormat.UInt8LE,j,remainingLengthTemp.getNumber(NumberFormat.UInt8LE,j))\r\n\r\n        }\r\n\r\n        publishPacketSize = 1 + remainingLength.length + 2 + topic.length + data.toString().length\r\n\r\n\r\n  \r\n        UARTs.sendString(\"AT+CIPSEND=0,\" + publishPacketSize.toString() + \"\\r\\n\",clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendBuffer(controlPacket,clickBoardNum)\r\n        UARTs.sendBuffer(remainingLength,clickBoardNum)\r\n        UARTs.sendBuffer(topicLength,clickBoardNum)\r\n        UARTs.sendString(topic,clickBoardNum)\r\n        UARTs.sendString(data.toString(),clickBoardNum)\r\n       // UARTs.sendString(\"\\r\\n\",clickBoardNum)\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        basic.pause(200)\r\n\r\n\r\n      //  UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",clickBoardNum)\r\n      //  SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=connectMQTT\r\n    //% block=\"Connect to Adafruit MQTT broker with username %userName| and AIO Key %password on click%clickBoardNum\"\r\n    //% group=\"MQTT Adafruit\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function connectMQTT(userName: string, password: string,clickBoardNum: clickBoardID): void {\r\n\r\n        let connectPacketSize = 0\r\n        let controlPacket = pins.createBuffer(1);\r\n        controlPacket.setNumber(NumberFormat.UInt8LE,0,0x10); //Publish Control Packet header\r\n\r\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\r\n        let protocolName = \"MQTT\"\r\n\r\n        let protocolNameLength = pins.createBuffer(2);\r\n        protocolNameLength.setNumber(NumberFormat.UInt8LE,0,protocolName.length >> 8); \r\n        protocolNameLength.setNumber(NumberFormat.UInt8LE,1,protocolName.length & 0xFF); \r\n\r\n\r\n        let protocolLevel = pins.createBuffer(1);\r\n        protocolLevel.setNumber(NumberFormat.UInt8LE,0,0x04); \r\n      \r\n        let protocolFlags = pins.createBuffer(1);\r\n        protocolFlags.setNumber(NumberFormat.UInt8LE,0,0xC2); \r\n      \r\n     \r\n        let keepAliveSeconds = 60\r\n\r\n        let keepAlive = pins.createBuffer(2);\r\n        keepAlive.setNumber(NumberFormat.UInt8LE,0,keepAliveSeconds >> 8); \r\n        keepAlive.setNumber(NumberFormat.UInt8LE,1,keepAliveSeconds & 0xFF); \r\n\r\n     \r\n        let clientID = control.deviceSerialNumber().toString();\r\n        let clientIDLength = pins.createBuffer(2);\r\n        clientIDLength.setNumber(NumberFormat.UInt8LE,0,clientID.length >> 8); \r\n        clientIDLength.setNumber(NumberFormat.UInt8LE,1,clientID.length & 0xFF); \r\n        \r\n            \r\n        let userNameLength = pins.createBuffer(2);\r\n        userNameLength.setNumber(NumberFormat.UInt8LE,0,userName.length >> 8); \r\n        userNameLength.setNumber(NumberFormat.UInt8LE,1,userName.length & 0xFF); \r\n\r\n        let passwordLength = pins.createBuffer(2);\r\n        passwordLength.setNumber(NumberFormat.UInt8LE,0,password.length >> 8); \r\n        passwordLength.setNumber(NumberFormat.UInt8LE,1,password.length & 0xFF); \r\n\r\n    \r\n\r\n        let i = 0\r\n        let encodedByte = 0\r\n        let X = 0\r\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\r\n\r\n\r\n        X = 0x02 + 0x02 + protocolName.length + 0x01 + 0x01 + 0x02 + 0x02 + clientID.length + 0x02 + userName.length + 0x02 + password.length \r\n        connectPacketSize = X\r\n\r\n        for (i = 0; i < 4; i++) {\r\n            if (X >= 128) {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,0xFF)\r\n                X -= 127\r\n            }\r\n            else {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,X)\r\n                break;\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n        let remainingLength = pins.createBuffer(i + 1)\r\n        for (let j = 0; j < i + 1; j++) {\r\n            remainingLength.setNumber(NumberFormat.UInt8LE,j,remainingLengthTemp.getNumber(NumberFormat.UInt8LE,j))\r\n\r\n        }\r\n\r\n        connectPacketSize = connectPacketSize + 1 + remainingLength.length //The total size of the packet to send\r\n\r\n\r\n        SetResponseObj.clearSerialBuffer()\r\n\r\n        UARTs.sendString(\"AT+CIPMUX=1\\r\\n\",clickBoardNum)\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        SetResponseObj.clearSerialBuffer()\r\n        UARTs.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"io.adafruit.com\\\",1883,30\\r\\n\",clickBoardNum)\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        SetResponseObj.clearSerialBuffer()\r\n        UARTs.sendString(\"AT+CIPSEND=0,\" + connectPacketSize.toString() + \"\\r\\n\",clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n       \r\n        UARTs.sendBuffer(controlPacket,clickBoardNum)\r\n        UARTs.sendBuffer(remainingLength,clickBoardNum)\r\n        UARTs.sendBuffer(protocolNameLength,clickBoardNum)\r\n        UARTs.sendString(protocolName,clickBoardNum)\r\n        UARTs.sendBuffer(protocolLevel,clickBoardNum)\r\n        UARTs.sendBuffer(protocolFlags,clickBoardNum)\r\n        UARTs.sendBuffer(keepAlive,clickBoardNum)\r\n        UARTs.sendBuffer(clientIDLength,clickBoardNum)\r\n        UARTs.sendString(clientID,clickBoardNum)\r\n        UARTs.sendBuffer(userNameLength,clickBoardNum)\r\n        UARTs.sendString(userName,clickBoardNum)\r\n        UARTs.sendBuffer(passwordLength,clickBoardNum)\r\n        \r\n        UARTs.sendString(password,clickBoardNum)\r\n       // basic.pause(1)\r\n        UARTs.sendString(\"\\r\\n\",clickBoardNum)\r\n\r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        basic.pause(200)\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=subscribeAdafruitMQTT\r\n    //% block=\"Subscribe to Adafruit MQTT topic %string on click%clickBoardNum\"\r\n    //% group=\"MQTT Adafruit\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function subscribeAdafruitMQTT(topic: string,clickBoardNum: clickBoardID): void {\r\n\r\n        let subscribePacketSize = 0\r\n        let controlPacket = pins.createBuffer(1);\r\n        controlPacket.setNumber(NumberFormat.UInt8LE,0,0x82); //Subscribe Control Packet header\r\n\r\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\r\n        let packetID = pins.createBuffer(2); // packet ID \r\n        packetID.setNumber(NumberFormat.UInt8LE,0,0);\r\n        packetID.setNumber(NumberFormat.UInt8LE,1,1);\r\n\r\n        let topicLength = pins.createBuffer(2);\r\n\r\n        topicLength.setNumber(NumberFormat.UInt8LE,0,topic.length >> 8); \r\n        topicLength.setNumber(NumberFormat.UInt8LE,1,topic.length & 0xFF); \r\n\r\n        let QS = pins.createBuffer(1);\r\n        QS.setNumber(NumberFormat.UInt8LE,0,0); //Set QOS to 0\r\n\r\n        let i = 0\r\n        let encodedByte = 0\r\n        let X = 0\r\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\r\n\r\n\r\n        X = 0x02 + 2 + topic.length + 1\r\n\r\n        for (i = 0; i < 4; i++) {\r\n            if (X >= 128) {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,0xFF)\r\n                X -= 127\r\n            }\r\n            else {\r\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,X)\r\n                break;\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n        let remainingLength = pins.createBuffer(i + 1)\r\n        for (let j = 0; j < i + 1; j++) {\r\n            remainingLength.setNumber(NumberFormat.UInt8LE,j,remainingLengthTemp.getNumber(NumberFormat.UInt8LE,j))\r\n\r\n        }\r\n\r\n        subscribePacketSize = 1 + remainingLength.length + 2 + 2 + topic.length +1\r\n\r\n\r\n  \r\n        UARTs.sendString(\"AT+CIPSEND=0,\" + subscribePacketSize.toString() + \"\\r\\n\",clickBoardNum)\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        UARTs.sendBuffer(controlPacket,clickBoardNum)\r\n        UARTs.sendBuffer(remainingLength,clickBoardNum)\r\n        UARTs.sendBuffer(packetID,clickBoardNum)\r\n        UARTs.sendBuffer(topicLength,clickBoardNum)\r\n        UARTs.sendString(topic,clickBoardNum)\r\n        UARTs.sendBuffer(QS,clickBoardNum) //Quality of service\r\n\r\n     \r\n\r\n\r\n        SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        basic.pause(200)\r\n        UARTs.clearUARTRxBuffer(clickBoardNum);\r\n\r\n        control.inBackground(function () {\r\n            while(1){\r\n                basic.pause(10000);\r\n                \r\n                pingAdafruitMQTT(50, clickBoardNum);\r\n\r\n            }\r\n\r\n            \r\n        })\r\n        \r\n    }\r\n    let prevTime = 0;\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=getMQTTMessage\r\n    //% block=\"Get MQTT Message on click%clickBoardNum\"\r\n    //% group=\"MQTT Adafruit\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function getMQTTMessage(clickBoardNum: clickBoardID): string {\r\n        return MQTTMessage\r\n    }\r\n  \r\n       //% blockId=createVariable\r\n        //% block=\"Create Variable -> Api Key:%Key Name %Name on click%clickBoardNum\"\r\n        export function CreateVariable(Key: string, Name: string, clickBoardNum: clickBoardID): void {\r\n            // Add code here\r\n            let getData =\"\\{\\r\\n\\\"key\\\": \\\"9qvfccbdk0jrgfeh\\\",\\r\\n\\\"cmd\\\": \\\"CREATE_VARIABLE\\\",\\r\\n\\\"name\\\": \\\"msdsdfsfd\\\",\\r\\n\\\"value\\\": \\\"Hello my name is Josiah\\\"\\r\\n}\\\";\"\r\n    \r\n                UARTs.sendString(\"AT+CIPMUX=1\\r\\n\", clickBoardNum); \r\n                SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        \r\n                UARTs.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"https://cloud.brilliantlabs.ca\\\",80\\r\\n\", clickBoardNum); \r\n                SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        \r\n                UARTs.sendString(\r\n                    \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\", clickBoardNum);\r\n                    SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n        \r\n                UARTs.sendString(getData, clickBoardNum);\r\n                SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n        }\r\n\r\n\r\n   // -------------- 3. Cloud ----------------\r\n    //% blockId=isMQTTMessage\r\n    //% block=\"Is MQTT Message Available on click%clickBoardNum ?\"\r\n    //% group=\"MQTT Adafruit\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    export function isMQTTMessage(clickBoardNum: clickBoardID): boolean{\r\n        let startIndex = 0;\r\n        let remainingLength = 0;\r\n        let topicLength = 0;\r\n       if(UARTRawData.length > 300){\r\n           UARTRawData = \"\"\r\n       }\r\n      if(UARTs.isUARTDataAvailable(clickBoardNum) || UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?\r\n      {\r\n    \r\n            UARTRawData = UARTRawData + UARTs.getUARTData(clickBoardNum); // Retrieve the new data and append it\r\n   \r\n            let IPDIndex = UARTRawData.indexOf(\"+IPD,0,\") //Look for the ESP WiFi response +IPD which indicates data was received\r\n            if(IPDIndex !== -1) //If +IPD, was found \r\n            {\r\n            \r\n                \r\n                startIndex = UARTRawData.indexOf(\":\") //Look for beginning of MQTT message (which comes after the :)\r\n               \r\n                if(startIndex != -1) //If a : was found\r\n                {\r\n                    let IPDSizeStr = UARTRawData.substr(IPDIndex+7,startIndex-IPDIndex-7) //The length of the IPD message is between the , and the :\r\n                   \r\n                    \r\n                    let IPDSize = parseInt(IPDSizeStr)\r\n                    if(UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?\r\n                    {\r\n\r\n                        startIndex += 1; // Add 1 to the start index to get the first character after the \":\"\r\n\r\n                        if(UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet\r\n                        {\r\n\r\n                            return false; //Not a publish packet\r\n\r\n                        }\r\n                        \r\n                        remainingLength = UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127)\r\n        \r\n                        topicLength = UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)\r\n                    \r\n                        MQTTMessage  = UARTRawData.substr(startIndex + 4+topicLength,remainingLength-topicLength-2)\r\n                    \r\n                        UARTRawData = UARTRawData.substr(IPDSize + startIndex,UARTRawData.length-1) //Remove all data other than the last character (in case there is no more data)\r\n                 \r\n                        return true; //Message retrieved\r\n                      \r\n                    }\r\n              \r\n                    \r\n                }\r\n            }\r\n     \r\n\r\n        }\r\n            return false;\r\n            \r\n    }\r\n\r\nlet pingActive = false;\r\nlet lastPing = 0;\r\nlet pingActiveAdafruit = false;\r\nlet lastPingAdafruit = 0;\r\n    // -------------- 3. Cloud ----------------\r\n    //% blockId=pingAdafruitMQTT\r\n    // block=\"Ping Adafruit MQTT every %pingInterval seconds on click%clickBoardNum\"\r\n    //% group=\"MQTT Adafruit\"\r\n    //% weight=70   \r\n    //% blockGap=7  \r\n    //% pingInterval.min=1 pingInterval.max=59\r\n    //% advanced=false\r\n    export function pingAdafruitMQTT(pingInterval: number, clickBoardNum: clickBoardID) \r\n    {\r\n        if(pingActiveAdafruit == false)\r\n        {\r\n            lastPingAdafruit = input.runningTime();\r\n            let controlPacket = pins.createBuffer(1);\r\n            controlPacket.setNumber(NumberFormat.UInt8LE,0,0xC0); //Subscribe Control Packet header\r\n            let remainingLength = pins.createBuffer(1) //size of remaining Length packet\r\n            remainingLength.setNumber(NumberFormat.UInt8LE,0,0x00); //Remaining Length = 0 \r\n    \r\n            UARTs.sendString(\"AT+CIPSEND=0,2\\r\\n\",clickBoardNum)\r\n            SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n            UARTs.sendBuffer(controlPacket,clickBoardNum);\r\n            UARTs.sendBuffer(remainingLength,clickBoardNum);\r\n            SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response \"OK\"\r\n\r\n            pingActiveAdafruit = true;\r\n        }\r\n        else //If a ping has been sent\r\n        {\r\n            if ((input.runningTime() - lastPingAdafruit) > pingInterval*1000) \r\n            {\r\n                pingActiveAdafruit = false;\r\n            }\r\n        }\r\n        \r\n    \r\n            \r\n        \r\n    }\r\n}\r\n",
             "advmath.cpp": "#include \"pxtbase.h\"\n\nusing namespace std;\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\nnamespace Math_ {\n\n//%\nTNumber log2(TNumber x){SINGLE(log2)}\n//%\nTNumber exp(TNumber x){SINGLE(exp)}\n//%\nTNumber tanh(TNumber x){SINGLE(tanh)}\n//%\nTNumber sinh(TNumber x){SINGLE(sinh)}\n//%\nTNumber cosh(TNumber x){SINGLE(cosh)}\n//%\nTNumber atanh(TNumber x){SINGLE(atanh)}\n//%\nTNumber asinh(TNumber x){SINGLE(asinh)}\n//%\nTNumber acosh(TNumber x){SINGLE(acosh)}\n\n}",
@@ -2695,6 +2708,7 @@ var pxtTargetBundle = {
             "gc.cpp": "#include \"pxtbase.h\"\n\n#ifndef GC_BLOCK_SIZE\n#define GC_BLOCK_SIZE (1024 * 16)\n#endif\n\n#ifndef GC_MAX_ALLOC_SIZE\n#define GC_MAX_ALLOC_SIZE (GC_BLOCK_SIZE - 16)\n#endif\n\n#ifndef GC_ALLOC_BLOCK\n#define GC_ALLOC_BLOCK xmalloc\n#endif\n\n#ifdef PXT64\n#define HIGH_SHIFT 48\n#define BYTES_TO_WORDS(x) ((x) >> 3)\n#define WORDS_TO_BYTES(x) ((x) << 3)\n#define ALIGN_TO_WORD(x) (((x) + 7) & (~7ULL))\n#define VAR_BLOCK_WORDS(vt) ((uint32_t)(vt) >> 2)\n#else\n#define HIGH_SHIFT 28\n#define BYTES_TO_WORDS(x) ((x) >> 2)\n#define WORDS_TO_BYTES(x) ((x) << 2)\n#define ALIGN_TO_WORD(x) (((x) + 3) & (~3U))\n#define VAR_BLOCK_WORDS(vt) (((uint32_t)(vt) << 4) >> (4 + 2))\n#endif\n\n#define FREE_MASK (1ULL << (HIGH_SHIFT + 3))\n#define ARRAY_MASK (1ULL << (HIGH_SHIFT + 2))\n#define PERMA_MASK (1ULL << (HIGH_SHIFT + 1))\n#define MARKED_MASK 0x1\n#define ANY_MARKED_MASK 0x3\n\n// the bit operations should be faster than loading large constants\n#define IS_FREE(vt) ((uintptr_t)(vt) >> (HIGH_SHIFT + 3))\n#define IS_ARRAY(vt) (((uintptr_t)(vt) >> (HIGH_SHIFT + 2)) & 1)\n#define IS_PERMA(vt) (((uintptr_t)(vt) >> (HIGH_SHIFT + 1)) & 1)\n#define IS_VAR_BLOCK(vt) ((uintptr_t)(vt) >> (HIGH_SHIFT + 2))\n#define IS_MARKED(vt) ((uintptr_t)(vt)&MARKED_MASK)\n#define IS_LIVE(vt) (IS_MARKED(vt) || (((uintptr_t)(vt) >> (HIGH_SHIFT)) == 0x6))\n\n//#define PXT_GC_DEBUG 1\n#ifndef PXT_GC_CHECKS\n#define PXT_GC_CHECKS 1\n#endif\n//#define PXT_GC_STRESS 1\n\n//#define PXT_GC_CHECKS 1\n\n#define MARK(v)                                                                                    \\\n    do {                                                                                           \\\n        GC_CHECK(inGCArea(v), 42);                                                                 \\\n        *(uintptr_t *)(v) |= MARKED_MASK;                                                          \\\n    } while (0)\n\n#ifdef PXT_GC_DEBUG\n#define LOG DMESG\n#define VLOG DMESG\n#define VVLOG DMESG\n#else\n#define LOG NOLOG\n#define VLOG NOLOG\n#define VVLOG NOLOG\n#endif\n\n#ifdef PXT_GC_CHECKS\n#define GC_CHECK(cond, code)                                                                       \\\n    if (!(cond))                                                                                   \\\n    oops(code)\n#else\n#define GC_CHECK(cond, code) ((void)0)\n#endif\n\nnamespace pxt {\n\n// keep in sync with base/control.ts, function gcStats()\nstruct GCStats {\n    uint32_t numGC;\n    uint32_t numBlocks;\n    uint32_t totalBytes;\n    uint32_t lastFreeBytes;\n    uint32_t lastMaxBlockBytes;\n    uint32_t minFreeBytes;\n};\n\nstatic GCStats gcStats;\n\n//% expose\nBuffer getGCStats() {\n    return mkBuffer((uint8_t*)&gcStats, sizeof(gcStats));\n}\n\n//%\nvoid popThreadContext(ThreadContext *ctx);\n//%\nThreadContext *pushThreadContext(void *sp, void *endSP);\n\nunsigned RefRecord_gcsize(RefRecord *r) {\n    VTable *tbl = getVTable(r);\n    return BYTES_TO_WORDS(tbl->numbytes);\n}\n\n#ifdef PXT_GC_THREAD_LIST\nThreadContext *threadContexts;\n#endif\n\n#define IN_GC_ALLOC 1\n#define IN_GC_COLLECT 2\n#define IN_GC_FREEZE 4\n#define IN_GC_PREALLOC 8\n\n#ifndef PXT_VM\nstatic TValue *tempRoot;\nstatic uint8_t tempRootLen;\n#endif\n\nuint8_t inGC;\n\nvoid popThreadContext(ThreadContext *ctx) {\n#ifndef PXT_VM\n    VLOG(\"pop: %p\", ctx);\n\n    if (!ctx)\n        return;\n\n    auto n = ctx->stack.next;\n    if (n) {\n        VLOG(\"seg %p\", n);\n        ctx->stack.top = n->top;\n        ctx->stack.bottom = n->bottom;\n        ctx->stack.next = n->next;\n        app_free(n);\n    } else {\n#ifdef PXT_GC_THREAD_LIST\n        if (ctx->next)\n            ctx->next->prev = ctx->prev;\n        if (ctx->prev)\n            ctx->prev->next = ctx->next;\n        else {\n            if (threadContexts != ctx)\n                oops(41);\n            threadContexts = ctx->next;\n            if (threadContexts)\n                threadContexts->prev = NULL;\n        }\n#endif\n        app_free(ctx);\n        setThreadContext(NULL);\n    }\n#endif\n}\n\n#define ALLOC(tp) (tp *)app_alloc(sizeof(tp))\n\nThreadContext *pushThreadContext(void *sp, void *endSP) {\n#ifdef PXT_VM\n    return NULL;\n#else\n    if (PXT_IN_ISR())\n        target_panic(PANIC_CALLED_FROM_ISR);\n\n    auto curr = getThreadContext();\n    tempRoot = (TValue *)endSP;\n    tempRootLen = (uintptr_t *)sp - (uintptr_t *)endSP;\n    if (curr) {\n#ifdef PXT_GC_THREAD_LIST\n#ifdef PXT_GC_DEBUG\n        auto ok = false;\n        for (auto p = threadContexts; p; p = p->next)\n            if (p == curr) {\n                ok = true;\n                break;\n            }\n        if (!ok)\n            oops(49);\n#endif\n#endif\n        auto seg = ALLOC(StackSegment);\n        VLOG(\"stack %p / %p\", seg, curr);\n        seg->top = curr->stack.top;\n        seg->bottom = curr->stack.bottom;\n        seg->next = curr->stack.next;\n        curr->stack.next = seg;\n    } else {\n        curr = ALLOC(ThreadContext);\n        LOG(\"push: %p\", curr);\n        curr->globals = globals;\n        curr->stack.next = NULL;\n        curr->thrownValue = TAG_NON_VALUE;\n        curr->tryFrame = NULL;\n\n#ifdef PXT_GC_THREAD_LIST\n        curr->next = threadContexts;\n        curr->prev = NULL;\n        if (curr->next)\n            curr->next->prev = curr;\n        threadContexts = curr;\n#endif\n        setThreadContext(curr);\n    }\n    tempRootLen = 0;\n    curr->stack.bottom = sp;\n    curr->stack.top = NULL;\n    return curr;\n#endif\n}\n\nclass RefBlock : public RefObject {\n  public:\n    RefBlock *nextFree;\n};\n\nstruct GCBlock {\n    GCBlock *next;\n    uint32_t blockSize;\n    RefObject data[0];\n};\n\nstruct PendingArray {\n    PendingArray *next;\n    TValue *data;\n    unsigned len;\n};\n\n#define PENDING_ARRAY_THR 100\n\nstatic PendingArray *pendingArrays;\nstatic LLSegment gcRoots;\nLLSegment workQueue; // (ab)used by consString making\nstatic GCBlock *firstBlock;\nstatic RefBlock *firstFree;\nstatic uint8_t *midPtr;\n\nstatic bool inGCArea(void *ptr) {\n    for (auto block = firstBlock; block; block = block->next) {\n        if ((void *)block->data <= ptr && ptr < (void *)((uint8_t *)block->data + block->blockSize))\n            return true;\n    }\n    return false;\n}\n\n#define NO_MAGIC(vt) ((VTable *)vt)->magic != VTABLE_MAGIC\n#define VT(p) (*(uintptr_t *)(p))\n#define SKIP_PROCESSING(p)                                                                         \\\n    (isReadOnly(p) || (VT(p) & (ANY_MARKED_MASK | ARRAY_MASK)) || NO_MAGIC(VT(p)))\n\nvoid gcMarkArray(void *data) {\n    auto segBl = (uintptr_t *)data - 1;\n    GC_CHECK(!IS_MARKED(VT(segBl)), 47);\n    MARK(segBl);\n}\n\nvoid gcScan(TValue v) {\n    if (SKIP_PROCESSING(v))\n        return;\n    MARK(v);\n    workQueue.push(v);\n}\n\nvoid gcScanMany(TValue *data, unsigned len) {\n    // VLOG(\"scan: %p %d\", data, len);\n    for (unsigned i = 0; i < len; ++i) {\n        auto v = data[i];\n        // VLOG(\"psh: %p %d %d\", v, isReadOnly(v), (*(uint32_t *)v & 1));\n        if (SKIP_PROCESSING(v))\n            continue;\n        MARK(v);\n        workQueue.push(v);\n        if (workQueue.getLength() > PENDING_ARRAY_THR) {\n            i++;\n            // store rest of the work for later, when we have cleared the queue\n            auto pa = (PendingArray *)xmalloc(sizeof(PendingArray));\n            pa->next = pendingArrays;\n            pa->data = data + i;\n            pa->len = len - i;\n            pendingArrays = pa;\n            break;\n        }\n    }\n}\n\nvoid gcScanSegment(Segment &seg) {\n    auto data = seg.getData();\n    if (!data)\n        return;\n    VVLOG(\"seg %p %d\", data, seg.getLength());\n    gcMarkArray(data);\n    gcScanMany(data, seg.getLength());\n}\n\n#define getScanMethod(vt) ((RefObjectMethod)(((VTable *)(vt))->methods[2]))\n#define getSizeMethod(vt) ((RefObjectSizeMethod)(((VTable *)(vt))->methods[3]))\n\nvoid gcProcess(TValue v) {\n    if (SKIP_PROCESSING(v))\n        return;\n    VVLOG(\"gcProcess: %p\", v);\n    MARK(v);\n    auto scan = getScanMethod(VT(v) & ~ANY_MARKED_MASK);\n    if (scan)\n        scan((RefObject *)v);\n    for (;;) {\n        while (workQueue.getLength()) {\n            auto curr = (RefObject *)workQueue.pop();\n            VVLOG(\" - %p\", curr);\n            scan = getScanMethod(curr->vtable & ~ANY_MARKED_MASK);\n            if (scan)\n                scan(curr);\n        }\n        if (pendingArrays) {\n            auto pa = pendingArrays;\n            pendingArrays = pa->next;\n            auto data = pa->data;\n            auto len = pa->len;\n            xfree(pa);\n            gcScanMany(data, len);\n        } else {\n            break;\n        }\n    }\n}\n\nstatic void mark(int flags) {\n#ifdef PXT_GC_DEBUG\n    flags |= 2;\n#endif\n    auto data = gcRoots.getData();\n    auto len = gcRoots.getLength();\n    if (flags & 2) {\n        DMESG(\"--MARK\");\n        DMESG(\"RP:%p/%d\", data, len);\n    }\n    for (unsigned i = 0; i < len; ++i) {\n        auto d = data[i];\n        if ((uintptr_t)d & 1) {\n            d = *(TValue *)((uintptr_t)d & ~1);\n        }\n        gcProcess(d);\n    }\n\n#ifdef PXT_GC_THREAD_LIST\n    for (auto ctx = threadContexts; ctx; ctx = ctx->next) {\n        gcProcess(ctx->thrownValue);\n        for (auto seg = &ctx->stack; seg; seg = seg->next) {\n            auto ptr = (TValue *)threadAddressFor(ctx, seg->top);\n            auto end = (TValue *)threadAddressFor(ctx, seg->bottom);\n            VLOG(\"mark: %p - %p\", ptr, end);\n            while (ptr < end) {\n                gcProcess(*ptr++);\n            }\n        }\n    }\n#else\n    gcProcessStacks(flags);\n#endif\n\n    if (globals) {\n#ifdef PXT_VM\n        auto nonPtrs = vmImg->infoHeader->nonPointerGlobals;\n#else\n        auto nonPtrs = bytecode[21];\n#endif\n        len = getNumGlobals() - nonPtrs;\n        data = globals + nonPtrs;\n        if (flags & 2)\n            DMESG(\"RG:%p/%d\", data, len);\n        VLOG(\"globals: %p %d\", data, len);\n        for (unsigned i = 0; i < len; ++i) {\n            gcProcess(*data++);\n        }\n    }\n\n#ifndef PXT_VM\n    data = tempRoot;\n    len = tempRootLen;\n    for (unsigned i = 0; i < len; ++i) {\n        gcProcess(*data++);\n    }\n#endif\n}\n\nstatic uint32_t getObjectSize(RefObject *o) {\n    auto vt = o->vtable & ~ANY_MARKED_MASK;\n    uint32_t r;\n    GC_CHECK(vt != 0, 49);\n    if (IS_VAR_BLOCK(vt)) {\n        r = VAR_BLOCK_WORDS(vt);\n    } else {\n        auto sz = getSizeMethod(vt);\n        // GC_CHECK(0x2000 <= (intptr_t)sz && (intptr_t)sz <= 0x100000, 47);\n        r = sz(o);\n    }\n    GC_CHECK(1 <= r && (r <= BYTES_TO_WORDS(GC_MAX_ALLOC_SIZE) || IS_FREE(vt)), 41);\n    return r;\n}\n\nstatic void setupFreeBlock(GCBlock *curr) {\n    gcStats.numBlocks++;\n    gcStats.totalBytes += curr->blockSize;\n    curr->data[0].vtable = FREE_MASK | (TOWORDS(curr->blockSize) << 2);\n    ((RefBlock *)curr->data)[0].nextFree = firstFree;\n    firstFree = (RefBlock *)curr->data;\n    midPtr = (uint8_t *)curr->data + curr->blockSize / 4;\n}\n\nstatic void linkFreeBlock(GCBlock *curr) {\n    // blocks need to be sorted by address for midPtr to work\n    if (!firstBlock || curr < firstBlock) {\n        curr->next = firstBlock;\n        firstBlock = curr;\n    } else {\n        for (auto p = firstBlock; p; p = p->next) {\n            if (!p->next || curr < p->next) {\n                curr->next = p->next;\n                p->next = curr;\n                break;\n            }\n        }\n    }\n}\n\nvoid gcPreAllocateBlock(uint32_t sz) {\n    auto curr = (GCBlock *)GC_ALLOC_BLOCK(sz);\n    curr->blockSize = sz - sizeof(GCBlock);\n    LOG(\"GC pre-alloc: %p\", curr);\n    GC_CHECK((curr->blockSize & 3) == 0, 40);\n    setupFreeBlock(curr);\n    linkFreeBlock(curr);\n}\n\nstatic GCBlock *allocateBlockCore() {\n    int sz = GC_BLOCK_SIZE;\n    void *dummy = NULL;\n#ifdef GC_GET_HEAP_SIZE\n    if (firstBlock) {\n#ifdef GC_STACK_BASE\n        if (!firstBlock->next) {\n            int memSize = getConfig(CFG_RAM_BYTES, 0);\n            int codalEnd = GC_STACK_BASE;\n            // round up to 1k - there is sometimes a few bytes below the stack\n            codalEnd = (codalEnd + 1024) & ~1023;\n            int codalSize = codalEnd & 0xffffff;\n            sz = memSize - codalSize - 4;\n            if (sz > 0) {\n                auto curr = (GCBlock *)codalEnd;\n                curr->blockSize = sz - sizeof(GCBlock);\n                return curr;\n            }\n        }\n#endif\n        gc(2); // dump roots\n        target_panic(PANIC_GC_OOM);\n    }\n    auto lowMem = getConfig(CFG_LOW_MEM_SIMULATION_KB, 0);\n    auto sysHeapSize = getConfig(CFG_SYSTEM_HEAP_BYTES, 4 * 1024);\n    auto heapSize = GC_GET_HEAP_SIZE();\n    sz = heapSize - sysHeapSize;\n    if (lowMem) {\n        auto memIncrement = 32 * 1024;\n        // get the memory size - assume it's increment of 32k,\n        // and we don't statically allocate more than 32k\n        auto memSize = ((heapSize + memIncrement - 1) / memIncrement) * memIncrement;\n        int fillerSize = memSize - lowMem * 1024;\n        if (fillerSize > 0) {\n            dummy = GC_ALLOC_BLOCK(fillerSize);\n            sz -= fillerSize;\n        }\n    }\n#endif\n    auto curr = (GCBlock *)GC_ALLOC_BLOCK(sz);\n    curr->blockSize = sz - sizeof(GCBlock);\n    // make sure reference to allocated block is stored somewhere, otherwise\n    // GCC optimizes out the call to GC_ALLOC_BLOCK\n    curr->data[4].vtable = (uint32_t)(uintptr_t)dummy;\n    return curr;\n}\n\n__attribute__((noinline)) static void allocateBlock() {\n    auto curr = allocateBlockCore();\n    LOG(\"GC alloc: %p\", curr);\n    GC_CHECK((curr->blockSize & 3) == 0, 40);\n    setupFreeBlock(curr);\n    linkFreeBlock(curr);\n}\n\nstatic void sweep(int flags) {\n    RefBlock *prevFreePtr = NULL;\n    uint32_t freeSize = 0;\n    uint32_t totalSize = 0;\n    uint32_t maxFreeBlock = 0;\n    firstFree = NULL;\n\n    gcStats.numGC++;\n\n    for (auto h = firstBlock; h; h = h->next) {\n        auto d = h->data;\n        auto words = BYTES_TO_WORDS(h->blockSize);\n        auto end = d + words;\n        totalSize += words;\n        VLOG(\"sweep: %p - %p\", d, end);\n        while (d < end) {\n            if (IS_LIVE(d->vtable)) {\n                VVLOG(\"Live %p\", d);\n                d->vtable &= ~MARKED_MASK;\n                d += getObjectSize(d);\n            } else {\n                auto start = (RefBlock *)d;\n                while (d < end) {\n                    if (IS_FREE(d->vtable)) {\n                        VVLOG(\"Free %p\", d);\n                    } else if (IS_LIVE(d->vtable)) {\n                        break;\n                    } else if (IS_ARRAY(d->vtable)) {\n                        VVLOG(\"Dead Arr %p\", d);\n                    } else {\n                        VVLOG(\"Dead Obj %p\", d);\n                        GC_CHECK(((VTable *)d->vtable)->magic == VTABLE_MAGIC, 41);\n                        d->destroyVT();\n                        VVLOG(\"destroyed\");\n                    }\n                    d += getObjectSize(d);\n                }\n                auto sz = d - (RefObject *)start;\n                freeSize += sz;\n                if (sz > (int)maxFreeBlock)\n                    maxFreeBlock = sz;\n#ifdef PXT_GC_CHECKS\n                memset(start, 0xff, WORDS_TO_BYTES(sz));\n#endif\n                start->vtable = (sz << 2) | FREE_MASK;\n                if (sz > 1) {\n                    start->nextFree = NULL;\n                    if (!prevFreePtr) {\n                        firstFree = start;\n                    } else {\n                        prevFreePtr->nextFree = start;\n                    }\n                    prevFreePtr = start;\n                }\n            }\n        }\n    }\n\n    if (midPtr) {\n        uint32_t currFree = 0;\n        auto limit = freeSize * 1 / 2;\n        for (auto p = firstFree; p; p = p->nextFree) {\n            auto len = VAR_BLOCK_WORDS(p->vtable);\n            currFree += len;\n            if (currFree > limit) {\n                midPtr = (uint8_t *)p + ((limit - currFree + len) << 2);\n                break;\n            }\n        }\n    }\n\n    freeSize = WORDS_TO_BYTES(freeSize);\n    totalSize = WORDS_TO_BYTES(totalSize);\n    maxFreeBlock = WORDS_TO_BYTES(maxFreeBlock);\n\n    gcStats.lastFreeBytes = freeSize;\n    gcStats.lastMaxBlockBytes = maxFreeBlock;\n\n    if (gcStats.minFreeBytes == 0 || gcStats.minFreeBytes > freeSize)\n        gcStats.minFreeBytes = freeSize;\n\n    if (flags & 1)\n        DMESG(\"GC %d/%d free; %d maxBlock\", freeSize, totalSize, maxFreeBlock);\n    else\n        LOG(\"GC %d/%d free; %d maxBlock\", freeSize, totalSize, maxFreeBlock);\n\n#ifndef GC_GET_HEAP_SIZE\n    // if the heap is 90% full, allocate a new block\n    if (freeSize * 10 <= totalSize) {\n        allocateBlock();\n    }\n#endif\n}\n\nvoid gc(int flags) {\n    startPerfCounter(PerfCounters::GC);\n    GC_CHECK(!(inGC & IN_GC_COLLECT), 40);\n    inGC |= IN_GC_COLLECT;\n    VLOG(\"GC mark\");\n    mark(flags);\n    VLOG(\"GC sweep\");\n    sweep(flags);\n    VLOG(\"GC done\");\n    stopPerfCounter(PerfCounters::GC);\n    inGC &= ~IN_GC_COLLECT;\n}\n\n#ifdef GC_GET_HEAP_SIZE\nextern \"C\" void free(void *ptr) {\n    if (!ptr)\n        return;\n    if (inGCArea(ptr))\n        app_free(ptr);\n    else\n        xfree(ptr);\n}\n\nextern \"C\" void *malloc(size_t sz) {\n    if (PXT_IN_ISR() || inGC)\n        return xmalloc(sz);\n    else\n        return app_alloc(sz);\n}\n\nextern \"C\" void *realloc(void *ptr, size_t size) {\n    if (inGCArea(ptr)) {\n        void *mem = malloc(size);\n\n        if (ptr != NULL && mem != NULL) {\n            auto r = (uintptr_t *)ptr;\n            GC_CHECK((r[-1] >> (HIGH_SHIFT + 1)) == 3, 41);\n            size_t blockSize = VAR_BLOCK_WORDS(r[-1]);\n            memcpy(mem, ptr, min(blockSize * sizeof(void *), size));\n            free(ptr);\n        }\n\n        return mem;\n    } else {\n        return device_realloc(ptr, size);\n    }\n}\n#endif\n\nvoid *gcAllocateArray(int numbytes) {\n    numbytes = ALIGN_TO_WORD(numbytes);\n    numbytes += sizeof(void *);\n    auto r = (uintptr_t *)gcAllocate(numbytes);\n    *r = ARRAY_MASK | (TOWORDS(numbytes) << 2);\n    return r + 1;\n}\n\nvoid *app_alloc(int numbytes) {\n    if (!numbytes)\n        return NULL;\n\n    // gc(0);\n    auto r = (uintptr_t *)gcAllocateArray(numbytes);\n    r[-1] |= PERMA_MASK;\n    return r;\n}\n\nvoid *app_free(void *ptr) {\n    auto r = (uintptr_t *)ptr;\n    GC_CHECK((r[-1] >> (HIGH_SHIFT + 1)) == 3, 41);\n    r[-1] |= FREE_MASK;\n    return r;\n}\n\nvoid gcFreeze() {\n    inGC |= IN_GC_FREEZE;\n}\n\nvoid gcReset() {\n    inGC &= ~IN_GC_FREEZE;\n\n    gcRoots.setLength(0);\n\n    if (inGC)\n        oops(41);\n\n    if (workQueue.getLength())\n        oops(41);\n\n    memset(&gcStats, 0, sizeof(gcStats));\n    firstFree = NULL;\n    for (auto h = firstBlock; h; h = h->next) {\n        setupFreeBlock(h);\n    }\n}\n\n#ifdef PXT_VM\nstatic uint8_t *preallocBlock;\nstatic uint8_t *preallocPointer;\n\n#define PREALLOC_SIZE (1024 * 1024)\n\nvoid gcPreStartup() {\n    xfree(preallocBlock);\n    preallocBlock = (uint8_t *)xmalloc(PREALLOC_SIZE);\n    preallocPointer = preallocBlock;\n    if (!isReadOnly((TValue)preallocBlock))\n        oops(40);\n    inGC |= IN_GC_PREALLOC;\n}\n\nvoid gcStartup() {\n    inGC &= ~IN_GC_PREALLOC;\n    preallocPointer = NULL;\n}\n\nvoid *gcPrealloc(int numbytes) {\n    if (!preallocPointer)\n        oops(49);\n    void *r = preallocPointer;\n    preallocPointer += ALIGN_TO_WORD(numbytes);\n    if (preallocPointer > preallocBlock + PREALLOC_SIZE) {\n        DMESG(\"pre-alloc size exceeded! block=%p ptr=%p sz=%d\", preallocBlock, preallocPointer,\n              (int)PREALLOC_SIZE);\n        oops(48);\n    }\n    return r;\n}\n\nbool inGCPrealloc() {\n    return (inGC & IN_GC_PREALLOC) != 0;\n}\n#endif\n\nvoid *gcAllocate(int numbytes) {\n    size_t numwords = BYTES_TO_WORDS(ALIGN_TO_WORD(numbytes));\n    // VVLOG(\"alloc %d bytes %d words\", numbytes, numwords);\n\n    if (numbytes > GC_MAX_ALLOC_SIZE)\n        target_panic(PANIC_GC_TOO_BIG_ALLOCATION);\n\n    if (PXT_IN_ISR() || (inGC & (IN_GC_ALLOC | IN_GC_COLLECT | IN_GC_FREEZE)))\n        target_panic(PANIC_CALLED_FROM_ISR);\n\n#ifdef PXT_VM\n    if (inGCPrealloc())\n        return gcPrealloc(numbytes);\n#endif\n\n    inGC |= IN_GC_ALLOC;\n\n#if defined(PXT_GC_CHECKS) && !defined(PXT_VM)\n    {\n        auto curr = getThreadContext();\n        if (curr && !curr->stack.top)\n            oops(46);\n    }\n#endif\n\n#ifdef PXT_GC_STRESS\n    gc(0);\n#endif\n\n    for (int i = 0;; ++i) {\n        RefBlock *prev = NULL;\n        for (auto p = firstFree; p; p = p->nextFree) {\n            VVLOG(\"p=%p\", p);\n            if (i == 0 && (uint8_t *)p > midPtr) {\n                VLOG(\"past midptr %p; gc\", midPtr);\n                break;\n            }\n            GC_CHECK(!isReadOnly((TValue)p), 49);\n            auto vt = p->vtable;\n            if (!IS_FREE(vt))\n                oops(43);\n            int left = (int)(VAR_BLOCK_WORDS(vt) - numwords);\n            VVLOG(\"%p %d - %d = %d\", (void *)vt, (int)VAR_BLOCK_WORDS(vt), (int)numwords, left);\n            if (left >= 0) {\n                auto nf = (RefBlock *)((void **)p + numwords);\n                auto nextFree = p->nextFree; // p and nf can overlap when allocating 4 bytes\n                // VVLOG(\"nf=%p nef=%p\", nf, nextFree);\n                if (left)\n                    nf->vtable = (left << 2) | FREE_MASK;\n                if (left >= 2) {\n                    nf->nextFree = nextFree;\n                } else {\n                    nf = nextFree;\n                }\n                if (prev)\n                    prev->nextFree = nf;\n                else\n                    firstFree = nf;\n                p->vtable = 0;\n                VVLOG(\"GC=>%p %d %p -> %p,%p\", p, numwords, nf, nf ? nf->nextFree : 0,\n                      nf ? (void *)nf->vtable : 0);\n                GC_CHECK(!nf || !nf->nextFree || !isReadOnly((TValue)nf->nextFree), 48);\n                inGC &= ~IN_GC_ALLOC;\n                return p;\n            }\n            prev = p;\n        }\n\n        // we didn't find anything, try GC\n        if (i == 0)\n            gc(0);\n        // GC didn't help, try new block\n        else if (i == 1)\n            allocateBlock();\n        else\n            // the block allocated was apparently too small\n            target_panic(PANIC_GC_OOM);\n    }\n}\n\nstatic void removePtr(TValue v) {\n    int len = gcRoots.getLength();\n    auto data = gcRoots.getData();\n    // scan from the back, as this is often used as a stack\n    for (int i = len - 1; i >= 0; --i) {\n        if (data[i] == v) {\n            if (i == len - 1) {\n                gcRoots.pop();\n            } else {\n                data[i] = gcRoots.pop();\n            }\n            return;\n        }\n    }\n    oops(40);\n}\n\nvoid registerGC(TValue *root, int numwords) {\n    if (!numwords)\n        return;\n\n    if (numwords > 1) {\n        while (numwords-- > 0) {\n            registerGC(root++, 1);\n        }\n        return;\n    }\n\n    gcRoots.push((TValue)((uintptr_t)root | 1));\n}\n\nvoid unregisterGC(TValue *root, int numwords) {\n    if (!numwords)\n        return;\n    if (numwords > 1) {\n        while (numwords-- > 0) {\n            unregisterGC(root++, 1);\n        }\n        return;\n    }\n\n    removePtr((TValue)((uintptr_t)root | 1));\n}\n\nvoid registerGCPtr(TValue ptr) {\n    if (isReadOnly(ptr))\n        return;\n    gcRoots.push(ptr);\n}\n\nvoid unregisterGCPtr(TValue ptr) {\n    if (isReadOnly(ptr))\n        return;\n    removePtr(ptr);\n}\n\nvoid RefImage::scan(RefImage *t) {\n    gcScan((TValue)t->buffer);\n}\n\nvoid RefCollection::scan(RefCollection *t) {\n    gcScanSegment(t->head);\n}\n\nvoid RefAction::scan(RefAction *t) {\n    gcScanMany(t->fields, t->len);\n}\n\nvoid RefRefLocal::scan(RefRefLocal *t) {\n    gcScan(t->v);\n}\n\nvoid RefMap::scan(RefMap *t) {\n    gcScanSegment(t->keys);\n    gcScanSegment(t->values);\n}\n\nvoid RefRecord_scan(RefRecord *r) {\n    VTable *tbl = getVTable(r);\n    gcScanMany(r->fields, BYTES_TO_WORDS(tbl->numbytes - sizeof(RefRecord)));\n}\n\n#define SIZE(off) TOWORDS(sizeof(*t) + (off))\n\nunsigned RefImage::gcsize(RefImage *t) {\n    return SIZE(0);\n}\n\nunsigned RefCollection::gcsize(RefCollection *t) {\n    return SIZE(0);\n}\n\nunsigned RefAction::gcsize(RefAction *t) {\n    return SIZE(WORDS_TO_BYTES(t->len));\n}\n\nunsigned RefRefLocal::gcsize(RefRefLocal *t) {\n    return SIZE(0);\n}\n\nunsigned RefMap::gcsize(RefMap *t) {\n    return SIZE(0);\n}\n\n} // namespace pxt\n",
             "gcstats.ts": "namespace control {\n    //% shim=pxt::getGCStats\n    function getGCStats(): Buffer {\n        return null\n    }\n\n    export interface GCStats {\n        numGC: number;\n        numBlocks: number;\n        totalBytes: number;\n        lastFreeBytes: number;\n        lastMaxBlockBytes: number;\n        minFreeBytes: number;\n    }\n\n    /**\n     * Get various statistics about the garbage collector (GC)\n     */\n    export function gcStats(): GCStats {\n        const buf = getGCStats()\n        if (!buf)\n            return null\n        let off = 0\n        const res: any = {}\n\n        addField(\"numGC\")\n        addField(\"numBlocks\")\n        addField(\"totalBytes\")\n        addField(\"lastFreeBytes\")\n        addField(\"lastMaxBlockBytes\")\n        addField(\"minFreeBytes\")\n\n        return res\n\n        function addField(name: string) {\n            res[name] = buf.getNumber(NumberFormat.UInt32LE, off)\n            off += 4\n        }\n    }    \n}",
             "gestures.jres": "{\r\n  \"*\": {\r\n    \"namespace\": \"gestures\",\r\n    \"dataEncoding\": \"base64\"\r\n  },\r\n  \"shake\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAEe0lEQVR4nO2a0XHjNhCGP2bybnZgpgLzKjBTwTkVRKkgSgXhVRC5Assd+CoIXUHkCkJXELmCzQMWIQSREgjSB4/CfwYDAlgSi5/A7gJkJiL8n/FdagVSYyEgtQKpsRCQWoHUWAhIrUBqLASkViA1FgJSKzA3MigzKELlL4qADFZAAzyF3nNRBCiugJsM6hDh7NJ2gxlsgZ+1+INAe1J+JgIqTMfXWn7BdLzTZK/fHRnk2t8V8ChmWQzLz0BAgRncFfCqnd8OyD5re4tZq/Z6VmSwBv7Q4sEsyKA4mBUiMjWtxWDr1RciUolIrW2tDKNRmVrvKabqhcheC1stV4jsENl7cpMJ2OoghpTOReRJB+kSs48gJh9BwEYLey0XjkA1JwE7HURfW+UMsHYIsPeslIgx2CsxGzGzr5cYREp/wIi0Wq5lJgJyVeqpp23jKV5FDjgUjXhE+ANGZKtlOxsnxwGl5juvbgf86snWwAPGWL4HbjkOgBrNK81bzQsrMJUA+2Db0Rr4C7jpkbWe4QXjDV4n9t0H3/u0mheaN5pbd833Ezu0M6DVhw+5P4CvGIJar77CKFjodUn8LHnzyg3wO86AfUwloNJObRwwhEe6gKTEBCtWwaZHPseQtT7zXB99z3LRAl/ciimBUAH8HSD3qrI5Zo36s8QGTw3HUWOJWVKh+IKzB9Bd4QpAhvYGZ6z8qXQXaJ1XKl87dad8v20veu47h//8e2iaYgSrQLnWk78HNmfuuXZktiN0Gr3fmGIDyvMivfDdo4tHzFJ4AD5rXRv43BdgP1aZKTPglMV3YYk699YB7hw56yaLwH6idpuxBPhv/yvwG+Yt+KjpDOCPmLfcJwfG4lurb4moAnWK226PNRqa7A5QxMT1tr4cME476d8slWKMaS3dhqmRznDmct5gWpQxY4m1Ae4MaJzrnH7cYFzmI90hiZv6zvByffZgEOMhagbExgE7DsPdXzAGaEO4wtAFUb7/v8P479Ag6JnwpXKAGAJy4J+YzmbCC8d7jXtM1DgaMUYw1v1NxRvwSfv/yWtrYh8aQ0AV29lE2KUCxzYj+sB1kIAMGk3+G081A0q6mKB26t+YcrBq3QEijaZSDo+KVp7reK8TnVDsvHLfaVTUXuBWk33Dz5oXjkzB+53ohMI3gJO+N7gE9A3YL/ttHwHNlJv7bIB7WAHp1nwoZpsBjeaV9+Cb7JCUoTg+BaJ2gC5cAvwBN07bnXNdYQKPZ47P4L41pn9vlM4L5L7lR+TJP0fvSbmYk5i1mG8BjXw7T7EOsfSn0kEonJkAYw9sBHb6w8GDNp/91OyhoDvptdehZwih+MTEWXB2L5AZQoI+NQeiYB5i3hjefYbj3BRBpHYqRh86jkiFHH5N9gMeH/Uc/QbtBjMz9a8xx1SlTLS8I2FD4JLOJW8Z8R/QKYQSUAF/avFeIreeHxFBu0ExLvEes+5mYf6jYNSByNHvJReAi/tLbCwu8T/BUVgISK1AaiwEpFYgNRYCUiuQGgsBqRVIjYWA1Aqkxr8PLUpMvtN12gAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"freefall\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAADqElEQVR4nO2b4XWbMBSFP3r6P2wQOkGcCUonqDtB0wnqbuBO0GSCJhvYG5AJiiconaD2BK8/JGpZAVtIYJGEew7HRAi9x0W670kiiYjwmvEmtgOxMREQ24HYmAiI7YCJBMoEVme1OaYokIAACCTnsjmqHtCEBIoEloO1P/YeMHSvGH0PGBoTAbEMJyAJlLHs//cjlga4jvdJAwbGREBsB2JjIiC2A7ExERDR9hr441DvDngcyonRzwWGxqsfAm9jO2DhOzA7p8G+hkAO3AOX+u8NUKFy/dI4Hx36ICBDPdwFStQq4H1L3Ud9vQIK4zwa+iBgAfwAHoAbozzTR278XtKMaMT0QcA98Bl4R7PTqa6TsicjQy1+ruhGTAlsQx0+gIiEHqWIVC3Xcn1NRGSpyzLjnhsR2Uo3bEWkEJFbEVloG6mv/6EPn2qnVg3Xbi3Hc88HdkUhHkSEEpBr40ujbCbqDTc5ODSKBh+PHqGJUK5/C/27AH4BVw1168iwQY1tlzS4K9qiTytCE6E6aalQJBxzYI0iqLLKcw4jxgwVUn2w63pDaBQwFfmY02aInKEiAux7jo0URdbiRLs21sC8Q/0gDcgcx2UdIVJp1oFKly9FZC5KQ0w96QJTiwYXwbmjUze6/tJ66GOoRBFs33cK+RF/exfB3LFeZdW/A25P3HNp1Lnv4FPn+UaICPrO2r4eufaA0oWfwEddVjm2u8EjSwzpAa4hpybq1FsHJWB1vTpMZo52vGabvgTYb38NfEO9BRtLlKqvgA+ot9xUD5Ti16pfE5E7+uQ33e4qGvpYGMJTGuVtql0aooZVf66FbiUqGhSyF85UTgtmDTN6OB++GmD2gMI4T2nGFfAb9fbLhqPps5hUt902U7Th1QN8E6GSw3T3C0qAbnF3GFTm1rRqNEclTq5J0CPuQ+UAPgSkwF8fYz1hw9O5xh0qa+wMHxE866KlgR1wre1/sq4Vvo36EJD7GgtEPVTgqWZ4L7g+px4wY58TLI3yHQHrhz5RIPc1FogLVCSxNaAIabRrD8jwn6v3BVsAg/YbfAgYG4qQm1/C3uBZe0BBex4fA14zQBO+YbDes++8BtczgvcbfaLAlsOsK0WFqDpM1efnEMtgAob8QCLjcG8ww2PZ+gSuCSQhxhciGf0Qs6N99umMGB9IVOz3EUxkHBIzo3mDpYbLCtNJjOoboRbY2gJqobSXf615DgQMipeQCAVhIiC2A7ExERDbgdh49QT8A9YP5MUcc2wYAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"frontsideup\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAADSUlEQVR4nO2a63XaQBCFP+Xkv9WB1QG4AquD0EFwBy6BElwC7oBUEFxBoAKLDnAFkx+jjVZCbyQNOeieswehx+7cuzOzDykQEe4Z36wNsMYsgLUB1pgFsDbAGqYCBLAJYGNqg9UwGMAS+JP+fRI4WNhh6QHbiuNJYSJA6vYL79TCKhQmD4EAIuCz4vLkoWDhAduaa29TGeEwqQABvALPNbc8p/dMBrNRACAAARAIrGy4+4nQd8vGLXve4e49wHoqLC4PWOHuPWDOAdYGWGPOAZaN3wLmHGBtgDXmHGDZ+C3g7nPAWAKE6Lp+DTym577Q3R5XEmA/UvutMcZ+wBIl9gC8k5GMgDj9ffTuP5GJkZAJNAmGFsCRByVbR+QV3QjdoaIsUdEcjuQFcV4zKIYUoIl8mJ5fpeUBeCHbI1yhIXNOy5q8IA4fqBAJmdckfY0eSoAq8hFKLAZ+FJ75hfb+qnDtRD5E2sDPL4l3fG56cAgBiuRDMtKL0iemgxNm75UcrhXAT3hHtMfL3LZo1I7MfR2itD5Xmurpg4th9xoBfPJt8IUmvi35EQHyrusQkokRoV7VNTSK7YcXZ0WkT1mKyFna4yAiYVq2Le7dichGRFYiEnntvnZo08dZ1OYLLlOQT0SJIyJ77/y68L8OK6/9Q4e2RWrISw8Bysg3ibHxnm+LveR729URtmivaFsleekoQJH8oVB5Vc/svHtW6f+kheEOiWRh0BQ+xTpqyUsHAcp6PvauN8XmTvJu7EosGgpvor1eJL4R7fVI2oeLSEvyItJqFKjL9h90H7JOXE5vq6bMS3Tk+Nmh/i+ap+H/0CRA16HuGhzJz9z6zAU6kYd6AaYk3xZuZgflr9mf6LiSrNoPCNHZ2i2Rf0cXSA5n8va90GMZXbYlFqI9f82sawy4r0eWXHaOv6rshLIQiIHffSozQm/yUO4BBzS7/w+4ijw0jwIxuhCJ0uOxVml9cDV56LcaLK7Sxly+VmEQ8jDsllhEfpkbUf9FWF8MRh6m+UosIr/REdF/p2hQ8mD7mZwfQjGX2+U+TugcYD+0EabfCVYgJgsh0DF/tPcEtyjApLj7l6OzANYGWGMWwNoAa8wCWBtgjVkAawOs8ReItTjrXj7vnAAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"backsideup\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAACbUlEQVR4nO2a75GbMBDFf2TyPXRwdHCkgqOEdJCkg5TgElyCS0gJTgVxKojdwV0Fmw9CA7H5Zwx6HOjNMCNAg/Y97a6EpMTM2DI+qA1QIwqgNkCNKIDaADWkAiSwS2AntUE1DCaQA7/L288GJ4UdSg84tJSDQiJA6fbPtUfPqlAIHgIJZMDfltfBQ0HhAYeOd/tQRngEFSCBH8BLR5WXsk4wyEYBgAQMwCBR2bD5idBHZePKnvfYvAeop8Lm84AKm/eAmAPUBqgRc4Cy8SUg5gC1AWrEHKBsfAnYfA6YS4AU91//DXgqn73hVnv8dQaOM7U/GHOsB+Q4Yp8G1r9QiXGmEigIphbgXvJd+MP/gvjypJhSgCnJX+MN+MJtyKTldR774alGgbnJFzSTP+JWmA34OerrZvbolZvZq82HfUObqZmdanVeSzua7EvNbGdmRdP7R0Ngzp6v40KVCzJcOPg2vYc05QfvJX4T5nbY7eldZc8PQVfPY2aHq7o3dcbmgFA934c97SPDAfhalr2X3GBMCCyFvEd9gnXGhUhB5fZdIXK3AEsj34dO8nDfMLg68jBcgFWSh2ECrJY89AuwavLQLcDqyUO7ACluHH0v5MGtP9z9t9gkwPX08T3gOyMPWjUJkLMR8tAswAn4NfaDgfEQeeifCRa4qWVWlnOWkxceJg/j/gVSnBA5ThhfDinMJORh2iWxjMpTfLnrRNhYTEYewpwSy6i8xHvN2CQ7KXnQHpOrh1BRlp9a6l5wewzHqY2QnhNsQUEVQuAWO2fbJ1iiAEGx+c3RKIDaADWiAGoD1IgCqA1QIwqgNkCNf+aBYPgHiIEjAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"impact3g\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAEWklEQVR4nO2a/5XiNhDHP87L/0sqWKeCdQdxB6GDkArCVXCkA0rwdcBWcN4Kju3A2wFUMPljpEMI/5AtEXMc3/f8hKVhNJoZjWYEmYjwM+OXuQWYGw8FzC3A3HgoYG4B5sZDAXMLMDceCphbgGsig0UGVR/Nr/+TLHOhAhZ9BHfrARksgT+H6O5SARnkDLi+xV0qAF38Uwjh3SkggzXwRyj9XSkggwLYjPnOXSmAEa5vcdMKyGCZwSqQdgO8tAzlvV8UkZt9ECnMS41I0UNX9jHqmyO79SuxDFwB/wW2AgdnfAHsgecuHgJZ5wRzWznAC2qvs0GkdMa3Q0z6hm86BhjsTXs07TPwNYOdyfb+8ehfR3Gf28IBHrA0L4Wxft8XGkQWd+kBom0BvHfQHYGlGx9CkEoBOVCjAetgPm/RrKxkoCLrg0CDcX+zuJJ2N1/L5XYJmCCNq+7V06QRkVpEDnKJgxnbishanEAWsA12LX2V07H1xs4CZx/vFPcBBZqAvKJByWJhxuxTmtbP0z9QK9emtZ9dVP6kAqtMaUtRT5uGBNZfGQt3WXRprL8077mIVKJWrVs8xcJ608bMMcZj/KOzL4mKVsDWCLzw+hfOmJiFL8zCxYy1bZUhuIpZGr7+ovzc4IBuu6soYG8et68wglocRC3o9qXEylvUpkPYHZ6hUihARF3avm9aBJxi6TFofLnQ+qBqEfiAs51ia4ES+Ap8AnbmaavIQI+mCj2qcs6D5KgStgOt+X6mMu68OY5o8NzHngKFaXN0YV0LeUXL2q4kxT8xlj282vDhd5giaQ18Nl1HjJFEW6WL9IAdwzev76gVQGt2q7SGy+PPIqffm3x8wbk3MFavHBl3cnm0Ki63yKgnJKjZ468OoLXR3Z4iobHje4RHZG1Ogc6jz31iFr8IFM6nLQMWZpWwHaBzeU5aR0wtUI6gdWuBivb9/YZeeLi8dy10bahHyHKGGAUUwyTf6Rp0gdB9c2ODn4uQIuptmKQbqTzgiFqvrVTdmHaJBquucvaJU9CrTLsKkGM/TNKNmFPgwMmVfzPvBfCthfYsShsUaLS3R5+1dmWeLl4+/ibwZ7A2TFWAK9yRk/B9Qn+ge7pBrVYP8K8JywV+5/wIHYWpiZC7/584ZYGbnu88c3l/55bCNkkqgL8C5TgSsXiY7gFbLhdzbbyhnvbi9ZUxTKcGwahJJ+ALpwsVN+rXsYynKiA0RU0FNx9w64k6lvGUGFDGTjoBG04Xom7tEXUEwjQFhCZAKfGClt0uPhh5Bd6GKVugjJ00EeoUTKYoYPIdf2JEuz9MU0CdYuIESKKAmDxgRZqrrKno/sl7DJOIWgA0l8/RuGA/B/9BKQLRCZBF7J1gQ/svOTnXVUwS94fr/VW2oVsx7uVnzrSkKpkCbuUvMn5pnNOtmHcS5iK3ooAuuIoBTXwqEiRAFreugKvjR/iHyFXxUMDcAsyNhwLmFmBuPBQwtwBz4z9jSdC1TZEC4AAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"impact6g\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAEjElEQVR4nO2a0ZGkNhCGP1x+XxzBkcGNI7AcgdcR3GRgQsAReJwBm8FkYDYDLgKzEdxMBO0HtQotIwZGaI6hvH8VBUhNq/UjtboRmYjwf8YPaxuwNj4IWNuAtfFBwNoGrI3NEZBBmVLf5ggAygx2qZRtigDt+CfApNK5KQKAvZ5NKoXZliLBDE7AE3AWyFPo3MwIyOAZ23mAp1R+YDMEYAnwYVIo3TIBw/sobIKAzDq/p0HxLyl0b4IARt52lmAaPDwBmfX2v41Um6X6VyMggyKbt5Rdm+tmqR1rjoAc+JZBPTGU91fqZvuBDEwwjxCR1Q5EGq+gQ2SPSO7VF4OHuoAiE9BrECkRqRFpvcpDQHZVAkyg4qSG77QTft1e6/2yWssPg86G9OYBG9YjQA3otBPHCeFO5afkxo4qVPwIq0AF5GKd3a/A24hcrecmoo03se1cYu0RoG+18a5zRKqx4YudGrc28nyl7SSdyEWklh6N3ldindTF3BsYUTGQwTpA5yQPg7qhHzjp1Cix/sCva661nSodroEvwBlogQL74cKHq2uBzrs+uXhAbLr7DpoFtmKfcWUH7DON1rVenbPF4We//kJ/IgIEO3d39J3I9d4dLqAZxvSjxNxqRGaJ/9crepHrcUSSKWB02Jcj9TsRaaX3wrleu2kyhpPKHERkL4H1PjCVDiG/MfHMYgJKNThkYOV1yNUf9L4Wu7Tdik6JqZSYndcZP1D6bgS4t+iXFWqkDyN2JNwDpXZmx3sH2UzZn4IA90bc/V7s8B0iVJYS/jLpk3AR/vrHj7c6mgFyrLc/6nXNeOoK8IL13IXeG8IrRgx2QCPQqjNsgM/AH5ldKergU9fYmXEYZb+eeMOt2GkxpasU+8ZiRstwaOf0ucEJz1cM5BYRUM0w7CS9M6rETpdGRI56/yyXxg0Dqym0I53L6XOHjjskQ80M4yqVPUwJSr9cOkPnOs1QmltgI0x/ZTgG5BYRMGeomoHs84yO1dI71DnYex3KsSHxUQnYY9Pu4JK4pPPFTOMcAQ7diFw36PAtbQTn95xjSTpsZsoVen7R85jH/0Qftp71POeboQulo7CEAH9r6gz8DXwNyJXe+U/g9YpO942v1vOczY/ozgOLpoDvAN0wz0eGeC2Xc7DQ5yqxzqmRPsR1uub4GCcfdSzJBv0Hf6LP3sYUnrEBU8t0xleo7OcZdvyuslGIJcAA/3j3r9hhWzLPaIdhKnxS3f5O8BR88m9GLAEl8Fdso5H4iu2ovxfwRu9koxDrBJP9ozMTr9qmoV9NYKkDJJ4As7ThG9F4191IeRRiskGXAX5PlPTfGv3trcUjIMYHGN47wDWRLVUQMwXM0kYTIRR03YxH2BmKRZNCSQwBXYqGE2Dx/Ic4AmpsTH+ekLs3khCwdGPE3/wovOu5UVwsziT6UfJef4o6YgyWmIJEf3UpXknkjJd+FR7DCeukmkF5oYdhGTFDvdF4lH+FC+YTc9b66ATIx6MQMIaCnhiHA4k6D49PwN2x5UAoCT4IWNuAtfFBwNoGrI0PAtY2YG38B6VuuBeejFXUAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"impact8g\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAFVUlEQVR4nO2a7XHjNhCGH2Tuv5kKzFQgXgXHVHDq4HQVxCUoHSgVRK4gcgWhK4hUwUkVhK5g8wOABYMACRHUUTfxO4ORjY8F8AJY7C6hRIT/CxSUAkc376eZxhKFgkJBcwW5W2Dl598cAUANfFKwnEKYIXQPfAF2fvmtEgCwVVDkCFJQobf8AjiJJuINbpmAO/S2HQWlt/s/Rg7EjpWI3ExCpAgU1CPkbAMFy0jd+SfuDGYZKDgiUiS2LxHZhwpjbW7tCNSBvHtgPdRQ6bZ79Hn38RRtOPeqeysYXD2Tqp52DwPCVz1t55+4s337Ku0DbQrC591P5Y9wBOqB8oVyjoKCEq3Zvwy0O/jWn4sfiQCABwXlwHn30TF+XCiR2/AFlF6l+4Sqp8R6Fh9DBtBrv7dAgNnO37zsF85GzFicRMuO4kNmB70wE+sdgEEVyFsBGy5bbR+92x+uTAB68n+PaHcS2Blf4M+M/pvBGt/heku5pvz04LQ/juy8TRzf1QkoEGlNxhKRNSLNQMPCaV/3TbJH1i5lfFe/BgVazvd3IbAWqAUU8BH4CvwBHEydR9PGtm+A54DoA2HdYTF4/nUHV94BzkruEWkS6pWBvMqruLW7JGUXzXoEAlu5M8HE9laXrBKOR8dsnp0AZxKbkW1LPIcIrU9CDVrTVzAGMCcBxSWrkyBvSJkK+hbZENl5390SNKGqVlKVVL+sSwd/QBtXO6top7oFSrS2FrTgxnT0gHZcXoObkhHnc6H6b4AYFmjD6l8bdZ5qB1jP7IR2aiq6dvyLqbc3dfZMEP83nqFNnxKbPcmEBFTo6OsTb2P5hSmzqTZ5PjGWtMb82r9HwaxsbVLIXT6g7RBta0ygjFaiUUfKl6LNUquRSxHZirbUGonjaMrXpo+Y/JiC3AQK9nj2wRQEbMyAfcOjcMrETLwwExdT1vYQkELMUsKGU8g+aEM3wRQE7KV7tVVmoBat6BV086bEyplQQdeBaokEVacgQERvafv/OjDAMSt9CY5ynlBo60cjyrnxgNr87tFX4S6ieO7Qt8DWqesqydzIjxs0WXllh76QWC4B9i4u0Z3EJvJkBtZGyv0bY9kjK4ST83eJvkXsQiyU9kDXwZaxrZGYrELrw1608rNKsTFpK/q41NJVTqVplwr3CL6a3CnHIJeAFKVmr78moW4jmhREE5aqO14jSBInIfiNMWfyReLg/Lp1wsQsCZuBeq7M4Dh5G5LrRIlyfIH6grruQ4ct4fP9DPzuyU51mJqesh1aAQN8Vp6SzCEg1RmxrzRsWCsW5rbKz0XKC5FOuEzBUukXJi3wF2fCn/0+ptoBL+jVOwTqrc3vEniM1AE9SKu5t+Z3lTCO1ytOQa20F1qZ/CXwq4AyqRaPgBxnqOXM7M/mf+sY+XikO5kKfWXZq8+u9takmCwfX8l5SjOSAHdwL5wH3zfoE/o8Hhl2hStTnmIL/ELP198hjDWE3PN/h57Yjv6XHPfAb16e6wpbI6li+JO3xQsZk4fxO2BDdzLXxjN6py28vDpH6FglmNXpCDyaPiveav0mV/BYAlIeJkwJ1x5w/YkmV/AYHVDndjoCa/TEa+Czkx/18lIxhoAx0dhcLOh+Zj8R9y6TMeYI1LmdToRmCiFjCMh6wDwhsrc/jCOgmaLjCTAJATl2wIr8UFYO1CRCMnwBOD+Cqp2/U7/O5CDbALLIjQkeCX/JKbkuMZNsf7jeK7EjcWLc4GfJOKNqMgJu4qEkXde4JE7M0Nugi3ArBMTgEgPa8NkygQFkcesEXB239Fp8FrwTMPcA5sY7AXMPYG68EzD3AObGf4L8LJx8Ylq2AAAAAElFTkSuQmCC\"\r\n  },\r\n  \"tiltleft\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAD5ElEQVR4nO1b7XWbMBS99PR/2CBM0HiDsEG9QckG3qDqBu4EpRt4g+AN6AZ4AzLB7Q89HTA1BiEJuYnvORwsIYn3rt6HJJKEJD4yPsUWIDbuBMQWIDbuBIQcPAFUAlQJsJFyKeVtyPdagaS3C2QOsgK5lXIrDwspc1BuQB5AbnzKYXN99sxnCeARQAPgIOVUygDwQ+7GKh7lKgHUCbAhUHuW6To8zPoO5EF+FyBrYwET/VJpb/pu5aFa0wJcOxe9ikmlJ8aqpFCDTP8XAlIRuHIVWsYqIfEAEidukgCQKuRMCREEuQ9NgHUalOD1HcATAOU7Jg2wCTz+YgvYBbaAdC0XSMj5u8EEyAGAQBVoPlaHrQsoAK8JsA8gSxTMJiDRCxrjk1UQaSLAygUA7QbvyQVmL4UToIBe0jaBZIkCmxhQAHiV+5pIoYNvkJQ46gLi84de1bPcT+isYM/zNj6RA9gB+NqrO0JvpVtvb5mx4htrUAfKzTnJiuOo6XH7PKdBPfLQ9x6+INlcUbyPlo6bLxsC8gsPlCelU0vFh3CWY26jfa+igfsSOBXh24WK93GggzxzG6WiOKF9dKniGfUOz4fifSyOCzYNcyzfnmYkywklKjcOlsUFFzOec+XUJjomsKImp9+n4HULqaTf2Li7WyAgZzejQ0EbUfILtVU0Ul/3yNjPVG6MqJIz44Lv7wIF9CJJoVss5XI/AXiBXsjkAP7Ib7OQesL09wIzZgZ9kvww0u4b9H4lm5TYw2ynMjNmJgvqgGRmpxKL6FuFQdvr14oFpFdm1hYtJ4K2q+JKXlKK4qQ235pdULqk+BAVNWmZ9PWNgp4J2LFTPOP5jFN+b9j58phSB3YzZMYMhYsZYqny7Ame8l8FjcmTWqlhIDTEGStqGB6KnghoeW5SQ+XNJqkY1LfUFpHJZdxnLVx0gyXfBh8kAkPuT4Pnbe9ZKlfbKyuJ0mviJzqZz3GJlYmLcldX2B7625bTK0Hf6MeoUX2szwQBEDqf/5poZw5Onifa+cYb9Kn1HjMOTpYScIs4QStdwuLEyPffB8TACTqulEs62xKQXqg7yn1tUz9Cz7jTmaQtAcOT2Rd0zK/lGkfoGa98DObiAr/RKa+cJZn3PgXP3yVcCDDn9QXC5fU3aBNXCPRBxjYL5NAfR0LDKpW54NaywKJU5oJbIcAplbkgNgFeUpkLbAnIPb3XaypzwdoWECSVuWANAoKnMheEJGC1VOaCEASsnspc4JOAaKnMBbYENBfqoqcyF9gSUELvAbbQf9d/wA2kMhcsORF6V7j/01RsAWLjTkBsAWLjTkBsAWLjwxPwF0Pxx3Dj8Xp5AAAAAElFTkSuQmCC\"\r\n  },\r\n  \"tiltright\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAEIElEQVR4nO2a77WbRhDFf+Tk+6MD4wqsDowriFKBeRVE7oB0oFRg3IHSAelAr4KQDpQKbj7M7gHLgFj+CEnRPYejB+wuM5fZubPLiyTxf8ZPaxuwNp4ErG3A2ngSsLYBHhEUEZQRZO58765lSz53NQIiyCOoIti5Swnw0f0CbIDP/twRso/q+/NA0lUPpMT9lu5i6c4zpBwpbZwfkFKkuDFIPrM913Mc6YhUOYdSpAJpM6BvjLRv9PVjXex7SwRsGxeyiWP56DnhIupmCUDaUIf1bqrzbpzUOT/HWIs6H2NhK6TtQs/I3DOSMf2XVoENELu/Tws9Yw+8Aw6jel9hCsRLvf1GBJSMTIiR9DirwQgyQRHS5+eFbLk6IptiLxEQQsLNlMIz4Oh+NyGdHmYK+BJZUIX0e5gIcI4nEWQh64WHIcChAL4C26EdliBgiyUkuaNkwSVtYxldUtccO38tgrx3gJl1OZd00veavJWt+CrNULq21AFpT4OLa4W5DImdk0d1PzBtEJG7PnORsO+4ubtGIbTBytB3wBv9JW+JJagUC9e9OyaVyZGNdXQ2eLxpiCROZD9zIR8CP0USSYU7L3oiZ+xUGFQaT3G+CHS8SUCpesrojIjRmxzYDpII2DUaMwUSLOQ/BPb7F5MpH+4JphgvLW3/wrJ3GfIANxUOsik2DIEsp/ox5DN3L5F06HnrPultZMlp6/pkssTYhlILKMdZ1AxunHcYmZ61a8sJhWqS2u6lztGy4xnVUkQMaRSr+802nch72lUtBOSqc4Cc86lquewaJ9e8EtrbYHNm5BT4KMgutDu6Nht1E3HSTET03cwULnGXcHBGp7qsIpWMhEuEFZogoV030jC/gtB8e4naichlBPia4RIJcuMER0TXjXyUa2E4SdrLSEhUryPOkTubuqZDE0cFEtC1GgzS35F4AX4D/sY0v8Bqg9+Bfxrt/E7PEJs+EFID0L0cLoFXrHi5Bj5jRBTU64XIHX67O2irayguVYIx9vV2R3vFthTeMMdLZ0MG/DKw7yshO8MD50qs/ortluBzxqQccI4T9Rx95fs5etcYsyVWYER8whYtd40pe4IllnE/AX/OYUwAvgC/MsMLmGNTtMSWte+BbzOMNwRHLEmmWMIcjTl3hSssW78H/mBZCT1Q7/3vetpdxBLb4hVmVIIVNUsQ8YLVDSVjP4s7LPlh5IRVeAnLKcdHJtYn1/gydNMSeu1PYwU3JqFrfRssqSX0WsrRirU/jpbUyrEKEWsT4FFREzFVOZKQxrdCgEdFrRxjiUhCGt8aAR5eQmMWVo5bJaCJglpCJ5W9bbgHAjwKbFdoVgm9JwI8SvolNKg0foT/EkswBUmwVeI+pPMjEDAJ9zgFZsWTgLUNWBtPAtY2YG08CVjbgLXxH2loFxEWi9ZNAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"tiltbackwards\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAACyUlEQVR4nO2Z7W3bMBCGXxX9H21gbVBngmgEb1BlgqIb2BtkgzobpBNUmaDyBHE2kCe4/iAJEQo/JRKX2nwAQbJM8o6vT8czVRERbpkv3A5wUwTgdoCbIgC3A9wUAbgd4KYIwO0AN0UAbge4KQJwO8BNEYDbAW6+BrZr5PFZGACMKQYKEaAD8CuFsYRcALQQQqyi8uwINQDe1hrJxDsSRKUvB6w2kJFNikFuPglerQAVQBXg3fG9WgFCCV0G/zsIqELa3XwEXK0AJQcEskSAVwCn1I54OMXaJKAKyQOxAjxClKBbAL8j+y7lWdrbyuukxApw1K5X1+ELbB4tbT4QmgNil8FOOlED2HnanhD2j62Bu6ztAPTadVqIyHW09JGeiM6G+4oXImo845rsDI4xB8v3MTaMh+/fYAvgT4SePwE8yesa4rn10WvtewDfIuwFFTtOFkSAjV7r9xTRbySiTvar5edQrL6rC1cbIkpaB6hffgfgR0S/O4gNlwYiZ7wk9MlLSgHO8txp93zL1qt2rZJqn8KZXHWAi3F2fgewl2cT6vs59RLjFdCopc9xNPN+KQVo5fkozxuI7TTbErfBlGAvmELflziNVSGJCDw4+h1oilKtY54kuI/oNxLRjsKS4CDb9PKzKfkNhokMpraUYRk8YArr1MvgSfozynYPMDzjlbD5d3b7nmyVq00Zio8ARa5CqNbaWyNARsFeu7F32U4dATpLSuELxLI4H6edjdXDEgGKSj7v5NnZzrklFlPRAdPLDj18TZMPpQtp9Fn2BE1vetZMHhRYT3DuCKnlbMnkG3kOSbJOfAIkeQFpQE3wjLjJbyHqhQ2EcNnfDQKisPm+1lAGHhGxQWIjRABAJJQdFpapiTlDTLxPMVioAFdL2RbndoCbIgC3A9wUAbgd4KYIwO0AN0UAbge4KQJwO8BNEYDbAW5uXoB/c4v7pl/dd2gAAAAASUVORK5CYII=\"\r\n  },\r\n  \"tiltforward\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsSAAALEgHS3X78AAAC2klEQVR4nO2Y3ZHaMBRGjzN5hw5CB0sqiNMBqSCUQDogHZAKQjqgg7AVLFtB2ApiKrh5kDxoja0fY+9liM6MByMk67ufpCuZQkT4n3mnLUCbbIC2AG2yAdoCtMkGaAvQJhugLUCbbIC2AG2yAdoCtMkGaAvQJmTAFNgDckPXEZhfFbVDEfhDZA98svePnnpz4NBRNgcmPfV1cQJmQHX1k0TEd9XMPXWWto5bthWRvfPbGJQB7VFXjAF7z+9ugG7wIiLVsPFeMIgB1yTBJfCzUbYFvtr7oaf9KPQ1YIk/eHUKKAsoQ/Xe93j2ksvg4Rz8I7DjMim2McOIHMO4rdNHN4E1IvI6B/iSWiUii55rcS7pOaMzByCydgrWvr5D26BgRrSke+RrvmBGHlt3gTlH+NhhRqrCbJd74nPHZ1v/FYV5zlOj+KN0zcjIGRDaztxZsg3UbXIQkaltu0lo1zoDEDm0BHJoqyuR22DM1FzZ+gunbB9o4xpVty8j+qq5MKAx9ZtX61KIMSBFzLpRduyofxSRmfN7PYOmPfqsA5lHJJuLA12fXaCNev266+y3p/4H4I/zvW7X+4xv13iR2m6ot8GF/dwBz4ltT8DG3pcD6aEAKUwS99eT8C4QS52Vp8CKuGCOwNp+zjCjeNUuUFMHL6FZEVg2KVTNdZlwzcRk6hT69tU7B5ww+zuYvbs5UhPMuv+FWQqxr6oL+9yukf+GmRkb4CFWbDQBh1zcU95C3oaN02dzh/DOACcAb4wpSbDquB+T0ftMMWCDSXBTzll7bFact8ZtSkOBIpgASXsbfAD+pogYgAmX5/pBudt/hWPPAXdrQCxDHYVvjpj1D3kG3K8BOQdEknPA2EJunZABP95ERTrPeF6FUwgZsAK+Ay9DdDYAL5i3zXKoB4b+ELl7cg7QFqBNNkBbgDbZAG0B2mQDtAVokw3QFqBNNkBbgDbZAG0B2mQDtAVo8w/leGQvtJ6OAwAAAABJRU5ErkJggg==\"\r\n  }\r\n}",
+            "heartrate.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Heart_Rate{\r\n\r\n \r\n    /**\r\n  Section: Macro Declarations\r\n */\r\n\r\ndeclare const   DEFAULT_MODE        =    2\r\ndeclare const  DEFAULT_HIRES_SET   =    1\r\ndeclare const  DEFAULT_SAMP_RATE    =   0\r\ndeclare const  DEFAULT_PWIDTH       =   3\r\ndeclare const  DEFAULT_IR_CURRENT   =   0x7//MAX30100_I0\r\ndeclare const DEFAULT_RED_CURRENT  =   0x7//MAX30100_I0\r\ndeclare const SPO2_INTERRUPT_EN    =   1   \r\ndeclare const  HR_INTERRUPT_EN      =   1\r\ndeclare const TEMP_INTERRUPT_EN   =    1 \r\ndeclare const  FIFO_INTERRUPT_EN   =    1\r\n\r\n\r\n\r\n// Registers\r\ndeclare const  MAX30100_INTERRUPT_STAT_REG   =  0x00// Which interrupts are tripped\r\ndeclare const  MAX30100_INTERRUPT_EN_REG     =  0x01// Which interrupts are active\r\ndeclare const  MAX30100_FIFO_WR_PTR_REG      =  0x02 // Where data is being written\r\ndeclare const  MAX30100_OVF_CTR_REG          =  0x03 // Number of lost samples\r\ndeclare const  MAX30100_FIFO_RD_PTR_REG     =   0x04// Where to read from\r\ndeclare const  MAX30100_FIFO_DATA_REG        =  0x05// Ouput data buffer\r\ndeclare const  MAX30100_MODE_CONFIG_REG     =   0x06// Control register\r\ndeclare const  MAX30100_SPO2_CONFIG_REG     =   0x07// Oximetry settings\r\ndeclare const  MAX30100_LED_CONFIG_REG      =   0x09// Pulse width and power of LEDs\r\ndeclare const  MAX30100_TEMP_INT_REG        =   0x16// Temperature value, whole number\r\ndeclare const  MAX30100_TEMP_FRAC_REG       =   0x17// Temperature value, fraction\r\ndeclare const  MAX30100_REV_ID_REG          =   0xFE // Part revision\r\ndeclare const  MAX30100_PART_ID_REG         =   0xFF // Part ID, normally 0x11\r\n\r\n\r\n\r\n        //Address Definitions\r\n    declare const DEFAULT_I2C_ADDRESS =  0x57  \r\n    \r\n\r\n       \r\n\r\n        let isInitialized  = 0\r\n        let deviceAddress = 0\r\n        let heartrate_initialized = 0;\r\n\r\n        let I2Cs=new bBoard.I2CSettings();\r\n\r\n     //%blockId=heartrate_initialize\r\n    //%block=\"Initialize device on click%clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=true\r\n        export function initialize(clickBoardNum:clickBoardID)\r\n        {\r\n            isInitialized  = 1\r\n            setMAX30100Addr(DEFAULT_I2C_ADDRESS,clickBoardNum)\r\n            HeartRate_initializeClick(clickBoardNum);\r\n            HeartRate_example(clickBoardNum);\r\n        \r\n        \r\n        }\r\n\r\n        /*\r\n    (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this\r\n    software and any derivatives exclusively with Microchip products.\r\n\r\n    THIS SOFTWARE IS SUPPLIED BY MICROCHIP \"AS IS\". NO WARRANTIES, WHETHER\r\n    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED\r\n    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A\r\n    PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATION\r\n    WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION.\r\n\r\n    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,\r\n    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND\r\n    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS\r\n    BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE\r\n    FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN\r\n    ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,\r\n    THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.\r\n\r\n    MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE\r\n    TERMS.\r\n*/\r\n\r\n/**\r\n  Section: Included Files\r\n */\r\n\r\n\r\n// MAX30100 Slave Address\r\ndeclare const  MAX30100_ADDR  = 0x57\r\n\r\n// Interrupt Flags\r\ndeclare const  MAX30100_POWER_RDY   =    0x01\r\ndeclare const  MAX30100_SPO2_RDY     =   0x10\r\ndeclare const  MAX30100_HR_RDY      =    0x20\r\ndeclare const  MAX30100_TEMP_RDY    =    0x40\r\ndeclare const  MAX30100_FIFO_FULL   =    0x80\r\n\r\n// Status\r\ndeclare const  READY       =    0x01\r\ndeclare const  N_READY    =     0x00\r\ndeclare const  ENABLED    =     0x01\r\ndeclare const  DISABLED     =   0x00\r\ndeclare const  RESERVED      =  0x00\r\n\r\n// Mode Select\r\ndeclare const  MAX30100_HR_ONLY     =    0x02\r\ndeclare const  MAX30100_SPO2_EN      =   0x03\r\n\r\n// SPO2 Sample Rate (SPS)\r\ndeclare const  MAX30100_SR50          =  0x00\r\ndeclare const  MAX30100_SR100         = 0x01\r\ndeclare const  MAX30100_SR167          = 0x02\r\ndeclare const  MAX30100_SR200          = 0x03\r\ndeclare const  MAX30100_SR400          = 0x04\r\ndeclare const  MAX30100_SR600      =     0x05\r\ndeclare const  MAX30100_SR800   =        0x06\r\ndeclare const  MAX30100_SR1000  =        0x07\r\n\r\n// LED Pulse Width\r\ndeclare const  MAX30100_PW200  =         0x00\r\ndeclare const  MAX30100_PW400   =        0x01\r\ndeclare const  MAX30100_PW800   =        0x02\r\ndeclare const  MAX30100_PW1600  =        0x03\r\n\r\n\r\n\r\n\r\n\r\n\r\nclass interrupt_stat_register  {\r\n    registerValue:number;\r\n\r\n    constructor() {\r\n        this.registerValue = 0;\r\n    }\r\n    get interruptStat() {\r\n        return this.registerValue\r\n      }\r\n    set interruptStat(value) {\r\n        this.registerValue = value\r\n      }\r\n\r\n    get pwr_rdy() {\r\n      return (this.registerValue & 0x01)\r\n    }\r\n\r\n    set pwr_rdy(value) {\r\n        this.registerValue = (this.registerValue & ~0x01) | (0x01 & value)\r\n        \r\n    }\r\n    \r\n    get spo2_rdy() {\r\n        return (this.registerValue>>4 & 0x01)\r\n      }\r\n  \r\n      set spo2_rdy(value) {\r\n          this.registerValue = (this.registerValue & ~0x10) | (0x10 & (value<<4))\r\n          \r\n      }\r\n      get hr_rdy() {\r\n        return (this.registerValue>>5  & 0x01)\r\n      }\r\n  \r\n      set hr_rdy(value) {\r\n          this.registerValue = (this.registerValue & ~0x20) | (0x20 & (value<<5))\r\n          \r\n      }\r\n      get temp_rdy() {\r\n        return (this.registerValue>>6 & 0x01)\r\n      }\r\n  \r\n      set temp_rdy(value) {\r\n          this.registerValue = (this.registerValue & ~0x40) | (0x40 & (value<<6))\r\n          \r\n      }\r\n      get fifo_afull() {\r\n        return (this.registerValue>>7 & 0x01)\r\n      }\r\n  \r\n      set fifo_afull(value) {\r\n          this.registerValue = (this.registerValue & ~0x80) | (0x80 & (value<<7))\r\n          \r\n      }\r\n      \r\n  }\r\n  let interrupt_stat_bits = new interrupt_stat_register\r\n\r\n  class interrupt_en_register  {\r\n    registerValue: number;\r\n    constructor() {\r\n        this.registerValue = 0;\r\n    }\r\n    get interruptEn() {\r\n        return this.registerValue\r\n      }\r\n    set interruptEn(value) {\r\n        this.registerValue = value\r\n      }\r\n\r\n    get pwr_rdy() {\r\n      return this.registerValue & 0x01\r\n    }\r\n\r\n    set pwr_rdy(value) {\r\n        this.registerValue = (this.registerValue & ~0x01) | (0x01 & value)\r\n        \r\n    }\r\n    \r\n    get en_spo2_rdy() {\r\n        return (this.registerValue>>4 & 0x01)\r\n      }\r\n  \r\n      set en_spo2_rdy(value) {\r\n          this.registerValue = (this.registerValue & ~0x10) | (0x10 & (value<<4))\r\n          \r\n      }\r\n      get en_hr_rdy() {\r\n        return (this.registerValue>>5 & 0x01)\r\n      }\r\n  \r\n      set en_hr_rdy(value) {\r\n          this.registerValue = (this.registerValue & ~0x20) | (0x20 & (value<<5))\r\n          \r\n      }\r\n      get en_temp_rdy() {\r\n        return (this.registerValue>>6 & 0x01)\r\n      }\r\n  \r\n      set en_temp_rdy(value) {\r\n          this.registerValue = (this.registerValue & ~0x40) | (0x40 & (value<<6))\r\n          \r\n      }\r\n      get en_fifo_afull() {\r\n        return (this.registerValue>>7 & 0x01)\r\n      }\r\n  \r\n      set en_fifo_afull(value) {\r\n          this.registerValue = (this.registerValue & ~0x80) | (0x80 & (value<<7))\r\n          \r\n      }\r\n      \r\n  }\r\n  let interrupt_en_bits = new interrupt_en_register\r\n \r\n  class mode_config_register  {\r\n    registerValue: number;\r\n    constructor(initialValue:number) {\r\n        this.registerValue =initialValue;\r\n    }\r\n    get modeConfig() {\r\n        return this.registerValue\r\n      }\r\n    set modeConfig(value) {\r\n        this.registerValue = value\r\n      }\r\n\r\n    get mode() {\r\n      return this.registerValue & 0x07\r\n    }\r\n\r\n    set mode(value) {\r\n        this.registerValue = (this.registerValue & ~0x07) | (0x07 & value)\r\n        \r\n    }\r\n    \r\n    get temp_en() {\r\n        return (this.registerValue>>3 & 0x01)\r\n      }\r\n  \r\n      set temp_en(value) {\r\n          this.registerValue = (this.registerValue & ~0x08) | (0x08 & (value<<3))\r\n          \r\n      }\r\n      get reset() {\r\n        return (this.registerValue>>6 & 0x01)\r\n      }\r\n  \r\n      set reset(value) {\r\n          this.registerValue = (this.registerValue & ~0x40) | (0x40 & (value<<6))\r\n          \r\n      }\r\n      get shdn() {\r\n        return (this.registerValue>>7 & 0x01)\r\n      }\r\n  \r\n      set shdn(value) {\r\n          this.registerValue = (this.registerValue & ~0x80) | (0x80 & (value<<7))\r\n          \r\n      }\r\n      \r\n  }\r\n\r\n  let mode_config_bits = new mode_config_register(0)\r\n \r\n class spo2_config_register  {\r\n    registerValue: number\r\n    constructor() {\r\n        this.registerValue = 0;\r\n    }\r\n    get spo2Config() {\r\n        return this.registerValue\r\n      }\r\n    set spo2Config(value) {\r\n        this.registerValue = value\r\n      }\r\n\r\n    get led_pw() {\r\n      return this.registerValue & 0x03\r\n    }\r\n\r\n    set led_pw(value) {\r\n        this.registerValue = (this.registerValue & ~0x03) | (0x03 & value)\r\n        \r\n    }\r\n    \r\n    get spo2_sr() {\r\n        return (this.registerValue>>2) & 0x03\r\n      }\r\n  \r\n      set spo2_sr(value) {\r\n          this.registerValue = (this.registerValue & ~0x0C) | (0x0C & (value<<2))\r\n          \r\n      }\r\n \r\n      get spo2_hires_en() {\r\n        return (this.registerValue>>6) & 0x01 \r\n      }\r\n  \r\n      set spo2_hires_en(value) {\r\n          this.registerValue = (this.registerValue & ~0x40) | (0x40 & (value<<6))\r\n          \r\n      }\r\n \r\n      \r\n  }\r\n  let spo2_config_bits = new spo2_config_register\r\n\r\n  class led_config_register  {\r\n    registerValue: number;\r\n    constructor() {\r\n        this.registerValue = 0;\r\n    }\r\n    get ledConfig() {\r\n        return this.registerValue\r\n      }\r\n    set ledConfig(value) {\r\n        this.registerValue = value\r\n      }\r\n\r\n    get ir_pa() {\r\n      return this.registerValue & 0x0F\r\n    }\r\n\r\n    set ir_pa(value) {\r\n        this.registerValue = (this.registerValue & ~0x0F) | (0x0F & value)\r\n        \r\n    }\r\n    \r\n    get red_pa() {\r\n        return (this.registerValue>>4) & 0x0F\r\n      }\r\n  \r\n      set red_pa(value) {\r\n          this.registerValue = (this.registerValue & ~0xF0) | (0xF0 & (value<<4))\r\n          \r\n      }\r\n \r\n    \r\n \r\n      \r\n  }\r\n  let led_config_bits = new led_config_register\r\n\r\n  /**\r\n  Section: Variable Definitions\r\n */\r\n\r\nlet irFilters = {\r\n     v_ctr:[0,0],\r\n    dcW: 0.0\r\n};\r\n\r\n\r\n   declare const BEATDETECTOR_STATE_INIT = 0\r\n   declare const   BEATDETECTOR_STATE_WAITING = 1\r\n   declare const  BEATDETECTOR_STATE_FOLLOWING_SLOPE = 2\r\n   declare const  BEATDETECTOR_STATE_MAYBE_DETECTED =3\r\n   declare const  BEATDETECTOR_STATE_MASKING = 4\r\n\r\n\r\n\r\nlet sampRate:number;\r\n\r\nlet bpmRate = 0;\r\nlet  irData:number;\r\n\r\n\r\n\r\n\r\nlet  ir_data:number;\r\n let  red_data:number;\r\nlet temp_int:number;\r\nlet temp_frac:number;\r\n  \r\n let  fifo_buff:number[]=[];\r\n  let  temp_buff:number[]=[];\r\n\r\nlet normalizedHR = 0; //Heart rate signal normalized between 0 and 100 (great for neopixels)\r\n\r\ndeclare const IR_ACTIVE_THRESHOLD = 10000 //Used as a threshold to detect if a finger is on the sensor or not\r\n  declare const  RATE_SIZE = 6; //Increase this for more averaging. 4 is good.\r\nlet rates:number[]= []; //Array of heart rates\r\nrates.fill(0,0,RATE_SIZE) //Fill the array with 0's to prevent a NaN later\r\nlet rateSpot = 0;\r\nlet lastBeat = 0; //Time at which the last beat occurred\r\n\r\nlet beatsPerMinute= 0;\r\nlet beatAvg = 0;\r\n\r\nlet IR_AC_Max = 20;\r\nlet IR_AC_Min = -20;\r\n\r\nlet IR_AC_Signal_Current = 0;\r\nlet IR_AC_Signal_Previous = 0;\r\nlet IR_AC_Signal_min = 0;\r\nlet IR_AC_Signal_max = 0;\r\nlet IR_Average_Estimated;\r\n\r\nlet positiveEdge = 0;\r\nlet negativeEdge = 0;\r\nlet ir_avg_reg = 0;\r\n\r\nlet cbuf:number[] = [];\r\nlet offset = 0;\r\nlet FIRCoeffs:number[] = [172, 321, 579, 927, 1360, 1858, 2390, 2916, 3391, 3768, 4012, 4096];\r\n\r\n//  Heart Rate Monitor functions takes a sample value and the sample number\r\n//  Returns true if a beat is detected\r\n//  A running average of four samples is recommended for display on the screen.\r\nfunction checkForHRBeat( sample:number,clickBoardNum:clickBoardID):boolean\r\n{\r\n  let beatDetected = false;\r\n\r\n  //  Save current state\r\n  IR_AC_Signal_Previous = IR_AC_Signal_Current;\r\n  \r\n  //This is good to view for debugging\r\n \r\n  //Serial.print(\"Signal_Current: \");\r\n  //Serial.println(IR_AC_Signal_Current);\r\n\r\n  //  Process next data sample\r\n  IR_Average_Estimated = averageDCEstimator(ir_avg_reg, sample,clickBoardNum);\r\n  IR_AC_Signal_Current = lowPassFIRFilter(sample - IR_Average_Estimated,clickBoardNum);\r\n\r\n  if(sample>IR_ACTIVE_THRESHOLD)\r\n  {\r\n    normalizedHR = (IR_AC_Signal_Current - IR_AC_Min)/(IR_AC_Max-IR_AC_Min) * 100; //Normalize the current signal between 0 and 1 then multiply by 100 for percent\r\n  }\r\n  else\r\n  {\r\n   \r\n        normalizedHR = 0;\r\n    \r\n  }\r\n  //  Detect positive zero crossing (rising edge)\r\n  if ((IR_AC_Signal_Previous < 0) && (IR_AC_Signal_Current >= 0))\r\n  {\r\n  \r\n    IR_AC_Max = IR_AC_Signal_max; //Adjust our AC max and min\r\n    IR_AC_Min = IR_AC_Signal_min;\r\n\r\n    positiveEdge = 1;\r\n    negativeEdge = 0;\r\n    IR_AC_Signal_max = 0;\r\n\r\n\r\n \r\n    //if ((IR_AC_Max - IR_AC_Min) > 100 && (IR_AC_Max - IR_AC_Min) < 1000)\r\n    if (((IR_AC_Max - IR_AC_Min) > 20 && (IR_AC_Max - IR_AC_Min) < 1000)&&sample>10000)\r\n    {\r\n      //Heart beat!!!\r\n      beatDetected = true;\r\n\r\n      \r\n    }\r\n  \r\n  }\r\n\r\n  //  Detect negative zero crossing (falling edge)\r\n  if ((IR_AC_Signal_Previous > 0) && (IR_AC_Signal_Current <= 0))\r\n  {\r\n    positiveEdge = 0;\r\n    negativeEdge = 1;\r\n    IR_AC_Signal_min = 0;\r\n  }\r\n\r\n  //  Find Maximum value in positive cycle\r\n  if (positiveEdge && (IR_AC_Signal_Current > IR_AC_Signal_Previous))\r\n  {\r\n    IR_AC_Signal_max = IR_AC_Signal_Current;\r\n  }\r\n\r\n  //  Find Minimum value in negative cycle\r\n  if (negativeEdge && (IR_AC_Signal_Current < IR_AC_Signal_Previous))\r\n  {\r\n    IR_AC_Signal_min = IR_AC_Signal_Current;\r\n  }\r\n  \r\n  return(beatDetected);\r\n}\r\n\r\n//  Average DC Estimator\r\nfunction averageDCEstimator(p:number,  x:number,clickBoardNum:clickBoardID):number\r\n{\r\n  p += ((( x << 15) - p) >> 4);\r\n  ir_avg_reg = p;\r\n  return (p >> 15);\r\n}\r\n\r\n//  Low Pass FIR Filter\r\nfunction lowPassFIRFilter( din:number,clickBoardNum:clickBoardID):number\r\n{  \r\n  cbuf[offset] = din;\r\n\r\n  let z = mul16(FIRCoeffs[11], cbuf[(offset - 11) & 0x1F],clickBoardNum);\r\n  \r\n  for (let i = 0 ; i < 11 ; i++)\r\n  {\r\n    z += mul16(FIRCoeffs[i], cbuf[(offset - i) & 0x1F] + cbuf[(offset - 22 + i) & 0x1F],clickBoardNum);\r\n  }\r\n\r\n  offset++;\r\n  offset %= 32; //Wrap condition\r\n\r\n  return(z >> 15);\r\n}\r\n\r\n//  Integer multiplier\r\nfunction mul16( x:number,  y:number,clickBoardNum:clickBoardID):number\r\n{\r\n  return(x * y);\r\n}\r\n/**\r\n  Section: Driver APIs\r\n */\r\n\r\n/* Get Measurements */\r\n\r\nfunction MAX30100_readSensors(clickBoardNum:clickBoardID) \r\n{\r\n    MAX30100_clearCounters(clickBoardNum);\r\n\r\n    if (mode_config_bits.mode == MAX30100_HR_ONLY) \r\n\t{\r\n        while (!MAX30100_isHrRdy(clickBoardNum))\r\n\t\t{\r\n\t\t}\r\n    } \r\n\telse if (mode_config_bits.mode == MAX30100_SPO2_EN) \r\n\t{\r\n        while (!MAX30100_isSpo2Rdy(clickBoardNum))\r\n\t\t{\r\n\t\t}\r\n    }\r\n\r\n    MAX30100_readFifoData(clickBoardNum);\r\n}\r\n\r\n function MAX30100_readTemp(clickBoardNum:clickBoardID) \r\n{\r\n    MAX30100_startTemp(clickBoardNum);\r\n    control.waitMicros(29000);\r\n\r\n    while (!MAX30100_isTempRdy(clickBoardNum))\r\n\t{\r\n\t}\r\n    temp_buff = MAX30100_readBlock(MAX30100_TEMP_INT_REG, 2,clickBoardNum);\r\n\r\n    temp_int = temp_buff[0];\r\n    temp_frac = temp_buff[1]*0.0625;\r\n}\r\n\r\nexport function MAX30100_getIRdata(clickBoardNum:clickBoardID) :number\r\n{\r\n    return ir_data;\r\n}\r\n\r\nexport function MAX30100_getREDdata(clickBoardNum:clickBoardID)  :number \r\n{\r\n    return red_data;\r\n}\r\n\r\nfunction MAX30100_getTemp(clickBoardNum:clickBoardID)  :number\r\n{\r\n    return (temp_int + temp_frac);\r\n}\r\n\r\n/* Setup the Sensor */\r\n\r\n function MAX30100_setMode( mode:number,clickBoardNum:clickBoardID)  \r\n{\r\n    switch (mode) {\r\n        case MAX30100_HR_ONLY:\r\n            mode_config_bits.mode = MAX30100_HR_ONLY;\r\n            break;\r\n        case MAX30100_SPO2_EN:\r\n            mode_config_bits.mode = MAX30100_SPO2_EN;\r\n            break;\r\n        default: break;\r\n    }\r\n}\r\n\r\n function MAX30100_setHiResEnabled( hiResEnable:number,clickBoardNum:clickBoardID) \r\n{\r\n    spo2_config_bits.spo2_hires_en = hiResEnable;\r\n}\r\n\r\n function MAX30100_setSampleRate( sampRate:number,clickBoardNum:clickBoardID) \r\n{\r\n    spo2_config_bits.spo2_sr = sampRate;\r\n}\r\n\r\n function MAX30100_setPulseWidth( pWidth:number,clickBoardNum:clickBoardID) \r\n{\r\n    spo2_config_bits.led_pw = pWidth;\r\n}\r\n\r\n function MAX30100_setIRLEDCurrent( irCurrent:number,clickBoardNum:clickBoardID) \r\n{\r\n    led_config_bits.ir_pa = irCurrent;\r\n}\r\n\r\n function MAX30100_setREDLEDCurrent( redCurrent:number,clickBoardNum:clickBoardID) \r\n{\r\n    led_config_bits.red_pa = redCurrent;\r\n}\r\n\r\n/* Interrupts */\r\n\r\n function MAX30100_setSpo2RdyInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) \r\n{\r\n    interrupt_en_bits.en_spo2_rdy = interruptEnabled;\r\n}\r\n\r\n function MAX30100_setHrRdyInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) \r\n{\r\n    interrupt_en_bits.en_hr_rdy = interruptEnabled;\r\n}\r\n\r\n function MAX30100_setTempRdyInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) \r\n{\r\n    interrupt_en_bits.en_temp_rdy = interruptEnabled;\r\n}\r\n\r\n function MAX30100_setFifoAfullInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) \r\n{\r\n    interrupt_en_bits.en_fifo_afull = interruptEnabled;\r\n}\r\n\r\nfunction MAX30100_isPowerRdy(clickBoardNum:clickBoardID):number\r\n{\r\n    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);\r\n    return interrupt_stat_bits.pwr_rdy;\r\n}\r\n\r\nfunction MAX30100_isSpo2Rdy(clickBoardNum:clickBoardID):number\r\n{\r\n    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);\r\n    return interrupt_stat_bits.spo2_rdy;\r\n}\r\n\r\nfunction MAX30100_isHrRdy(clickBoardNum:clickBoardID):number \r\n{\r\n    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);\r\n    return interrupt_stat_bits.hr_rdy;\r\n}\r\n\r\nfunction MAX30100_isTempRdy(clickBoardNum:clickBoardID):number \r\n{\r\n    interrupt_stat_bits.temp_rdy = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);\r\n    return interrupt_stat_bits.temp_rdy;\r\n}\r\n\r\nfunction MAX30100_isFifoAfull(clickBoardNum:clickBoardID):number\r\n{\r\n    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);\r\n    return interrupt_stat_bits.fifo_afull;\r\n}\r\n\r\n/* Initialize MAX30100 */\r\n\r\nfunction  MAX30100_initializeSensor(clickBoardNum:clickBoardID) \r\n{\r\n     let I2CM_dataBuffer:number[] = [];\r\n\r\n    MAX30100_reset(clickBoardNum);\r\n\r\n    // Initialize Settings\r\n    interrupt_stat_bits.interruptStat = 0x00;\r\n    mode_config_bits.shdn = DISABLED;\r\n    mode_config_bits.reset = DISABLED;\r\n\r\n    // Interrupts\r\n    I2CM_dataBuffer[0] = MAX30100_INTERRUPT_STAT_REG;\r\n    I2CM_dataBuffer[1] = interrupt_stat_bits.interruptStat;\r\n    I2CM_dataBuffer[2] = interrupt_en_bits.interruptEn;\r\n    MAX30100_writeBlock(I2CM_dataBuffer, 3,clickBoardNum);\r\n\r\n    // Configurations\r\n    I2CM_dataBuffer[0] = MAX30100_MODE_CONFIG_REG;\r\n    I2CM_dataBuffer[1] = mode_config_bits.modeConfig;\r\n    I2CM_dataBuffer[2] = spo2_config_bits.spo2Config;\r\n    I2CM_dataBuffer[3] = RESERVED;\r\n    I2CM_dataBuffer[4] = led_config_bits.ledConfig;\r\n    MAX30100_writeBlock(I2CM_dataBuffer, 5,clickBoardNum);\r\n}\r\n\r\n/* Update Sensor Set-up */\r\n\r\n function MAX30100_updateSensorConfig(clickBoardNum:clickBoardID) \r\n{\r\n     let I2CM_dataBuffer:number[]=[];\r\n\r\n    I2CM_dataBuffer[0] = MAX30100_MODE_CONFIG_REG;\r\n    I2CM_dataBuffer[1] = mode_config_bits.modeConfig;\r\n    I2CM_dataBuffer[2] = spo2_config_bits.spo2Config;\r\n    MAX30100_writeBlock(I2CM_dataBuffer, 3,clickBoardNum);\r\n}\r\n\r\n function MAX30100_updateLEDCurrent(clickBoardNum:clickBoardID) \r\n{\r\n    MAX30100_writeByte(MAX30100_LED_CONFIG_REG, led_config_bits.ledConfig,clickBoardNum);\r\n}\r\n\r\n function MAX30100_updateEnabledInterrupts(clickBoardNum:clickBoardID) \r\n{\r\n    MAX30100_writeByte(MAX30100_INTERRUPT_EN_REG, interrupt_en_bits.interruptEn,clickBoardNum);\r\n}\r\n\r\n/* FIFO Operations */\r\n\r\n\r\n\r\n\r\n function MAX30100_clearCounters(clickBoardNum:clickBoardID)\r\n{\r\n     let I2CM_dataBuffer:number[] = [];\r\n\r\n    let fifo_wr_ptr = 0x00;\r\n    let ovf_ctr = 0x00;\r\n    let fifo_rd_ptr = 0x00;\r\n\r\n    I2CM_dataBuffer[0] = MAX30100_FIFO_WR_PTR_REG;\r\n    I2CM_dataBuffer[1] = fifo_wr_ptr;\r\n    I2CM_dataBuffer[2] = ovf_ctr;\r\n    I2CM_dataBuffer[3] = fifo_rd_ptr;\r\n\r\n    MAX30100_writeBlock(I2CM_dataBuffer, 4,clickBoardNum);\r\n}\r\n\r\n function MAX30100_readFifoData(clickBoardNum:clickBoardID) \r\n{\r\n    fifo_buff = MAX30100_readBlock(MAX30100_FIFO_DATA_REG, 4,clickBoardNum);\r\n\r\n    ir_data = (fifo_buff[0] << 8) | fifo_buff[1];\r\n    red_data = (fifo_buff[2] << 8) | fifo_buff[3];\r\n    ir_data = Shift_Bits(ir_data);\r\n   \r\n    red_data = Shift_Bits(red_data);\r\n}\r\n\r\n/* Misc. Operations */\r\n\r\n function MAX30100_reset(clickBoardNum:clickBoardID)\r\n{\r\n    mode_config_bits.reset = ENABLED;\r\n    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);\r\n}\r\n\r\nfunction MAX30100_wakeup(clickBoardNum:clickBoardID) \r\n{\r\n    mode_config_bits.shdn = DISABLED;\r\n    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);\r\n}\r\n\r\nfunction MAX30100_shutdown(clickBoardNum:clickBoardID) \r\n{\r\n    mode_config_bits.shdn = ENABLED;\r\n    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);\r\n}\r\n\r\n function MAX30100_getRevID(clickBoardNum:clickBoardID):number \r\n{\r\n    return MAX30100_readByte(MAX30100_REV_ID_REG,clickBoardNum);\r\n}\r\n\r\n function MAX30100_getPartID(clickBoardNum:clickBoardID):number  \r\n{\r\n    return MAX30100_readByte(MAX30100_PART_ID_REG,clickBoardNum);\r\n}\r\n\r\n\r\nfunction  MAX30100_startTemp(clickBoardNum:clickBoardID) \r\n{\r\n    mode_config_bits.temp_en = ENABLED;\r\n    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);\r\n}\r\n\r\nfunction  Shift_Bits( read_res:number) \r\n{\r\n    let shift_res:number;\r\n    switch (spo2_config_bits.led_pw) {\r\n        case MAX30100_PW200: shift_res = read_res >> 3;\r\n            break;\r\n        case MAX30100_PW400: shift_res = read_res >> 2;\r\n            break;\r\n        case MAX30100_PW800: shift_res = read_res >> 1;\r\n            break;\r\n        default: shift_res = read_res;\r\n            break;\r\n    }\r\n    return shift_res;\r\n}\r\n\r\nfunction  MAX30100_writeByte(register:number,dataByte:number,clickBoardNum:clickBoardID)\r\n{\r\n    let data:number[] = [dataByte]\r\n    writeMAX30100(data, register, clickBoardNum);\r\n}\r\n\r\nfunction  MAX30100_writeBlock( write_buff:number[],  length:number,clickBoardNum:clickBoardID) \r\n{\r\n  \r\n\r\n    let i2cBuffer = pins.createBuffer(length) //Create a buffer to send over I2C\r\n   \r\n\r\n        for (let i=0;i<length;i++)\r\n        {\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, i, write_buff[i]) //The remaining item(s) in the buffer is(are) the value(s) to send\r\n        \r\n        }\r\n\r\n\r\n        I2Cs.i2cWriteBuffer(getMAX30100Addr(clickBoardNum),i2cBuffer,clickBoardNum); //Send the I2C buffer\r\n\r\n\r\n}\r\n\r\nfunction  MAX30100_readByte( reg_addr:number, clickBoardNum:clickBoardID):number\r\n{\r\n    return readMAX30100(1,reg_addr,clickBoardNum)[0];\r\n}\r\n\r\nfunction readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoardID):number[]\r\n        {\r\n           \r\n            \r\n            I2Cs.i2cWriteNumber(getMAX30100Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)\r\n           let i2cBuffer = I2Cs.I2CreadNoMem(getMAX30100Addr(clickBoardNum) ,numBytes,clickBoardNum);\r\n\r\n            let dataArray:number[] = []; //Create an array to hold our read values\r\n            for(let i=0; i<numBytes;i++)\r\n            {\r\n                dataArray[i] = i2cBuffer.getUint8(i); //Extract byte i from the buffer and store it in position i of our array\r\n            }\r\n           \r\n            \r\n            return  dataArray\r\n    \r\n                \r\n        \r\n        }\r\n\r\n\r\n\r\n\r\n\r\n    //%blockId=MAX30100_write\r\n        //%block=\"Write array %values to MAX30100 register%register on click%clickBoardNum ?\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        export function writeMAX30100(values:number[],register:number,clickBoardNum:clickBoardID)\r\n        {\r\n        \r\n        \r\n            let i2cBuffer = pins.createBuffer(values.length+1) //Create a buffer to send over I2C\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register) //The first item in the buffer is the register address\r\n\r\n        for (let i=0;i<values.length;i++)\r\n        {\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, i+1, values[i]) //The remaining item(s) in the buffer is(are) the value(s) to send\r\n           \r\n        }\r\n    \r\n        \r\n        I2Cs.i2cWriteBuffer(getMAX30100Addr(clickBoardNum),i2cBuffer,clickBoardNum); //Send the I2C buffer\r\n         \r\n        }\r\n       \r\n\r\n\r\n        \r\n        \r\n      export function MAX30100_readBlock( reg_addr:number,numBytes:number, clickBoardNum:clickBoardID):number[] \r\n        {\r\n           \r\n            \r\n            I2Cs.i2cWriteNumber(getMAX30100Addr(clickBoardNum),reg_addr,NumberFormat.UInt8LE,clickBoardNum,true)\r\n           let i2cBuffer = I2Cs.I2CreadNoMem(getMAX30100Addr(clickBoardNum) ,numBytes,clickBoardNum);\r\n\r\n            let dataArray:number[] = []; //Create an array to hold our read values\r\n            for(let i=0; i<numBytes;i++)\r\n            {\r\n                dataArray[i] = i2cBuffer.getUint8(i); //Extract byte i from the buffer and store it in position i of our array\r\n            }\r\n           \r\n            \r\n            return  dataArray\r\n    \r\n                \r\n        \r\n        }\r\n        \r\n        \r\n        function setMAX30100Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n            deviceAddress = deviceAddr;\r\n        }\r\n        function getMAX30100Addr(clickBoardNum:clickBoardID):number\r\n        {\r\n            return deviceAddress;\r\n        }\r\n\r\n\r\n        //Application code\r\n\r\n\r\n        /**\r\n  Section: Example Code\r\n */\r\n\r\nfunction HeartRate_example(clickBoardNum:clickBoardID) \r\n{\r\n  \r\n    bpmRate = 0;\r\n    let delta = 0;\r\n    //sampRate = getSampRate(clickBoardNum);\r\n\r\n  \r\n\r\n\r\n    control.inBackground(function () {\r\n        while(1){\r\n            basic.pause(sampRate)\r\n          \r\n            //checkSample(clickBoardNum);\r\n            HeartRate_readSensors(clickBoardNum);\r\n            irData = HeartRate_getIRdata(clickBoardNum);\r\n            if (checkForHRBeat(irData,clickBoardNum) == true)\r\n            {\r\n              //We sensed a beat!\r\n              let delta = input.runningTime() - lastBeat;\r\n              lastBeat = input.runningTime();\r\n          \r\n              beatsPerMinute = 60 / (delta / 1000.0);\r\n          \r\n              if (beatsPerMinute < 255 && beatsPerMinute > 20)\r\n              {\r\n                rates[rateSpot++] = beatsPerMinute; //Store this reading in the array\r\n                rateSpot %= RATE_SIZE; //Wrap variable\r\n          \r\n                //Take average of readings\r\n                bpmRate = 0;\r\n                for (let x = 0 ; x < RATE_SIZE ; x++){\r\n                    bpmRate += rates[x];\r\n                }\r\n                bpmRate /= RATE_SIZE;\r\n              }\r\n            }\r\n\r\n        }\r\n       \r\n    \r\n\r\n        \r\n    })\r\n\r\n\r\n}\r\n\r\n\r\n\r\n\r\n     //%blockId=Heart_Rate_getBPMRate\r\n    //%block=\"Get beats per minute on click%clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    export function BPMRate(clickBoardNum:clickBoardID):number \r\n    {\r\n        if(isInitialized== 0)\r\n        {\r\n            initialize(clickBoardNum)\r\n            \r\n        }\r\n\r\n        if(HeartRate_getIRdata(clickBoardNum)<IR_ACTIVE_THRESHOLD || bpmRate <0)\r\n        {\r\n            bpmRate = 0\r\n        }\r\n        return Math.round(bpmRate);\r\n    }\r\n    /**\r\n     * The current value of IR reflection normalized between 0 and 100 (Great for neopixels)\r\n     * @param clickBoardNum the location of the click board being used\r\n     */\r\n    //%blockId=Heart_Rate_getHRSignal\r\n    //%block=\"Get raw HR signal on click%clickBoardNum\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    export function pulse(clickBoardNum:clickBoardID):number \r\n    {\r\n        if(isInitialized== 0)\r\n        {\r\n            initialize(clickBoardNum)\r\n            \r\n        }\r\n        return Math.round(normalizedHR);\r\n    }\r\n\r\n\r\n    \r\n\r\nfunction HeartRate_readSensors(clickBoardNum:clickBoardID) \r\n{\r\n    if (!heartrate_initialized) {\r\n        HeartRate_initializeClick(clickBoardNum );\r\n    }\r\n    MAX30100_readSensors(clickBoardNum);\r\n}\r\n\r\nfunction HeartRate_getIRdata(clickBoardNum:clickBoardID) \r\n{\r\n    return MAX30100_getIRdata(clickBoardNum);\r\n}\r\n\r\nfunction HeartRate_getREDdata(clickBoardNum:clickBoardID) \r\n{\r\n    return MAX30100_getREDdata(clickBoardNum);\r\n}\r\n\r\nfunction HeartRate_getTemperature(clickBoardNum:clickBoardID) \r\n{\r\n    if (!heartrate_initialized) \r\n\t{\r\n        HeartRate_initializeClick(clickBoardNum);\r\n    }\r\n\r\n    MAX30100_readTemp(clickBoardNum);\r\n    return MAX30100_getTemp(clickBoardNum);\r\n}\r\n\r\nfunction HeartRate_initializeClick(clickBoardNum:clickBoardID) \r\n{\r\n    MAX30100_setSpo2RdyInterrupt(SPO2_INTERRUPT_EN,clickBoardNum);\r\n    MAX30100_setHrRdyInterrupt(HR_INTERRUPT_EN,clickBoardNum);\r\n    MAX30100_setTempRdyInterrupt(TEMP_INTERRUPT_EN,clickBoardNum);\r\n    MAX30100_setFifoAfullInterrupt(FIFO_INTERRUPT_EN,clickBoardNum);\r\n\r\n    MAX30100_setMode(DEFAULT_MODE,clickBoardNum);\r\n    MAX30100_setHiResEnabled(DEFAULT_HIRES_SET,clickBoardNum);\r\n    MAX30100_setSampleRate(DEFAULT_SAMP_RATE,clickBoardNum);\r\n    MAX30100_setPulseWidth(DEFAULT_PWIDTH,clickBoardNum);\r\n    MAX30100_setIRLEDCurrent(DEFAULT_IR_CURRENT,clickBoardNum);\r\n    MAX30100_setREDLEDCurrent(DEFAULT_RED_CURRENT,clickBoardNum);\r\n\r\n    MAX30100_initializeSensor(clickBoardNum);\r\n\r\n    heartrate_initialized = 1;\r\n}\r\n\r\n        \r\n    }",
             "helpers.ts": "namespace Math {\n    /**\n     * Generates a `true` or `false` value randomly, just like flipping a coin.\n     */\n    //% blockId=logic_random block=\"pick random true or false\"\n    //% help=math/random-boolean weight=0\n    export function randomBoolean(): boolean {\n        return Math.randomRange(0, 1) === 1;\n    }\n}",
             "icons.jres": "{\r\n  \"*\": {\r\n    \"namespace\": \"icons\",\r\n    \"dataEncoding\": \"base64\"\r\n  },\r\n  \"heart\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"smallheart\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE5ElEQVR4nO3dMY5URxQF0NdGTtAQY3sB3gALsNgTJBapneA9WXbOBryAARIiRABBO5i2Ru2hLv9P9W9V9ZyT8nveVfXcgZGaelUAAADAEHbf+POrqnpaVY+r6vsTz/5SVZ+q6n1Vfbzn15BPvvtalC8V5Ieq+unEoVquq+rdytfId0u+Ps183zVecFXnC1eHWVcrnpfvmHx9mvlaBXm6XZamNTPl65sp38KZrYI83jBIy5qZ8vXNlG/hzFZBTv0L0RJrZsrXN1O+hTNbBQFKQSBSEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCFoF+XLWFOtnytc3U76FM1sF+bRhkJY1M+XrmynfwpmtgrzfMEjLmpny9c2Ub+HMR42HP1fVvqqebBbn2HVVfVjxvHzH5OvTzOfy6jb5+jyEfAAAAAAAAADwwEz9UZP9fv9LVb2sqmd1szb4lN5V1Zuqer3b7f6659dwfpOf37R70vf7/a9V9ds2cY5HVdWr3W73+8rXOb/DqJr4/FoFuaqqnzeL83X/1MKfhIeffH/Wt/8GPJV9VT1f8ZPQ+f1vZE16frPuSX9Z53tz6zDrxYrnnd+xac9v1j3pzzZLcZqZzq9v5jDnN+ue9FP/QrnEjyuedX53TXl+bjWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAhm3ZO+6g6oE3m74lnnd9eU5zfrnvQ3m6U4zUzn1zdzmPObdU/667q5jOxc9oeZSzm/Y9OeX6sgH+vmOsZzua4V98sebuh7Ved5k/+7OvPvFa9xfremPr9LuLz6Rd1cSrbm3qUl3tbNPwv+mPny5cT52ZMOAAAAAAAAAOtcwkdNht3zLZ896adycXu+5bsdVfakn8TF7PmW7+7Isie92yXt+ZbvmD3pJ3BJe77l65s5zPefPenLrfn/EvLdZU86XBoFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgsCd9uTV7vuW7y570Tpe051u+vpnDfP/Zk77M2j3f8h2zJ73TRe35lu+IPen3dPF7vuWzJx0AAAAAAAAALsvUHzWpwfPZQz7/+zvtnvQaPJ895EemfX+n3JNeg+ezh/yrpnx/Z92TPno+e8j7Zg6Tb9Y96aPns4e8b+Yw+Wbdkz56PnvI+2YOk8+tJhAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCwax70kfPZw9538xh8s26J330fPaQ980cJt+se9JHz2cPed/MYfJNuSe9Bs9nD/kd076/Lq9uu/g97jX4+dX4+QAAAAAAAADggfFRkzb5+lxEPnvSl5Gvz7T5Wp/mvarzhavDrKsVz8t3TL4+zXz2pG8zU76+mcPksyd9m5ny9c0cJp896dvMlK9v5jD53GoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBDYk77NTPn6Zg6Tz570bWbK1zdzmHz2pG8zU76+mcPke9R4+HPd7N9+slmcY9dV9WHF8/Idk69PM5/Lq9vk6/MQ8gEAAADn8i9uSXT/dv6GSgAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"yes\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHUlEQVR4nO3dQY5UZRQF4FsaJ6Qdoy7ADbAA455gYpjqBPdkdM4GXADCxBFhIINy0G2k0u+efsVfr/ir+L4h3e09eckRiOU7VQAAAMAUdg98/aaqHlfVo6r66sS331fVu6p6U1VvP/KfIZ98H2tVvlSQb6rquxOH6ryqqtdH/ox8/5NvTJvvi+YHbup84eru1s0R3y/fIfnGtPm6gjzeLkvrmJvyjd2Ub+XNriCPNgzSOeamfGM35Vt5syvIqf9CtMYxN+UbuynfyptdQYBSEIgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEgq4g78+a4vib8o3dlG/lza4g7zYM0jnmpnxjN+VbebMryJsNg3SOuSnf2E35Vt78svnmf6pqX1Vfbxbn0Kuq+vuI75fvkHxj2nxeXt2Tb8znkA8AAAAAAAAAPjM+atKTb8xwvv1+/0NVPauqJ3U7C31Kr6vqZVW92O12v3ffZCd9HfnGHJ1vv9//VFU/bxPn8FRVPd/tdr8sfbEryE1Vfb9ZpGV/1vp/08h339Xku/ud47d6+E84p7Kvqh+Xfiexk77NTfnGbj6r85Wj7m49XfqCnfRtbso3dvPJZimOvGknfZub8o3dPPVfyNf4dukXvdUEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSCwk77NTfnGbh77jq9T+GvpF+2kb3NTvrGbLzdLceRNO+nb3JRv7OaLun2Z27ns727e0xXkbd2+LvJcXtVx72+V79BV5bt7w+HzOk9J/nv16B+LWR744alfblzyXXW+u1eQPq3bl7otvrdqwF91+8eqX9PLqwEAAAAAAACAD/moSe/q882wQ/6AT/787KSvc3X5ZtkhD6Z4fnbS17uafDPtkDemeX520re5OXu+aXbIG9M8Pzvp29ycPd80O+SNaZ6fnfRtbs6eb5od8sY0z89bTSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAjvp29ycPd80O+SNaZ6fnfRtbs6eb5od8sY0z89O+jY3Z883zQ55Y5rnZyd9navKN9MOeWOa5+fl1b2rz3cBO+RTPz8AAAAAAAAA+PzEj5rY0bZDPuAqPqrTFsSO9gE75GMudmd+sSB2tBfZIR9zkTvz3cfd7WiP3fT8xm5Ok68riB3tsZue39jNafJ1BbGjPXbT8xu7OU0+bzWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAi6gtjRHrvp+Y3dnCZfVxA72mM3Pb+xm9Pk6wpiR3vspuc3dnOafIsFsaN9jx3yMRe7M7/m5dV2tO2Qf4yreHk1AAAAAAAAAPChh4Ymp/5P/XbIr/6jHJ88XyrIFDvVHTvkBy52hzyYIl9XkGl2qpfYIV90kTvkjWnydf8/yDQ71Q075GM35Vt5syvINDvVDTvkYzflW3mzK8g0O9UNO+RjN+VbedNbTSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEgq4g0+xUN+yQj92Ub+XNriDT7FQ37JCP3ZRv5c2uINPsVDfskI/dlG/lza4g0+xUL7FDfs/F7pA3psl3DS+vtkN+wS+HfsDs+QAAAIBz+RdDw2v5jDe3GQAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"no\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFCElEQVR4nO3dMY5URxQF0NeWnCBysBfgDbAAy3uCxCK1E7wny87ZgBcAJkckBO1g2sJN/7r+f6p7VPXnnJQZ3lNNXRBSU7cKAAAAGMIh/eLxePyxql5V1Yuqen7l2X9X1duqenM4HP645+/xtKqeVdWTqvr2WoudfK6qT1X1oao+3vP3sF/HfiPcv2ZAjsfjz1X1y5WXWhxVVa8Ph8OvG7/veVV9f4N9lryruwPdwn5fbN5vlPu3GJBTcn9v/foNHKvqpw1/kzytqh9uuM+Sv2r9n4T2u7R6v5Hu3zeNb3hVD7dcnWa93PD1z261yJVm2q9v5jD3rxWQF7fbpWnLzCc32+I6M+3XN3OY+9cKyLX/QbTGdxu+9tr/oLz2TPv1zRzm/rUCApSAQCQgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQtAKy9Y2la3i/4Ws/32yL68y0X9/MYe5fKyBvb7hIy5aZn262xXVm2q9v5jD3rxWQN3X3mNZDOZ5mrvXhVotcaab9+mYOc/8WA3J6Ye51PcyS/z79+OeG7/lYd89ZPpR3te19Wfud27TfSPdvzePVL+vuUa0t71at8b7u/lr7zePV97L7/Sa4fwAAAAAAAADwyPxfUeIMH0XQ4+787mPV+aWA6NE+jaod9rg7vzPN82sFRI/2VyNrRz3uzm/R4vm1/j+IHu1ze+txd34rZ7YCoke7b6bz65s5zPm1AqJH+9Keetyd38qZXjWBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAhaAdGjfWlPPe7Ob+XMVkD0aPfNdH59M4c5v1ZA9Gif21uPu/NbObMVED3aX+yux935XWie3x4erx65R9v57fj8AAAAAAAAAODxmfqjJjX4fnrI5//5TtuTXoPvp4f8zLQ/3yl70mvw/fSQL5ry5ztrT/ro++kh75s5zH6z9qSPvp8e8r6Zw+w3a0/66PvpIe+bOcx+XjWBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAhm7UkffT895H0zh9lv1p700ffTQ943c5j9Zu1JH30/PeR9M4fZb8qe9Bp8Pz3kF6b9+Xq8uk0PeZ/d/3wBAAAAAAAA4PGZ+qMmesidX4d996TrIT/j/PrsqyddD/ki59dnVz3pesj7Zjq/lTNn7UnXQ9430/mtnDlrT7oe8r6Zzm/lTK+aQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEs/ak6yHvm+n8Vs6ctSddD3nfTOe3cuasPel6yPtmOr+VM6fsSddDfsH59dlnT7oecufXQU86AAAAAAAAAGwWP2qiR7v7owj2m7zHvRkQPdpnNveQl/3+a9oe98WA6NFetLqHvOy3ZMoe99bH3fVo9820X9/MYe5fKyB6tPtm2q9v5jD3rxUQPdp9M+3XN3OY++dVEwgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBoBUQPdp9M+3XN3OY+9cKiB7tvpn265s5zP1rBUSPdt9M+/XNHOb+LQZEj/aFTT3kZb+vTdvjvubxaj3aO30cugbfb4L7BwAAADyUfwDmcbblze7mOAAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"happy\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"sad\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"confused\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFd0lEQVR4nO3dMW5TWxAG4N8PvQaFmsdbABvIAhB7ShqUFpqwJwR9NsACAjRUiAKK+wob8UxyhntzbMuHfF/LdWY01u8QyZpJAAAAgKOw+s2/nyR5nORhkr93XPt7kq9JPiX5csefoT/93dWs/qqA/JPk3x031XKd5OPC1+jvJ/31afb3V+MFJzlcc9nUOlnwvP626a9Ps79WQB7vr5emJTX111dTfzNrtgLycI+NtCypqb++mvqbWbMVkF3/QTTHkpr666upv5k1WwEBIiBQEhAoCAgUBAQKAgIFAYGCgEBBQKAgIFAQECgICBQEBAoCAgUBgYKAQEFAoCAgUBAQKLQC8v2gXSyvqb++mvqbWbMVkK97bKRlSU399dXU38yarYB82mMjLUtq6q+vpv5m1nzQePhbkinJo721s+06yecFz+tvm/76NPuzvLpNf33uQ38AAAAAAAAAcM8M/VWTaZqeJTlPcpr12eBd+pjkKsnlarV6e8efYX6Dz2/YO+nTNL1I8nI/7WyXSnKxWq1eLXyd+W1KZeD5tQJykuTp3tq53fvM/CTcfPK9ye9/A+7KlOT5gk9C8/ulZAad36h30s9zuDc3m1pnC543v23Dzm/UO+mne+tiNzXNr6/m0cxv1Dvpu/6Dco4nC541v5uGnJ+tJlAQECgICBQEBAoCAgUBgYKAQEFAoCAgUBAQKAgIFAQECgICBQGBgoBAQUCgICBQEBAoCAgURr2TvmgH1I58WPCs+d005PxGvZN+tbcudlPT/PpqHs38Rr2Tfpn1MrJDmTY15zK/bcPOrxWQL1mvYzyU6yzYL7vZ0HeRw7zJP1ZnvlvwGvP7aej5/QnLq8+yXkq2ZO/SHB+y/m/B65GXL1fMz510AAAAAAAAAFhm6K+aRH/6u7s/+0569Pd/+uvT7K/1bd6THK65bGqdLHhef9v016fZ36h30vXXV1N/M2uOeiddf3019Tez5qh30vXXV1N/M2vaagIFAYGCgEBBQKAgIFAQECgICBQEBAoCAgUBgYKAQEFAoCAgUBAQKAgIFAQECgICBQGBgoBAYdQ76frrq6m/mTVHvZOuv76a+ptZc9Q76frrq6m/mTUfNB7+lvV960d7a2fbdZLPC57X3zb99Wn2Z3l1m/763If+AAAAAAAAAOCeGfqrJtM0PUtynuQ067PBu/QxyVWSy9Vq9faOP8P8Bp/fsHfSp2l6keTlftrZLpXkYrVavVr4OvPblMrA82sF5CTJ0721c7v3mflJuPnke5Pf/wbclSnJ8wWfhOb3S8kMOr9R76Sf53Bvbja1zhY8b37bhp3fqHfST/fWxW5qml9fzaOZ36h30nf9B+UcTxY8a343DTk/W02gICBQEBAoCAgUBAQKAgIFAYGCgEBBQKAgIFAQECgICBQEBAoCAgUBgYKAQEFAoCAgUBAQKIx6J33RDqgd+bDgWfO7acj5jXon/WpvXeympvn11Tya+Y16J/0y62VkhzJtas5lftuGnV8rIF+yXsd4KNdZsF92s6HvIod5k3+szny34DXm99PQ8/sTllefZb2UbMnepTk+ZP3fgtcjL1+umJ876QAAAAAAAACwTPlVE3e03SHv8EfMrxkQd7S3uEPeZ9j53RoQd7Rv5Q55nyHn1/q6uzvafTXNr6/m0cyvFRB3tPtqml9fzaOZXysg7mj31TS/vppHMz9bTaAgIFAQECgICBQEBAoCAgUBgYKAQEFAoCAgUBAQKAgIFAQECgICBQGBgoBAQUCgICBQEBAotALijnZfTfPrq3k082sFxB3tvprm11fzaObXCog72n01za+v5tHM79aAuKN9gzvkfYad35zl1e5ou0N+F/dhfgAAAMCh/AecHIXJK5h09QAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"angry\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"asleep\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"surprised\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFc0lEQVR4nO3dP25UVxQG8G8SpUFODWQBbMALiNiT3SC30Jg9Iei9ARbAnyYVogjFpJhBycR+h/d8543uNb9fmzHn07E+EyTrngQAAADowuYH//0syeMkj5L8duTZ35J8TfI5yZf7/AHb7fbPJJdJzpM8OV60JMmnJDdJrjebzdt7/hn2N/j+qoI8SfLHkUNN+ZDdQmfbbrcvkrxcJ87hqCRXm83m1cKvs7/9qAy8v6mCnCV5tlqcu73PzJ+E+598b/LjvwGPZZvk+YKfhPb3v5EZdH+/THz48bpZmmde5nTf3OxnXSz4vP0dGnZ/UwV5tGKQKUtmnq+W4jgz7a9tZjf7myrIsf9BNMeSmcf+B+UcTxd81v5uG3J/UwUBoiBQUhAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKEwV5NtJUyyfuegNqCP5uOCz9nfbkPubKsjXFYNMWTLzZrUUx5lpf20zu9nfVEE+rxhkypKZ19k9RnYq2/3Muezv0LD7myrIl+yeYzyVD1nwvuz+hb6rnOab/P3pzHcLvsb+/jX0/h7C49UX2T1KtuTdpTk+Zve/Ba9Hfny5Yn9t+wMAAAAAAACAn8/Qv2oS+eS7v4d9Jz3y/Zd8bSbzTf0271lOFy77WWcLPi/fIfnaTOYb9U66fG0z5Zs5c9Q76fK1zZRv5sxR76TL1zZTvpkzvWoCBQWBgoJAQUGgoCBQUBAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQGHUO+nytc2Ub+bMUe+ky9c2U76ZM0e9ky5f20z5Zs78deLDf2d33/r31eIc+pDkrwWfl++QfG0m83m8epp8bX6GfAAAAAAAAADwk/GrJtOa82232z+TXCY5z+6s8TF9SnKT5Hqz2by955/R9f7SQT530udZnG+73b5I8nKdOIejklxtNptXC7+u6/2lk3xTBTlL8my1OHd7n/k/abrOt/+b401+/Df0sWyTPF/wN0nX+0tH+dxJX2fmZU5XjuxnXSz4fO/76yafO+nrzDxfLcVxZva+v27yuZO+zsxj/4N8jqcLPtv7/rrJ51UTKCgIFBQECgoCBQWBgoJAQUGgoCBQUBAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBArupK8zc+kbUMfwccFne99fN/ncSV9n5s1qKY4zs/f9dZPPnfR1Zl5n95jbqWz3M+fqfX/d5JsqyJfsnmM8lQ9Z9n5r1/n2Lxxe5TQl+f706LsFX9P1/tJRPo9XTzvW49UX2T3qtuTdqjk+Zve/Va89Xn0v7qQDAAAAAAAAwGJD/6qJO+T21+Bh30l3h/yA/bV5WHfS3SG/k/21eVB30t0hb5tpfzNnjnon3R3ytpn2N3PmqHfS3SFvm2l/M2d61QQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBwqh30t0hb5tpfzNnjnon3R3ytpn2N3PmqHfS3SFvm2l/M2cOeSfdHfJb7K/Nw7yT7g65/TVwJx0AAAAAAAAAFhv6V03SeT53yMf//g57Jz2d53OH/MCw398h76Sn83zukN9pyO/vqHfSe8/nDnnbzG7yjXonvfd87pC3zewm36h30nvP5w5528xu8nnVBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBgoJAQUGgoCBQUBAoKAgUFAQKCgIFBYHCqHfSe8/nDnnbzG7yjXonvfd87pC3zewm36h30nvP5w5528xu8g15Jz2d53OH/JZhv78er57mDnmbB//9BQAAAE7oHzt4fMP9uDtRAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"silly\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"fabulous\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"meh\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"tshirt\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"rollerskate\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"duck\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFW0lEQVR4nO3dMXIcVRQF0DdQJC4R27AAFoAXQLEnO6GcQmL2REFuFsACZJwQuRzgYAhGYKZm/tP/+t1Tr0fnpG7p36ruK1tlqW8EAAAAUMLunj+/iYinEfEkIr5Y+OyPEfEhIt5FxPuHfIL9fv9dRLyMiOcR8Wy5aBER8WdEvImI17vd7teHfILq+aL4/Y0C+bKCPIuIrxcO1XIbhxvebb/f/xARP64T5/ioiHi12+1+Gvqg4vmi+P2NIvlaBbmJiG9Wi3PeH9H5lebuK/Mvcf/fgEvZR8T3vV+pq+eL4vc3CuX7rHHx03WzTJ/5Mi738MXdWS8Grq+er/r9LZOvVZAnKwZpGTnz+Wopljmzer7q97dMvlZBlv6GqMfImUt/w9vjq4Frq+erfn/L5GsVBAgFgZSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkCiVZCPF00xfuboO5aW8Hbg2ur5qt/fMvlaBfmwYpCWkTPfrJZimTOr56t+f8vkaxXk3YpBWkbOfB2Hl6Vdyv7uzF7V81W/v2XytQryPg6vY7yU2xh4f+vdGwRfxWUewn9f7flb7wdUzxfF728UyncNL69+EYeXpo28F6rH2zj8s+XnyZdXl80Xxe9v1M8HAAAAAAAAAI9M+qMm1Xe+5bOTPmFuJ736zrd8n44KO+mzxnbSq+98y3d6ZNhJnzW0k15951u+Y3bS5w3tpFff+ZZv7swyO+QLXLuUoZ306jvf8p2ykz7HTjqMUhBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJFoFqb7zLd8pO+lzhnbSq+98yzd3Zpkd8gWuXcrQTnr1nW/5jtlJn9e/k15951u+I3bS5z1sJ736zrd8dtIn2EkHAAAAAAAAgGH3DU2W/q/+6jvk8m0/X1aQEjvVLdV3yOX7dFRsOF+rIGV2qs+pvkMu3+mRsdF8rd8HKbNT3VB9h1y+Y5vN1ypImZ3qhuo75PLNnVkmX6ul364YJPN7z0X7/f6Sv633n91u1/VVTb7ztpjPW00goSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSLQKUmanuqH6Drl8pzaZr1WQMjvVDdV3yOWbO7NMvlZByuxUN1TfIZfv2GbztQpSZqf6nOo75PId2XS+a3h5ddkdcvmuOx8AAAAAAAAAPD7X8KMmdr6vNF8UeP7spHccFRve+W5+UPF8UeT5s5PeZ7M732cvLp4vCj1/dtL7bHbnu6F6vjLPn530dc6Ub+7MMs9fqyBLf0PUY+TMpb+h7DHy+wjynRrJV+b581YTSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBJ20vttcue7oXq+Ms+fnfR1zpRv7swyz5+d9D6b3fluqJ6vzPNnJ/1+m975Pqd6vij0/F3Dy6vL7mjLN71DXvr5AwAAAAAAAIDHZ9M/ahLyyfdw172THvL9n3xzmvlaP817E5cLF3dn3QxcL98x+eY08211J12+uTPl6zxzqzvp8s2dKV/nmVvdSZdv7kz5Os/0VhNIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEElvdSZdv7kz5Os/c6k66fHNnytd55lZ30uWbO1O+zjM/b1z8dxz2rb9cLc6x24j4a+B6+Y7JN6eZz8ur2+Sb8xjyAQAAAJfyD92s8bBtlgWFAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"house\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF90lEQVR4nO3dMW4UWRAG4JqVSJBzGw7ABTiAxZ0gQaSQwG12cwQ5F+AA9jq3nCDxNpgBduR55W5391Btvi9lPPXr0b+NpeFVBAAAAFDC5o4/P4mI04h4HBGPZp79LSJuIuIqIq7v+R6l87XWziPiVUQ8j4iz+aJFRMS/EfElIt5vNptP93yP0ucXBfJlBTmLiKczh+q5iO1f+Bil87XWXkfE22Xi7I+KiDebzebdyK8rfX5RJF+vICcR8WyxOId9jeHfaUrn2/3k+Bh3/4SeS4uIFyN+kpQ+vyiU76/Oi0+XzTJ5ZvV8r+J45YjdrJcjXl/9/Mrk6xXk8YJBesbMrJ7v+WIp5plZ/fzK5OsVZO5fiIYYM7N6vrl/IR/iyYjXVj+/Mvl6BQFCQSClIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQ6BXk21FTjJ9ZPd/YO6DmcDnitdXPr0y+XkFuFgzSM2Zm9XxfFksxz8zq51cmX68gVwsG6Rkzs3q+97G9zO1Y2m7mUNXPr0y+XkGuY3sd47FcxLj7W0vn291w+CaOU5IfV49+HvE1pc8vCuVzeXXfXJdXv4ztpW5j7q0a4jK2/6z64PLqe5kjHwAAAAAAAAD8YVb9UZPqe8jlW/8e99XuSa++h1y+X6NixXvcV7knvfoecvluj4yV7nFf65706nvI5du32j3ua92TXn0PuXzTZpZ5/ta6J736HnL5blvlHne3mkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQWOue9Op7yOW7bZV73Ne6J736HnL5ps0s8/ytdU969T3k8u1b7R73Ve5Jr76HXL49q97j/hAury67h1y+B7/HHQAAAAAAAAD4pbV23lr7p7V22eZ3uXvvc/nkW12+1trrBUId8r1td3bLJ9868rVtc78fKeCPkIObLJ98x8rX+7h79T3a8u2Tb5puvl5Bqu/Rlm/aTPkGzjzY0tbaMf+32U+bzWbQdw35DpNvmkP53GoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQKJXkOp7tOW7Tb5pDubrFaT6Hm35ps2Ub+DMXkGq79GWb59804zN9/Pqx2Pcbjflakr55Pst+X6EPG+t/d1au1gg2MXuvadebiyffL8lHwAAAAAAAAD8ee5aiXUSEacR8TgiHs08+1tE3ETEVURc3+cNdh8TeBXb/XJn80WLiO1Hrr9ExPvNZvPpPm8g37R8UeD5ywpyFhFPZw7VcxEj/w9A237A7O0ycfZHRcSbzWbzbtQXyfdzVNwjXxR5/noFOYmIZ4vFOexrDPxJsvvO9zGOtyq4RcSLod8J5bs9Mkbki0LPX+//g5wum2XyzDJ7tDvk2zc2X5nnr1eQxwsG6Rkzs8we7RleO5eHlK/M89cryNy/EA0xZubcv1AO8WTEa+W7bUy+Ms+fW00goSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSPQK8u2oKcbPLLNHu0O+28bkK/P89Qpys2CQnjEzy+zRnuG1c3lI+co8f72CXC0YpGfMzOp7tOXbNzZfmeevV5Dr2F7HeCwXMeJ+3t0NfW/iOH/JP67O/Dz0C+TbMzpfFHr+HsLl1S9jeynZmHuXhriM7T8LPky8HFq+FV9eDQAAAAAAAAD830P4qIk9387vPuxJn8mq93z3OL899qRPtNo934c4v4PsSZ9gtXu+O5zfwJn2pC8z0/lNm1nm/OxJH26Ve747nN/AmW41gYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSBhT/pwq9zz3eH8Bs60J32Zmc5v2swy52dP+jCr3fPd4fwGzrQn/W6r3vN9iPO7xZ70e3jwe76dnz3pAAAAsBr/ATSEGnDLtmOQAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"tortoise\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF7ElEQVR4nO3dMY5cxRoF4NMgEmuIbVgAG2ABFnuyE+QUErObR44g9wZYwAxOiCwHWKJe0G3z+s3U71tT3c29nu9Lfbv/o5p7etzSnaoEAAAAWIXdR/79KsnjJI+SfHHi2e+SvE3yOsmbe76HfPLd16J8VUGeJPn6xKF6rpP8Mfga+f4h35xuvs86L7jK5cLlMOtq4Hr5jsk3p5uvV5DH58vSNTJTvrmZ8i2c2SvIozMG6RmZKd/cTPkWzuwV5NRfiJYYmSnf3Ez5Fs7sFQSIgkBJQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBgoJAQUGg0CvIu4umGJ8p39xM+RbO7BXk7RmD9IzMlG9upnwLZ/YK8vqMQXpGZso3N1O+hTM/71z8V5KW5MuzxTl2neTPgevlOybfnG4+m1f3yTfnIeQDAAAAAAAAgAdm04+atNaeJnme5Nvsjw0+pT+SvErycrfb/XqfN5BvLl9WcP9t9pz01tr3SX44T5zjUUle7Ha7H4deJN+HUblHvqzk/usV5CrJN2eLc7ffs/A3yeGT75d8/DfgqbQk3y39JJTv9sgM5MuK7r+tnpP+PJf74eYw69nA9fIdG823mvtvq+ekf3u2FKeZKd/czNXcf1s9J/3UXyiX+GrgWvluG8m3mvvPriZQUBAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFLZ6TvrQHloncjNwrXy3jeRbzf231XPSX50txWlmyjc3czX331bPSX+Z/WZkl9IOM5eS79hovtXcf72CvMl+O8ZLuc7A/ryHHfpe5DI/5PdbZ/629AXyHRnOlxXdf5/C5tXPst+UbGTfpSVusv9vwU+Tm0PLt+HNqwEAAAAAAACAxVprT1trP7fWbtrp3Rze+6l88m0uX2vt+zOEusvfbX9mt3zybSNf2zf37wsFfB9ycZPlk+9S+XqPu6/9HG35jsk3p5uvV5C1n6Mt39xM+RbOvLOlrbVL/rXZB7vdbtGnhnx3k2/OXfnsagIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBgoJAoVeQtZ+jLd9t8s25M1+vIGs/R1u+uZnyLZzZK8jaz9GW75h8c0bzfdj68RK7281sTSmffP9Kvvchn7bW/tNauz5DsOvDe89ubiyffP9KPgAAAAAAAAB4eD52JNZVksdJHiX54sSz3yV5m+R1kjf3eYPDYwLPsz9f7snpoiXZP3L9KsnL3W736z3fw/ptfP2qgjxJ8vWJQ/VcZ/BvANr+AbMfzhPneFSSF7vd7sfB11m/w6hseP16BblK8s3Z4tzt9yz8JDx88v2Syx0V3JJ8N/BJaP3+b2Q2un69vwd5fN4s0zNXc452h/U7ttn16xXk0RmD9IzMXM052h3Wb27matavV5BTfyFaYmTmqb9QLvHVwLXW77ZNrp9dTaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBgoJAQUGgoCBQUBAo9Ary7qIpxmeu5hztDut32ybXr1eQt2cM0jMyczXnaHdYv7mZq1m/XkFenzFIz8jMtZ+jbf2ObXb9egV5k/12jJdynYH9ZQ879L3IZX7I77fO/G3gNdbvH5tev09h8+pn2W9KNrLv0hI32f+34Kctb75csX5z6wcAAAAAAAAAD8+mHzWJfPLd36d9Tnrk+1/yzenm6z3Ne5XLhcth1tXA9fIdk29ON99Wz0mXb26mfAtnbvWcdPnmZsq3cOZWz0mXb26mfAtn2tUECgoCBQWBgoJAQUGgoCBQUBAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgcJWz0mXb26mfAtnbvWcdPnmZsq3cOZWz0mXb26mfAtnft65+K/sz7f+8mxxjl0n+XPgevmOyTenm8/m1X3yzXkI+QAAAIBL+S+Xv8exkeeOeAAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"butterfly\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGqElEQVR4nO3dQW5TSRSF4VMtZRJlnsACWAAswGJPyQRlCpOwG5gjmMMCWIBN5lEmkXJ7UM+0on51u8qv6uW6+b9pYt+jio4dhHNLAgAAAAAAISTvi2a2kXQl6Y2ki86zf0n6LukmpfT1kCeInk/SmaRzSaeSTnoFmzxIupd0K+nukCeIfn4R8hULYmbvJL3vHGp2lKTrlNKHpgcFz6f8A305IM+crfIPvFr084uSb7YgU3O/lL4+gEl6W/tKEz2f8jvHq4F55vxU5TtJ9POLlO+vwgOutF44TbMuG74/er7zUUE6zYx+fmHylQryZlyWopaZ0fOdDkvRZ2b08wuTr/Qrlo3NMi+lVPWqET2fpNdDg5T9qPmm6OcXKV/pHQSAKAjgoiCAg4IADgoCOCgI4KAggIOCAA4KAjgoCOCgIICDggAOCgI4KAjgoCCAg4IADgoCOCgI4KAggKNUkKYdS53sGr43er6HYSn6zIx+fmHylQryfWCQkpaZ0fPdD0vRZ2b08wuTr1SQG+VlWmuxaWat6PluRwXpNDP6+YXJN1uQacPctdYJuV/9+K32AdHzKW843A7KM2erhv280c8vUr6a5dWXyku1XnQOtlN+W/u4cLlx2Hw6juXVYc8vej4AAAAAAAAAAAAAAPCEmW3M7LOZ7ay/3fTcG/KR7+jymdm7AaHmPFq+E5t85DuOfJab+7hSwH3I6iaTj3xr5eOe9DrkW+Zo83FP+piZ5Fs2M0w+7klvQL5ljjEfW00ABwUBHBQEcFAQwEFBAAcFARwUBHBQEMBBQQAHBQEcFARwUBDAQUEABwUBHBQEcFAQwEFBAAcFARwUBHBwT3o98i1zlPm4J33MTPItmxkmH/ek1yHfMv+3fL9XP66x3W7Jakryke9Z8u1Dbszsk5ltBwTbTs+9dLkx+cj3LPkAAAAAAAAAAAAAAPjz/NeVWGeSziWdSjrpPPtB0r2kW0l3Bz5H6HzTxxiulO+/u+gXTVL+SPh3STcppa8HPkfo81OAfF5BLiS97ByqZKv2vwEInc/yB+Dej4nzdJSk65TSh8bHhT4/BclXKsiZpFfD4sz7qfpXmtD5pneOL1rvKmOT9LbhnST0+SlQvtLfg5yPzbJ4ZvR8Ye75Loh+fmHylQpyOjBIScvM6PnC3PNdEP38wuQrFaT3P4hqtMyMnq/3P8hrvGj43ujnFyYfW00ABwUBHBQEcFAQwEFBAAcFARwUBHBQEMBBQQAHBQEcFARwUBDAQUEABwUBHBQEcFAQwEFBAAcFARwUBHCUCvKwaor2mdHzhbnnuyD6+YXJVyrI/cAgJS0zo+cLc893QfTzC5OvVJDbgUFKWmZGzxf9nu/o5xcmX6kgd8rrGNeyVdv+1tD5pg2H11qnJPvVo98aHhP6/BQoH8ury3otr75UXurWsreqxk7516qPLK8+SI98AAAAAAAAAAAAAADgH2a2MbPPZraz/nbTc2/IR76jy2dm7waEmvNo+U5x8pHvOPJZbu7jSgH3IaubTD7yrZWv9HH36Pd8k+8p8i1TzFcqSPR7vsm3bCb5KmfOttTM1vxruN9SSlWvGuSbR75l5vKx1QRwUBDAQUEABwUBHBQEcFAQwEFBAAcFARwUBHBQEMBBQQAHBQEcFARwUBDAQUEABwUBHBQEcFAQwEFBAEepINHv+Sbfv5Fvmdl8pYJEv+ebfMtmkq9yZqkg0e/5Jt9T5FumNd/v1Y9rbLdbspqSfOR7lnz7kBsz+2Rm2wHBttNzL11uTD7yPUs+AAAAAAAAAAAAAAD+PO6VWNN/w18p39920Xn2L+VPUN6klL4e8gTR80k6k3Qu6VTSSa9gkwdJ95JuJd0d8gTRzy9CvmJBLH+A633nULOjJF2nlD40PSh4PuUf6MsBeeZs1fg3FNHPL0q+0iWeG0lfSl8fwCS9rX2liZ5P+Z3j1cA8c36q8p0k+vlFysc96XVa852PCtJpZvTzC5OPe9LHzDwdlqLPzOjnFyYf96Q3qM0n6fXQIGU/ar4p+vlFysdWE8BBQQAHBQEcFARwUBDAQUEABwUBHBQEcFAQwEFBAAcFARwUBHBQEMBBQQAHBQEcFARwUBDAQUEABwUBHNyTXq8l38OwFH1mRj+/MPm4J33MzPthKfrMjH5+YfJxT3qd1ny3o4J0mhn9/MLkmy3ItGHuWuuE3K9+/Fb7gOj5lDccbgflmbNVw37e6OcXKV/N8upL5aVaLzoH2ym/rX1cuNw4bD4dx/LqsOcXPR8AAAAAAFjR37pFnk41Gl9cAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"stickfigure\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"ghost\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"sword\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE40lEQVR4nO3dMY4UVxQF0NeWnCBysBfgDbAAy3uCBJHaCd6TZedswAsAkyMSgnYwY1mjoS5V86ta7/eckzLwrrq4HiON6lYBAAAALZy+8etPq+pZVT2pqu93vv2lqj5X1ceq+vTAP6N1vvP5/HNVvaqqF1X1fL9oVVX1T1W9q6q3p9Ppzwf+Ga0/v2qQLxXkeVX9uHOoJe/r5oFv0Trf+Xx+XVW/HhPn7qmqenM6nX7b+Ptaf37VJN9SQZ5W1U+Hxfm6v2v9f2la57v9zvFHffs79F7OVfXLhu8krT+/apTvu4UvfnZsluGb3fO9qsuVo25vvdzw9d0/vzb5lgry5MAgS7bc7J7vxWEp9rnZ/fNrk2+pIHv/g2iNLTe759v7H+Rr/LDha7t/fm3yLRUEKAWBSEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBYKsiXi6bYfrN7vq3vgNrDhw1f2/3za5NvqSCfDwyyZMvN7vneHZZin5vdP782+ZYK8vHAIEu23Oye723dvMztUs63N9fq/vm1ybdUkE918zrGS3lf297f2jrf7RsO39RlSvLfq0f/2vB7Wn9+1Sifl1cv2+vl1S/r5qVuW95btcaHuvnfqt+9vPpB9sgHAAAAAAAAAI+MHzVZZid9zFU8Xzvp69hJHzPt87WTvp6d9DFTPl876cfctJM+drNNPjvpx9y0kz52s00+O+nH3LSTPnazTT5vNYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCOykH3PTTvrYzTb57KQfc9NO+tjNNvnspB9z00762M02+eykr2Mnfcy0z9fLq5fZSR9z9c8XAAAAAAAAAB4fP2qyzE76mKt4vnbS17GTPmba52snfT076WOmfL520o+5aSd97GabfHbSj7lpJ33sZpt8dtKPuWknfexmm3zeagKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgENhJP+amnfSxm23y2Uk/5qad9LGbbfLZST/mpp30sZtt8tlJX8dO+phpn6+XVy+zkz7m6p8vAAAAAAAAADw+U/+oSfcdcvnm33Gfdie9+w65fP+fqol33KfcSe++Qy7f/ZM16Y77rDvp3XfI5btr2h33WXfSu++Qyzd2s83fv1l30rvvkMt335Q77t5qAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQzLqT3n2HXL77ptxxn3UnvfsOuXxjN9v8/Zt1J737Drl8d0274z7lTnr3HXL57ph6x/0aXl7ddodcvqvfcQcAAAAAAACAR2bqHzWp5vnskM//fKfdSa/m+eyQ3zHt851yJ72a57ND/lVTPt9Zd9K757NDPnazTb5Zd9K757NDPnazTb5Zd9K757NDPnazTT5vNYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCGbdSe+ezw752M02+WbdSe+ezw752M02+WbdSe+ezw752M02+abcSa/m+eyQ3zPt8/Xy6mVXv+NezT+/6p8PAAAAuJR/ATEXlVHvyECcAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"giraffe\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE+UlEQVR4nO3dPY4cVRQF4NtIJBY5PwtgA14AYk92gpxCYvaEIPcGWICNc+TEQRP0IGs09U6/mqqy3+v5vtRj36PSnBEW7TpVAAAAwBBO6RfP5/NPVfWyqp5X1Xc73/6nqt5U1evT6fTnY/6A0fNV1TdV9W1VPauqr/cKdudjVX2oqvdV9e8j/wz5ruRrFuR8Pv9SVb/uHGrxVFW9Op1Ov636TYPnq0thfzggz5K3dSn0GvJ90sy3WJC7n8x/tH79AOeq+rn3J/Xo+eryk+/HA/Ms+bv6f1LL99Bivq8aX/yyPt83X93derHi60fP9+1RQXa6KV/nzVZBnh8YpGXNzdHzPTssxT435eu82SrI3n/h7fH9iq8dPd/ef6Hc+6Z8nTdbBQFKQSBSEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCFoFWfsOoz28W/G1o+f7eFiKfW7K13mzVZA3BwZpWXNz9HwfDkuxz035Om+2CvK6Li9L+1zOdzd7jZ7v/VFBdropX+fNxYLcvUHwVX2eb8L/X+35V+9vGD1fXd7Q9/agPEve1rr338p3XzNfz8urX9TlpWlr3gvV411d/rPl940vrx42Xw3w8uUr5NuWDwAAAAAAAACemGtDmEP/r3476Tf/UY4vni8VZIid6hY76fdMu0MeDJGvVZBhdqqX2ElfNOUOecMw+Vr/HmSYneoGO+nbbsrXebNVkGF2qhvspG+7KV/nzVZBhtmpbrCTvu2mfJ03vdUEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBoFWSYneoGO+nbbsrXebNVkGF2qhvspG+7KV/nzVZBhtmpbrCTvu2mfJ03WwUZZqd6iZ30B6bdIW8YJt8tvLzaTvrEL4e+YvR8AAAAAAAAAPDE3MJHTeyk3+5HOb54PjvpHafKTvpW0+azk97HTvp2U+azk97HTvp2U+azk37MzdGfn3ydN+2k97OTvs2U+bzVBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgsJPez076NlPms5N+zM3Rn598nTftpPexk77dlPnspF9nJ327afPdwsur7aRP/HLoK0bPBwAAAAAAAABPzC181GTYnXT55t+Zt5PecaoesZMu36dTNfHOvJ30Pqt20uV7eLIm3Zm3k95n7U66fPdNuzNvJ/2Ym/JtuznM95+d9H5r/r2JfA9NuTPvrSYQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGd9H5rdtLle2jKnXk76cfclG/bzWG+/+yk91m7ky7ffdPuzNtJv271Trp890y9M38LL68ediddvpvfmQcAAAAAAACAJ+YWPmpi59vzeww76TuZeue7xfO7x076RtPufC/x/BbZSd9g2p3vBs+v86ad9GNuen7bbg7z/Oyk95ty57vB8+u86a0mECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBnfR+U+58N3h+nTftpB9z0/PbdnOY52cnvc+0O98Nnl/nTTvp1029873E83vATvoj3PzOt+dnJx0AAACm8R/nWLbllDXkpAAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"skull\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"umbrella\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"snake\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFE0lEQVR4nO3dMY5bVRQG4GMQTTTUARbAAsgCIvaUNCgtNGFPCPqwABYwIQ1VlCIpTGHDYOx75r6571nnvfm+djxzfl35t8aSfU8EAAAAUMIu++F+v38eES8j4llEfDXz7D8j4k1EvN7tdr8+5A9UzxcRNxHxNCKeRMQXcwU7+hQRHyLiXUS8f+DfkO+efM2C7Pf7HyLix5lDXRwVEa92u91Pk36peL44FPabBfJcchuHQk8h351mvosFOb4y/9L6+QL2EfF97yt19XxxeOX7dsE8l/wR/a/U8p27mO+zxoNfxvWefHGc9WLC46vne7pUkJlmytc5s1WQZwsGaZkys3q+J4ulmGemfJ0zWwWZ+w1vj68nPLZ6vrnfUM49U77Oma2CAKEgkFIQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEi0CjL1DqM5vJ3w2Or5Pi2WYp6Z8nXObBXkzYJBWqbMrJ7vw2Ip5pkpX+fMVkFex+GytGvZH2f2qp7v3VJBZpopX+fMiwU53iD4Kq7zJPznas/fen+her443NB3u1CeS25j2v238p1q5uu5vPpFHC5Nm3IvVI+3cfi35efBy6vL5osCly/fQ76xfAAAAAAAAADwyNiT3rb5PenVz69CPnvSO0bFBvekVz+/KvnsSe+zqT3p1c+vUj570vtsbU969fMrk8+e9GVmltnz3VD9/Mrka/2Ldc1v6/1rt9t1vWpUzxcR3y0apO33ngdVP79K+dxqAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkDCnvR+W9qTXv38yuSzJ32ZmWX2fDdUP78y+exJ77O1PenVz69MPnvS77e5PenVz69SPnvS2za/J736+VXPBwAAAAAAAACPz30rsdbwUYmye77D+a3+/LKC2PN9HBX2pI9Y9fm1CmLP9/9Ghj3pI1Z7fq3vg9jzfcqe9DGrPb9WQez5Hpvp/MZmljm/VkHmfkPUY8rMud9Q9pjyfQTnd26V5+dWE0goCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSrYLY833OnvQxqzy/VkHs+R6b6fzGZpY5v1ZB7Pk+ZU/6mNWeX6sg9nzfsSd9zKrPbwuXV1feo+38Nnx+AAAAAAAAAPD4bOGjJmX3fMtnT/pcNrfnW767UWFP+iw2s+dbvvORYU/6sC3t+ZbvlD3pM9jSnm/5xmaWef7Zk95vyvcl5DtnTzpsjYJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIGFPer8pe77lO2dP+qAt7fmWb2xmmeefPel9pu75lu+UPemDNrXnW74T9qQ/0Ob3fMtnTzoAAAAAAAAAbMuqP2oS8sn3cNvekx7y/Zd8Y5r5Wp/mvYnrhYvjrJsJj5fvlHxjmvnWuiddvrGZ8nXOXOuedPnGZsrXOXOte9LlG5spX+dMt5pAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFjrnnT5xmbK1zlzrXvS5RubKV/nzLXuSZdvbKZ8nTM/bzz4Yxz2W3+5WJxTtxHx14THy3dKvjHNfC6vbpNvzGPIBwAAAFzL3/Yj4OZvgj/VAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"rabbit\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE50lEQVR4nO3dTW4UVxQF4FuRMkHMIVlAFgALiLInmERMkwnZU5TMYQFZAD9zxIRBZ2AH3O5+J1V+Va3Xpe8bGtv36prTsiW7ThUAAAAwhCn94+Fw+LmqXlbV86p6uvLsD1X1pqpeT9P01wM/x+OqelJVj6rq+7UWu/Wlqj5X1ceq+vSQT+B+fferAfZrBuRwOPxaVb+tvNTZUVX1apqm3xd+3NOq+nGDfc55Vzf/IWdzvyOL71eD7Hc2ILevfH+2/n0Dh6r6ZcEr4eOq+mnDfc75p2a+ErrfWbPvVwPt913jnV/W5b64dTvrxYL3f7LVIivNdL++mcPs1wrI8w0XaVky89FmW6wz0/36Zg6zXysga/9AOccPC9537R/Y1p7pfn0zh9mvFRCgBAQiAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgaAVkKXPMFrD+wXv+2WzLdaZ6X59M4fZrxWQNxsu0rJk5ufNtlhnpvv1zRxmv1ZAXtfNw8gu5XA7c66PWy2y0kz365s5zH5nA3L7hL5XdZkv8n+Pzvx7wcd8qpvHRV7Ku1rwfFn3O7HofjXQfnMeXv2ibh5KtuS5S3O8r5tvC/7Y68OX3e/6H14NAAAAAAAAANylJ71NT3qfXfyqiZ70efSk99GT3mlXPd/ud5ae9A576/l2v76Zw+ynJ32bme7XN3OY/fSkbzPT/fpmDrOfp5pAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAR60reZ6X59M4fZT0/6NjPdr2/mMPvpSd9mpvv1zRxmPz3p8+hJ76Mn/QF23/Ptftf/8GoAAAAAAAAA4K6r7km33773qwF+1eRqe9Lt921U7XC/0pN+PLIW9Hzb73Rk7Wi/0pN+YmnPt/2O7W0/PemdM+3XN3P0/YbpSW99i3XJv4b7apqmWa9q9jtvL/tV1bNNF2l7e/8NnmoCgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBBca0+6/U7taT896Z0z7dc3c/T99KTfs7Tn237H9rafnvQ7Fvd82+/I7vYrPelVtULPt/32vV8N8PBqAAAAAAAAAOAuPeltu+j5TtxPT/oarrrnu8X9juhJ73S1Pd/nuN9ZetI7XG3Pd4P7zZypJ32bmcP0fDe438yZrYCs/QPbHEv+HmH0/db+gXLtme43c6anmkAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBHrS57vKnu8G95s5U0/6NjOH6flucL+ZM/Wkz3O1Pd8N7jdzpp70/3fVPd/nuN8JPekPsPueb/fTkw4AAAAAAAAAy+hJb7NfHz3pK9llT7r9vo0qPenddtWTbr/TkaUnvcveetLtd0xP+gr21JNuv76Zw/Skt77FuuRfm301TdOsVzX7nbeX/arq2aaLtL29/wZPNYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCPSkz2e/PnrSO+2pJ91+fTP1pN+zt550+x3Tk95hdz3p9juiJ/2Bdt+Tbj896QAAAMBK/gVsdTwSu+HRwQAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"cow\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF2klEQVR4nO3dMW4USRQG4NcrkVjObTgAF+AAFneCBDmFBG6zmyPIuQAHsNe55cQStcGMYUeeftvl6h6qZ78vZWbeL0/9NpbG9SIAAACALgzZP5ZSLiLibUS8iojzmWf/HRHfIuLjMAxfnvgapxFxFhEnEfFsrmBb9xFxFxE3EXH7xNeQryFfD+dvtCCllHcR8X7mUHtHRcTlMAwfKp93HhEvFsizz1VsvqA15PulOl8v529vQbbN/Tz27wsoEfG64ifJaUS8XDDPPt9j+ndC+R6bnK+n8/fHyBPexuHCxXbWm4rHny0VZKaZ8rXN7Ob8jRXk1XJZRtXMPFksxTwz5Wub2c35GyvI3L8QTfG84rFz/0I590z52mZ2c/7GCgKEgkBKQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgMVaQ2juW5nBd8dj7xVLMM1O+tpndnL+xgnxbMMiYmpl3i6WYZ6Z8bTO7OX9jBfkYm8u0DqVsZ051s1SQmWbK1zazm/O3tyDbG+Yu4zAhH65+/FrxnNvYXGd5KFdRd7+sfLuq8vV0/qZcXv0mNpdq1dxbNcV1bH6sfXJ59ZMcfb4VnD8AAAAAAAAA+J+xJ33c0X+UIzrP18P5syd9mqPbQx6d5+vl/NmTPt3R7CGPzvP1dP7sSV9mpnxtM7s5f/akLzNTvraZ3Zw/e9KXmSlf28xuzp9bTSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBI2JO+zEz52mZ2c/7sSV9mpnxtM7s5f/akLzNTvraZ3Zw/e9KnOao95NF5vp7Onz3p447+cujoPN8Kzh8AAAAAAAAA8Esp5aKU8lcp5brM73r72hfyybe6fKWUdwuE2udH2ezElk++deQrm+b+OFDAh5CTmyyffIfKt9Y96fLtkq/N0e1Jl69tpnwTZ+5taSnlkH/N9dMwDJO+a8i3n3xt9uVzqwkkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCibXuSZfvMfnaHNWedPnaZso3ceZa96TLt0u+NrX5fl79eIjb7VquppRPvt+S7yHkRSnlz1LK1QLBrrav3Xq5sXzy/ZZ8AAAAAAAAAPD/818rsU4j4iwiTiLi2cyz7yPiLiJuIuL2KS+w/ZjA29jslzufL1pEbD5y/S0iPg7D8OUpLyBfW77o4PxlBTmPiBczhxpzFZV/A1A2HzB7v0yc3VERcTkMw4eqJ8n3c1Q8IV90cv7GCnIaES8Xi7Pf95j4k2T7ne9zHG5VcImI11O/E8r3eGRU5IuOzt/Y34OcLZuleWY3e7RHyLerNl8352+sICcLBhlTM7ObPdozPHYux5Svm/M3VpC5fyGaombm3L9QTvG84rHyPVaTr5vz51YTSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBJjBbk/aIr6md3s0R4h32M1+bo5f2MFuVswyJiamd3s0Z7hsXM5pnzdnL+xgtwsGGRMzcze92jLt6s2Xzfnb6wgt7G5jvFQrqLift7tDX2XcZg3+eHqzK9TnyDfjup80dH5O4bLq9/E5lKymnuXpriOzX8LPjVeDi3fii+vBgAAAAAAAAD+bdUfNYnO89lDvv73d7V70qPzfPaQ71jt+7vKPenReT57yPda5fu71j3pveezh7xtZjf51ronvfd89pC3zewm31r3pPeezx7ytpnd5HOrCSQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgKJte5J7z2fPeRtM7vJt9Y96b3ns4e8bWY3+da6J733fPaQt83sJt8q96RH5/nsIX9kte+vy6vHHf0e9+j86xf95wMAAAAO5R/MoQmmFihqmAAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"quarternote\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE8ElEQVR4nO3dQY4VZRQF4PtMnBDmoAtwAyzAuCeYEKY6wT0ZnbMBFwAyJ0wYPAfdxnTaOl3V/1/P+4rvm1pwT97LAUk6daoAAACAFk4P/PenVfWsqp5U1beTb3+pqs9V9bGqPj3y92id73w+/1hVr6rqRVU9nxetqqr+qqp3VfX2dDr9/sjfo/XnVw3ypYI8r6rvJ4da8r5uvvAtWuc7n8+vq+rnfeLcPVVVb06n0y8bf13rz6+a5FsqyNOq+mG3OP/tz1r/J03rfLd/c/xWD/8NPcu5qn7a8DdJ68+vGuX7ZuHhZ/tmGb7ZPd+rulw56vbWyw3Pd//82uRbKsiTHYMs2XKze74Xu6WYc7P759cm31JBZv+DaI0tN7vnm/0P8jW+2/Bs98+vTb6lggClIBApCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBEsF+XLRFNtvds+39R1QM3zY8Gz3z69NvqWCfN4xyJItN7vne7dbijk3u39+bfItFeTjjkGWbLnZPd/bunmZ26Wcb2+u1f3za5NvqSCf6uZ1jJfyvra9v7V1vts3HL6py5Tkn1eP/rHh17T+/KpRPi+vXjbr5dUv6+alblveW7XGh7r536pfvbz6UWbkAwAAAAAAAICvjB81WWYnfcwhvl876evYSR9ztd+vnfT17KSPucrv1076PjftpI/dbJPPTvo+N+2kj91sk89O+j437aSP3WyTz1tNIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCO+n73LSTPnazTT476fvctJM+drNNPjvp+9y0kz52s00+O+nr2Ekfc7Xfr5dXL7OTPubw3y8AAAAAAAAAfH38qMkyO+ljDvH92klfx076mKv9fu2kr2cnfcxVfr920ve5aSd97GabfHbS97lpJ33sZpt8dtL3uWknfexmm3zeagKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgENhJ3+emnfSxm23y2Unf56ad9LGbbfLZSd/npp30sZtt8tlJX8dO+pir/X69vHqZnfQxh/9+AQAAAAAAAODrE3/UpPvOt3x20geM7aR33/mW799TZSd91Lad9O473/LdP1l20kdt2knvvvMt31120sdt2knvvvMt39jNNjvkE56dZdNOevedb/nus5M+xk46bKUgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgESwXpvvMt33120sds2knvvvMt39jNNjvkE56dZdNOevedb/nuspM+bv1Oevedb/nusJM+7nE76d13vuWzkz7ATjoAAAAAAAAAbGYnfdnh81X/H+X43/PZSV9xqg6Yr5rskAct8tlJX+dQ+arRDvmCNvnspK9ztHxtdsgnPDuLnfRBR8rXZod8wrOz2EkfdKR8bXbIJzw7i5102EpBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAI7KSvd6R8bXbIJzw7i530QUfK12aHfMKzs9hJH3C0fG12yCc8O4ud9Ec6XL5qtEO+oE0+O+nLDp+vGrwc+gHd8wEAAACX8jdzZLbl0C/0iwAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"eigthnote\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFM0lEQVR4nO3dQY4VVRgF4P+ZOCHMQRfgBliAcU8wMUx1gnsyOmcDLgBkTpgweA66JXa6799V/W61J5fvm1pwT27lgCSdOlUAAABAhNM9//1pVT2rqidV9e3ksz9X1aeq+lBVHx/4e0TnO5/PP1bVq6p6UVXP50Wrqqq/q+ptVb05nU5/PPD3iL6/CsjXFeR5VX0/OdTIu7p64XtE5zufzz9X1S/HxLl5VFW9Pp1Ov+78ddH3VyH5RgV5WlU/HBbnbn/V9j9povNd/83xe93/N/Qs56r6acffJNH3V0H5vhk8/OzYLBefmZ7vVT1eOer6rJc7nk+/v5h8o4I8OTDIyJ4z0/O9OCzFnDPT7y8m36ggs/9BtMWeM9Pzzf4H+Rbf7Xg2/f5i8o0KApSCQEtBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYGGgkBDQaAxKsjnR02x/8z0fHu/ATXD+x3Ppt9fTL5RQT4dGGRkz5np+d4elmLOmen3F5NvVJAPBwYZ2XNmer43dfUxt8dyvj5zq/T7i8k3KsjHuvoc42N5V/u+3xqd7/oLh6/rcUry76dH/9zxa6Lvr4Ly+Xj12KyPV7+sq4+67flu1Rbv6+p/q37z8eoHmZEPAAAAAAAAAL4yftRkbPmd9PR8FfB+7aRvs9xOenq+Cnm/dtK3W2YnPT1fBb1fO+nHnJm+k56eL+b92kk/5sz0nfT0fDHv1076MWem76Sn54t5v75qAg0FgYaCQENBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYGGgkDDTvoxZ6bvpKfni3m/dtKPOTN9Jz09X8z7tZN+zJnpO+np+WLer530bZbaSU/PV0Hv18erx5bfSU/PV+HvFwAAAAAAAAC+Pn7UZGz5nfRyf/fen530bZbbSS/39+Woau7PTvp2y+ykl/u7dWQN7s9O+jFn2iG/7MyY+7OTfsyZdsgvOzPm/uykH3OmHfLLzoy5P181gYaCQENBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYGGgkBDQaBhJ/2YM+2QX3ZmzP3ZST/mTDvkl50Zc3920o850w75ZWfG3J+d9G2W2kkv9/df7f35ePXY8jvp5f4uvT8AAAAAAAAA+Mq0P2qSsFPdkW/tnfQKyDcsSMpO9fAXyfflqFpwJ71C8t1ZkKSd6jsflu/WkbXQTnoF5Rv9uHvMTvWAfDettpMek29UkJid6gnPzrJSvvSd9Jh8o4LE7FQPyHfbSjvpMfl81QQaCgINBYGGgkBDQaChINBQEGgoCDQUBBoKAg0FgYaCQENBoKEg0FAQaCgINBQEGgoCDQWBxqggMTvVA/LdttJOeky+UUFidqonPDvLSvnSd9Jj8o0KErNTPSDfTavtpMfku7MgSTvVd5HvhuV20iso35aPV8fuVMu39k565ecDAAAAAAAAgK+MnfSx5fNV/o9y/O/57KRvOKoWzFchO+SNiHx20rdZKl8F7ZAPxOSzk77NavlidsgnPDuLnfQLrZQvZod8wrOz2Em/0Er5YnbIJzw7i5102EtBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYGGgkBDQaChINCwk77dSvlidsgnPDuLnfQLrZQvZod8wrOz2Em/wGr5YnbIJzw7i530B1ouXwXtkA/E5LOTPrZ8vgr4OPQ90vMBAAAAj+Uf73PYeRwCFc4AAAAASUVORK5CYII=\"\r\n  },\r\n  \"pitchfork\": {\r\n    \"icon\": \"data:image/png;base64,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\"\r\n  },\r\n  \"target\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFeElEQVR4nO3dMY5bVRgF4N9INFH6BBbAAsgCEHtKGpQWmrAnBH1YAAtISB+lSWGKGYiMff/xm/dsnTvzfW08uUfP72QykuedKgAAACDC7o4/f1pVz6rqSVV9vfHZn6vqU1V9qKqP9/w7ovPt9/sfqupVVb2oqufbRauqqr+r6m1Vvdntdr/f8++Ivn4VkK8ryPOq+nbjUCPv6uYNXyI6336//6mqfr5MnMOjqur1brf7ZeHXRV+/Csk3KsjTqvruYnFO+6vO/5cmOt/td47f6u7v0FvZV9WPC76TRF+/Csr31eDFzy6bZfWZ6fle1fXKUbdnvVzw+vTrF5NvVJAnFwwysuTM9HwvLpZimzPTr19MvlFBtv6B6BxLzkzPt/UP5Of4ZsFr069fTL5RQYBSEGgpCDQUBBoKAg0FgYaCQENBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0RgX5fNUUy89Mz7f0GVBbeL/gtenXLybfqCCfLhhkZMmZ6fneXizFNmemX7+YfKOCfLhgkJElZ6bne1M3D3O7lv3tmedKv34x+UYF+Vg3j2O8lne17Pmt0flun3D4uq5Tkn8fPfrHgq+Jvn4VlM/Dq8e2enj1y7p5qNuS51ad433d/LfqVw+vvpct8gEAAAAAAADAIzP1R03Sd8jlm3/Hfdqd9PQdcvm+HFUT77hPuZOevkMu3/GRNemO+6w76ek75PIdmnbHfdad9PQdcvnWnRlz/826k56+Qy7fsSl33D3VBBoKAg0FgYaCQENBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYHGrDvp6Tvk8h2bcsd91p309B1y+dadGXP/zbqTnr5DLt+haXfcp9xJT98hl+/A1DvuD+Hh1bE75PI9+B13AAAAAAAAAHhk2o+apO9op+er8I9KpF+/hHzDgqTvaKfnq5Cd75H065eS72RB0ne00/NV0M73KenXLynf6OPu6Tva6flidr4H0q9fTL5RQdJ3tNPzxex8D6Rfv5h8o/9iXfO3zf6z2+3O+lcjPV9VfX/RIGN/nvOi9OuXlM9TTaChINBQEGgoCDQUBBoKAg0FgYaCQENBoKEg0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBojAqSvqOdni9m53sg/frF5BsVJH1HOz1fzM73QPr1i8k3Kkj6jnZ6vpid74H06xeT72RB0ne00/NV0M73KenXLynfOQ+vjt3RTs9Xczy8Ovb6pecDAAAAAAAAgMfnrkmsGT4qYef7geargPuvK4id79ujauKd7+EXheerkPtvVBA73/87sibd+T754vB8FXT/jX4fxM73oWl3vgfS88Xcf6OC2Pled6Z8686Muf9GBdn6B6JzLDlz6x8oz7Hk9xHkO7YkX8z956km0FAQaCgINBQEGgoCDQWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYGGgkBDQaChINBQEGgoCDRGBbHzfWzKne+B9Hwx99+oIHa+150p37ozY+6/UUHsfB+adud7ID1fzP03Koid7y+m3vk+JT1fBd1/D+Hh1bE72vI97J15AAAAAAAAAHh8pv6oSYXns0M+//s77U56heezQ35g2vd3yp30Cs9nh/ykKd/fWXfS0/PZIV93Zky+WXfS0/PZIV93Zky+WXfS0/PZIV93Zkw+TzWBhoJAQ0GgoSDQUBBoKAg0FAQaCgINBYGGgkBDQaChINBQEGgoCDQUBBoKAg0FgYaCQENBoDHrTnp6Pjvk686MyTfrTnp6Pjvk686MyTfrTnp6Pjvk686MyTflTnqF57NDfmTa99fDq8ce/I57hV+/ys8HAAAAXMs/4tr5dC58svsAAAAASUVORK5CYII=\"\r\n  },\r\n  \"triangle\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFX0lEQVR4nO3dsW5URxQG4LNBNJapTXiAvAAPYOWdoEG0SUPeJumjpOcF8gA2bqiQCywxKXYBrfAcZjz3LrP297Xc3fNrpN+LpfWcCAAAAGAKm+/8+2lEnEXESUQ8Xnj2TURcR8RVRHy443vIJ99dNeXLCvI0Ip4tHKrmIiLedb5Gvq/kG1PN91PlBadxuHCxm3Xa8bx8++QbU81XK8jZelmqembKNzZTvsaZtYKcrBikpmemfGMz5WucWSvI0r8QteiZKd/YTPkaZ9YKAoSCQEpBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSBRK8jNQVP0z5RvbKZ8jTNrBbleMUhNz0z5xmbK1zizVpCrFYPU9MyUb2ymfI0zH1Ue/hgRJSKerBZn30VEvO94Xr598o2p5nN5dZ18Yx5CPgAAAAAAAAB4YHzVpG44XynlPCJeRsTz2K41XtK7iHgbEW82m80/d3yPqc8vJshnT3qb7nyllFcR8ds6cfZHRcTrzWbze+frpj6/mCRfrSCnEfHLanFu91+0/6SZOt/uk+Pv+P4n9FJKRPza8Uky9fnFRPnsSV9n5ss4XDliN+tFx/Ozn980+exJX2fm89VSLDNz9vObJp896evMXPoX8hY/dzw7+/lNk8+tJpBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgk7ElfZ2bvHVBLuOx4dvbzmyafPenrzHy7WoplZs5+ftPksyd9nZlvYnuZ26GU3cxWs5/fNPlqBfkQ2+sYD+Ui+u5vnTrf7obD13GYkny+evTfjtdMfX4xUT6XV9ctdXn1i9he6tZzb1WLy9j+t+oPl1ffiT3pAAAAAAAAANDtqL9qYg+58xtwv/ek20O+x/mNuV970u0hv5XzG3Ov9qTbQz420/k1zjzWPen2kI/NdH6NM491T7o95GMznV/jTLeaQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJA41j3p9pCPzXR+jTOPdU+6PeRjM51f48xj3ZNuD/nYTOfXOPMo96TbQ/4N5zfmfu5Jt4fc+Q2wJx0AAAAAAAAAllVKOS+l/FVKuSzLu9y997l88h1dvlLKqxVC3eZT2e7slk++48hXts39dKCAn0M2N1k++Q6Vr/Z199n3aMu3T74x1Xy1gsy+R1u+sZnyNc68taWllEP+tdkXm82m6aeGfLeTb8xt+dxqAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkCiVpDZ92jL9y35xtyar1aQ2fdoyzc2U77GmbWCzL5HW7598o3pzffl6sdD3G43cjWlfPL9kHyfQ56XUv4spVysEOxi996jlxvLJ98PyQcAAAAAAAAAD8/3VmKdRsRZRJxExOOFZ99ExHVEXEXEhzu+h3zy3VVTvqwgTyPi2cKhai6i/28A5PtKvjHVfLWvu5/G4cLFbtZpx/Py7ZNvTDVfrSBn62Wp6pkp39hM+Rpn1gpysmKQmp6Z8o3NlK9xZq0gS/9C1KJnpnxjM+VrnOlWE0goCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQStYLcHDRF/0z5xmbK1zizVpDrFYPU9MyUb2ymfI0zawW5WjFITc9M+cZmytc481Hl4Y+xXa7+ZLU4+y4i4n3H8/Ltk29MNZ/Lq+vkG/MQ8gEAAACH8j9qsKYdhQgxPgAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"lefttriangle\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFGklEQVR4nO3dPY4UVxQG0NuWnCBysBfgDbCAkfcECSK1E7wbO7fsnA14ATOQIxIknoPuAY+m6rpq6lVzX3NOOtV9P1Xpmx+p590IAAAAoIRD9sXW2lVEvIiIZxHxtPPstxHxJiJeHw6Hvx74Ho8j4klEPIqI73sFO/kYER8i4l1EvH/ge8g3eL7ZgrTWXkbEL51DTY6KiFeHw+HXla97GhE/7pBnynUcC72GfF8Mm2+yIKefHH/OfX0HLSJ+XvGT5HFE/LRjnin/xPLvhPLdN2S+72YufhHnK0ecZj1fcf2TvYJ0minftpll8s0V5NmOQeasmflotxR9Zsq3bWaZfHMF6f0H+RI/rLi29x9svWfKt21mmXxzBQFCQSClIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQmCvI2jOMerhZce3H3VL0mSnftpll8s0V5M2OQeasmflhtxR9Zsq3bWaZfHMFeR3Hw9zOpZ1mLvVuryCdZsq3bWaZfJMFOZ1w+CrOU5Lbo0f/XvGa93E8LvJcrmPd+bLy3TVsviWHVz+P46Fua86tWuImjr9W/ebw6geRb5se+QAAAAAAAADgGzP0nvTq+aL+RyXku9Q96dXzRZE93wn5vrisPenV80WhPd8z5LvvovakV89XZs93h2t7GTLfqHvSq+crs+e7w7W9DJlv1D3p1fOV2fPd4dpehsznVBNIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEqPuSa+er8ye7w7X9jJkvlH3pFfPV2bPd4drexky36h70qvnK7Pnu8O1vQyZb8g96dXzRaE93zPku+sy96RXzxcFDl/+H/LZkw4AAAAAAAAAKwy9Jz2KfxTB/Rv/oybD7kmPInu057h/d9iTvtFF7SF3/ybZk77Bpe0hd/+2zSyTb9Q96WX2aM9w/7bNLJNv1D3pZfZoz3D/ts0sk8+pJpBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkRt2TXmaP9gz3b9vMMvlG3ZNeZo/2DPdv28wy+Ubdk15mj/YM92/bzDL5htyTHoX2aE9x/+6xJ/0BLn4Pufs3/uHVAAAAAAAAAMB/2ZM+7+I/KuH52pPey7B7vud4vnfYk97BkHu+p3i+k+xJ32jIPd8zPN+FM+1J32dm9Xye78KZ9qTvM7N6Ps934UynmkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQsCd9n5nV83m+C2fak77PzOr5PN+FM+1J32dm9Xye78KZ9qQvM+ye7yme7z32pD/At3J4tedrTzoAAAAAAAAA9NBau2qt/dFau2n93Zze+0o++YbL11p7uUOoKZ/acWe3fPKNka8dm/vpTAFvQy5usnzynSvfqHvS5btLvm1m8426J12+bTPlWzhzsqWttXP+t9lnh8Nh0XcN+abJt81UPqeaQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJAYdU+6fPfJt81kvlH3pMu3baZ8C2eOuiddvrvk22Ztvs9HP57jdLstR1PKJ99XyXcb8qq19ntr7XqHYNen9956uLF88n2VfAAAAMAZ/QsAIPjNRI6mtwAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"chessboard\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE7klEQVR4nO3dMY5TZxQF4OtIaRA9JAvIBlhAlD1BE9EmDdlTlPRsIAuA0CMaCqcYRyNj/2f85trW+z3f1zJwnw46A0jmnSoAAABgFTYP/PjzqnpRVc+q6vsz3/5aVV+q6lNVfX7ML7Ddbn+uqjdV9aqqXp7v0aqq6t+qel9V7zabzV+P/DXkN3l+qSAvq+rHMz/UyIe6C/Rk2+3216r67TKPs3+qqt5uNpvfF/48+e1O1cT5jQryvKp+utjjHPdPnfidcPed7896+E/Ac9lW1S8LvhPK75uTNWl+3w2++MVln6V9801d7ze3drdeL/h6+e2bNr9RQZ5d8EFGltx8dbGnOM9N+fVuria/UUHO/Q+iUyy5ee5/UJ7ihwVfK79DU+Y3KghQCgKRgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQDAqyNerPsXym4veAXUmHxd8rfwOTZnfqCBfLvggI0tuvr/YU5znpvx6N1eT36ggny74ICNLbr6ru5eRXct2d/NU8ts3bX6jgnyuu9cxXsuHWvB+2d0b+t7WdX6T/3915t8Lfo787k2d3y28vPp13b2UbMl7l07xse7+WvDHzC9fTuTXyw8AAAAAAAAAnp74URM72nbIG24iv2FB7GjvsUPeM21+RwtiR/soO+Q9U+Y3+ri7He3eTfn1bq4mv1FB7Gj3bsqvd3M1+Y0KYke7d1N+vZuryc9bTSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEglFB7Gj3bsqvd3M1+Y0KYke7d1N+vZuryW9UEDvavZvy691cTX5HC2JH+4Ad8p5p8zvl5dV2tO2QP8ZTyA8AAAAAAAAAnpiHhhJn+CiCHXL5PcZJ+aWC2NHenSo75B1T5zcqiB3tb06WHfKOafMb/X8QO9r77JD3TJvfqCB2tHs35de7uZr8RgWxo33IDnnPlPl5qwkECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQDAqiB3tQ3bIe6bMb1QQO9q9m/Lr3VxNfqOC2NHeZ4e8Z9r8RgWxo33PDnnP1Pndwsur17yjLb8bzg8AAAAAAAAAnp74URM72nbIG24iv2FB7GjvsUPeM21+RwtiR/soO+Q9U+Y3+ri7He3eTfn1bq4mv1FB7Gj3bsqvd3M1+Y0KYke7d1N+vZuryc9bTSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEglFB7Gj3bsqvd3M1+Y0KYke7d1N+vZuryW9UEDvavZvy691cTX5HC2JH+4Ad8p5p8zvl5dV2tO2QP8ZTyA8AAAAAAAAAnpiHhhJn+CiCHXL5PcZJ+aWC2NHenSo75B1T5zcqiB3tb06WHfKOafMb/X8QO9r77JD3TJvfqCB2tHs35de7uZr8RgWxo33IDnnPlPl5qwkECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQDAqiB3tQ3bIe6bMb1QQO9q9m/Lr3VxNfqOC2NHeZ4e8Z9r8RgWxo33PDnnP1Pndwsur17yjLb8bzg8AAAC4ov8AwGjpQ+5xFXQAAAAASUVORK5CYII=\"\r\n  },\r\n  \"diamond\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFF0lEQVR4nO3dMY4UZxAF4BpLThA52AfwBTiA5TtBYpHaCb6TZedcwAcAkyMSgnGwa9nDzv+2e/+ZVXXzfSm7VKlmHgvS0K8KAAAAaOFwz68/rapnVfWkqr698OzPVfWpqj5U1ccH/h6t9zsejz9W1auqelFVzy+3WlVV/V1Vb6vqzeFw+OOBv0fr+1WD/VJAnlfV9xdeauRd3bzga7Te73g8/lxVv1xnndNRVfX6cDj8uvL7Wt+vmuw3CsjTqvrhauuc91ct/5Om9X63Pzl+r/t/Ql/Ksap+WvGTpPX9qtF+3wy++Nl1d5me2X2/V/V44ajbWS9XfH33+7XZbxSQJ1dcZGTNzO77vbjaFpeZ2f1+bfYbBeTS/yBaYs3M7vtd+h/kS3y34mu736/NfqOAACUgEAkIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEo4B8ftQt1s/svt/aZ0BdwvsVX9v9fm32GwXk0xUXGVkzs/t+b6+2xWVmdr9fm/1GAflwxUVG1szsvt+bunmY22M53s5cqvv92uw3CsjHunkc42N5V+ue39p6v9snHL6uxwnJv48e/XPF97S+XzXaz8Orxy718OqXdfNQtzXPrVrifd38teo3D69+kEvsBwAAAAAAAABfmU1/1EQPuftN2HdPuh7yE+43Z1896XrIz3K/ObvqSddDPjfT/RbO3GpPuh7yuZnut3DmVnvS9ZDPzXS/hTM91QQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAINhqT7oe8rmZ7rdw5lZ70vWQz810v4Uzt9qTrod8bqb7LZy5yZ50PeR3uN+cffak6yF3vwl60gEAAAAAAABgtfhREz3a0x9FsN/Ge9yHAdGjfWJ1D3nZ7/822+N+NiB6tM9a3ENe9jtnkz3uo4+769Gem2m/uZlt3n+jgOjRnptpv7mZbd5/o4Do0Z6bab+5mW3ef55qAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQjAKiR3tupv3mZrZ5/40Cokd7bqb95ma2ef+NAqJHe26m/eZmtnn/nQ2IHu07VvWQl/2+tNke9yUPr9ajvdOHQ1fz/Tbw/gMAAAAAAACAr8x9RYlb+CiCHnf3e4hF90sB0aN9O6p22OPufieG9xsFRI/2FyNrRz3u7nfW2fuN/j+IHu1Te+txd7+FM0cB0aM9N9P95ma2ud8oIHq079pTj7v7LZzpqSYQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAsEoIHq079pTj7v7LZw5Coge7bmZ7jc3s839RgHRo31qbz3u7rdw5iggerT/s7sed/e7Y3i/PTy8unOPtvvt+H4AAAAAAAAA8PXZ9EdNqvl+esi3//putie9mu+nh/zEZl/fTfakV/P99JCftcnXd6s96d3300M+N7PNflvtSe++nx7yuZlt9ttqT3r3/fSQz81ss5+nmkAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBFvtSe++nx7yuZlt9ttqT3r3/fSQz81ss99We9K776eHfG5mm/022ZNezffTQ37HZl9fD68e00M+Z/evLwAAAPCI/gFIfqYbRE+aDAAAAABJRU5ErkJggg==\"\r\n  },\r\n  \"smalldiamond\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE7ElEQVR4nO3dMY5TVxQG4OOgNGioSbKAbIAFROwJmog2acieoqRnA1nAAA0VooDCKewospj78+5cP+s+z/e1PM/5da1/zEjWPVUAAADAFHbf+PebqnpaVY+r6vszz/5SVZ+q6n1Vfbznz5BPvvtalC8V5Ieq+unMoVpuq+pd52vk+598Y5r5vmu84KYuF66Os246npfvlHxjmvlaBXm6Xpamnpnyjc2Ub+HMVkEerxikpWemfGMz5Vs4s1WQc/9BtETPTPnGZsq3cGarIEApCEQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCQasgXy6aon+mfGMz5Vs4s1WQTysGaemZKd/YTPkWzmwV5P2KQVp6Zso3NlO+hTMfNR7+XFX7qnqyWpxTt1X1oeN5+U7JN6aZz+XVbfKNeQj5AAAAAAAAAOCB8VWTtuF8+/3+l6p6WVXP6rDW+JzeVdWbqnq92+3+uufPmPr8aoJ89qQv051vv9//WlW/rRPndFRVvdrtdr93vm7q86tJ8rUKclNVP68W527/1PLfNFPnO35y/Fnf/oQ+l31VPe/4JJn6/GqifPakrzPzZV2uHHWc9aLj+dnPb5p89qSvM/PZainOM3P285smnz3p68w89x/kS/zY8ezs5zdNPreaQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgE9qSvM7P3DqhzeNvx7OznN00+e9LXmflmtRTnmTn7+U2Tz570dWa+rsNlbpeyP85cavbzmyZfqyAf63Ad46XcVt/9rVPnO95w+KouU5L/rh79u+M1U59fTZTP5dVt57q8+kUdLnXrubdqibd1+G/VHy6vvhd70gEAAAAAAACg26a/amIPufMbcN170u0hP+H8xlzXnnR7yO/k/MZc1Z50e8jHZjq/hTO3uifdHvKxmc5v4cyt7km3h3xspvNbONOtJhAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCwVb3pNtDPjbT+S2cudU96faQj810fgtnbnVPuj3kYzOd38KZm9yTbg/5V5zfmOvck24PufMbYE86AAAAAAAAAHTb9FdNavJ89pBv//3d7J70mjyfPeQnNvv+bnJPek2ezx7yO23y/d3qnvTZ89lDPjZzmnxb3ZM+ez57yMdmTpNvq3vSZ89nD/nYzGnyudUEAgWBQEEgUBAIFAQCBYFAQSBQEAgUBAIFgUBBIFAQCBQEAgWBQEEgUBAIFAQCBYFAQSDY6p702fPZQz42c5p8W92TPns+e8jHZk6Tb6t70mfPZw/52Mxp8m1yT3pNns8e8q9s9v11eXWbPeRjrv79BQAAAAAAAICHx1dN2uQbcxX57ElfRr4xm83X+jbvTV0uXB1n3XQ8L98p+cY089mTvs5M+cZmTpPPnvR1Zso3NnOafPakrzNTvrGZ0+RzqwkECgKBgkCgIBAoCAQKAoGCQKAgECgIBAoCgYJAoCAQKAgECgKBgkCgIBAoCAQKAoGCQGBP+joz5RubOU0+e9LXmSnf2Mxp8tmTvs5M+cZmTpPvUePhz3XYv/1ktTinbqvqQ8fz8p2Sb0wzn8ur2+Qb8xDyAQAAAJfyL3WaU2vK5kXFAAAAAElFTkSuQmCC\"\r\n  },\r\n  \"square\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFJElEQVR4nO3dQW4UVxAG4OpI2SD2kBwgF8gBRrkTbCy2yYbcBvZRss8FcgAb9ogNkiuLGRtZ7i5187rHr4fv2wamfqT6baGYVxEAAABA/zLzkJnvM/Mm13dz+uyDfPLtLl9mXm0QasxtZl7JJ99u8uWxubdnCngXcnaT5ZPvXPl+mMj4OiKGuX+gFQwR8WrBr5fvIfnaTOabKsiv22WZtGSmfG0z5Zs5c7SlmZnbZhk3DMOsrxryjZOvzVi+qe8gQCgIlBQECgoCBQWBgoJAQUGgoCBQUBAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBApTBflw1hRHNwt+rXyPyddmNN9UQf7dMMiUJTPla5sp38yZUwV5GxHnfFkiTzPnku8h+doszXf/9OM5XrdreZpSPvmeJN9dyENmvsvM6w2CXZ8+u/VxY/nke5J8AAAAAAAAAPD9KU9inf43/Os43m97ufLsD3H8Ccq3wzD8/Y2f8TwiXkTEs4j4ca1gJ18i4nNEfIyIT9/4GfI15Oth/yYLkscf4Pp95VCjoyLizTAMfyz8fS8j4ucN8oy5juX/RkG+rxbn62X/po54HiLir6n/voGMiN8WfCd5HhG/bJhnzH8x/yuhfI/NztfT/u31TvqLrYKsNFO+tpnd7N9e76Q/2yzFOjPla5vZzf5NFWTtvxDN8dOCX7v2XyjXnilf28xu9s+rJlBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBgoJAQUGgoCBQUBAoKAgU9non/ctmKdaZKV/bzG72b6930j9vlmKdmfK1zexm//Z6J/3jVkFWmilf28xu9m+0IKcX5t7EeULePf34z4Lf8ymOz1mey3Use19WvocW5etp/+Y8Xv0qjo9qLXm3ao6bOH5b+9Pj1d/k4vPtYP8AAAAAAAAA4DvjTvq0i/9Rjug8Xw/75076PBd3hzw6z9fL/rmTPt/F3CGPzvP1tH/upG8zU762md3snzvp28yUr21mN/vnTvo2M+Vrm9nN/nnVBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoCBQWBgoJAQUGgoCBQUBAoKAgUFAQKCgIFBYGCO+nbzJSvbWY3++dO+jYz5Wub2c3+uZO+zUz52mZ2s3/upM9zUXfIo/N8Pe2fO+nTLv5x6Og83w72DwAAAAAAAAC+M+6kT7v4H+WIzvP1sH/upM9zcXfIo/N8veyfO+nzXcwd8ug8X0/75076NjPla5vZzf65k77NTPnaZnazf+6kbzNTvraZ3eyfV02goCBQUBAoKAgUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKLiTvs1M+dpmdrN/7qRvM1O+tpnd7J876dvMlK9tZjf75076PBd1hzw6z9fT/rmTPu3iH4eOzvPtYP8AAAAAAAAAgK8y85CZ7zPzJtd3c/rsg3zy7S5fZl5tEGrMbR5vYssn3z7y5bG5t2cKeBdydpPlk+9c+fZ6J12+h+Rrc3F30uVrmynfzJmjLc3Mc/5rrnvDMMz6qiHfOPnajOXzqgkUFAQKCgIFBYGCgkBBQaCgIFBQECgoCBQUBAoKAgUFgYKCQEFBoKAgUFAQKCgIFBQECgoChb3eSZfvMfnaXNSddPnaZso3c+Ze76TL95B8bZbmu3/68Ryv27U8TSmffE+S7y7kITPfZeb1BsGuT5/d+rixfPI9ST4AAADgjP4Hm2pLjkVf1VMAAAAASUVORK5CYII=\"\r\n  },\r\n  \"smallsquare\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE6ElEQVR4nO3dP44URxQH4DdGTtAQY3wAX4ADWNwJEkRqEnwny865gA+wQEKECCAYghkbWrP1tmqqe9TV+33p9uz7qbd/+0earRcBAAAArMLujo/vI+JxRDyMiJ9nnv01Ij5HxIeI+HTh55BPvktV5csK8ktE/DpzqJKbiHjf+Br5vpOvTzHfT4UX7ON64eI0a99wvXxT8vUp5isV5PFyWYpaZsrXN1O+ypmlgjxcMEhJy0z5+mbKVzmzVJC5/yCq0TJTvr6Z8lXOLBUECAWBlIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQKJUkK9XTdE+U76+mfJVziwV5POCQUpaZsrXN1O+ypmlgnxYMEhJy0z5+mbKVznzQeHiLxFxiIhHi8WZuomIjw3XyzclX59iPodXl8nX5z7kAwAAAAAAAIB7Zui3mhwOh98j4kVEPI3j2uA5vY+ItxHxZrfb/X3JJ5CvL1+s4Pkbdk/64XB4GRF/LBNnOioiXu12u9dNL5Lv/1FxQb5YyfNXKsg+In5bLM7t/o3KnySn73x/xd0/AedyiIhntd8J5TsfGQ35YkXP36h70l/E9b64cZr1vOF6+aZa863m+Rt1T/rTxVLMM1O+vpmref5G3ZM+9x+UNZ40XCvfuZZ8q3n+nGoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQGLUPelNZ2jN5F3DtfKda8m3mudv1D3pbxdLMc9M+fpmrub5G3VP+ps4HkZ2LYfTzFryTbXmW83zVyrIpzgex3gtN9FwPu/phL5XcZ0v8n9HZ/5T+wL5JprzxYqevy0cXv08joeStZy7VONdHH8t+LPzcGj5Bj68GgAAAAAAAAD40RbeamLPt/t3CXvSZzL0nu8S92/CnvROw+75vo37dyt70jsMu+e7wP2rnGlP+jIz3b++mau5f/ak1xtyz3eB+1c506kmkFAQSCgIJBQEEgoCCQWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCTsSa835J7vAvevcqY96cvMdP/6Zq7m/tmTXmfYPd8F7l/lTHvS7zb0nu/buH9n7Em/wOb3fLt/9qQDAAAAAAAAQJstvNVktXu+5bMnfS6b2/Mt3/dRYU/6LDaz51u+85FhT3q3Le35lm/KnvQZbGnPt3x9M1fz/NmTXq/l/yXkO2dPOmyNgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIKEgkFAQSCgIJBQEEgoCCQWBhIJAQkEgYU96vZY93/Kdsye905b2fMvXN3M1z5896XVa93zLN2VPeqdN7fmWb8Ke9Attfs+3fPakAwAAAAAAAMC2DP1Wk5BPvstte096yPcj+foU85XezbuP64WL06x9w/XyTcnXp5hv1D3p8vXNlK9y5qh70uXrmylf5cxR96TL1zdTvsqZTjWBhIJAQkEgoSCQUBBIKAgkFAQSCgIJBYGEgkBCQSChIJBQEEgoCCQUBBIKAgkFgYSCQEJBIDHqnnT5+mbKVzlz1D3p8vXNlK9y5qh70uXrmylf5cwHhYu/xHG/9aPF4kzdRMTHhuvlm5KvTzGfw6vL5OtzH/IBAAAA1/IN7YSWk669SX0AAAAASUVORK5CYII=\"\r\n  },\r\n  \"scissors\": {\r\n    \"icon\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFUUlEQVR4nO3dMW6cRRgG4G+RaCL6AAfgAjkA4k5Jg9JCE+6EoM8FOEBC+ihNiqVYU0TZeT3rnd/6/vXztB57Ps3odWTFnrcKAAAAaOGQPng8Hn+uqldV9aKqvl+8979V9baq3hwOh78e8gW6z1dV31XV86p6VlXfrhrszueq+lRVH6rq4wO/Ruv5OtzvMCDH4/HXqvpt8VBnt6qq14fD4feLPqn5fHW60B83mOecd3W68Eu0nq/L/Z4NyF1y/xx9fAPHqvpl9jt19/nq9J35pw3nOeefmv9O3Xq+Tvf7zeATXtXjDVd3e728YH33+Z5vNciiPbvP1+Z+RwF5sd0sQ5fs2X2+Z5tNsWbP7vO1ud9RQFb/QDTjhwvWdp9v9Q+8q/fsPl+b+x0FBCgBgUhAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgGAXk0jeWVnh/wdru833ebIo1e3afr839jgLydsNBRi7Zs/t8nzabYs2e3edrc7+jgLyp02Naj+V4t+es7vN92GqQRXt2n6/N/Z4NyN0Lc6/rcYb8/+nHv2c/oft8dXpB8N1G85zzri57/7b1fJ3ud+bx6pd1elTrknehZryv0z9rf1z5eHXb+ar549DVfL4d3C8AAAAAAAAAPDF60sduvifd+d1/fnrSJ7aqG+xJd35fGJ6fnvQ5N9WT7vzOOnt+etLn3FpPuvOb3FNP+jZ76iG/bs8256cnfd4t9aQ7v8k9vWoCgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBDoSZ93Sz3pzm9yTz3p2+yph/y6Pducn570ObfWk+78JvfUk36/m+tJd35fGZ6fnvSxm+9Jd35X98wDAAAAAAAAwBNzX5Fj9//qbz2fHvL9328KSIue6qD1fHrIv7Db+x0FpE1P9UDr+fSQn7XL+x39PUibnuoFa1fRQ36dXd7vKCBteqoXrF1FD/l1dnm/o4C06alesHYVPeTX2eX9etUEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAYBaRNT/WCtavoIb/OLu93FJA2PdUL1q6ih/w6u7zfUUDa9FQvWLuKHvLr7PJ+RwFp01M90Ho+PeRf2e39erx6TA/5dW7+fgEAAAAAAADg6Ym/atK957v7fNX8VyWc3xU96d17vrvPV016vkec3xcu60nv3vPdfb5q1PN9jvM766Ke9O49393na9PzPeD8JvccBaR7z3f3+dr0fA84v8k9RwHp3vPdfb42Pd8Dzm9yT6+aQCAgEAgIBAICgYBAICAQCAgEAgKBgEAgIBAICAQCAoGAQCAgEAgIBAICgYBAICAQCAgEo4B07/nuPl+bnu8B5ze55ygg3Xu+u8/Xpud7wPlN7jkKSPee7+7zten5HnB+k3ueDUj3nu/u81Wjnu9znN9XHtaT3r3nu/t81eDx5cT56UkHAAAAAAAAgMvoSR+7iZ7ve7Ser8P96kmf2Kp23PMdtJ6vy/3qSZ+z257vgdbzdbpfPelzdtvzvWDtKrvscdeTvs2ebXq+F6xdZZc97nrS5+2y53vB2lV22ePuVRMIBAQCAYFAQCAQEAgEBAIBgUBAIBAQCAQEAgGBQEAgEBAIBAQCAYFAQCAQEAgEBAIBgUBP+rxd9nwvWLvKLnvc9aRvs2ebnu8Fa1fZZY+7nvQ5u+35XrB2lV32uOtJv9+ue74HWs/X6X71pI89hZ7v1vPt4H4BAACAx/IfV5v6DSxvZ+4AAAAASUVORK5CYII=\"\r\n  }\r\n}",
             "icons.ts": "/*\nThe MIT License (MIT)\n\nCopyright (c) 2013-2016 The MicroPython-on-micro:bit Developers, as listed\nin the accompanying AUTHORS file\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n*/\n\n// Images from file microbitconstimage.cpp https://github.com/bbcmicrobit/micropython\n\nenum IconNames {\n    //% block=\"heart\"\n    //% jres=icons.heart\n    Heart = 0,\n    //% block=\"small heart\"\n    //% jres=icons.smallheart\n    SmallHeart,\n    //% block=\"yes\"\n    //% jres=icons.yes\n    Yes,\n    //% block=\"no\"\n    //% jres=icons.no\n    No,\n    //% block=\"happy\"\n    //% jres=icons.happy\n    Happy,\n    //% block=\"sad\"\n    //% jres=icons.sad\n    Sad,\n    //% block=\"confused\"\n    //% jres=icons.confused\n    Confused,\n    //% block=\"angry\"\n    //% jres=icons.angry\n    Angry,\n    //% block=\"asleep\"\n    //% jres=icons.asleep\n    Asleep,\n    //% block=\"surprised\"\n    //% jres=icons.surprised\n    Surprised,\n    //% block=\"silly\"\n    //% jres=icons.silly\n    Silly,\n    //% block=\"fabulous\"\n    //% jres=icons.fabulous\n    Fabulous,\n    //% block=\"meh\"\n    //% jres=icons.meh\n    Meh,\n    //% block=\"t-shirt\"\n    //% jres=icons.tshirt\n    TShirt,\n    //% block=\"roller skate\"\n    //% jres=icons.rollerskate\n    Rollerskate,\n    //% block=\"duck\"\n    //% jres=icons.duck\n    Duck,\n    //% block=\"house\"\n    //% jres=icons.house\n    House,\n    //% block=\"tortoise\"\n    //% jres=icons.tortoise\n    Tortoise,\n    //% block=\"butterfly\"\n    //% jres=icons.butterfly\n    Butterfly,\n    //% block=\"stick figure\"\n    //% jres=icons.stickfigure\n    StickFigure,\n    //% block=\"ghost\"\n    //% jres=icons.ghost\n    Ghost,\n    //% block=\"sword\"\n    //% jres=icons.sword\n    Sword,\n    //% block=\"giraffe\"\n    //% jres=icons.giraffe\n    Giraffe,\n    //% block=\"skull\"\n    //% jres=icons.skull\n    Skull,\n    //% block=\"umbrella\"\n    //% jres=icons.umbrella\n    Umbrella,\n    //% block=\"snake\"\n    //% jres=icons.snake\n    Snake,\n    //% block=\"rabbit\"\n    //% jres=icons.rabbit\n    Rabbit,\n    //% block=\"cow\"\n    //% jres=icons.cow\n    Cow,\n    //% block=\"quarter note\"\n    //% jres=icons.quarternote\n    QuarterNote,\n    //% block=\"eigth note\"\n    //% jres=icons.eigthnote\n    EigthNote,\n    //% block=\"pitchfork\"\n    //% jres=icons.pitchfork\n    Pitchfork,\n    //% block=\"target\"\n    //% jres=icons.target\n    Target,\n    //% block=\"triangle\"\n    //% jres=icons.triangle\n    Triangle,\n    //% block=\"left triangle\"\n    //% jres=icons.lefttriangle\n    LeftTriangle,\n    //% block=\"chess board\"\n    //% jres=icons.chessboard\n    Chessboard,\n    //% block=\"diamond\"\n    //% jres=icons.diamond\n    Diamond,\n    //% block=\"small diamond\"\n    //% jres=icons.smalldiamond\n    SmallDiamond,\n    //% block=\"square\"\n    //% jres=icons.square\n    Square,\n    //% block=\"small square\"\n    //% jres=icons.smallsquare\n    SmallSquare,\n    //% block=\"scissors\"\n    //% jres=icons.scissors\n    Scissors\n}\n\nenum ArrowNames {\n    //% blockIdentity=images.arrowNumber block=\"North\"\n    North = 0,\n    //% blockIdentity=images.arrowNumber block=\"North East\"\n    NorthEast,\n    //% blockIdentity=images.arrowNumber block=\"East\"\n    East,\n    //% blockIdentity=images.arrowNumber block=\"South East\"\n    SouthEast,\n    //% blockIdentity=images.arrowNumber block=\"South\"\n    South,\n    //% blockIdentity=images.arrowNumber block=\"South West\"\n    SouthWest,\n    //% blockIdentity=images.arrowNumber block=\"West\"\n    West,\n    //% blockIdentity=images.arrowNumber block=\"North West\"\n    NorthWest,\n}\n\nnamespace basic {\n\n    /**\n     * Draws the selected icon on the LED screen\n     * @param icon the predefined icon id\n     * @param interval the amount of time (milliseconds) to show the icon. Default is 600.\n     */\n    //% weight=90 blockGap=8\n    //% blockId=basic_show_icon\n    //% block=\"show icon %i\" icon=\"\\uf00a\"\n    //% parts=\"ledmatrix\"\n    //% help=basic/show-icon\n    //% icon.fieldEditor=\"imagedropdown\"\n    //% icon.fieldOptions.columns=\"5\"\n    //% icon.fieldOptions.width=\"380\"\n    //% icon.fieldOptions.maxRows=4\n    export function showIcon(icon: IconNames, interval = 600) {\n        let res = images.iconImage(icon)\n        res.showImage(0, interval)\n    }\n\n    /**\n     * Draws an arrow on the LED screen\n     * @param direction the direction of the arrow\n     * @param interval the amount of time (milliseconds) to show the icon. Default is 600.\n     */\n    //% weight=50 blockGap=8\n    //% blockId=basic_show_arrow\n    //% block=\"show arrow %i=device_arrow\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true\n    //% help=basic/show-arrow\n    export function showArrow(direction: number, interval = 600) {\n        let res = images.arrowImage(direction)\n        res.showImage(0, interval)\n    }\n}\n\n\nnamespace images {\n\n    //% weight=50 blockGap=8\n    //% help=images/arrow-image\n    //% blockId=builtin_arrow_image block=\"arrow image %i\"\n    export function arrowImage(i: ArrowNames): Image {\n        switch (i) {\n            // compass directions\n            case ArrowNames.North: return images.createImage(`\n                                        . . # . .\n                                        . # # # .\n                                        # . # . #\n                                        . . # . .\n                                        . . # . .`);\n            case ArrowNames.NorthEast: return images.createImage(`\n                                        . . # # #\n                                        . . . # #\n                                        . . # . #\n                                        . # . . .\n                                        # . . . .`);\n            case ArrowNames.East: return images.createImage(`\n                                        . . # . .\n                                        . . . # .\n                                        # # # # #\n                                        . . . # .\n                                        . . # . .`);\n            case ArrowNames.SouthEast: return images.createImage(`\n                                        # . . . .\n                                        . # . . .\n                                        . . # . #\n                                        . . . # #\n                                        . . # # #`);\n            case ArrowNames.South: return images.createImage(`\n                                        . . # . .\n                                        . . # . .\n                                        # . # . #\n                                        . # # # .\n                                        . . # . .`);\n            case ArrowNames.SouthWest: return images.createImage(`\n                                        . . . . #\n                                        . . . # .\n                                        # . # . .\n                                        # # . . .\n                                        # # # . .`);\n            case ArrowNames.West: return images.createImage(`\n                                        . . # . .\n                                        . # . . .\n                                        # # # # #\n                                        . # . . .\n                                        . . # . .`);\n            case ArrowNames.NorthWest: return images.createImage(`\n                                        # # # . .\n                                        # # . . .\n                                        # . # . .\n                                        . . . # .\n                                        . . . . #`);\n            default: return images.createImage(`\n                                        . . . . .\n                                        . . . . .\n                                        . . . . .\n                                        . . . . .\n                                        . . . . .\n                                        `);\n        }\n    }\n\n    //% weight=50 blockGap=8\n    //% help=images/icon-image\n    //% blockId=builtin_image block=\"icon image %i\"\n    //% i.fieldEditor=\"imagedropdown\"\n    //% i.fieldOptions.columns=\"5\"\n    //% i.fieldOptions.width=\"380\"\n    //% i.fieldOptions.maxRows=4\n    export function iconImage(i: IconNames): Image {\n        switch (i) {\n            case IconNames.Heart: return images.createImage(`\n                                        . # . # .\n                                        # # # # #\n                                        # # # # #\n                                        . # # # .\n                                        . . # . .`);\n\n            case IconNames.SmallHeart: return images.createImage(`\n                                        . . . . .\n                                        . # . # .\n                                        . # # # .\n                                        . . # . .\n                                        . . . . .`);\n            //faces\n            case IconNames.Happy: return images.createImage(`\n                                        . . . . .\n                                        . # . # .\n                                        . . . . .\n                                        # . . . #\n                                        . # # # .`);\n            case IconNames.Sad: return images.createImage(`\n                                        . . . . .\n                                        . # . # .\n                                        . . . . .\n                                        . # # # .\n                                        # . . . #`);\n            case IconNames.Confused: return images.createImage(`\n                                        . . . . .\n                                        . # . # .\n                                        . . . . .\n                                        . # . # .\n                                        # . # . #`);\n            case IconNames.Angry: return images.createImage(`\n                                        # . . . #\n                                        . # . # .\n                                        . . . . .\n                                        # # # # #\n                                        # . # . #`);\n            case IconNames.Asleep: return images.createImage(`\n                                        . . . . .\n                                        # # . # #\n                                        . . . . .\n                                        . # # # .\n                                        . . . . .`);\n            case IconNames.Surprised: return images.createImage(`\n                                        . # . # .\n                                        . . . . .\n                                        . . # . .\n                                        . # . # .\n                                        . . # . .`);\n            case IconNames.Silly: return images.createImage(`\n                                        # . . . #\n                                        . . . . .\n                                        # # # # #\n                                        . . . # #\n                                        . . . # #`);\n            case IconNames.Fabulous: return images.createImage(`\n                                        # # # # #\n                                        # # . # #\n                                        . . . . .\n                                        . # . # .\n                                        . # # # .`);\n            case IconNames.Meh: return images.createImage(`\n                                        # # . # #\n                                        . . . . .\n                                        . . . # .\n                                        . . # . .\n                                        . # . . .`);\n            case IconNames.Yes: return images.createImage(`\n                                        . . . . .\n                                        . . . . #\n                                        . . . # .\n                                        # . # . .\n                                        . # . . .`);\n            case IconNames.No: return images.createImage(`\n                                        # . . . #\n                                        . # . # .\n                                        . . # . .\n                                        . # . # .\n                                        # . . . #`);\n            case IconNames.Triangle: return images.createImage(`\n                                        . . . . .\n                                        . . # . .\n                                        . # . # .\n                                        # # # # #\n                                        . . . . .`);\n            case IconNames.LeftTriangle: return images.createImage(`\n                                        # . . . .\n                                        # # . . .\n                                        # . # . .\n                                        # . . # .\n                                        # # # # #`);\n            case IconNames.Chessboard: return images.createImage(`\n                                        . # . # .\n                                        # . # . #\n                                        . # . # .\n                                        # . # . #\n                                        . # . # .`);\n            case IconNames.Diamond: return images.createImage(`\n                                        . . # . .\n                                        . # . # .\n                                        # . . . #\n                                        . # . # .\n                                        . . # . .`);\n            case IconNames.SmallDiamond: return images.createImage(`\n                                        . . . . .\n                                        . . # . .\n                                        . # . # .\n                                        . . # . .\n                                        . . . . .`);\n            case IconNames.Square: return images.createImage(`\n                                        # # # # #\n                                        # . . . #\n                                        # . . . #\n                                        # . . . #\n                                        # # # # #`);\n            case IconNames.SmallSquare: return images.createImage(`\n                                        . . . . .\n                                        . # # # .\n                                        . # . # .\n                                        . # # # .\n                                        . . . . .`);\n\n            case IconNames.Scissors: return images.createImage(`\n                                        # # . . #\n                                        # # . # .\n                                        . . # . .\n                                        # # . # .\n                                        # # . . #`);\n            // The following images were designed by Abbie Brooks.\n            case IconNames.TShirt: return images.createImage(`\n                                        # # . # #\n                                        # # # # #\n                                        . # # # .\n                                        . # # # .\n                                        . # # # .`);\n            case IconNames.Rollerskate: return images.createImage(`\n                                        . . . # #\n                                        . . . # #\n                                        # # # # #\n                                        # # # # #\n                                        . # . # .`);\n            case IconNames.Duck: return images.createImage(`\n                                        . # # . .\n                                        # # # . .\n                                        . # # # #\n                                        . # # # .\n                                        . . . . .`);\n            case IconNames.House: return images.createImage(`\n                                        . . # . .\n                                        . # # # .\n                                        # # # # #\n                                        . # # # .\n                                        . # . # .`);\n            case IconNames.Tortoise: return images.createImage(`\n                                        . . . . .\n                                        . # # # .\n                                        # # # # #\n                                        . # . # .\n                                        . . . . .`);\n            case IconNames.Butterfly: return images.createImage(`\n                                        # # . # #\n                                        # # # # #\n                                        . . # . .\n                                        # # # # #\n                                        # # . # #`);\n            case IconNames.StickFigure: return images.createImage(`\n                                        . . # . .\n                                        # # # # #\n                                        . . # . .\n                                        . # . # .\n                                        # . . . #`);\n            case IconNames.Ghost: return images.createImage(`\n                                        . # # # .\n                                        # . # . #\n                                        # # # # #\n                                        # # # # #\n                                        # . # . #`);\n            case IconNames.Sword: return images.createImage(`\n                                        . . # . .\n                                        . . # . .\n                                        . . # . .\n                                        . # # # .\n                                        . . # . .`);\n            case IconNames.Giraffe: return images.createImage(`\n                                        # # . . .\n                                        . # . . .\n                                        . # . . .\n                                        . # # # .\n                                        . # . # .`);\n            case IconNames.Skull: return images.createImage(`\n                                        . # # # .\n                                        # . # . #\n                                        # # # # #\n                                        . # # # .\n                                        . # # # .`);\n            case IconNames.Umbrella: return images.createImage(`\n                                        . # # # .\n                                        # # # # #\n                                        . . # . .\n                                        # . # . .\n                                        # # # . .`);\n            case IconNames.Snake: return images.createImage(`\n                                        # # . . .\n                                        # # . # #\n                                        . # . # .\n                                        . # # # .\n                                        . . . . .`);\n            // animals\n            case IconNames.Rabbit: return images.createImage(`\n                                        # . # . .\n                                        # . # . .\n                                        # # # # .\n                                        # # . # .\n                                        # # # # .`);\n            case IconNames.Cow: return images.createImage(`\n                                        # . . . #\n                                        # . . . #\n                                        # # # # #\n                                        . # # # .\n                                        . . # . .`);\n            // musical notes\n            case IconNames.QuarterNote: return images.createImage(`\n                                        . . # . .\n                                        . . # . .\n                                        . . # . .\n                                        # # # . .\n                                        # # # . .`);\n            case IconNames.EigthNote: return images.createImage(`\n                                        . . # . .\n                                        . . # # .\n                                        . . # . #\n                                        # # # . .\n                                        # # # . .`);\n            // other icons\n            case IconNames.Pitchfork: return images.createImage(`\n                                        # . # . #\n                                        # . # . #\n                                        # # # # #\n                                        . . # . .\n                                        . . # . .`);\n            case IconNames.Target: return images.createImage(`\n                                        . . # . .\n                                        . # # # .\n                                        # # . # #\n                                        . # # # .\n                                        . . # . .`);\n            default: return images.createImage(`\n                                        . . . . .\n                                        . . . . .\n                                        . . . . .\n                                        . . . . .\n                                        . . . . .\n                                        `);\n        }\n    }\n\n    //% weight=50 blockGap=8\n    //% help=images/arrow-number\n    //% blockId=device_arrow block=\"%arrow\"\n    //% shim=TD_ID\n    export function arrowNumber(arrow: ArrowNames): number {\n        return arrow;\n    }\n}\n",
@@ -2707,6 +2721,7 @@ var pxtTargetBundle = {
             "math.ts": "namespace Math {\n\n    export const E = 2.718281828459045;\n    export const LN2 = 0.6931471805599453;\n    export const LN10 = 2.302585092994046;\n    export const LOG2E = 1.4426950408889634;\n    export const LOG10E = 0.4342944819032518;\n    export const PI = 3.141592653589793;\n    export const SQRT1_2 = 0.7071067811865476;\n    export const SQRT2 = 1.4142135623730951;\n\n    /**\n     * Re-maps a number from one range to another. That is, a value of ``from low`` would get mapped to ``to low``, a value of ``from high`` to ``to high``, values in-between to values in-between, etc.\n     * @param value value to map in ranges\n     * @param fromLow the lower bound of the value's current range\n     * @param fromHigh the upper bound of the value's current range, eg: 1023\n     * @param toLow the lower bound of the value's target range\n     * @param toHigh the upper bound of the value's target range, eg: 4\n     */\n    //% help=math/map weight=10 blockGap=8\n    //% blockId=math_map block=\"map %value|from low %fromLow|high %fromHigh|to low %toLow|high %toHigh\"\n    //% inlineInputMode=inline\n    export function map(value: number, fromLow: number, fromHigh: number, toLow: number, toHigh: number): number {\n        return ((value - fromLow) * (toHigh - toLow)) / (fromHigh - fromLow) + toLow;\n    }    \n\n    /**\n     * Constrains a number to be within a range\n     * @param x the number to constrain, all data types\n     * @param y the lower end of the range, all data types\n     * @param z the upper end of the range, all data types\n     */\n    //% help=math/constrain weight=11 blockGap=8\n    //% blockId=\"math_constrain_value\" block=\"constrain %value|between %low|and %high\"\n    export function constrain(value: number, low: number, high: number): number {\n        return value < low ? low : value > high ? high : value;\n    }\n\n    const b_m16: number[] = [0, 49, 49, 41, 90, 27, 117, 10]\n    /**\n     * Returns the sine of an input angle. This is an 8-bit approximation.\n     * @param theta input angle from 0-255\n     */\n    //% help=math/isin weight=11 advanced=true blockGap=8\n    export function isin(theta: number) {\n        //reference: based on FASTLed's sin approximation method: [https://github.com/FastLED/FastLED](MIT)\n        let offset = theta;\n        if( theta & 0x40 ) {\n            offset = 255 - offset;\n        }\n        offset &= 0x3F; // 0..63\n\n        let secoffset  = offset & 0x0F; // 0..15\n        if( theta & 0x40) secoffset++;\n\n        let section = offset >> 4; // 0..3\n        let s2 = section * 2;\n\n        let b = b_m16[s2];\n        let m16 = b_m16[s2+1];\n        let mx = (m16 * secoffset) >> 4;\n        \n        let y = mx + b;\n        if( theta & 0x80 ) y = -y;\n\n        y += 128;\n\n        return y;\n    }\n\n    /**\n     * Returns the cosine of an input angle. This is an 8-bit approximation. \n     * @param theta input angle from 0-255\n     */\n    //% help=math/icos weight=10 advanced=true blockGap=8\n    export function icos(theta: number) {\n        return isin(theta + 16384);\n    }\n}\n\nnamespace Number {\n    export const EPSILON = 2.220446049250313e-16;\n}",
             "melodies.ts": "/*\nThe MIT License (MIT)\n\nCopyright (c) 2013-2016 The MicroPython-on-micro:bit Developers, as listed\nin the accompanying AUTHORS file\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n*/\n\n// Melodies from file microbitmusictunes.c https://github.com/bbcmicrobit/MicroPython\n\nenum Melodies {\n    //% block=\"dadadum\" blockIdentity=music.builtInMelody\n    Dadadadum = 0,\n    //% block=\"entertainer\" blockIdentity=music.builtInMelody\n    Entertainer,\n    //% block=\"prelude\" blockIdentity=music.builtInMelody\n    Prelude,\n    //% block=\"ode\" blockIdentity=music.builtInMelody\n    Ode,\n    //% block=\"nyan\" blockIdentity=music.builtInMelody\n    Nyan,\n    //% block=\"ringtone\" blockIdentity=music.builtInMelody\n    Ringtone,\n    //% block=\"funk\" blockIdentity=music.builtInMelody\n    Funk,\n    //% block=\"blues\" blockIdentity=music.builtInMelody\n    Blues,\n    //% block=\"birthday\" blockIdentity=music.builtInMelody\n    Birthday,\n    //% block=\"wedding\" blockIdentity=music.builtInMelody\n    Wedding,\n    //% block=\"funeral\" blockIdentity=music.builtInMelody\n    Funeral,\n    //% block=\"punchline\" blockIdentity=music.builtInMelody\n    Punchline,\n    //% block=\"baddy\" blockIdentity=music.builtInMelody\n    Baddy,\n    //% block=\"chase\" blockIdentity=music.builtInMelody\n    Chase,\n    //% block=\"ba ding\" blockIdentity=music.builtInMelody\n    BaDing,\n    //% block=\"wawawawaa\" blockIdentity=music.builtInMelody\n    Wawawawaa,\n    //% block=\"jump up\" blockIdentity=music.builtInMelody\n    JumpUp,\n    //% block=\"jump down\" blockIdentity=music.builtInMelody\n    JumpDown,\n    //% block=\"power up\" blockIdentity=music.builtInMelody\n    PowerUp,\n    //% block=\"power down\" blockIdentity=music.builtInMelody\n    PowerDown,\n}\n\nnamespace music {\n\n    export function getMelody(melody: Melodies): string[] {\n        switch (melody) {\n            case Melodies.Dadadadum:\n                return ['r4:2', 'g', 'g', 'g', 'eb:8', 'r:2', 'f', 'f', 'f', 'd:8'];\n            case Melodies.Entertainer:\n                return ['d4:1', 'd#', 'e', 'c5:2', 'e4:1', 'c5:2', 'e4:1', 'c5:3', 'c:1', 'd', 'd#', 'e', 'c', 'd', 'e:2', 'b4:1', 'd5:2', 'c:4'];\n            case Melodies.Prelude:\n                return ['c4:1', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e', 'c4', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e', 'c4', 'd', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'c4', 'd', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'b3', 'd4', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'b3', 'd4', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'c4', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e', 'c4', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e'];\n            case Melodies.Ode:\n                return ['e4', 'e', 'f', 'g', 'g', 'f', 'e', 'd', 'c', 'c', 'd', 'e', 'e:6', 'd:2', 'd:8', 'e:4', 'e', 'f', 'g', 'g', 'f', 'e', 'd', 'c', 'c', 'd', 'e', 'd:6', 'c:2', 'c:8'];\n            case Melodies.Nyan:\n                return ['f#5:2', 'g#', 'c#:1', 'd#:2', 'b4:1', 'd5:1', 'c#', 'b4:2', 'b', 'c#5', 'd', 'd:1', 'c#', 'b4:1', 'c#5:1', 'd#', 'f#', 'g#', 'd#', 'f#', 'c#', 'd', 'b4', 'c#5', 'b4', 'd#5:2', 'f#', 'g#:1', 'd#', 'f#', 'c#', 'd#', 'b4', 'd5', 'd#', 'd', 'c#', 'b4', 'c#5', 'd:2', 'b4:1', 'c#5', 'd#', 'f#', 'c#', 'd', 'c#', 'b4', 'c#5:2', 'b4', 'c#5', 'b4', 'f#:1', 'g#', 'b:2', 'f#:1', 'g#', 'b', 'c#5', 'd#', 'b4', 'e5', 'd#', 'e', 'f#', 'b4:2', 'b', 'f#:1', 'g#', 'b', 'f#', 'e5', 'd#', 'c#', 'b4', 'f#', 'd#', 'e', 'f#', 'b:2', 'f#:1', 'g#', 'b:2', 'f#:1', 'g#', 'b', 'b', 'c#5', 'd#', 'b4', 'f#', 'g#', 'f#', 'b:2', 'b:1', 'a#', 'b', 'f#', 'g#', 'b', 'e5', 'd#', 'e', 'f#', 'b4:2', 'c#5'];\n            case Melodies.Ringtone:\n                return ['c4:1', 'd', 'e:2', 'g', 'd:1', 'e', 'f:2', 'a', 'e:1', 'f', 'g:2', 'b', 'c5:4'];\n            case Melodies.Funk:\n                return ['c2:2', 'c', 'd#', 'c:1', 'f:2', 'c:1', 'f:2', 'f#', 'g', 'c', 'c', 'g', 'c:1', 'f#:2', 'c:1', 'f#:2', 'f', 'd#'];\n            case Melodies.Blues:\n                return ['c2:2', 'e', 'g', 'a', 'a#', 'a', 'g', 'e', 'c2:2', 'e', 'g', 'a', 'a#', 'a', 'g', 'e', 'f', 'a', 'c3', 'd', 'd#', 'd', 'c', 'a2', 'c2:2', 'e', 'g', 'a', 'a#', 'a', 'g', 'e', 'g', 'b', 'd3', 'f', 'f2', 'a', 'c3', 'd#', 'c2:2', 'e', 'g', 'e', 'g', 'f', 'e', 'd'];\n            case Melodies.Birthday:\n                return ['c4:3', 'c:1', 'd:4', 'c:4', 'f', 'e:8', 'c:3', 'c:1', 'd:4', 'c:4', 'g', 'f:8', 'c:3', 'c:1', 'c5:4', 'a4', 'f', 'e', 'd', 'a#:3', 'a#:1', 'a:4', 'f', 'g', 'f:8'];\n            case Melodies.Wedding:\n                return ['c4:4', 'f:3', 'f:1', 'f:8', 'c:4', 'g:3', 'e:1', 'f:8', 'c:4', 'f:3', 'a:1', 'c5:4', 'a4:3', 'f:1', 'f:4', 'e:3', 'f:1', 'g:8'];\n            case Melodies.Funeral:\n                return ['c3:4', 'c:3', 'c:1', 'c:4', 'd#:3', 'd:1', 'd:3', 'c:1', 'c:3', 'b2:1', 'c3:4'];\n            case Melodies.Punchline:\n                return ['c4:3', 'g3:1', 'f#', 'g', 'g#:3', 'g', 'r', 'b', 'c4'];\n            case Melodies.Baddy:\n                return ['c3:3', 'r', 'd:2', 'd#', 'r', 'c', 'r', 'f#:8'];\n            case Melodies.Chase:\n                return ['a4:1', 'b', 'c5', 'b4', 'a:2', 'r', 'a:1', 'b', 'c5', 'b4', 'a:2', 'r', 'a:2', 'e5', 'd#', 'e', 'f', 'e', 'd#', 'e', 'b4:1', 'c5', 'd', 'c', 'b4:2', 'r', 'b:1', 'c5', 'd', 'c', 'b4:2', 'r', 'b:2', 'e5', 'd#', 'e', 'f', 'e', 'd#', 'e'];\n            case Melodies.BaDing:\n                return ['b5:1', 'e6:3'];\n            case Melodies.Wawawawaa:\n                return ['e3:3', 'r:1', 'd#:3', 'r:1', 'd:4', 'r:1', 'c#:8'];\n            case Melodies.JumpUp:\n                return ['c5:1', 'd', 'e', 'f', 'g'];\n            case Melodies.JumpDown:\n                return ['g5:1', 'f', 'e', 'd', 'c'];\n            case Melodies.PowerUp:\n                return ['g4:1', 'c5', 'e', 'g:2', 'e:1', 'g:3'];\n            case Melodies.PowerDown:\n                return ['g5:1', 'd#', 'c', 'g4:2', 'b:1', 'c5:3'];\n            default:\n                return [];\n        }\n    }\n}",
             "music.ts": "enum Note {\n    //% blockIdentity=music.noteFrequency enumval=262\n    C = 262,\n    //% block=C#\n    //% blockIdentity=music.noteFrequency enumval=277\n    CSharp = 277,\n    //% blockIdentity=music.noteFrequency enumval=294\n    D = 294,\n    //% blockIdentity=music.noteFrequency enumval=311\n    Eb = 311,\n    //% blockIdentity=music.noteFrequency enumval=330\n    E = 330,\n    //% blockIdentity=music.noteFrequency enumval=349\n    F = 349,\n    //% block=F#\n    //% blockIdentity=music.noteFrequency enumval=370\n    FSharp = 370,\n    //% blockIdentity=music.noteFrequency enumval=392\n    G = 392,\n    //% block=G#\n    //% blockIdentity=music.noteFrequency enumval=415\n    GSharp = 415,\n    //% blockIdentity=music.noteFrequency enumval=440\n    A = 440,\n    //% blockIdentity=music.noteFrequency enumval=466\n    Bb = 466,\n    //% blockIdentity=music.noteFrequency enumval=494\n    B = 494,\n    //% blockIdentity=music.noteFrequency enumval=131\n    C3 = 131,\n    //% block=C#3\n    //% blockIdentity=music.noteFrequency enumval=139\n    CSharp3 = 139,\n    //% blockIdentity=music.noteFrequency enumval=147\n    D3 = 147,\n    //% blockIdentity=music.noteFrequency enumval=156\n    Eb3 = 156,\n    //% blockIdentity=music.noteFrequency enumval=165\n    E3 = 165,\n    //% blockIdentity=music.noteFrequency enumval=175\n    F3 = 175,\n    //% block=F#3\n    //% blockIdentity=music.noteFrequency enumval=185\n    FSharp3 = 185,\n    //% blockIdentity=music.noteFrequency enumval=196\n    G3 = 196,\n    //% block=G#3\n    //% blockIdentity=music.noteFrequency enumval=208\n    GSharp3 = 208,\n    //% blockIdentity=music.noteFrequency enumval=220\n    A3 = 220,\n    //% blockIdentity=music.noteFrequency enumval=233\n    Bb3 = 233,\n    //% blockIdentity=music.noteFrequency enumval=247\n    B3 = 247,\n    //% blockIdentity=music.noteFrequency enumval=262\n    C4 = 262,\n    //% block=C#4\n    //% blockIdentity=music.noteFrequency enumval=277\n    CSharp4 = 277,\n    //% blockIdentity=music.noteFrequency enumval=294\n    D4 = 294,\n    //% blockIdentity=music.noteFrequency enumval=311\n    Eb4 = 311,\n    //% blockIdentity=music.noteFrequency enumval=330\n    E4 = 330,\n    //% blockIdentity=music.noteFrequency enumval=349\n    F4 = 349,\n    //% block=F#4\n    //% blockIdentity=music.noteFrequency enumval=370\n    FSharp4 = 370,\n    //% blockIdentity=music.noteFrequency enumval=392\n    G4 = 392,\n    //% block=G#4\n    //% blockIdentity=music.noteFrequency enumval=415\n    GSharp4 = 415,\n    //% blockIdentity=music.noteFrequency enumval=440\n    A4 = 440,\n    //% blockIdentity=music.noteFrequency enumval=466\n    Bb4 = 466,\n    //% blockIdentity=music.noteFrequency enumval=494\n    B4 = 494,\n    //% blockIdentity=music.noteFrequency enumval=523\n    C5 = 523,\n    //% block=C#5\n    //% blockIdentity=music.noteFrequency enumval=555\n    CSharp5 = 555,\n    //% blockIdentity=music.noteFrequency enumval=587\n    D5 = 587,\n    //% blockIdentity=music.noteFrequency enumval=622\n    Eb5 = 622,\n    //% blockIdentity=music.noteFrequency enumval=659\n    E5 = 659,\n    //% blockIdentity=music.noteFrequency enumval=698\n    F5 = 698,\n    //% block=F#5\n    //% blockIdentity=music.noteFrequency enumval=740\n    FSharp5 = 740,\n    //% blockIdentity=music.noteFrequency enumval=784\n    G5 = 784,\n    //% block=G#5\n    //% blockIdentity=music.noteFrequency enumval=831\n    GSharp5 = 831,\n    //% blockIdentity=music.noteFrequency enumval=880\n    A5 = 880,\n    //% blockIdentity=music.noteFrequency enumval=932\n    Bb5 = 932,\n    //% blockIdentity=music.noteFrequency enumval=988\n    B5 = 988,\n}\n\nenum BeatFraction {\n    //% block=1\n    Whole = 1,\n    //% block=\"1/2\"\n    Half = 2,\n    //% block=\"1/4\"\n    Quarter = 4,\n    //% block=\"1/8\"\n    Eighth = 8,\n    //% block=\"1/16\"\n    Sixteenth = 16,\n    //% block=\"2\"\n    Double = 32,\n    //% block=\"4\",\n    Breve = 64\n}\n\nenum MelodyOptions {\n    //% block=\"once\"\n    Once = 1,\n    //% block=\"forever\"\n    Forever = 2,\n    //% block=\"once in background\"\n    OnceInBackground = 4,\n    //% block=\"forever in background\"\n    ForeverInBackground = 8\n}\n\nenum MelodyStopOptions {\n    //% block=\"all\"\n    All = MelodyOptions.Once | MelodyOptions.OnceInBackground,\n    //% block=\"foreground\"\n    Foreground = MelodyOptions.Once,\n    //% block=\"background\"\n    Background = MelodyOptions.OnceInBackground\n}\n\nenum MusicEvent {\n    //% block=\"melody note played\"\n    MelodyNotePlayed = 1,\n    //% block=\"melody started\"\n    MelodyStarted = 2,\n    //% block=\"melody ended\"\n    MelodyEnded = 3,\n    //% block=\"melody repeated\"\n    MelodyRepeated = 4,\n    //% block=\"background melody note played\"\n    BackgroundMelodyNotePlayed = MelodyNotePlayed | 0xf0,\n    //% block=\"background melody started\"\n    BackgroundMelodyStarted = MelodyStarted | 0xf0,\n    //% block=\"background melody ended\"\n    BackgroundMelodyEnded = MelodyEnded | 0xf0,\n    //% block=\"background melody repeated\"\n    BackgroundMelodyRepeated = MelodyRepeated | 0xf0,\n    //% block=\"background melody paused\"\n    BackgroundMelodyPaused = 5 | 0xf0,\n    //% block=\"background melody resumed\"\n    BackgroundMelodyResumed = 6 | 0xf0\n}\n\n/**\n * Generation of music tones.\n */\n//% color=#E63022 weight=106 icon=\"\\uf025\"\n//% groups='[\"Melody\", \"Tone\", \"Volume\", \"Tempo\", \"Melody Advanced\"]'\nnamespace music {\n    const INTERNAL_MELODY_ENDED = 5;\n\n    let beatsPerMinute: number = 120;\n    //% whenUsed\n    const freqs = hex`\n        1f00210023002500270029002c002e003100340037003a003e004100450049004e00520057005c00620068006e00\n        75007b0083008b0093009c00a500af00b900c400d000dc00e900f70006011501260137014a015d01720188019f01\n        b801d201ee010b022a024b026e029302ba02e40210033f037003a403dc03170455049704dd0427057505c8052006\n        7d06e0064907b8072d08a9082d09b9094d0aea0a900b400cfa0cc00d910e6f0f5a1053115b1272139a14d4152017\n        8018f519801b231dde1e`;\n    let _playTone: (frequency: number, duration: number) => void;\n    const MICROBIT_MELODY_ID = 2000;\n\n    /**\n     * Plays a tone through pin ``P0`` for the given duration.\n     * @param frequency pitch of the tone to play in Hertz (Hz), eg: Note.C\n     * @param ms tone duration in milliseconds (ms)\n     */\n    //% help=music/play-tone weight=90\n    //% blockId=device_play_note block=\"play|tone %note=device_note|for %duration=device_beat\" blockGap=8\n    //% parts=\"headphone\"\n    //% useEnumVal=1\n    //% group=\"Tone\"\n    export function playTone(frequency: number, ms: number): void {\n        if (_playTone) _playTone(frequency, ms);\n        else pins.analogPitch(frequency, ms);\n    }\n\n    /**\n     * Plays a tone through pin ``P0``.\n     * @param frequency pitch of the tone to play in Hertz (Hz), eg: Note.C\n     */\n    //% help=music/ring-tone weight=80\n    //% blockId=device_ring block=\"ring tone (Hz)|%note=device_note\" blockGap=8\n    //% parts=\"headphone\"\n    //% useEnumVal=1\n    //% group=\"Tone\"\n    export function ringTone(frequency: number): void {\n        playTone(frequency, 0);\n    }\n\n    /**\n     * Rests (plays nothing) for a specified time through pin ``P0``.\n     * @param ms rest duration in milliseconds (ms)\n     */\n    //% help=music/rest weight=79\n    //% blockId=device_rest block=\"rest(ms)|%duration=device_beat\"\n    //% parts=\"headphone\"\n    //% group=\"Tone\"\n    export function rest(ms: number): void {\n        playTone(0, ms);\n    }\n\n\n    /**\n     * Gets the frequency of a note.\n     * @param name the note name\n     */\n    //% weight=50 help=music/note-frequency\n    //% blockId=device_note block=\"%name\"\n    //% shim=TD_ID color=\"#FFFFFF\" colorSecondary=\"#FFFFFF\"\n    //% name.fieldEditor=\"note\" name.defl=\"262\"\n    //% name.fieldOptions.decompileLiterals=true\n    //% useEnumVal=1\n    //% group=\"Tone\"\n    //% blockGap=8\n    export function noteFrequency(name: Note): number {\n        return name;\n    }\n\n    function init() {\n        if (beatsPerMinute <= 0) beatsPerMinute = 120;\n    }\n\n    /**\n     * Returns the duration of a beat in milli-seconds\n     */\n    //% help=music/beat weight=49\n    //% blockId=device_beat block=\"%fraction|beat\"\n    //% group=\"Tempo\"\n    //% blockGap=8\n    export function beat(fraction?: BeatFraction): number {\n        init();\n        if (fraction == null) fraction = BeatFraction.Whole;\n        let beat = Math.idiv(60000, beatsPerMinute);\n        switch (fraction) {\n            case BeatFraction.Half: return beat >> 1;\n            case BeatFraction.Quarter: return beat >> 2;\n            case BeatFraction.Eighth: return beat >> 3;\n            case BeatFraction.Sixteenth: return beat >> 4;\n            case BeatFraction.Double: return beat << 1;\n            case BeatFraction.Breve: return beat << 2;\n            default: return beat;\n        }\n    }\n\n    /**\n     * Returns the tempo in beats per minute. Tempo is the speed (bpm = beats per minute) at which notes play. The larger the tempo value, the faster the notes will play.\n     */\n    //% help=music/tempo weight=40\n    //% blockId=device_tempo block=\"tempo (bpm)\" blockGap=8\n    //% group=\"Tempo\"\n    export function tempo(): number {\n        init();\n        return beatsPerMinute;\n    }\n\n    /**\n     * Change the tempo by the specified amount\n     * @param bpm The change in beats per minute to the tempo, eg: 20\n     */\n    //% help=music/change-tempo-by weight=39\n    //% blockId=device_change_tempo block=\"change tempo by (bpm)|%value\" blockGap=8\n    //% group=\"Tempo\"\n    export function changeTempoBy(bpm: number): void {\n        init();\n        setTempo(beatsPerMinute + bpm);\n    }\n\n    /**\n     * Sets the tempo to the specified amount\n     * @param bpm The new tempo in beats per minute, eg: 120\n     */\n    //% help=music/set-tempo weight=38\n    //% blockId=device_set_tempo block=\"set tempo to (bpm)|%value\"\n    //% bpm.min=4 bpm.max=400\n    //% group=\"Tempo\"\n    export function setTempo(bpm: number): void {\n        init();\n        if (bpm > 0) {\n            beatsPerMinute = Math.max(1, bpm);\n        }\n    }\n\n    let currentMelody: Melody;\n    let currentBackgroundMelody: Melody;\n\n    /**\n     * Gets the melody array of a built-in melody.\n     * @param name the note name, eg: Note.C\n     */\n    //% weight=50 help=music/builtin-melody\n    //% blockId=device_builtin_melody block=\"%melody\"\n    //% blockHidden=true\n    //% group=\"Melody Advanced\"\n    export function builtInMelody(melody: Melodies): string[] {\n        return getMelody(melody);\n    }\n\n    /**\n     * Registers code to run on various melody events\n     */\n    //% blockId=melody_on_event block=\"music on %value\"\n    //% help=music/on-event weight=59 blockGap=32\n    //% group=\"Melody Advanced\"\n    export function onEvent(value: MusicEvent, handler: () => void) {\n        control.onEvent(MICROBIT_MELODY_ID, value, handler);\n    }\n\n    /**\n     * Use startMelody instead\n     */\n    //% hidden=1 deprecated=1\n    //% parts=\"headphone\"\n    //% group=\"Melody Advanced\"\n    export function beginMelody(melodyArray: string[], options: MelodyOptions = 1) {\n        return startMelody(melodyArray, options);\n    }\n\n    /**\n     * Starts playing a melody.\n     * Notes are expressed as a string of characters with this format: NOTE[octave][:duration]\n     * @param melodyArray the melody array to play\n     * @param options melody options, once / forever, in the foreground / background\n     */\n    //% help=music/begin-melody weight=60 blockGap=16\n    //% blockId=device_start_melody block=\"start melody %melody=device_builtin_melody| repeating %options\"\n    //% parts=\"headphone\"\n    //% group=\"Melody Advanced\"\n    export function startMelody(melodyArray: string[], options: MelodyOptions = 1) {\n        init();\n        if (currentMelody != undefined) {\n            if (((options & MelodyOptions.OnceInBackground) == 0)\n                && ((options & MelodyOptions.ForeverInBackground) == 0)\n                && currentMelody.background) {\n                currentBackgroundMelody = currentMelody;\n                currentMelody = null;\n                control.raiseEvent(MICROBIT_MELODY_ID, MusicEvent.BackgroundMelodyPaused);\n            }\n            if (currentMelody)\n                control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyEnded : MusicEvent.MelodyEnded);\n            currentMelody = new Melody(melodyArray, options);\n            control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyStarted : MusicEvent.MelodyStarted);\n        } else {\n            currentMelody = new Melody(melodyArray, options);\n            control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyStarted : MusicEvent.MelodyStarted);\n            // Only start the fiber once\n            control.inBackground(() => {\n                while (currentMelody.hasNextNote()) {\n                    playNextNote(currentMelody);\n                    if (!currentMelody.hasNextNote() && currentBackgroundMelody) {\n                        // Swap the background melody back\n                        currentMelody = currentBackgroundMelody;\n                        currentBackgroundMelody = null;\n                        control.raiseEvent(MICROBIT_MELODY_ID, MusicEvent.MelodyEnded);\n                        control.raiseEvent(MICROBIT_MELODY_ID, MusicEvent.BackgroundMelodyResumed);\n                        control.raiseEvent(MICROBIT_MELODY_ID, INTERNAL_MELODY_ENDED);\n                    }\n                }\n                control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyEnded : MusicEvent.MelodyEnded);\n                if (!currentMelody.background)\n                    control.raiseEvent(MICROBIT_MELODY_ID, INTERNAL_MELODY_ENDED);\n                currentMelody = null;\n            })\n        }\n    }\n\n\n    /**\n     * Play a melody from the melody editor.\n     * @param melody - string of up to eight notes [C D E F G A B C5] or rests [-] separated by spaces, which will be played one at a time, ex: \"E D G F B A C5 B \"\n     * @param tempo - number in beats per minute (bpm), dictating how long each note will play for\n     */\n    //% block=\"play melody $melody at tempo $tempo|(bpm)\" blockId=playMelody\n    //% weight=85 blockGap=8 help=music/play-melody\n    //% melody.shadow=\"melody_editor\"\n    //% tempo.min=40 tempo.max=500\n    //% tempo.defl=120\n    //% parts=headphone\n    //% group=\"Melody\"\n    export function playMelody(melody: string, tempo: number) {\n        melody = melody || \"\";\n        setTempo(tempo);\n        let notes: string[] = melody.split(\" \").filter(n => !!n);\n        let newOctave = false;\n\n        // build melody string, replace '-' with 'R' and add tempo\n        // creates format like \"C5-174 B4 A G F E D C \"\n        for (let i = 0; i < notes.length; i++) {\n            if (notes[i] === \"-\") {\n                notes[i] = \"R\";\n            } else if (notes[i] === \"C5\") {\n                newOctave = true;\n            } else if (newOctave) { // change the octave if necesary\n                notes[i] += \"4\";\n                newOctave = false;\n            }\n        }\n\n        music.startMelody(notes, MelodyOptions.Once)\n        control.waitForEvent(MICROBIT_MELODY_ID, INTERNAL_MELODY_ENDED);\n    }\n\n    /**\n     * Create a melody with the melody editor.\n     * @param melody\n     */\n    //% block=\"$melody\" blockId=melody_editor\n    //% blockHidden = true\n    //% weight=85 blockGap=8\n    //% duplicateShadowOnDrag\n    //% melody.fieldEditor=\"melody\"\n    //% melody.fieldOptions.decompileLiterals=true\n    //% melody.fieldOptions.decompileIndirectFixedInstances=\"true\"\n    //% melody.fieldOptions.onParentBlock=\"true\"\n    //% shim=TD_ID\n    //% group=\"Melody\"\n    export function melodyEditor(melody: string): string {\n        return melody;\n    }\n\n    /**\n     * Stops the melodies\n     * @param options which melody to stop\n     */\n    //% help=music/stop-melody weight=59 blockGap=16\n    //% blockId=device_stop_melody block=\"stop melody $options\"\n    //% parts=\"headphone\"\n    //% group=\"Melody Advanced\"\n    export function stopMelody(options: MelodyStopOptions) {\n        if (options & MelodyStopOptions.Background)\n            startMelody([], MelodyOptions.OnceInBackground);\n        if (options & MelodyStopOptions.Foreground)\n            startMelody([], MelodyOptions.Once);\n    }\n\n    /**\n     * Sets a custom playTone function for playing melodies\n     */\n    //% help=music/set-play-tone\n    //% advanced=true\n    //% group=\"Tone\"\n    export function setPlayTone(f: (frequency: number, duration: number) => void) {\n        _playTone = f;\n    }\n\n    /**\n     * Set the default output volume of the sound synthesizer.\n     * @param volume the volume 0...255\n     */\n    //% blockId=synth_set_volume block=\"set volume %volume\"\n    //% parts=\"speaker\"\n    //% volume.min=0 volume.max=255\n    //% volume.defl=127\n    //% help=music/set-volume\n    //% weight=70\n    //% group=\"Volume\"\n    export function setVolume(volume: number): void {\n        pins.analogSetPitchVolume(volume);\n    }\n\n    /**\n     * Gets the current volume\n     */\n    //% parts=\"speaker\"\n    //% weight=70\n    export function volume(): number {\n        return pins.analogPitchVolume();\n    }\n\n    function playNextNote(melody: Melody): void {\n        // cache elements\n        let currNote = melody.nextNote();\n        let currentPos = melody.currentPos;\n        let currentDuration = melody.currentDuration;\n        let currentOctave = melody.currentOctave;\n\n        let note: number;\n        let isrest: boolean = false;\n        let beatPos: number;\n        let parsingOctave: boolean = true;\n        let prevNote: boolean = false;\n\n        for (let pos = 0; pos < currNote.length; pos++) {\n            let noteChar = currNote.charAt(pos);\n            switch (noteChar) {\n                case 'c': case 'C': note = 1; prevNote = true; break;\n                case 'd': case 'D': note = 3; prevNote = true; break;\n                case 'e': case 'E': note = 5; prevNote = true; break;\n                case 'f': case 'F': note = 6; prevNote = true; break;\n                case 'g': case 'G': note = 8; prevNote = true; break;\n                case 'a': case 'A': note = 10; prevNote = true; break;\n                case 'B': note = 12; prevNote = true; break;\n                case 'r': case 'R': isrest = true; prevNote = false; break;\n                case '#': note++; prevNote = false; break;\n                case 'b': if (prevNote) note--; else { note = 12; prevNote = true; } break;\n                case ':': parsingOctave = false; beatPos = pos; prevNote = false; break;\n                default: prevNote = false; if (parsingOctave) currentOctave = parseInt(noteChar);\n            }\n        }\n        if (!parsingOctave) {\n            currentDuration = parseInt(currNote.substr(beatPos + 1, currNote.length - beatPos));\n        }\n        let beat = Math.idiv(60000, beatsPerMinute) >> 2;\n        if (isrest) {\n            music.rest(currentDuration * beat)\n        } else {\n            let keyNumber = note + (12 * (currentOctave - 1));\n            let frequency = freqs.getNumber(NumberFormat.UInt16LE, keyNumber * 2) || 0;\n            music.playTone(frequency, currentDuration * beat);\n        }\n        melody.currentDuration = currentDuration;\n        melody.currentOctave = currentOctave;\n        const repeating = melody.repeating && currentPos == melody.melodyArray.length - 1;\n        melody.currentPos = repeating ? 0 : currentPos + 1;\n\n        control.raiseEvent(MICROBIT_MELODY_ID, melody.background ? MusicEvent.BackgroundMelodyNotePlayed : MusicEvent.MelodyNotePlayed);\n        if (repeating)\n            control.raiseEvent(MICROBIT_MELODY_ID, melody.background ? MusicEvent.BackgroundMelodyRepeated : MusicEvent.MelodyRepeated);\n    }\n\n    class Melody {\n        public melodyArray: string[];\n        public currentDuration: number;\n        public currentOctave: number;\n        public currentPos: number;\n        public repeating: boolean;\n        public background: boolean;\n\n        constructor(melodyArray: string[], options: MelodyOptions) {\n            this.melodyArray = melodyArray;\n            this.repeating = ((options & MelodyOptions.Forever) != 0);\n            this.repeating = this.repeating ? true : ((options & MelodyOptions.ForeverInBackground) != 0)\n            this.background = ((options & MelodyOptions.OnceInBackground) != 0);\n            this.background = this.background ? true : ((options & MelodyOptions.ForeverInBackground) != 0);\n            this.currentDuration = 4; //Default duration (Crotchet)\n            this.currentOctave = 4; //Middle octave\n            this.currentPos = 0;\n        }\n\n        hasNextNote() {\n            return this.repeating || this.currentPos < this.melodyArray.length;\n        }\n\n        nextNote(): string {\n            const currentNote = this.melodyArray[this.currentPos];\n            return currentNote;\n        }\n    }\n}\n",
+            "neopixel.ts.rej": "diff a/libs/core/neopixel.ts b/libs/core/neopixel.ts\t(rejected hunks)\r\n@@ -58 +58 @@ namespace neopixel {\r\n-         * Shows all LEDs to a given color (range 0-255 for r, g, b). \r\n+         * Shows all LEDs to a given color (range 0-255 for r, g, b).\r\n@@ -61 +61 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_strip_color\" block=\"%strip|show color %rgb=neopixel_colors\" \r\n+        //% blockId=\"neopixel_set_strip_color\" block=\"%strip|show color %rgb=neopixel_colors\"\r\n@@ -71 +71 @@ namespace neopixel {\r\n-         * Shows a rainbow pattern on all LEDs. \r\n+         * Shows a rainbow pattern on all LEDs.\r\n@@ -75 +75 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_strip_rainbow\" block=\"%strip|show rainbow from %startHue|to %endHue\" \r\n+        //% blockId=\"neopixel_set_strip_rainbow\" block=\"%strip|show rainbow from %startHue|to %endHue\"\r\n@@ -142 +142 @@ namespace neopixel {\r\n-        //% blockId=neopixel_show_bar_graph block=\"%strip|show bar graph of %value|up to %high\" \r\n+        //% blockId=neopixel_show_bar_graph block=\"%strip|show bar graph of %value|up to %high\"\r\n@@ -174 +174 @@ namespace neopixel {\r\n-         * Set LED to a given color (range 0-255 for r, g, b). \r\n+         * Set LED to a given color (range 0-255 for r, g, b).\r\n@@ -179 +179 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_pixel_color\" block=\"%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors\" \r\n+        //% blockId=\"neopixel_set_pixel_color\" block=\"%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors\"\r\n@@ -200 +200 @@ namespace neopixel {\r\n-         * Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip \r\n+         * Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip\r\n@@ -206 +206 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_matrix_color\" block=\"%string|set matrix color at x %x|y %y|to %rgb=neopixel_colors\" \r\n+        //% blockId=\"neopixel_set_matrix_color\" block=\"%string|set matrix color at x %x|y %y|to %rgb=neopixel_colors\"\r\n@@ -219 +219 @@ namespace neopixel {\r\n-        \r\n+\r\n@@ -225 +225 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_pixel_white\" block=\"%strip|set pixel white LED at %pixeloffset|to %white\" \r\n+        //% blockId=\"neopixel_set_pixel_white\" block=\"%strip|set pixel white LED at %pixeloffset|to %white\"\r\n@@ -229 +229 @@ namespace neopixel {\r\n-        setPixelWhiteLED(pixeloffset: number, white: number): void {            \r\n+        setPixelWhiteLED(pixeloffset: number, white: number): void {\r\n@@ -235 +235 @@ namespace neopixel {\r\n-        /** \r\n+        /**\r\n@@ -305 +305 @@ namespace neopixel {\r\n-        /** \r\n+        /**\r\n@@ -541 +541 @@ namespace neopixel {\r\n-        \r\n+\r\n@@ -546,2 +546,2 @@ namespace neopixel {\r\n-        let h1 = Math.idiv(h, 60);//[0,6]\r\n-        let h2 = Math.idiv((h - h1 * 60) * 256, 60);//[0,255]\r\n+        let h1 = Math.idiv(h, 60); //[0,6]\r\n+        let h2 = Math.idiv((h - h1 * 60) * 256, 60); //[0,255]\r\n@@ -549 +549 @@ namespace neopixel {\r\n-        let x = (c * (256 - (temp))) >> 8;//[0,255], second largest component of this color\r\n+        let x = (c * (256 - (temp))) >> 8; //[0,255], second largest component of this color\r\n",
             "parts/headphone.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"142\" height=\"180\" viewBox=\"0 0 142 180\"><rect ry=\".3\" rx=\"1\" y=\"58.615\" x=\"-8.878\" height=\"23.571\" width=\"17.143\" transform=\"rotate(-45)\" fill=\"#b3b3b3\"/><rect ry=\".3\" rx=\"1\" y=\"32.043\" x=\"-8.878\" height=\"23.571\" width=\"17.143\" transform=\"rotate(-45)\" fill=\"#b3b3b3\"/><path d=\"M.346 7.296c-.394.39-.31 4.797-.18 4.898l13.404 10.18c.117.12.337 4.76.73 4.368l5.506-5.56.01.01 6.51-6.444c.39-.392-4.25-.614-4.366-.73L11.777.612c-.1-.132-4.51-.215-4.898.18L4.087 3.636l-.01-.01-3.73 3.67z\" fill=\"#b3b3b3\"/><rect ry=\"6.85\" rx=\"4.571\" y=\"84.758\" x=\"-20.128\" height=\"75.571\" width=\"39.643\" transform=\"rotate(-45)\"/><rect ry=\".374\" rx=\"1.038\" y=\"29.442\" x=\"-8.925\" height=\"2.228\" width=\"17.238\" transform=\"rotate(-45)\" fill=\"#fff\"/><rect ry=\".374\" rx=\"1.038\" y=\"55.939\" x=\"-8.925\" height=\"2.228\" width=\"17.238\" transform=\"rotate(-45)\" fill=\"#fff\"/><rect ry=\".374\" rx=\"1.038\" y=\"82.392\" x=\"-8.925\" height=\"2.228\" width=\"17.238\" transform=\"rotate(-45)\" fill=\"#fff\"/><rect ry=\"2.317\" rx=\"2.183\" y=\"158.876\" x=\"-9.774\" height=\"25.568\" width=\"18.935\" transform=\"rotate(-45)\"/><path d=\"M128.588 128.82s14.97 11.165 7.547 26.35c-8.426 17.24-25.57 20.653-25.57 20.653\" fill=\"none\" stroke=\"#000\" stroke-width=\"6.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
             "parts/speaker.svg": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg viewBox=\"0 0 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g transform=\"matrix(1, 0, 0, 1, -0.00023, -58.230297)\">\n    <ellipse style=\"fill: rgb(70, 70, 70);\" cx=\"250.58\" cy=\"308.81\" rx=\"215\" ry=\"215\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 1.000001, -232.069031, 248.780606)\" cx=\"482.069\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -232.067871, 110.041956)\" cx=\"482.067\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"389.12\" cy=\"308.23\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"110.88\" cy=\"308.23\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"169.393\" rx=\"23.028\" ry=\"23.028\"/>\n    <g transform=\"matrix(1, 0, 0, 1, -0.000009, 0.000015)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"238.513\" rx=\"23.028\" ry=\"23.028\" transform=\"matrix(1.000001, 0, 0, 0.999999, 69.996739, 69.71816)\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -302.064453, 110.043115)\" cx=\"482.064\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(0.866026, 0.5, -0.5, 0.866026, 7.386552, -105.261086)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(0.999999, 0, 0, 0.999999, -65.212313, 177.387415)\" cx=\"482.068\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"555.975\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"277.735\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"416.855\" cy=\"97.999\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(0.5, 0.866026, -0.866026, 0.5, 246.635941, -171.170502)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(0.999999, 0, 0, 0.999999, -65.212313, 177.387415)\" cx=\"482.068\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"555.975\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"277.735\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"416.855\" cy=\"97.999\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(-0.5, 0.866026, -0.866026, -0.5, 641.934998, 245.84082)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"238.513\" rx=\"23.028\" ry=\"23.028\" transform=\"matrix(1.000001, 0, 0, 0.999999, 69.996739, 69.71816)\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -302.064453, 110.043115)\" cx=\"482.064\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(-0.500001, -0.866026, 0.866026, -0.500001, 108.063393, 678.85083)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"238.513\" rx=\"23.028\" ry=\"23.028\" transform=\"matrix(1.000001, 0, 0, 0.999999, 69.996739, 69.71816)\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -302.064453, 110.043115)\" cx=\"482.064\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n  </g>\n</svg>",
             "pins.cpp": "#include \"pxt.h\"\r\n\r\nenum class DigitalPin {\r\n    P0 = MICROBIT_ID_IO_P0,\r\n    P1 = MICROBIT_ID_IO_P1,\r\n    P2 = MICROBIT_ID_IO_P2,\r\n    P3 = MICROBIT_ID_IO_P3,\r\n    P4 = MICROBIT_ID_IO_P4,\r\n    P5 = MICROBIT_ID_IO_P5,\r\n    P6 = MICROBIT_ID_IO_P6,\r\n    P7 = MICROBIT_ID_IO_P7,\r\n    P8 = MICROBIT_ID_IO_P8,\r\n    P9 = MICROBIT_ID_IO_P9,\r\n    P10 = MICROBIT_ID_IO_P10,\r\n    P11 = MICROBIT_ID_IO_P11,\r\n    P12 = MICROBIT_ID_IO_P12,\r\n    P13 = MICROBIT_ID_IO_P13,\r\n    P14 = MICROBIT_ID_IO_P14,\r\n    P15 = MICROBIT_ID_IO_P15,\r\n    P16 = MICROBIT_ID_IO_P16,\r\n    //% blockHidden=1\r\n    P19 = MICROBIT_ID_IO_P19,\r\n    //% blockHidden=1\r\n    P20 = MICROBIT_ID_IO_P20,\r\n};\r\n\r\nenum class AnalogPin {\r\n    P0 = MICROBIT_ID_IO_P0,\r\n    P1 = MICROBIT_ID_IO_P1,\r\n    P2 = MICROBIT_ID_IO_P2,\r\n    P3 = MICROBIT_ID_IO_P3,\r\n    P4 = MICROBIT_ID_IO_P4,\r\n    P10 = MICROBIT_ID_IO_P10,\r\n    //% block=\"P5 (write only)\"\r\n    P5 = MICROBIT_ID_IO_P5,\r\n    //% block=\"P6 (write only)\"\r\n    P6 = MICROBIT_ID_IO_P6,\r\n    //% block=\"P7 (write only)\"\r\n    P7 = MICROBIT_ID_IO_P7,\r\n    //% block=\"P8 (write only)\"\r\n    P8 = MICROBIT_ID_IO_P8,\r\n    //% block=\"P9 (write only)\"\r\n    P9 = MICROBIT_ID_IO_P9,\r\n    //% block=\"P11 (write only)\"\r\n    P11 = MICROBIT_ID_IO_P11,\r\n    //% block=\"P12 (write only)\"\r\n    P12 = MICROBIT_ID_IO_P12,\r\n    //% block=\"P13 (write only)\"\r\n    P13 = MICROBIT_ID_IO_P13,\r\n    //% block=\"P14 (write only)\"\r\n    P14 = MICROBIT_ID_IO_P14,\r\n    //% block=\"P15 (write only)\"\r\n    P15 = MICROBIT_ID_IO_P15,\r\n    //% block=\"P16 (write only)\"\r\n    P16 = MICROBIT_ID_IO_P16,\r\n    //% block=\"P19 (write only)\"\r\n    //% blockHidden=1\r\n    P19 = MICROBIT_ID_IO_P19,\r\n    //% block=\"P20 (write only)\"\r\n    //% blockHidden=1\r\n    P20 = MICROBIT_ID_IO_P20\r\n};\r\n\r\nenum class PulseValue {\r\n    //% block=high\r\n    High = MICROBIT_PIN_EVT_PULSE_HI,\r\n    //% block=low\r\n    Low = MICROBIT_PIN_EVT_PULSE_LO\r\n};\r\n\r\nenum class PinPullMode {\r\n    //% block=\"down\"\r\n    PullDown = 0,\r\n    //% block=\"up\"\r\n    PullUp = 1,\r\n    //% block=\"none\"\r\n    PullNone = 2\r\n};\r\n\r\nenum class PinEventType {\r\n    //% block=\"edge\"\r\n    Edge = MICROBIT_PIN_EVENT_ON_EDGE,\r\n    //% block=\"pulse\"\r\n    Pulse = MICROBIT_PIN_EVENT_ON_PULSE,\r\n    //% block=\"touch\"\r\n    Touch = MICROBIT_PIN_EVENT_ON_TOUCH,\r\n    //% block=\"none\"\r\n    None = MICROBIT_PIN_EVENT_NONE\r\n};\r\n\r\n\r\nnamespace pxt\r\n{\r\nMicroBitPin *getPin(int id) {\r\n    switch (id) {\r\n        case MICROBIT_ID_IO_P0: return &uBit.io.P0;\r\n        case MICROBIT_ID_IO_P1: return &uBit.io.P1;\r\n        case MICROBIT_ID_IO_P2: return &uBit.io.P2;\r\n        case MICROBIT_ID_IO_P3: return &uBit.io.P3;\r\n        case MICROBIT_ID_IO_P4: return &uBit.io.P4;\r\n        case MICROBIT_ID_IO_P5: return &uBit.io.P5;\r\n        case MICROBIT_ID_IO_P6: return &uBit.io.P6;\r\n        case MICROBIT_ID_IO_P7: return &uBit.io.P7;\r\n        case MICROBIT_ID_IO_P8: return &uBit.io.P8;\r\n        case MICROBIT_ID_IO_P9: return &uBit.io.P9;\r\n        case MICROBIT_ID_IO_P10: return &uBit.io.P10;\r\n        case MICROBIT_ID_IO_P11: return &uBit.io.P11;\r\n        case MICROBIT_ID_IO_P12: return &uBit.io.P12;\r\n        case MICROBIT_ID_IO_P13: return &uBit.io.P13;\r\n        case MICROBIT_ID_IO_P14: return &uBit.io.P14;\r\n        case MICROBIT_ID_IO_P15: return &uBit.io.P15;\r\n        case MICROBIT_ID_IO_P16: return &uBit.io.P16;\r\n        case MICROBIT_ID_IO_P19: return &uBit.io.P19;\r\n        case MICROBIT_ID_IO_P20: return &uBit.io.P20;\r\n#if MICROBIT_CODAL\r\n        case 1001: return &uBit.io.usbTx;\r\n        case 1002: return &uBit.io.usbRx;\r\n#endif\r\n        default: return NULL;\r\n    }\r\n}\r\n\r\n} // pxt\r\n\r\nnamespace pins {\r\n    #define PINOP(op) \\\r\n      MicroBitPin *pin = getPin((int)name); \\\r\n      if (!pin) return; \\\r\n      pin->op\r\n\r\n    #define PINREAD(op) \\\r\n      MicroBitPin *pin = getPin((int)name); \\\r\n      if (!pin) return 0; \\\r\n      return pin->op\r\n\r\n\r\n    //%\r\n    MicroBitPin *getPinAddress(int id) {\r\n        return getPin(id);\r\n    }\r\n\r\n    /**\r\n     * Read the specified pin or connector as either 0 or 1\r\n     * @param name pin to read from, eg: DigitalPin.P0\r\n     */\r\n    //% help=pins/digital-read-pin weight=30\r\n    //% blockId=device_get_digital_pin block=\"digital read|pin %name\" blockGap=8\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    int digitalReadPin(DigitalPin name) {\r\n        PINREAD(getDigitalValue());\r\n    }\r\n\r\n    /**\r\n      * Set a pin or connector value to either 0 or 1.\r\n      * @param name pin to write to, eg: DigitalPin.P0\r\n      * @param value value to set on the pin, 1 eg,0\r\n      */\r\n    //% help=pins/digital-write-pin weight=29\r\n    //% blockId=device_set_digital_pin block=\"digital write|pin %name|to %value\"\r\n    //% value.min=0 value.max=1\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void digitalWritePin(DigitalPin name, int value) {\r\n        PINOP(setDigitalValue(value));\r\n    }\r\n\r\n    /**\r\n     * Read the connector value as analog, that is, as a value comprised between 0 and 1023.\r\n     * @param name pin to write to, eg: AnalogPin.P0\r\n     */\r\n    //% help=pins/analog-read-pin weight=25\r\n    //% blockId=device_get_analog_pin block=\"analog read|pin %name\" blockGap=\"8\"\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    int analogReadPin(AnalogPin name) {\r\n        PINREAD(getAnalogValue());\r\n    }\r\n\r\n    /**\r\n     * Set the connector value as analog. Value must be comprised between 0 and 1023.\r\n     * @param name pin name to write to, eg: AnalogPin.P0\r\n     * @param value value to write to the pin between ``0`` and ``1023``. eg:1023,0\r\n     */\r\n    //% help=pins/analog-write-pin weight=24\r\n    //% blockId=device_set_analog_pin block=\"analog write|pin %name|to %value\" blockGap=8\r\n    //% value.min=0 value.max=1023\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void analogWritePin(AnalogPin name, int value) {\r\n        PINOP(setAnalogValue(value));\r\n    }\r\n\r\n    /**\r\n     * Configure the pulse-width modulation (PWM) period of the analog output in microseconds.\r\n     * If this pin is not configured as an analog output (using `analog write pin`), the operation has no effect.\r\n     * @param name analog pin to set period to, eg: AnalogPin.P0\r\n     * @param micros period in micro seconds. eg:20000\r\n     */\r\n    //% help=pins/analog-set-period weight=23 blockGap=8\r\n    //% blockId=device_set_analog_period block=\"analog set period|pin %pin|to (µs)%micros\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\"\r\n    void analogSetPeriod(AnalogPin name, int micros) {\r\n        PINOP(setAnalogPeriodUs(micros));\r\n    }\r\n\r\n    /**\r\n    * Configure the pin as a digital input and generate an event when the pin is pulsed either high or low.\r\n    * @param name digital pin to register to, eg: DigitalPin.P0\r\n    * @param pulse the value of the pulse, eg: PulseValue.High\r\n    */\r\n    //% help=pins/on-pulsed weight=22 blockGap=16 advanced=true\r\n    //% blockId=pins_on_pulsed block=\"on|pin %pin|pulsed %pulse\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\"\r\n    void onPulsed(DigitalPin name, PulseValue pulse, Action body) {\r\n        MicroBitPin* pin = getPin((int)name);\r\n        if (!pin) return;\r\n\r\n        pin->eventOn(MICROBIT_PIN_EVENT_ON_PULSE);\r\n        registerWithDal((int)name, (int)pulse, body);\r\n    }\r\n\r\n    /**\r\n    * Get the duration of the last pulse in microseconds. This function should be called from a ``onPulsed`` handler.\r\n    */\r\n    //% help=pins/pulse-duration advanced=true\r\n    //% blockId=pins_pulse_duration block=\"pulse duration (µs)\"\r\n    //% weight=21 blockGap=8\r\n    int pulseDuration() {\r\n        return pxt::lastEvent.timestamp;\r\n    }\r\n\r\n    /**\r\n    * Return the duration of a pulse at a pin in microseconds.\r\n    * @param name the pin which measures the pulse, eg: DigitalPin.P0\r\n    * @param value the value of the pulse, eg: PulseValue.High\r\n    * @param maximum duration in microseconds\r\n    */\r\n    //% blockId=\"pins_pulse_in\" block=\"pulse in (µs)|pin %name|pulsed %value\"\r\n    //% weight=20 advanced=true\r\n    //% help=pins/pulse-in\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    int pulseIn(DigitalPin name, PulseValue value, int maxDuration = 2000000) {\r\n        MicroBitPin* pin = getPin((int)name);\r\n        if (!pin) return 0;\r\n\r\n        int pulse = value == PulseValue::High ? 1 : 0;\r\n        uint64_t tick =  system_timer_current_time_us();\r\n        uint64_t maxd = (uint64_t)maxDuration;\r\n        while(pin->getDigitalValue() != pulse) {\r\n            if(system_timer_current_time_us() - tick > maxd)\r\n                return 0;\r\n        }\r\n\r\n        uint64_t start =  system_timer_current_time_us();\r\n        while(pin->getDigitalValue() == pulse) {\r\n            if(system_timer_current_time_us() - tick > maxd)\r\n                return 0;\r\n        }\r\n        uint64_t end =  system_timer_current_time_us();\r\n        return end - start;\r\n    }\r\n\r\n    /**\r\n     * Write a value to the servo, controlling the shaft accordingly. On a standard servo, this will set the angle of the shaft (in degrees), moving the shaft to that orientation. On a continuous rotation servo, this will set the speed of the servo (with ``0`` being full-speed in one direction, ``180`` being full speed in the other, and a value near ``90`` being no movement).\r\n     * @param name pin to write to, eg: AnalogPin.P0\r\n     * @param value angle or rotation speed, eg:180,90,0\r\n     */\r\n    //% help=pins/servo-write-pin weight=20\r\n    //% blockId=device_set_servo_pin block=\"servo write|pin %name|to %value\" blockGap=8\r\n    //% parts=microservo trackArgs=0\r\n    //% value.min=0 value.max=180\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void servoWritePin(AnalogPin name, int value) {\r\n        PINOP(setServoValue(value));\r\n    }\r\n\r\n    /**\r\n    * Specifies that a continuous servo is connected.\r\n    */\r\n    //%\r\n    void servoSetContinuous(AnalogPin name, bool value) {\r\n        // handled in simulator\r\n    }\r\n\r\n    /**\r\n     * Configure the IO pin as an analog/pwm output and set a pulse width. The period is 20 ms period and the pulse width is set based on the value given in **microseconds** or `1/1000` milliseconds.\r\n     * @param name pin name\r\n     * @param micros pulse duration in micro seconds, eg:1500\r\n     */\r\n    //% help=pins/servo-set-pulse weight=19\r\n    //% blockId=device_set_servo_pulse block=\"servo set pulse|pin %value|to (µs) %micros\"\r\n    //% value.fieldEditor=\"gridpicker\" value.fieldOptions.columns=4\r\n    //% value.fieldOptions.tooltips=\"false\" value.fieldOptions.width=\"250\"\r\n    void servoSetPulse(AnalogPin name, int micros) {\r\n        PINOP(setServoPulseUs(micros));\r\n    }\r\n\r\n\r\n    MicroBitPin* pitchPin = NULL;\r\n    MicroBitPin* pitchPin2 = NULL;\r\n    uint8_t pitchVolume = 64;\r\n\r\n    /**\r\n     * Set the pin used when using analog pitch or music.\r\n     * @param name pin to modulate pitch from\r\n     */\r\n    //% blockId=device_analog_set_pitch_pin block=\"analog set pitch pin %name\"\r\n    //% help=pins/analog-set-pitch-pin weight=3 advanced=true\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void analogSetPitchPin(AnalogPin name) {\r\n        pitchPin = getPin((int)name);\r\n        pitchPin2 = NULL;\r\n    }\r\n\r\n    void pinAnalogSetPitch(MicroBitPin* pin, int frequency, int ms) {\r\n      if (frequency <= 0 || pitchVolume == 0) {\r\n        pin->setAnalogValue(0);\r\n      } else {\r\n        int v = 1 << (pitchVolume >> 5);\r\n        pin->setAnalogValue(v);\r\n        pin->setAnalogPeriodUs(1000000/frequency);\r\n      }\r\n    }\r\n\r\n    /**\r\n    * Sets the volume on the pitch pin\r\n    * @param volume the intensity of the sound from 0..255\r\n    */\r\n    //% blockId=device_analog_set_pitch_volume block=\"analog set pitch volume $volume\"\r\n    //% help=pins/analog-set-pitch-volume weight=3 advanced=true\r\n    //% volume.min=0 volume.max=255\r\n    void analogSetPitchVolume(int volume) {\r\n        pitchVolume = max(0, min(0xff, volume));\r\n    }\r\n\r\n    /**\r\n    * Gets the volume the pitch pin from 0..255\r\n    */\r\n    //% blockId=device_analog_pitch_volume block=\"analog pitch volume\"\r\n    //% help=pins/analog-pitch-volume weight=3 advanced=true\r\n    int analogPitchVolume() {\r\n        return pitchVolume;\r\n    }\r\n\r\n    /**\r\n     * Emit a plse-width modulation (PWM) signal to the current pitch pin. Use `analog set pitch pin` to define the pitch pin.\r\n     * @param frequency frequency to modulate in Hz.\r\n     * @param ms duration of the pitch in milli seconds.\r\n     */\r\n    //% blockId=device_analog_pitch block=\"analog pitch %frequency|for (ms) %ms\"\r\n    //% help=pins/analog-pitch weight=4 async advanced=true blockGap=8\r\n    void analogPitch(int frequency, int ms) {\r\n        // init pins if needed\r\n        if (NULL == pitchPin) {\r\n            pitchPin = getPin((int)AnalogPin::P0);\r\n#ifdef SOUND_MIRROR_EXTENSION\r\n            pitchPin2 = &SOUND_MIRROR_EXTENSION;\r\n#endif           \r\n        }\r\n        // set pitch\r\n        if (NULL != pitchPin)\r\n            pinAnalogSetPitch(pitchPin, frequency, ms);\r\n        if (NULL != pitchPin2)\r\n            pinAnalogSetPitch(pitchPin2, frequency, ms);\r\n        // clear pitch\r\n        if (ms > 0) {\r\n            fiber_sleep(ms);\r\n            if (NULL != pitchPin)\r\n                pitchPin->setAnalogValue(0);\r\n            if (NULL != pitchPin2)\r\n                pitchPin2->setAnalogValue(0);\r\n            fiber_sleep(5);\r\n        }\r\n    }\r\n\r\n\r\n    /**\r\n    * Configure the pull directiion of of a pin.\r\n    * @param name pin to set the pull mode on, eg: DigitalPin.P0\r\n    * @param pull one of the mbed pull configurations, eg: PinPullMode.PullUp\r\n    */\r\n    //% help=pins/set-pull weight=3 advanced=true\r\n    //% blockId=device_set_pull block=\"set pull|pin %pin|to %pull\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\"\r\n    void setPull(DigitalPin name, PinPullMode pull) {\r\n#if MICROBIT_CODAL        \r\n        codal::PullMode m = pull == PinPullMode::PullDown\r\n            ? codal::PullMode::Down\r\n            : pull == PinPullMode::PullUp ? codal::PullMode::Up\r\n            : codal::PullMode::None;\r\n        PINOP(setPull(m));\r\n#else\r\n        PinMode m = pull == PinPullMode::PullDown\r\n            ? PinMode::PullDown\r\n            : pull == PinPullMode::PullUp ? PinMode::PullUp\r\n            : PinMode::PullNone;\r\n        PINOP(setPull(m));\r\n#endif\r\n    }\r\n\r\n    /**\r\n    * Configure the events emitted by this pin. Events can be subscribed to\r\n    * using ``control.onEvent()``.\r\n    * @param name pin to set the event mode on, eg: DigitalPin.P0\r\n    * @param type the type of events for this pin to emit, eg: PinEventType.Edge\r\n    */\r\n    //% help=pins/set-events weight=4 advanced=true\r\n    //% blockId=device_set_pin_events block=\"set pin %pin|to emit %type|events\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\"\r\n    void setEvents(DigitalPin name, PinEventType type) {\r\n        getPin((int)name)->eventOn((int)type);\r\n    }\r\n\r\n    /**\r\n     * Create a new zero-initialized buffer.\r\n     * @param size number of bytes in the buffer\r\n     */\r\n    //%\r\n    Buffer createBuffer(int size)\r\n    {\r\n        return mkBuffer(NULL, size);\r\n    }\r\n\r\n#if MICROBIT_CODAL\r\n#define BUFFER_TYPE uint8_t*\r\n#else\r\n#define BUFFER_TYPE char*\r\n#endif\r\n\r\n    /**\r\n     * Read `size` bytes from a 7-bit I2C `address`.\r\n     */\r\n    //%\r\n    Buffer i2cReadBuffer(int address, int size, bool repeat = false)\r\n    {\r\n      Buffer buf = createBuffer(size);\r\n      uBit.i2c.read(address << 1, (BUFFER_TYPE)buf->data, size, repeat);\r\n      return buf;\r\n    }\r\n\r\n    /**\r\n     * Write bytes to a 7-bit I2C `address`.\r\n     */\r\n    //%\r\n    int i2cWriteBuffer(int address, Buffer buf, bool repeat = false)\r\n    {\r\n      return uBit.i2c.write(address << 1, (BUFFER_TYPE)buf->data, buf->length, repeat);\r\n    }\r\n\r\n    SPI* spi = NULL;\r\n    SPI* allocSPI() {\r\n        if (NULL == spi)\r\n            spi = new SPI(MOSI, MISO, SCK);\r\n        return spi;\r\n    }\r\n\r\n    /**\r\n    * Write to the SPI slave and return the response\r\n    * @param value Data to be sent to the SPI slave\r\n    */\r\n    //% help=pins/spi-write weight=5 advanced=true\r\n    //% blockId=spi_write block=\"spi write %value\"\r\n    int spiWrite(int value) {\r\n        auto p = allocSPI();\r\n        return p->write(value);\r\n    }\r\n\r\n    /**\r\n    * Set the SPI frequency\r\n    * @param frequency the clock frequency, eg: 1000000\r\n    */\r\n    //% help=pins/spi-frequency weight=4 advanced=true\r\n    //% blockId=spi_frequency block=\"spi frequency %frequency\"\r\n    void spiFrequency(int frequency) {\r\n        auto p = allocSPI();\r\n        p->frequency(frequency);\r\n    }\r\n\r\n    /**\r\n    * Set the SPI bits and mode\r\n    * @param bits the number of bits, eg: 8\r\n    * @param mode the mode, eg: 3\r\n    */\r\n    //% help=pins/spi-format weight=3 advanced=true\r\n    //% blockId=spi_format block=\"spi format|bits %bits|mode %mode\"\r\n    void spiFormat(int bits, int mode) {\r\n        auto p = allocSPI();\r\n        p->format(bits, mode);        \r\n    }\r\n\r\n#if MICROBIT_CODAL\r\n#define PIN_ARG(pin) *(getPin((int)(pin)))\r\n#else\r\n#define PIN_ARG(pin) (getPin((int)(pin)))->name\r\n#endif\r\n\r\n    /**\r\n    * Set the MOSI, MISO, SCK pins used by the SPI connection\r\n    *\r\n    */\r\n    //% help=pins/spi-pins weight=2 advanced=true\r\n    //% blockId=spi_pins block=\"spi set pins|MOSI %mosi|MISO %miso|SCK %sck\"\r\n    //% mosi.fieldEditor=\"gridpicker\" mosi.fieldOptions.columns=4\r\n    //% mosi.fieldOptions.tooltips=\"false\" mosi.fieldOptions.width=\"250\"\r\n    //% miso.fieldEditor=\"gridpicker\" miso.fieldOptions.columns=4\r\n    //% miso.fieldOptions.tooltips=\"false\" miso.fieldOptions.width=\"250\"\r\n    //% sck.fieldEditor=\"gridpicker\" sck.fieldOptions.columns=4\r\n    //% sck.fieldOptions.tooltips=\"false\" sck.fieldOptions.width=\"250\"\r\n    void spiPins(DigitalPin mosi, DigitalPin miso, DigitalPin sck) {\r\n        if (NULL != spi) {\r\n            delete spi;\r\n            spi = NULL;\r\n        }\r\n        spi = new SPI(PIN_ARG(mosi), PIN_ARG(miso), PIN_ARG(sck));\r\n    }\r\n\r\n    /**\r\n    * Mounts a push button on the given pin\r\n    */\r\n    //% help=pins/push-button advanced=true\r\n    void pushButton(DigitalPin pin) {\r\n#if MICROBIT_CODAL\r\n        new MicroBitButton(PIN_ARG(pin), (int)pin, DEVICE_BUTTON_ALL_EVENTS, ACTIVE_LOW, codal::PullMode::Up);\r\n#else\r\n        new MicroBitButton(PIN_ARG(pin), PinMode::PullUp);\r\n#endif\r\n    }\r\n}\r\n",
@@ -2717,7 +2732,7 @@ var pxtTargetBundle = {
             "pxt-helpers.ts": "type Action = () => void;\n\n/**\n * Constant representing Not-A-Number.\n */\nconst NaN = 0 / 0\n\n/**\n * Constant representing positive infinity.\n */\nconst Infinity = 1 / 0\n\nfunction isNaN(x: number) {\n    x = +x // convert to number\n    return x !== x\n}\n\nnamespace Number {\n    /**\n     * Check if a given value is of type Number and it is a NaN.\n     */\n    export function isNaN(x: any): boolean {\n        return typeof x == \"number\" && x !== x\n    }\n}\n\n/**\n * A dictionary from string key to string values\n */\ninterface StringMap {\n    [index: string]: string;\n}\n\n/**\n  * Convert a string to an integer.\n  * @param text A string to convert into an integral number. eg: \"123\"\n  * @param radix optional A value between 2 and 36 that specifies the base of the number in text.\n  * If this argument is not supplied, strings with a prefix of '0x' are considered hexadecimal.\n  * All other strings are considered decimal.\n  */\n//% help=text/parse-int\n//% blockId=\"string_parseint\" block=\"parse to integer %text\" blockNamespace=\"text\"\n//% text.defl=\"123\"\n//% blockHidden=1\nfunction parseInt(text: string, radix?: number): number {\n    // roughly based on https://www.ecma-international.org/ecma-262/5.1/#sec-15.1.2.2\n    // with some consideration for avoiding unnecessary slices where easy\n    if (!text || (radix != null && (radix < 2 || radix > 36)))\n        return NaN;\n\n    let start = 0;\n    while (start < text.length && helpers.isWhitespace(text.charCodeAt(start)))\n        ++start;\n\n    if (start === text.length)\n        return NaN;\n\n    const numberOffset = 48; // 0\n    const numCount = 10;\n    const letterOffset = 97; // a\n    const letterCount = 26;\n    const lowerCaseMask = 0x20;\n\n    let sign = 1;\n    switch (text.charAt(start)) {\n        case \"-\":\n            sign = -1;\n            // fallthrough\n        case \"+\":\n            ++start;\n    }\n\n    if ((!radix || radix == 16)\n            && \"0\" === text[start]\n            && (\"x\" === text[start + 1] || \"X\" === text[start + 1])) {\n        radix = 16;\n        start += 2;\n    } else if (!radix) {\n        radix = 10;\n    }\n\n    let output = 0;\n    let hasDigit = false;\n    for (let i = start; i < text.length; ++i) {\n        const code = text.charCodeAt(i) | lowerCaseMask;\n        let val: number = undefined;\n\n        if (code >= numberOffset && code < numberOffset + numCount)\n            val = code - numberOffset;\n        else if (code >= letterOffset && code < letterOffset + letterCount)\n            val = numCount + code - letterOffset;\n\n        if (val == undefined || val >= radix) {\n            if (!hasDigit) {\n                return NaN;\n            }\n            break;\n        }\n        hasDigit = true;\n        output = output * radix + val;\n    }\n\n    return sign * output;\n}\n\nnamespace helpers {\n    export function arrayFill<T>(O: T[], value: T, start?: number, end?: number) {\n        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill\n        // Steps 3-5.\n        const len = O.length >>> 0;\n\n        // Steps 6-7.\n        const relativeStart = start === undefined ? 0 : start >> 0;\n\n        // Step 8.\n        let k = relativeStart < 0 ?\n            Math.max(len + relativeStart, 0) :\n            Math.min(relativeStart, len);\n\n        // Steps 9-10.\n        const relativeEnd = end === undefined ? len : end >> 0;\n\n        // Step 11.\n        const final = relativeEnd < 0 ?\n            Math.max(len + relativeEnd, 0) :\n            Math.min(relativeEnd, len);\n\n        // Step 12.\n        while (k < final) {\n            O[k] = value;\n            k++;\n        }\n\n        // Step 13.\n        return O;\n    }\n\n    export function arraySplice<T>(arr: T[], start: number, len: number) {\n        if (start < 0) {\n            return;\n        }\n        for (let i = 0; i < len; ++i) {\n            arr.removeAt(start)\n        }\n    }\n\n    export function arrayReverse<T>(arr: T[]): void {\n        let len = arr.length;\n        for (let i = 0; i < len / 2; i++) {\n            swap(arr, i, len - i - 1);\n        }\n    }\n\n    export function arrayShift<T>(arr: T[]): T {\n        return arr.removeAt(0);\n    }\n\n    export function arrayJoin<T>(arr: T[], sep?: string): string {\n        if (sep === undefined || sep === null) {\n            sep = \",\";\n        }\n\n        let r = \"\";\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i) {\n            if (i > 0 && sep)\n                r += sep;\n            r += (arr[i] === undefined || arr[i] === null) ? \"\" : arr[i];\n        }\n        return r;\n    }\n\n    /*TODO: Enable this multiple value unshift, after rest is enabled in our compiler.\n        export function arrayUnshift<T>(arr: T[], ...values: T[]) : number {\n            for(let i = values.length; i > 0; --i) {\n                arr.insertAt(0, values[i - 1]);\n            }\n            return arr.length;\n        }\n    */\n    export function arrayUnshift<T>(arr: T[], value: T): number {\n        arr.insertAt(0, value);\n        return arr.length;\n    }\n\n    function swap<T>(arr: T[], i: number, j: number): void {\n        let temp: T = arr[i];\n        arr[i] = arr[j];\n        arr[j] = temp;\n    }\n\n    function sortHelper<T>(arr: T[], callbackfn?: (value1: T, value2: T) => number): T[] {\n        if (arr.length <= 0 || !callbackfn) {\n            return arr;\n        }\n        let len = arr.length;\n        // simple selection sort.\n        for (let i = 0; i < len - 1; ++i) {\n            for (let j = i + 1; j < len; ++j) {\n                if (callbackfn(arr[i], arr[j]) > 0) {\n                    swap(arr, i, j);\n                }\n            }\n        }\n        return arr;\n    }\n\n    export function arraySort<T>(arr: T[], callbackfn?: (value1: T, value2: T) => number): T[] {\n        if (!callbackfn && arr.length > 1) {\n            callbackfn = (a, b) => {\n                // default is sort as if the element were a string, with null < undefined\n                const aIsUndef = a === undefined;\n                const bIsUndef = b === undefined;\n                if (aIsUndef && bIsUndef) return 0;\n                else if (aIsUndef) return 1;\n                else if (bIsUndef) return -1;\n\n                const aIsNull = a === null;\n                const bIsNull = b === null;\n                if (aIsNull && bIsNull) return 0;\n                else if (aIsNull) return 1;\n                else if (bIsNull) return -1;\n\n                return (a + \"\").compare(b + \"\");\n            }\n        }\n        return sortHelper(arr, callbackfn);\n    }\n\n    export function arrayMap<T, U>(arr: T[], callbackfn: (value: T, index: number) => U): U[] {\n        let res: U[] = []\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i) {\n            res.push(callbackfn(arr[i], i))\n        }\n        return res\n    }\n\n    export function arraySome<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): boolean {\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i)\n            if (callbackfn(arr[i], i))\n                return true;\n        return false;\n    }\n\n    export function arrayEvery<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): boolean {\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i)\n            if (!callbackfn(arr[i], i))\n                return false;\n        return true;\n    }\n\n    export function arrayForEach<T>(arr: T[], callbackfn: (value: T, index: number) => void): void {\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i) {\n            callbackfn(arr[i], i);\n        }\n    }\n\n    export function arrayFilter<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): T[] {\n        let res: T[] = []\n        let len = arr.length\n        for (let i = 0; i < len; ++i) {\n            let v = arr[i] // need to cache\n            if (callbackfn(v, i)) res.push(v)\n        }\n        return res\n    }\n\n    export function arrayFind<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): T {\n        let len = arr.length\n        for (let i = 0; i < len; ++i) {\n            let v = arr[i] // need to cache\n            if (callbackfn(v, i)) return v;\n        }\n        return undefined;\n    }\n\n    export function arrayReduce<T, U>(arr: T[], callbackfn: (previousValue: U, currentValue: T, currentIndex: number) => U, initialValue: U): U {\n        let len = arr.length\n        for (let i = 0; i < len; ++i) {\n            initialValue = callbackfn(initialValue, arr[i], i)\n        }\n        return initialValue\n    }\n\n    export function arrayConcat<T>(arr: T[], otherArr: T[]): T[] {\n        let out: T[] = [];\n        for (let value of arr) {\n            out.push(value);\n        }\n        for (let value of otherArr) {\n            out.push(value);\n        }\n        return out;\n    }\n\n    export function arraySlice<T>(arr: T[], start?: number, end?: number): T[] {\n        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice\n        const res: T[] = [];\n        const len = arr.length;\n\n        if (start === undefined)\n            start = 0;\n        else if (start < 0)\n            start = Math.max(len + start, 0);\n\n        if (start > len)\n            return res;\n\n        if (end === undefined)\n            end = len;\n        else if (end < 0)\n            end = len + end;\n\n        if (end > len)\n            end = len;\n\n        for (let i = start; i < end; ++i) {\n            res.push(arr[i]);\n        }\n        return res;\n    }\n\n    export function stringReplace(s: string, toReplace: string, replacer: string | ((sub: string) => string)) {\n        toReplace = toReplace + \"\";\n        const ind = s.indexOf(toReplace);\n        if (ind == -1)\n            return s;\n\n        const begin = s.slice(0, ind);\n        const end = s.slice(ind + toReplace.length);\n\n        if (typeof replacer == \"string\" || !replacer) {\n            return begin + replacer + end;\n        } else {\n            return begin + replacer(toReplace) + end;\n        }\n    }\n\n    export function stringReplaceAll(s: string, toReplace: string, replacer: string | ((sub: string) => string)) {\n        toReplace = toReplace + \"\";\n        const split = s.split(toReplace);\n        const empty = toReplace.isEmpty();\n\n        let output = (empty ? applyReplace(toReplace, replacer) : \"\");\n\n        if (split.length) {\n            output += split[0];\n        }\n\n        for (let i = 1; i < split.length; ++i) {\n            output += applyReplace(toReplace, replacer) + split[i];\n        }\n\n        if (!s.isEmpty() && empty) {\n            output += applyReplace(toReplace, replacer);\n        }\n\n        return output;\n\n        function applyReplace(r: string, replacer: string | ((sub: string) => string)): string {\n            if (typeof replacer == \"string\" || !replacer) {\n                return replacer as string;\n            } else {\n                return replacer(r);\n            }\n        }\n    }\n\n\n    export function stringSlice(s: string, start: number, end?: number): string {\n        const len = s.length;\n\n        if (start < 0) {\n            start = Math.max(len + start, 0);\n        }\n\n        if (end == null) {\n            end = len;\n        }\n\n        if (end < 0) {\n            end = len + end;\n        }\n\n        return s.substr(start, end - start);\n    }\n\n    // TODO move to PXT\n    // also note this doesn't handle unicode, but neither does JS (there's toLocaleLowerCase())\n    export function stringToLowerCase(s: string): string {\n        let r = \"\"\n        let prev = 0\n        for (let i = 0; i < s.length; i++) {\n            const c = s.charCodeAt(i)\n            if (65 <= c && c <= 90) {\n                r += s.slice(prev, i) + String.fromCharCode(c + 32)\n                prev = i + 1\n            }\n        }\n        r += s.slice(prev)\n        return r\n    }\n\n    export function stringSplit(S: string, separator?: string, limit?: number): string[] {\n        // https://www.ecma-international.org/ecma-262/6.0/#sec-string.prototype.split\n        const A: string[] = [];\n        let lim = 0;\n        if (limit === undefined)\n            lim = (1 << 29) - 1; // spec says 1 << 53, leaving it at 29 for constant folding\n        else if (limit < 0)\n            lim = 0;\n        else\n            lim = limit | 0;\n        const s = S.length;\n        let p = 0;\n        const R = separator;\n        if (lim == 0)\n            return A;\n        if (separator === undefined) {\n            A[0] = S;\n            return A;\n        }\n        if (s == 0) {\n            let z = splitMatch(S, 0, R);\n            if (z > -1) return A;\n            A[0] = S;\n            return A;\n        }\n        let T: string;\n        let q = p;\n        while (q != s) {\n            let e = splitMatch(S, q, R);\n            if (e < 0) q++;\n            else {\n                if (e == p) q++;\n                else {\n                    T = stringSlice(S, p, q);\n                    A.push(T);\n                    if (A.length == lim) return A;\n                    p = e;\n                    q = p;\n                }\n            }\n        }\n        T = stringSlice(S, p, q);\n        A.push(T);\n        return A;\n    }\n\n    function splitMatch(S: string, q: number, R: string): number {\n        const r = R.length;\n        const s = S.length;\n        if (q + r > s) return -1;\n        for (let i = 0; i < r; ++i) {\n            if (S[q + i] != R[i])\n                return -1;\n        }\n        return q + r;\n    }\n\n    export function stringTrim(s: string): string {\n        let start = 0;\n        let end = s.length - 1;\n\n        while (start <= end && isWhitespace(s.charCodeAt(start)))\n            ++start;\n\n        while (end > start && isWhitespace(s.charCodeAt(end)))\n            --end;\n        return s.slice(start, end + 1);\n    }\n\n    export function isWhitespace(c: number): boolean {\n        // https://www.ecma-international.org/ecma-262/6.0/#sec-white-space\n        switch (c) {\n            case 0x0009:  // character tab\n            case 0x000B:  // line tab\n            case 0x000C:  // form feed\n            case 0x0020:  // space\n            case 0x00A0:  // no-break space\n            case 0xFEFF:  // zero width no break space\n            case 0x000A:  // line feed\n            case 0x000D:  // carriage return\n            case 0x2028:  // line separator\n            case 0x2029:  // paragraph separator\n                return true;\n            default:\n                return false;\n        }\n    }\n\n    export function stringEmpty(S: string): boolean {\n        return !S;\n    }\n}\n\nnamespace Math {\n    export function clamp(min: number, max: number, value: number): number {\n        return Math.min(max, Math.max(min, value));\n    }\n\n    /**\n      * Returns the absolute value of a number (the value without regard to whether it is positive or negative).\n      * For example, the absolute value of -5 is the same as the absolute value of 5.\n      * @param x A numeric expression for which the absolute value is needed.\n      */\n    //% help=math/abs\n    export function abs(x: number): number {\n        return x < 0 ? -x : x;\n    }\n\n    /**\n      * Returns the sign of the x, indicating whether x is positive, negative or zero.\n      * @param x The numeric expression to test\n      */\n    export function sign(x: number): number {\n        if (x == 0) return 0;\n        if (x > 0) return 1;\n        return -1;\n    }\n\n    /**\n      * Returns the larger of two supplied numeric expressions.\n      */\n    //% help=math/max\n    export function max(a: number, b: number): number {\n        if (a >= b) return a;\n        return b;\n    }\n\n    /**\n      * Returns the smaller of two supplied numeric expressions.\n      */\n    //% help=math/min\n    export function min(a: number, b: number): number {\n        if (a <= b) return a;\n        return b;\n    }\n\n    /**\n     * Rounds ``x`` to a number with the given number of ``digits``\n     * @param x the number to round\n     * @param digits the number of resulting digits\n     */\n    //%\n    export function roundWithPrecision(x: number, digits: number): number {\n        digits = digits | 0;\n        // invalid digits input\n        if (digits <= 0) return Math.round(x);\n        if (x == 0) return 0;\n        let r = 0;\n        do {\n            const d = Math.pow(10, digits);\n            r = Math.round(x * d) / d;\n            digits++;\n        } while (r == 0 && digits < 21);\n        return r;\n    }\n}\n\n\n//% blockHidden=1\nnamespace __internal {\n    /**\n     * A shim to render a boolean as a down/up toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleDownUp block=\"%down\"\n    //% down.fieldEditor=toggledownup\n    //% down.fieldOptions.decompileLiterals=true\n    export function __downUp(down: boolean): boolean {\n        return down;\n    }\n\n    /**\n     * A shim to render a boolean as a up/down toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleUpDown block=\"%up\"\n    //% up.fieldEditor=toggleupdown\n    //% up.fieldOptions.decompileLiterals=true\n    export function __upDown(up: boolean): boolean {\n        return up;\n    }\n\n    /**\n     * A shim to render a boolean as a high/low toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleHighLow block=\"%high\"\n    //% high.fieldEditor=togglehighlow\n    //% high.fieldOptions.decompileLiterals=true\n    export function __highLow(high: boolean): boolean {\n        return high;\n    }\n\n    /**\n     * A shim to render a boolean as a on/off toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleOnOff block=\"%on\"\n    //% on.fieldEditor=toggleonoff\n    //% on.fieldOptions.decompileLiterals=true\n    export function __onOff(on: boolean): boolean {\n        return on;\n    }\n\n    /**\n     * A shim to render a boolean as a yes/no toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleYesNo block=\"%yes\"\n    //% yes.fieldEditor=toggleyesno\n    //% yes.fieldOptions.decompileLiterals=true\n    export function __yesNo(yes: boolean): boolean {\n        return yes;\n    }\n\n    /**\n     * A shim to render a boolean as a win/lose toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleWinLose block=\"%win\"\n    //% win.fieldEditor=togglewinlose\n    //% win.fieldOptions.decompileLiterals=true\n    export function __winLose(win: boolean): boolean {\n        return win;\n    }\n\n    /**\n     * Get the color wheel field editor\n     * @param color color, eg: #ff0000\n     */\n    //% blockId=colorNumberPicker block=\"%value\"\n    //% blockHidden=true\n    //% shim=TD_ID colorSecondary=\"#FFFFFF\"\n    //% value.fieldEditor=\"colornumber\" value.fieldOptions.decompileLiterals=true\n    //% value.defl='#ff0000'\n    //% value.fieldOptions.colours='[\"#ff0000\",\"#ff8000\",\"#ffff00\",\"#ff9da5\",\"#00ff00\",\"#b09eff\",\"#00ffff\",\"#007fff\",\"#65471f\",\"#0000ff\",\"#7f00ff\",\"#ff0080\",\"#ff00ff\",\"#ffffff\",\"#999999\",\"#000000\"]'\n    //% value.fieldOptions.columns=4 value.fieldOptions.className='rgbColorPicker'\n    export function __colorNumberPicker(value: number) {\n        return value;\n    }\n\n    /**\n     * Get the color wheel field editor\n     * @param value value between 0 to 255 to get a color value, eg: 10\n     */\n    //% blockId=colorWheelPicker block=\"%value\"\n    //% blockHidden=true\n    //% shim=TD_ID colorSecondary=\"#FFFFFF\"\n    //% value.fieldEditor=\"colorwheel\" value.fieldOptions.decompileLiterals=true\n    //% value.fieldOptions.sliderWidth='200'\n    //% value.fieldOptions.min=0 value.fieldOptions.max=255\n    export function __colorWheelPicker(value: number) {\n        return value;\n    }\n\n    /**\n    * Get the color wheel field editor using HSV values\n    * @param value value between 0 to 255 to get a color value, eg: 10\n    */\n    //% blockId=colorWheelHsvPicker block=\"%value\"\n    //% blockHidden=true\n    //% shim=TD_ID colorSecondary=\"#FFFFFF\"\n    //% value.fieldEditor=\"colorwheel\" value.fieldOptions.decompileLiterals=true\n    //% value.fieldOptions.sliderWidth='200'\n    //% value.fieldOptions.min=0 value.fieldOptions.max=255\n    //% value.fieldOptions.channel=hsvfast\n    export function __colorWheelHsvPicker(value: number) {\n        return value;\n    }\n\n    /**\n     * A speed picker\n     * @param speed the speed, eg: 50\n     */\n    //% blockId=speedPicker block=\"%speed\" shim=TD_ID\n    //% speed.fieldEditor=\"speed\" colorSecondary=\"#FFFFFF\"\n    //% weight=0 blockHidden=1 speed.fieldOptions.decompileLiterals=1\n    export function __speedPicker(speed: number): number {\n        return speed;\n    }\n\n    /**\n     * A turn ratio picker\n     * @param turnratio the turn ratio, eg: 0\n     */\n    //% blockId=turnRatioPicker block=\"%turnratio\" shim=TD_ID\n    //% turnratio.fieldEditor=\"turnratio\" colorSecondary=\"#FFFFFF\"\n    //% weight=0 blockHidden=1 turnRatio.fieldOptions.decompileLiterals=1\n    export function __turnRatioPicker(turnratio: number): number {\n        return turnratio;\n    }\n\n    /**\n     * A field editor that displays a protractor\n     */\n    //% blockId=protractorPicker block=\"%angle\"\n    //% shim=TD_ID\n    //% angle.fieldEditor=protractor\n    //% angle.fieldOptions.decompileLiterals=1\n    //% colorSecondary=\"#FFFFFF\"\n    //% blockHidden=1\n    export function __protractor(angle: number) {\n        return angle;\n    }\n\n    /**\n      * Get the time field editor\n      * @param ms time duration in milliseconds, eg: 500, 1000\n      */\n    //% blockId=timePicker block=\"%ms\"\n    //% blockHidden=true shim=TD_ID\n    //% colorSecondary=\"#FFFFFF\"\n    //% ms.fieldEditor=\"numberdropdown\" ms.fieldOptions.decompileLiterals=true\n    //% ms.fieldOptions.data='[[\"100 ms\", 100], [\"200 ms\", 200], [\"500 ms\", 500], [\"1 second\", 1000], [\"2 seconds\", 2000], [\"5 seconds\", 5000]]'\n    export function __timePicker(ms: number): number {\n        return ms;\n    }\n}",
             "pxt.cpp": "#include \"pxtbase.h\"\n\nusing namespace std;\n\nnamespace pxt {\n\nAction mkAction(int totallen, RefAction *act) {\n    check(getVTable(act)->classNo == BuiltInType::RefAction, PANIC_INVALID_BINARY_HEADER, 1);\n#ifdef PXT_VM\n    check(act->initialLen == totallen, PANIC_INVALID_BINARY_HEADER, 13);\n#endif\n\n    if (totallen == 0) {\n        return (TValue)act; // no closure needed\n    }\n\n    void *ptr = gcAllocate(sizeof(RefAction) + totallen * sizeof(void *));\n    RefAction *r = new (ptr) RefAction();\n    r->len = totallen;\n#ifdef PXT_VM\n    r->numArgs = act->numArgs;\n    r->initialLen = act->initialLen;\n    r->reserved = act->reserved;\n#endif\n    r->func = act->func;\n    memset(r->fields, 0, r->len * sizeof(void *));\n\n    MEMDBG(\"mkAction: start=%p => %p\", act, r);\n\n    return (Action)r;\n}\n\nRefRecord *mkClassInstance(VTable *vtable) {\n    intcheck(vtable->methods[0] == &RefRecord_destroy, PANIC_SIZE, 3);\n    // intcheck(vtable->methods[1] == &RefRecord_print, PANIC_SIZE, 4);\n\n    void *ptr = gcAllocate(vtable->numbytes);\n    RefRecord *r = new (ptr) RefRecord(vtable);\n    memset(r->fields, 0, vtable->numbytes - sizeof(RefRecord));\n    MEMDBG(\"mkClass: vt=%p => %p\", vtable, r);\n    return r;\n}\n\nTValue RefRecord::ld(int idx) {\n    // intcheck((reflen == 255 ? 0 : reflen) <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 1);\n    return fields[idx];\n}\n\nTValue RefRecord::ldref(int idx) {\n    // DMESG(\"LD %p len=%d reflen=%d idx=%d\", this, len, reflen, idx);\n    // intcheck(0 <= idx && idx < reflen, PANIC_OUT_OF_BOUNDS, 2);\n    return fields[idx];\n}\n\nvoid RefRecord::st(int idx, TValue v) {\n    // intcheck((reflen == 255 ? 0 : reflen) <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 3);\n    fields[idx] = v;\n}\n\nvoid RefRecord::stref(int idx, TValue v) {\n    // DMESG(\"ST %p len=%d reflen=%d idx=%d\", this, len, reflen, idx);\n    // intcheck(0 <= idx && idx < reflen, PANIC_OUT_OF_BOUNDS, 4);\n    fields[idx] = v;\n}\n\nvoid RefObject::destroyVT() {\n    ((RefObjectMethod)getVTable(this)->methods[0])(this);\n}\n\n//%\nvoid deleteRefObject(RefObject *obj) {\n    obj->destroyVT();\n}\n\nvoid RefObject::printVT() {\n    ((RefObjectMethod)getVTable(this)->methods[1])(this);\n}\n\nvoid RefRecord_destroy(RefRecord *) {}\n\nvoid RefRecord_print(RefRecord *r) {\n    DMESG(\"RefRecord %p size=%d bytes\", r, getVTable(r)->numbytes);\n}\n\nvoid Segment::set(unsigned i, TValue value) {\n    if (i < size) {\n        data[i] = value;\n    } else if (i < Segment::MaxSize) {\n        growByMin(i + 1);\n        data[i] = value;\n    } else {\n        return;\n    }\n    if (length <= i) {\n        length = i + 1;\n    }\n\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::set\");\n    this->print();\n#endif\n\n    return;\n}\n\nstatic inline int growthFactor(int size) {\n    if (size == 0) {\n        return 4;\n    }\n    if (size < 64) {\n        return size * 2; // Double\n    }\n    if (size < 512) {\n        return size * 5 / 3; // Grow by 1.66 rate\n    }\n    // Grow by constant rate\n    if ((unsigned)size + 256 < Segment::MaxSize)\n        return size + 256;\n    else\n        return Segment::MaxSize;\n}\n\nvoid LLSegment::setLength(unsigned newLen) {\n    if (newLen > Segment::MaxSize)\n        return;\n\n    if (newLen > size) {\n        int newSize = growthFactor(size);\n        if (newSize < (int)newLen)\n            newSize = newLen;\n\n        // this will throw if unable to allocate\n        TValue *tmp = (TValue *)(xmalloc(newSize * sizeof(TValue)));\n\n        // Copy existing data\n        if (size) {\n            memcpy(tmp, data, size * sizeof(TValue));\n        }\n        // fill the rest with default value\n        memset(tmp + size, 0, (newSize - size) * sizeof(TValue));\n\n        // free older segment;\n        xfree(data);\n\n        data = tmp;\n        size = newSize;\n    } else if (newLen < length) {\n        memset(data + newLen, 0, (length - newLen) * sizeof(TValue));\n    }\n\n    length = newLen;\n}\n\nvoid LLSegment::set(unsigned idx, TValue v) {\n    if (idx >= Segment::MaxSize)\n        return;\n    if (idx >= length)\n        setLength(idx + 1);\n    data[idx] = v;\n}\n\nTValue LLSegment::pop() {\n    if (length > 0) {\n        --length;\n        TValue value = data[length];\n        data[length] = 0;\n        return value;\n    }\n    return 0;\n}\n\nvoid LLSegment::destroy() {\n    length = size = 0;\n    xfree(data);\n    data = nullptr;\n}\n\nvoid Segment::growByMin(ramint_t minSize) {\n    ramint_t newSize = max(minSize, (ramint_t)growthFactor(size));\n\n    if (size < newSize) {\n        // this will throw if unable to allocate\n        TValue *tmp = (TValue *)(gcAllocateArray(newSize * sizeof(TValue)));\n\n        // Copy existing data\n        if (size)\n            memcpy(tmp, data, size * sizeof(TValue));\n        // fill the rest with default value\n        memset(tmp + size, 0, (newSize - size) * sizeof(TValue));\n\n        data = tmp;\n        size = newSize;\n\n#ifdef DEBUG_BUILD\n        DMESG(\"growBy - after reallocation\");\n        this->print();\n#endif\n    }\n    // else { no shrinking yet; }\n    return;\n}\n\nvoid Segment::ensure(ramint_t newSize) {\n    if (newSize < size) {\n        return;\n    }\n    growByMin(newSize);\n}\n\nvoid Segment::setLength(unsigned newLength) {\n    if (newLength > size) {\n        ensure(newLength);\n    }\n    length = newLength;\n    return;\n}\n\nTValue Segment::pop() {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::pop\");\n    this->print();\n#endif\n\n    if (length > 0) {\n        --length;\n        TValue value = data[length];\n        data[length] = Segment::DefaultValue;\n        return value;\n    }\n    return Segment::DefaultValue;\n}\n\n// this function removes an element at index i and shifts the rest of the elements to\n// left to fill the gap\nTValue Segment::remove(unsigned i) {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::remove index:%d\", i);\n    this->print();\n#endif\n    if (i < length) {\n        // value to return\n        TValue ret = data[i];\n        if (i + 1 < length) {\n            // Move the rest of the elements to fill in the gap.\n            memmove(data + i, data + i + 1, (length - i - 1) * sizeof(void *));\n        }\n        length--;\n        data[length] = Segment::DefaultValue;\n#ifdef DEBUG_BUILD\n        DMESG(\"After Segment::remove index:%d\", i);\n        this->print();\n#endif\n        return ret;\n    }\n    return Segment::DefaultValue;\n}\n\n// this function inserts element value at index i by shifting the rest of the elements right.\nvoid Segment::insert(unsigned i, TValue value) {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::insert index:%d value:%d\", i, value);\n    this->print();\n#endif\n\n    if (i < length) {\n        ensure(length + 1);\n\n        // Move the rest of the elements to fill in the gap.\n        memmove(data + i + 1, data + i, (length - i) * sizeof(void *));\n\n        data[i] = value;\n        length++;\n    } else {\n        // This is insert beyond the length, just call set which will adjust the length\n        set(i, value);\n    }\n#ifdef DEBUG_BUILD\n    DMESG(\"After Segment::insert index:%d\", i);\n    this->print();\n#endif\n}\n\nvoid Segment::print() {\n    DMESG(\"Segment: %p, length: %d, size: %d\", data, (unsigned)length, (unsigned)size);\n    for (unsigned i = 0; i < size; i++) {\n        DMESG(\"-> %d\", (unsigned)(uintptr_t)data[i]);\n    }\n}\n\nvoid Segment::destroy() {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::destroy\");\n    this->print();\n#endif\n    length = size = 0;\n    data = nullptr;\n}\n\nPXT_VTABLE_CTOR(RefCollection) {}\n\nvoid RefCollection::destroy(RefCollection *t) {\n    t->head.destroy();\n}\n\nvoid RefCollection::print(RefCollection *t) {\n    DMESG(\"RefCollection %p size=%d\", t, t->head.getLength());\n    t->head.print();\n}\n\nPXT_VTABLE(RefAction, ValType::Function)\nRefAction::RefAction() : PXT_VTABLE_INIT(RefAction) {}\n\n// fields[] contain captured locals\nvoid RefAction::destroy(RefAction *t) {}\n\nvoid RefAction::print(RefAction *t) {\n#ifdef PXT_VM\n    DMESG(\"RefAction %p pc=%X size=%d\", t,\n          (const uint8_t *)t->func - (const uint8_t *)vmImg->dataStart, t->len);\n#else\n    DMESG(\"RefAction %p pc=%X size=%d\", t, (const uint8_t *)t->func - (const uint8_t *)bytecode,\n          t->len);\n#endif\n}\n\nPXT_VTABLE_CTOR(RefRefLocal) {\n    v = 0;\n}\n\nvoid RefRefLocal::print(RefRefLocal *t) {\n    DMESG(\"RefRefLocal %p v=%p\", t, (void *)t->v);\n}\n\nvoid RefRefLocal::destroy(RefRefLocal *t) {\n    decr(t->v);\n}\n\nPXT_VTABLE_CTOR(RefMap) {}\n\nvoid RefMap::destroy(RefMap *t) {\n    t->keys.destroy();\n    t->values.destroy();\n}\n\nint RefMap::findIdx(String key) {\n    auto len = keys.getLength();\n    auto data = (String *)keys.getData();\n\n    // fast path\n    for (unsigned i = 0; i < len; ++i) {\n        if (data[i] == key)\n            return i;\n    }\n\n    // slow path\n    auto keylen = key->getUTF8Size();\n    auto keydata = key->getUTF8Data();\n    for (unsigned i = 0; i < len; ++i) {\n        auto s = data[i];\n        if (s->getUTF8Size() == keylen && memcmp(keydata, s->getUTF8Data(), keylen) == 0)\n            return i;\n    }\n\n    return -1;\n}\n\nvoid RefMap::print(RefMap *t) {\n    DMESG(\"RefMap %p size=%d\", t, t->keys.getLength());\n}\n\nvoid debugMemLeaks() {}\n\nvoid error(PXT_PANIC code, int subcode) {\n    DMESG(\"Error: %d [%d]\", code, subcode);\n    target_panic(code);\n}\n\n#ifndef PXT_VM\nuint16_t *bytecode;\n#endif\nTValue *globals;\n\nvoid checkStr(bool cond, const char *msg) {\n    if (!cond) {\n        while (true) {\n            // uBit.display.scroll(msg, 100);\n            // uBit.sleep(100);\n        }\n    }\n}\n\n#ifdef PXT_VM\nint templateHash() {\n    return (int)vmImg->infoHeader->hexHash;\n}\n\nint programHash() {\n    return (int)vmImg->infoHeader->programHash;\n}\n\nint getNumGlobals() {\n    return (int)vmImg->infoHeader->allocGlobals;\n}\n\nString programName() {\n    return mkString((char *)vmImg->infoHeader->name);\n}\n#else\nint templateHash() {\n    return ((int *)bytecode)[4];\n}\n\nint programHash() {\n    return ((int *)bytecode)[6];\n}\n\nint getNumGlobals() {\n    return bytecode[16];\n}\n\nString programName() {\n    return ((String *)bytecode)[15];\n}\n#endif\n\n#ifndef PXT_VM\nvoid variantNotSupported(const char *v) {\n    DMESG(\"variant not supported: %s\", v);\n    target_panic(PANIC_VARIANT_NOT_SUPPORTED);\n}\n\nvoid exec_binary(unsigned *pc) {\n    // XXX re-enable once the calibration code is fixed and [editor/embedded.ts]\n    // properly prepends a call to [internal_main].\n    // ::touch_develop::internal_main();\n\n    // unique group for radio based on source hash\n    // ::touch_develop::micro_bit::radioDefaultGroup = programHash();\n\n    unsigned ver = *pc++;\n    checkStr(ver == 0x4210, \":( Bad runtime version\");\n\n    bytecode = *((uint16_t **)pc++); // the actual bytecode is here\n\n    if (((uint32_t *)bytecode)[0] == 0x923B8E71) {\n        variantNotSupported((const char *)bytecode + 16);\n        return;\n    }\n\n    globals = (TValue *)app_alloc(sizeof(TValue) * getNumGlobals());\n    memset(globals, 0, sizeof(TValue) * getNumGlobals());\n\n    // can be any valid address, best in RAM for speed\n    globals[0] = (TValue)&globals;\n\n    // just compare the first word\n    // TODO\n    checkStr(((uint32_t *)bytecode)[0] == 0x923B8E70 && (unsigned)templateHash() == *pc,\n             \":( Failed partial flash\");\n\n    uintptr_t startptr = (uintptr_t)bytecode;\n\n    startptr += 64; // header\n\n    initPerfCounters();\n\n    initRuntime();\n\n    runAction0((Action)startptr);\n\n    pxt::releaseFiber();\n}\n\nvoid start() {\n    exec_binary((unsigned *)functionsAndBytecode);\n}\n#endif\n\n} // namespace pxt\n\nnamespace Array_ {\n//%\nbool isArray(TValue arr) {\n    auto vt = getAnyVTable(arr);\n    return vt && vt->classNo == BuiltInType::RefCollection;\n}\n} // namespace Array_\n\nnamespace pxtrt {\n//% expose\nRefCollection *keysOf(TValue v) {\n    auto r = NEW_GC(RefCollection);\n    MEMDBG(\"mkColl[keys]: => %p\", r);\n    if (getAnyVTable(v) != &RefMap_vtable)\n        return r;\n    auto rm = (RefMap *)v;\n    auto len = rm->keys.getLength();\n    if (!len)\n        return r;\n    registerGCObj(r);\n    r->setLength(len);\n    auto dst = r->getData();\n    memcpy(dst, rm->keys.getData(), len * sizeof(TValue));\n    unregisterGCObj(r);\n    return r;\n}\n//% expose\nTValue mapDeleteByString(RefMap *map, String key) {\n    if (getAnyVTable((TValue)map) != &RefMap_vtable)\n        target_panic(PANIC_DELETE_ON_CLASS);\n    int i = map->findIdx(key);\n    if (i >= 0) {\n        map->keys.remove(i);\n        map->values.remove(i);\n    }\n    return TAG_TRUE;\n}\n\n} // namespace pxtrt\n",
             "pxt.h": "#ifndef __PXT_H\r\n#define __PXT_H\r\n\r\n//#define DEBUG_MEMLEAKS 1\r\n\r\n#pragma GCC diagnostic ignored \"-Wunused-parameter\"\r\n\r\n#include \"pxtbase.h\"\r\n\r\nnamespace pxt {\r\n\r\nclass RefMImage : public RefObject {\r\n  public:\r\n    ImageData *img;\r\n\r\n    RefMImage(ImageData *d);\r\n    void makeWritable();\r\n    static void destroy(RefMImage *map);\r\n    static void print(RefMImage *map);\r\n    static void scan(RefMImage *t);\r\n    static unsigned gcsize(RefMImage *t);\r\n};\r\n\r\n#define MSTR(s) ManagedString((s)->getUTF8Data(), (s)->getUTF8Size())\r\n\r\nstatic inline String PSTR(ManagedString s) {\r\n    return mkString(s.toCharArray(), s.length());\r\n}\r\n\r\ntypedef uint32_t ImageLiteral_;\r\n\r\nstatic inline ImageData *imageBytes(ImageLiteral_ lit) {\r\n    return (ImageData *)lit;\r\n}\r\n\r\n#if MICROBIT_CODAL\r\n// avoid clashes with codal-defined classes\r\n#define Image MImage\r\n#define Button MButton\r\n#endif\r\n\r\ntypedef RefMImage *Image;\r\n\r\nextern MicroBit uBit;\r\nextern MicroBitEvent lastEvent;\r\n\r\nMicroBitPin *getPin(int id);\r\n\r\nstatic inline int min_(int a, int b) {\r\n    if (a < b)\r\n        return a;\r\n    else\r\n        return b;\r\n}\r\n\r\nstatic inline int max_(int a, int b) {\r\n    if (a > b)\r\n        return a;\r\n    else\r\n        return b;\r\n}\r\n\r\nvoid initMicrobitGC();\r\n\r\n} // namespace pxt\r\n\r\nusing namespace pxt;\r\n\r\n#define DEVICE_EVT_ANY 0\r\n\r\n#undef PXT_MAIN\r\n#define PXT_MAIN                                                                                   \\\r\n    int main() {                                                                                   \\\r\n        pxt::initMicrobitGC();                                                                     \\\r\n        pxt::start();                                                                              \\\r\n        return 0;                                                                                  \\\r\n    }\r\n\r\n#endif\r\n\r\n// vim: ts=2 sw=2 expandtab\r\n",
-            "pxt.json": "{\n    \"name\": \"core\",\n    \"description\": \"The microbit core library\",\n    \"dependencies\": {},\n    \"files\": [\n        \"README.md\",\n        \"platform.h\",\n        \"pxt.cpp\",\n        \"pxt.h\",\n        \"pxtbase.h\",\n        \"pxtcore.h\",\n        \"math.ts\",\n        \"dal.d.ts\",\n        \"enums.d.ts\",\n        \"shims.d.ts\",\n        \"pxt-core.d.ts\",\n        \"core.cpp\",\n        \"pxt-helpers.ts\",\n        \"helpers.ts\",\n        \"pinscompat.ts\",\n        \"configkeys.h\",\n        \"gc.cpp\",\n        \"codal.cpp\",\n        \"images.cpp\",\n        \"basic.cpp\",\n        \"basic.ts\",\n        \"icons.ts\",\n        \"icons.jres\",\n        \"input.cpp\",\n        \"input.ts\",\n        \"gestures.jres\",\n        \"control.ts\",\n        \"control.cpp\",\n        \"interval.ts\",\n        \"gcstats.ts\",\n        \"console.ts\",\n        \"game.ts\",\n        \"led.cpp\",\n        \"led.ts\",\n        \"music.ts\",\n        \"melodies.ts\",\n        \"pins.cpp\",\n        \"pins.ts\",\n        \"serial.cpp\",\n        \"serial.ts\",\n        \"buffer.cpp\",\n        \"buffer.ts\",\n        \"pxtparts.json\",\n        \"advmath.cpp\",\n        \"trig.cpp\",\n        \"fixed.ts\",\n        \"templates.ts\",\n        \"parts/speaker.svg\",\n        \"parts/headphone.svg\",\n        \"bBoard.ts\",\n        \"WiFi_BLE.ts\",\n        \"Weather.ts\",\n        \"LCD_Mini.ts\",\n        \"force.ts\",\n        \"Proximity_2.ts\",\n        \"Servo.ts\",\n        \"airquality2.ts\",\n        \"DC_Motor3.ts\",\n        \"WiFi_BLE.ts\",\n        \"IR_Distance.ts\",\n        \"IR_sense3.ts\",\n        \"IrThermo_3.ts\",\n        \"Keylock.ts\",\n        \"Line_Follower.ts\"\n    ],\n    \"testFiles\": [\n        \"test.ts\"\n    ],\n    \"public\": true,\n    \"targetVersions\": {\n        \"target\": \"2.3.52\"\n    },\n    \"dalDTS\": {\n        \"compileServiceVariant\": \"mbcodal\",\n        \"includeDirs\": [\n            \"libraries/codal-core/inc\",\n            \"libraries/codal-microbit/inc\",\n            \"libraries/codal-microbit/model\",\n            \"libraries/codal-microbit/inc/compat\",\n            \"pxtapp\"\n        ],\n        \"excludePrefix\": [\n            \"USB_\",\n            \"REQUEST_\",\n            \"LIS3DH_\",\n            \"FXOS8700_\",\n            \"MMA8\",\n            \"LSM303_\",\n            \"MAG_\",\n            \"MPU6050_\",\n            \"REF_TAG_\",\n            \"HF2_\",\n            \"PXT_REF_TAG_\",\n            \"MS_\",\n            \"SCSI_\"\n        ]\n    },\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"fiber_user_data\": 1\n            }\n        },\n        \"optionalConfig\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"private_addressing\": 0,\n                    \"advertising_timeout\": 0,\n                    \"tx_power\": 6,\n                    \"dfu_service\": 1,\n                    \"event_service\": 1,\n                    \"device_info_service\": 1,\n                    \"eddystone_url\": 1,\n                    \"eddystone_uid\": 1,\n                    \"open\": 0,\n                    \"pairing_mode\": 1,\n                    \"whitelist\": 1,\n                    \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\",\n                    \"partial_flashing\": 1\n                }\n            }\n        },\n        \"userConfigs\": [\n            {\n                \"description\": \"No Pairing Required: Anyone can connect via Bluetooth.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 1,\n                            \"whitelist\": 0,\n                            \"security_level\": null\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"JustWorks pairing (default): Pairing is automatic once the pairing is initiated.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\"\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"Passkey pairing: Pairing requires 6 digit key to pair.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_WITH_MITM\"\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"partial\": true\n}\n",
+            "pxt.json": "{\n    \"name\": \"core\",\n    \"description\": \"The microbit core library\",\n    \"dependencies\": {},\n    \"files\": [\n        \"README.md\",\n        \"platform.h\",\n        \"pxt.cpp\",\n        \"pxt.h\",\n        \"pxtbase.h\",\n        \"pxtcore.h\",\n        \"math.ts\",\n        \"dal.d.ts\",\n        \"enums.d.ts\",\n        \"shims.d.ts\",\n        \"pxt-core.d.ts\",\n        \"core.cpp\",\n        \"pxt-helpers.ts\",\n        \"helpers.ts\",\n        \"pinscompat.ts\",\n        \"configkeys.h\",\n        \"gc.cpp\",\n        \"codal.cpp\",\n        \"images.cpp\",\n        \"basic.cpp\",\n        \"basic.ts\",\n        \"icons.ts\",\n        \"icons.jres\",\n        \"input.cpp\",\n        \"input.ts\",\n        \"gestures.jres\",\n        \"control.ts\",\n        \"control.cpp\",\n        \"interval.ts\",\n        \"gcstats.ts\",\n        \"console.ts\",\n        \"game.ts\",\n        \"led.cpp\",\n        \"led.ts\",\n        \"music.ts\",\n        \"melodies.ts\",\n        \"pins.cpp\",\n        \"pins.ts\",\n        \"serial.cpp\",\n        \"serial.ts\",\n        \"buffer.cpp\",\n        \"buffer.ts\",\n        \"pxtparts.json\",\n        \"advmath.cpp\",\n        \"trig.cpp\",\n        \"fixed.ts\",\n        \"templates.ts\",\n        \"parts/speaker.svg\",\n        \"parts/headphone.svg\",\n        \"bBoard.ts\",\n        \"WiFi_BLE.ts\",\n        \"Weather.ts\",\n        \"LCD_Mini.ts\",\n        \"force.ts\",\n        \"Proximity_2.ts\",\n        \"Servo.ts\",\n        \"airquality2.ts\",\n        \"DC_Motor3.ts\",\n        \"WiFi_BLE.ts\",\n        \"IR_Distance.ts\",\n        \"IR_sense3.ts\",\n        \"IrThermo_3.ts\",\n        \"Keylock.ts\",\n        \"Line_Follower.ts\",\n        \"Motion.ts\",\n        \"NFC_Tag_2.ts\",\n        \"Noise.ts\",\n        \"Reed.ts\",\n        \"Relay.ts\",\n        \"Stepper_5.ts\",\n        \"Temp_Log_2.ts\",\n        \"Thermo_6.ts\",\n        \"Touchpad.ts\",\n        \"uv3.ts\",\n        \"Water_Detect.ts\",\n        \"Button_G.ts\",\n        \"heartrate.ts\",\n        \"K8.ts\",\n        \"K8.ts.rej\",\n        \"neopixel.ts.rej\"\n    ],\n    \"testFiles\": [\n        \"test.ts\"\n    ],\n    \"public\": true,\n    \"targetVersions\": {\n        \"target\": \"2.3.52\"\n    },\n    \"dalDTS\": {\n        \"compileServiceVariant\": \"mbcodal\",\n        \"includeDirs\": [\n            \"libraries/codal-core/inc\",\n            \"libraries/codal-microbit/inc\",\n            \"libraries/codal-microbit/model\",\n            \"libraries/codal-microbit/inc/compat\",\n            \"pxtapp\"\n        ],\n        \"excludePrefix\": [\n            \"USB_\",\n            \"REQUEST_\",\n            \"LIS3DH_\",\n            \"FXOS8700_\",\n            \"MMA8\",\n            \"LSM303_\",\n            \"MAG_\",\n            \"MPU6050_\",\n            \"REF_TAG_\",\n            \"HF2_\",\n            \"PXT_REF_TAG_\",\n            \"MS_\",\n            \"SCSI_\"\n        ]\n    },\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"fiber_user_data\": 1\n            }\n        },\n        \"optionalConfig\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"private_addressing\": 0,\n                    \"advertising_timeout\": 0,\n                    \"tx_power\": 6,\n                    \"dfu_service\": 1,\n                    \"event_service\": 1,\n                    \"device_info_service\": 1,\n                    \"eddystone_url\": 1,\n                    \"eddystone_uid\": 1,\n                    \"open\": 0,\n                    \"pairing_mode\": 1,\n                    \"whitelist\": 1,\n                    \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\",\n                    \"partial_flashing\": 1\n                }\n            }\n        },\n        \"userConfigs\": [\n            {\n                \"description\": \"No Pairing Required: Anyone can connect via Bluetooth.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 1,\n                            \"whitelist\": 0,\n                            \"security_level\": null\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"JustWorks pairing (default): Pairing is automatic once the pairing is initiated.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\"\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"Passkey pairing: Pairing requires 6 digit key to pair.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_WITH_MITM\"\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"partial\": true\n}\n",
             "pxtbase.h": "#ifndef __PXTBASE_H\n#define __PXTBASE_H\n\n#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n#pragma GCC diagnostic ignored \"-Wformat\"\n#pragma GCC diagnostic ignored \"-Warray-bounds\"\n\n// needed for gcc6; not sure why\n#undef min\n#undef max\n\n#define NOLOG(...)                                                                                 \\\n    do {                                                                                           \\\n    } while (0)\n\n#define MEMDBG NOLOG\n//#define MEMDBG DMESG\n#define MEMDBG2 NOLOG\n\n#include \"pxtconfig.h\"\n#include \"configkeys.h\"\n\n#ifndef PXT_UTF8\n#define PXT_UTF8 0\n#endif\n\n#if defined(PXT_VM)\n#include <stdint.h>\n#if UINTPTR_MAX == 0xffffffff\n#define PXT32 1\n#elif UINTPTR_MAX == 0xffffffffffffffff\n#define PXT64 1\n#else\n#error \"UINTPTR_MAX has invalid value\"\n#endif\n#endif\n\n#define intcheck(...) check(__VA_ARGS__)\n//#define intcheck(...) do {} while (0)\n\n#ifdef PXT_USE_FLOAT\n#define NUMBER float\n#else\n#define NUMBER double\n#endif\n\n#include <string.h>\n#include <stdint.h>\n#include <math.h>\n\n#ifdef POKY\nvoid *operator new(size_t size, void *ptr);\nvoid *operator new(size_t size);\n#else\n#include <new>\n#endif\n\n#include \"platform.h\"\n#include \"pxtcore.h\"\n\n#ifndef PXT_REGISTER_RESET\n#define PXT_REGISTER_RESET(fn) ((void)0)\n#endif\n\n#define PXT_REFCNT_FLASH 0xfffe\n\n#define CONCAT_1(a, b) a##b\n#define CONCAT_0(a, b) CONCAT_1(a, b)\n// already provided in some platforms, like mbedos\n#ifndef STATIC_ASSERT\n#define STATIC_ASSERT(e) enum { CONCAT_0(_static_assert_, __LINE__) = 1 / ((e) ? 1 : 0) };\n#endif\n\n#ifndef ramint_t\n// this type limits size of arrays\n#if defined(__linux__) || defined(PXT_VM)\n// TODO fix the inline array accesses to take note of this!\n#define ramint_t uint32_t\n#else\n#define ramint_t uint16_t\n#endif\n#endif\n\n#ifndef PXT_IN_ISR\n#define PXT_IN_ISR() (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk)\n#endif\n\n#ifdef POKY\ninline void *operator new(size_t, void *p) {\n    return p;\n}\ninline void *operator new[](size_t, void *p) {\n    return p;\n}\n#endif\n\nnamespace pxt {\n\ntemplate <typename T> inline const T &max(const T &a, const T &b) {\n    if (a < b)\n        return b;\n    return a;\n}\n\ntemplate <typename T> inline const T &min(const T &a, const T &b) {\n    if (a < b)\n        return a;\n    return b;\n}\n\ntemplate <typename T> inline void swap(T &a, T &b) {\n    T tmp = a;\n    a = b;\n    b = tmp;\n}\n\n//\n// Tagged values (assume 4 bytes for now, Cortex-M0)\n//\nstruct TValueStruct {};\ntypedef TValueStruct *TValue;\n\ntypedef TValue TNumber;\ntypedef TValue Action;\ntypedef TValue ImageLiteral;\n\n// To be implemented by the target\nextern \"C\" void target_panic(int error_code);\nextern \"C\" void target_reset();\nvoid sleep_ms(unsigned ms);\nvoid sleep_us(uint64_t us);\nvoid releaseFiber();\nuint64_t current_time_us();\nint current_time_ms();\nvoid initRuntime();\nvoid initSystemTimer();\nvoid sendSerial(const char *data, int len);\nvoid setSendToUART(void (*f)(const char *, int));\nuint64_t getLongSerialNumber();\nvoid registerWithDal(int id, int event, Action a, int flags = 16); // EVENT_LISTENER_DEFAULT_FLAGS\nvoid runInParallel(Action a);\nvoid runForever(Action a);\nvoid waitForEvent(int id, int event);\n//%\nunsigned afterProgramPage();\n//%\nvoid dumpDmesg();\nuint32_t hash_fnv1(const void *data, unsigned len);\n\n// also defined DMESG macro\n// end\n\n#define TAGGED_SPECIAL(n) (TValue)(void *)((n << 2) | 2)\n#define TAG_FALSE TAGGED_SPECIAL(2) // 10\n#define TAG_TRUE TAGGED_SPECIAL(16) // 66\n#define TAG_UNDEFINED (TValue)0\n#define TAG_NULL TAGGED_SPECIAL(1) // 6\n#define TAG_NAN TAGGED_SPECIAL(3)  // 14\n#define TAG_NUMBER(n) (TNumber)(void *)(((uintptr_t)(uint32_t)(n) << 1) | 1)\n#define TAG_NON_VALUE TAGGED_SPECIAL(4) // 18; doesn't represent any JS value\n\n#ifdef PXT_VM\ninline bool isEncodedDouble(uint64_t v) {\n    return (v >> 48) != 0;\n}\n#endif\n\ninline bool isDouble(TValue v) {\n#ifdef PXT64\n    return ((uintptr_t)v >> 48) != 0;\n#else\n    (void)v;\n    return false;\n#endif\n}\n\ninline bool isPointer(TValue v) {\n    return !isDouble(v) && v != 0 && ((intptr_t)v & 3) == 0;\n}\n\ninline bool isTagged(TValue v) {\n    return (!isDouble(v) && ((intptr_t)v & 3)) || !v;\n}\n\ninline bool isInt(TValue v) {\n    return !isDouble(v) && ((intptr_t)v & 1);\n}\n\ninline bool isSpecial(TValue v) {\n    return !isDouble(v) && ((intptr_t)v & 2);\n}\n\ninline bool bothNumbers(TValue a, TValue b) {\n    return !isDouble(a) && !isDouble(b) && ((intptr_t)a & (intptr_t)b & 1);\n}\n\ninline int numValue(TValue n) {\n    return (int)((intptr_t)n >> 1);\n}\n\ninline bool canBeTagged(int v) {\n    (void)v;\n#ifdef PXT_BOX_DEBUG\n    return false;\n#elif defined(PXT64)\n    return true;\n#else\n    return (v << 1) >> 1 == v;\n#endif\n}\n\n// see https://anniecherkaev.com/the-secret-life-of-nan\n\n#define NanBoxingOffset 0x1000000000000LL\n\ntemplate <typename TO, typename FROM> TO bitwise_cast(FROM in) {\n    STATIC_ASSERT(sizeof(TO) == sizeof(FROM));\n    union {\n        FROM from;\n        TO to;\n    } u;\n    u.from = in;\n    return u.to;\n}\n\ninline double decodeDouble(uint64_t v) {\n    return bitwise_cast<double>(v - NanBoxingOffset);\n}\n\n#ifdef PXT64\nSTATIC_ASSERT(sizeof(void *) == 8);\ninline double doubleVal(TValue v) {\n    return bitwise_cast<double>((uint64_t)v - NanBoxingOffset);\n}\n\ninline TValue tvalueFromDouble(double d) {\n    return (TValue)(bitwise_cast<uint64_t>(d) + NanBoxingOffset);\n}\n#else\nSTATIC_ASSERT(sizeof(void *) == 4);\n#endif\n\n// keep in sym with sim/control.ts\ntypedef enum {\n    PANIC_CODAL_OOM = 20,\n    PANIC_GC_OOM = 21,\n    PANIC_GC_TOO_BIG_ALLOCATION = 22,\n    PANIC_CODAL_HEAP_ERROR = 30,\n    PANIC_CODAL_NULL_DEREFERENCE = 40,\n    PANIC_CODAL_USB_ERROR = 50,\n    PANIC_CODAL_HARDWARE_CONFIGURATION_ERROR = 90,\n\n    PANIC_INVALID_BINARY_HEADER = 901,\n    PANIC_OUT_OF_BOUNDS = 902,\n    PANIC_REF_DELETED = 903,\n    PANIC_SIZE = 904,\n    PANIC_INVALID_VTABLE = 905,\n    PANIC_INTERNAL_ERROR = 906,\n    PANIC_NO_SUCH_CONFIG = 907,\n    PANIC_NO_SUCH_PIN = 908,\n    PANIC_INVALID_ARGUMENT = 909,\n    PANIC_MEMORY_LIMIT_EXCEEDED = 910,\n    PANIC_SCREEN_ERROR = 911,\n    PANIC_MISSING_PROPERTY = 912,\n    PANIC_INVALID_IMAGE = 913,\n    PANIC_CALLED_FROM_ISR = 914,\n    PANIC_HEAP_DUMPED = 915,\n    PANIC_STACK_OVERFLOW = 916,\n    PANIC_BLOCKING_TO_STRING = 917,\n    PANIC_VM_ERROR = 918,\n    PANIC_SETTINGS_CLEARED = 920,\n    PANIC_SETTINGS_OVERLOAD = 921,\n    PANIC_SETTINGS_SECRET_MISSING = 922,\n    PANIC_DELETE_ON_CLASS = 923,\n    PANIC_OUT_OF_TIMERS = 924,\n    PANIC_JACDAC = 925,\n    PANIC_MICROPHONE_MISSING = 926,\n    PANIC_VARIANT_NOT_SUPPORTED = 927,\n\n    PANIC_CAST_FIRST = 980,\n    PANIC_CAST_FROM_UNDEFINED = 980,\n    PANIC_CAST_FROM_BOOLEAN = 981,\n    PANIC_CAST_FROM_NUMBER = 982,\n    PANIC_CAST_FROM_STRING = 983,\n    PANIC_CAST_FROM_OBJECT = 984,\n    PANIC_CAST_FROM_FUNCTION = 985,\n    PANIC_CAST_FROM_NULL = 989,\n\n    PANIC_UNHANDLED_EXCEPTION = 999,\n\n} PXT_PANIC;\n\nextern const uintptr_t functionsAndBytecode[];\nextern TValue *globals;\nextern uint16_t *bytecode;\nclass RefRecord;\n\n// Utility functions\n\ntypedef TValue (*RunActionType)(Action a, TValue arg0, TValue arg1, TValue arg2);\n\n#define asmRunAction3 ((RunActionType)(((uintptr_t *)bytecode)[12]))\n\nstatic inline TValue runAction3(Action a, TValue arg0, TValue arg1, TValue arg2) {\n    return asmRunAction3(a, arg0, arg1, 0);\n}\nstatic inline TValue runAction2(Action a, TValue arg0, TValue arg1) {\n    return asmRunAction3(a, arg0, arg1, 0);\n}\nstatic inline TValue runAction1(Action a, TValue arg0) {\n    return asmRunAction3(a, arg0, 0, 0);\n}\nstatic inline TValue runAction0(Action a) {\n    return asmRunAction3(a, 0, 0, 0);\n}\n\nclass RefAction;\nclass BoxedString;\nstruct VTable;\n\n//%\nAction mkAction(int totallen, RefAction *act);\n//% expose\nint templateHash();\n//% expose\nint programHash();\n//% expose\nBoxedString *programName();\n//% expose\nunsigned programSize();\n//%\nint getNumGlobals();\n//%\nRefRecord *mkClassInstance(VTable *vt);\n//%\nvoid debugMemLeaks();\n//%\nvoid anyPrint(TValue v);\n\n//%\nint getConfig(int key, int defl = -1);\n\n//%\nint toInt(TNumber v);\n//%\nunsigned toUInt(TNumber v);\n//%\nNUMBER toDouble(TNumber v);\n//%\nfloat toFloat(TNumber v);\n//%\nTNumber fromDouble(NUMBER r);\n//%\nTNumber fromFloat(float r);\n\n//%\nTNumber fromInt(int v);\n//%\nTNumber fromUInt(unsigned v);\n//%\nTValue fromBool(bool v);\n//%\nbool eq_bool(TValue a, TValue b);\n//%\nbool eqq_bool(TValue a, TValue b);\n\n//%\nvoid failedCast(TValue v);\n//%\nvoid missingProperty(TValue v);\n\nvoid error(PXT_PANIC code, int subcode = 0);\nvoid exec_binary(unsigned *pc);\nvoid start();\n\nstruct HandlerBinding {\n    HandlerBinding *next;\n    int source;\n    int value;\n    Action action;\n};\nHandlerBinding *findBinding(int source, int value);\nHandlerBinding *nextBinding(HandlerBinding *curr, int source, int value);\nvoid setBinding(int source, int value, Action act);\n\n// Legacy stuff; should no longer be used\n//%\nTValue incr(TValue e);\n//%\nvoid decr(TValue e);\n\ninline TValue incr(TValue e) {\n    return e;\n}\ninline void decr(TValue e) {}\n\nclass RefObject;\n\nstatic inline RefObject *incrRC(RefObject *r) {\n    return r;\n}\nstatic inline void decrRC(RefObject *) {\n}\n\ninline void *ptrOfLiteral(int offset) {\n    return &bytecode[offset];\n}\n\n// Checks if object is ref-counted, and has a custom PXT vtable in front\n// TODO\ninline bool isRefCounted(TValue e) {\n    return isPointer(e);\n}\n\ninline void check(int cond, PXT_PANIC code, int subcode = 0) {\n    if (!cond)\n        error(code, subcode);\n}\n\ninline void oops(int subcode = 0) {\n    target_panic(800 + subcode);\n}\n\nclass RefObject;\n\ntypedef void (*RefObjectMethod)(RefObject *self);\ntypedef unsigned (*RefObjectSizeMethod)(RefObject *self);\ntypedef void *PVoid;\ntypedef void **PPVoid;\n\ntypedef void *Object_;\n\n#define VTABLE_MAGIC 0xF9\n\nenum class ValType : uint8_t {\n    Undefined,\n    Boolean,\n    Number,\n    String,\n    Object,\n    Function,\n};\n\n// keep in sync with pxt-core (search for the type name)\nenum class BuiltInType : uint16_t {\n    BoxedString = 1,\n    BoxedNumber = 2,\n    BoxedBuffer = 3,\n    RefAction = 4,\n    RefImage = 5,\n    RefCollection = 6,\n    RefRefLocal = 7,\n    RefMap = 8,\n    RefMImage = 9,\n    MMap = 10, // linux, mostly ev3\n    User0 = 16,\n};\n\nstruct VTable {\n    uint16_t numbytes;\n    ValType objectType;\n    uint8_t magic;\n#ifdef PXT_VM\n    uint16_t ifaceHashEntries;\n    BuiltInType lastClassNo;\n#else\n    PVoid *ifaceTable;\n#endif\n    BuiltInType classNo;\n    uint16_t reserved;\n    uint32_t ifaceHashMult;\n\n    // we only use the first few methods here; pxt will generate more\n    PVoid methods[8];\n};\n\n//%\nextern const VTable string_inline_ascii_vt;\n#if PXT_UTF8\n//%\nextern const VTable string_inline_utf8_vt;\n//%\nextern const VTable string_cons_vt;\n//%\nextern const VTable string_skiplist16_vt;\n#endif\n//%\nextern const VTable buffer_vt;\n//%\nextern const VTable number_vt;\n//%\nextern const VTable RefAction_vtable;\n\n#define PXT_VTABLE_TO_INT(vt) ((uintptr_t)(vt))\n\n// allocate 1M of heap on iOS\n#define PXT_IOS_HEAP_ALLOC_BITS 20\n\n#ifdef PXT_IOS\nextern uint8_t *gcBase;\n#endif\n\ninline bool isReadOnly(TValue v) {\n#ifdef PXT64\n#ifdef PXT_IOS\n    return !isPointer(v) || (((uintptr_t)v - (uintptr_t)gcBase) >> PXT_IOS_HEAP_ALLOC_BITS) != 0;\n#else\n    return !isPointer(v) || !((uintptr_t)v >> 37);\n#endif\n#else\n    return isTagged(v) || !((uintptr_t)v >> 28);\n#endif\n}\n\n// A base abstract class for ref-counted objects.\nclass RefObject {\n  public:\n    uintptr_t vtable;\n\n    RefObject(const VTable *vt) {\n#if defined(PXT32) && defined(PXT_VM)\n        if ((uint32_t)vt & 0xf0000000)\n            target_panic(PANIC_INVALID_VTABLE);\n#endif\n        vtable = PXT_VTABLE_TO_INT(vt);\n    }\n\n    void destroyVT();\n    void printVT();\n\n    inline void ref() {}\n    inline void unref() {}\n    inline bool isReadOnly() { return pxt::isReadOnly((TValue)this); }\n};\n\nclass Segment {\n  private:\n    TValue *data;\n    ramint_t length;\n    ramint_t size;\n\n    // this just gives max value of ramint_t\n    void growByMin(ramint_t minSize);\n    void ensure(ramint_t newSize);\n\n  public:\n    static constexpr ramint_t MaxSize = (((1U << (8 * sizeof(ramint_t) - 1)) - 1) << 1) + 1;\n    static constexpr TValue DefaultValue = TAG_UNDEFINED; // == NULL\n\n    Segment() : data(nullptr), length(0), size(0) {}\n\n    TValue get(unsigned i) { return i < length ? data[i] : NULL; }\n    void set(unsigned i, TValue value);\n\n    unsigned getLength() { return length; };\n    void setLength(unsigned newLength);\n\n    void push(TValue value) { set(length, value); }\n    TValue pop();\n\n    TValue remove(unsigned i);\n    void insert(unsigned i, TValue value);\n\n    void destroy();\n\n    void print();\n\n    TValue *getData() { return data; }\n};\n\n// Low-Level segment using system malloc\nclass LLSegment {\n  private:\n    TValue *data;\n    ramint_t length;\n    ramint_t size;\n\n  public:\n    LLSegment() : data(nullptr), length(0), size(0) {}\n\n    void set(unsigned idx, TValue v);\n    void push(TValue value) { set(length, value); }\n    TValue pop();\n    void destroy();\n    void setLength(unsigned newLen);\n\n    TValue get(unsigned i) { return i < length ? data[i] : NULL; }\n    unsigned getLength() { return length; };\n    TValue *getData() { return data; }\n};\n\n// A ref-counted collection of either primitive or ref-counted objects (String, Image,\n// user-defined record, another collection)\nclass RefCollection : public RefObject {\n  public:\n    Segment head;\n\n    RefCollection();\n\n    static void destroy(RefCollection *coll);\n    static void scan(RefCollection *coll);\n    static unsigned gcsize(RefCollection *coll);\n    static void print(RefCollection *coll);\n\n    unsigned length() { return head.getLength(); }\n    void setLength(unsigned newLength) { head.setLength(newLength); }\n    TValue getAt(int i) { return head.get(i); }\n    TValue *getData() { return head.getData(); }\n};\n\nclass RefMap : public RefObject {\n  public:\n    Segment keys;\n    Segment values;\n\n    RefMap();\n    static void destroy(RefMap *map);\n    static void scan(RefMap *map);\n    static unsigned gcsize(RefMap *coll);\n    static void print(RefMap *map);\n    int findIdx(BoxedString *key);\n};\n\n// A ref-counted, user-defined JS object.\nclass RefRecord : public RefObject {\n  public:\n    // The object is allocated, so that there is space at the end for the fields.\n    TValue fields[];\n\n    RefRecord(VTable *v) : RefObject(v) {}\n\n    TValue ld(int idx);\n    TValue ldref(int idx);\n    void st(int idx, TValue v);\n    void stref(int idx, TValue v);\n};\n\nstatic inline VTable *getVTable(RefObject *r) {\n    return (VTable *)(r->vtable & ~1);\n}\n\nstatic inline VTable *getAnyVTable(TValue v) {\n    if (!isRefCounted(v))\n        return NULL;\n    auto vt = getVTable((RefObject *)v);\n    if (vt->magic == VTABLE_MAGIC)\n        return vt;\n    return NULL;\n}\n\n// these are needed when constructing vtables for user-defined classes\n//%\nvoid RefRecord_destroy(RefRecord *r);\n//%\nvoid RefRecord_print(RefRecord *r);\n//%\nvoid RefRecord_scan(RefRecord *r);\n//%\nunsigned RefRecord_gcsize(RefRecord *r);\n\ntypedef TValue (*ActionCB)(TValue *captured, TValue arg0, TValue arg1, TValue arg2);\n\n// Ref-counted function pointer.\nclass RefAction : public RefObject {\n  public:\n#if defined(PXT_VM) && defined(PXT32)\n    uint32_t _padding; // match binary format in .pxt64 files\n#endif\n    uint16_t len;\n    uint16_t numArgs;\n#ifdef PXT_VM\n    uint16_t initialLen;\n    uint16_t reserved;\n#endif\n    ActionCB func; // The function pointer\n    // fields[] contain captured locals\n    TValue fields[];\n\n    static void destroy(RefAction *act);\n    static void scan(RefAction *act);\n    static unsigned gcsize(RefAction *coll);\n    static void print(RefAction *act);\n\n    RefAction();\n\n    inline void stCore(int idx, TValue v) {\n        // DMESG(\"ST [%d] = %d \", idx, v); this->print();\n        intcheck(0 <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 10);\n        intcheck(fields[idx] == 0, PANIC_OUT_OF_BOUNDS, 11); // only one assignment permitted\n        fields[idx] = v;\n    }\n};\n\n// These two are used to represent locals written from inside inline functions\nclass RefRefLocal : public RefObject {\n  public:\n    TValue v;\n    static void destroy(RefRefLocal *l);\n    static void scan(RefRefLocal *l);\n    static unsigned gcsize(RefRefLocal *l);\n    static void print(RefRefLocal *l);\n    RefRefLocal();\n};\n\ntypedef int color;\n\n// note: this is hardcoded in PXT (hexfile.ts)\n\nclass BoxedNumber : public RefObject {\n  public:\n    NUMBER num;\n    BoxedNumber() : RefObject(&number_vt) {}\n} __attribute__((packed));\n\nclass BoxedString : public RefObject {\n  public:\n    union {\n        struct {\n            uint16_t length;\n            char data[0];\n        } ascii;\n#if PXT_UTF8\n        struct {\n            uint16_t length;\n            char data[0];\n        } utf8;\n        struct {\n            BoxedString *left;\n            BoxedString *right;\n        } cons;\n        struct {\n            uint16_t size;\n            uint16_t length;\n            uint16_t *list;\n        } skip;\n#endif\n    };\n\n#if PXT_UTF8\n    uintptr_t runMethod(int idx) {\n        return ((uintptr_t(*)(BoxedString *))((VTable *)this->vtable)->methods[idx])(this);\n    }\n    const char *getUTF8Data() { return (const char *)runMethod(4); }\n    uint32_t getUTF8Size() { return (uint32_t)runMethod(5); }\n    // in characters\n    uint32_t getLength() { return (uint32_t)runMethod(6); }\n    const char *getUTF8DataAt(uint32_t pos) {\n        auto meth =\n            ((const char *(*)(BoxedString *, uint32_t))((VTable *)this->vtable)->methods[7]);\n        return meth(this, pos);\n    }\n#else\n    const char *getUTF8Data() { return ascii.data; }\n    uint32_t getUTF8Size() { return ascii.length; }\n    uint32_t getLength() { return ascii.length; }\n    const char *getUTF8DataAt(uint32_t pos) { return pos < ascii.length ? ascii.data + pos : NULL; }\n#endif\n\n    TNumber charCodeAt(int pos);\n\n    BoxedString(const VTable *vt) : RefObject(vt) {}\n};\n\n// cross version compatible way of accessing string data\n#ifndef PXT_STRING_DATA\n#define PXT_STRING_DATA(str) str->getUTF8Data()\n#endif\n\n// cross version compatible way of accessing string length\n#ifndef PXT_STRING_DATA_LENGTH\n#define PXT_STRING_DATA_LENGTH(str) str->getUTF8Size()\n#endif\n\nclass BoxedBuffer : public RefObject {\n  public:\n    // data needs to be word-aligned, so we use 32 bits for length\n    int length;\n#ifdef PXT_VM\n    // VM can be 64 bit and it compiles as such\n    int32_t _padding;\n#endif\n    uint8_t data[0];\n    BoxedBuffer() : RefObject(&buffer_vt) {}\n};\n\n// cross version compatible way of access data field\n#ifndef PXT_BUFFER_DATA\n#define PXT_BUFFER_DATA(buffer) buffer->data\n#endif\n\n// cross version compatible way of access data length\n#ifndef PXT_BUFFER_LENGTH\n#define PXT_BUFFER_LENGTH(buffer) buffer->length\n#endif\n\n#ifndef PXT_CREATE_BUFFER\n#define PXT_CREATE_BUFFER(data, len) pxt::mkBuffer(data, len)\n#endif\n\n// Legacy format:\n// the first byte of data indicates the format - currently 0xE1 or 0xE4 to 1 or 4 bit bitmaps\n// second byte indicates width in pixels\n// third byte indicates the height (which should also match the size of the buffer)\n// just like ordinary buffers, these can be layed out in flash\n\n// Current format:\n// 87 BB WW WW HH HH 00 00 DATA\n// that is: 0x87, 0x01 or 0x04 - bpp, width in little endian, height, 0x00, 0x00 followed by data\n// for 4 bpp images, rows are word-aligned (as in legacy)\n\n#define IMAGE_HEADER_MAGIC 0x87\n\nstruct ImageHeader {\n    uint8_t magic;\n    uint8_t bpp;\n    uint16_t width;\n    uint16_t height;\n    uint16_t padding;\n    uint8_t pixels[0];\n};\n\nclass RefImage : public RefObject {\n  public:\n    BoxedBuffer *buffer;\n\n    RefImage(BoxedBuffer *buf);\n    RefImage(uint32_t sz);\n\n    void setBuffer(BoxedBuffer *b);\n\n    uint8_t *data() { return buffer->data; }\n    int length() { return (int)buffer->length; }\n\n    ImageHeader *header() { return (ImageHeader *)buffer->data; }\n    int pixLength() { return length() - sizeof(ImageHeader); }\n\n    int width() { return header()->width; }\n    int height() { return header()->height; }\n    int wordHeight();\n    int bpp() { return header()->bpp; }\n\n    bool hasPadding() { return (height() & 0x7) != 0; }\n\n    uint8_t *pix() { return header()->pixels; }\n\n    int byteHeight() {\n        if (bpp() == 1)\n            return (height() + 7) >> 3;\n        else if (bpp() == 4)\n            return ((height() * 4 + 31) >> 5) << 2;\n        else {\n            oops(21);\n            return -1;\n        }\n    }\n\n    uint8_t *pix(int x, int y) {\n        uint8_t *d = &pix()[byteHeight() * x];\n        if (y) {\n            if (bpp() == 1)\n                d += y >> 3;\n            else if (bpp() == 4)\n                d += y >> 1;\n        }\n        return d;\n    }\n\n    uint8_t fillMask(color c);\n    bool inRange(int x, int y);\n    void clamp(int *x, int *y);\n    void makeWritable();\n\n    static void destroy(RefImage *t);\n    static void scan(RefImage *t);\n    static unsigned gcsize(RefImage *t);\n    static void print(RefImage *t);\n};\n\nRefImage *mkImage(int w, int h, int bpp);\n\ntypedef BoxedBuffer *Buffer;\ntypedef BoxedString *String;\ntypedef RefImage *Image_;\n\nuint32_t toRealUTF8(String str, uint8_t *dst);\n\n// keep in sync with github/pxt/pxtsim/libgeneric.ts\nenum class NumberFormat {\n    Int8LE = 1,\n    UInt8LE,\n    Int16LE,\n    UInt16LE,\n    Int32LE,\n    Int8BE,\n    UInt8BE,\n    Int16BE,\n    UInt16BE,\n    Int32BE,\n\n    UInt32LE,\n    UInt32BE,\n    Float32LE,\n    Float64LE,\n    Float32BE,\n    Float64BE,\n};\n\n// this will, unlike mkStringCore, UTF8-canonicalize the data\nString mkString(const char *data, int len = -1);\n// data can be NULL in both cases\nBuffer mkBuffer(const void *data, int len);\nString mkStringCore(const char *data, int len = -1);\n\nTNumber getNumberCore(uint8_t *buf, int size, NumberFormat format);\nvoid setNumberCore(uint8_t *buf, int size, NumberFormat format, TNumber value);\n\nvoid seedRandom(unsigned seed);\nvoid seedAddRandom(unsigned seed);\n// max is inclusive\nunsigned getRandom(unsigned max);\n\nValType valType(TValue v);\n\n// this is equivalent to JS `throw v`; it will leave\n// the current function(s), all the way until the nearest try block and\n// ignore all destructors (think longjmp())\nvoid throwValue(TValue v);\n\nvoid registerGC(TValue *root, int numwords = 1);\nvoid unregisterGC(TValue *root, int numwords = 1);\nvoid registerGCPtr(TValue ptr);\nvoid unregisterGCPtr(TValue ptr);\nstatic inline void registerGCObj(RefObject *ptr) {\n    registerGCPtr((TValue)ptr);\n}\nstatic inline void unregisterGCObj(RefObject *ptr) {\n    unregisterGCPtr((TValue)ptr);\n}\nvoid gc(int flags);\n\nstruct StackSegment {\n    void *top;\n    void *bottom;\n    StackSegment *next;\n};\n\n#define NUM_TRY_FRAME_REGS 3\nstruct TryFrame {\n    TryFrame *parent;\n    uintptr_t registers[NUM_TRY_FRAME_REGS];\n};\n\nstruct ThreadContext {\n    TValue *globals;\n    StackSegment stack;\n    TryFrame *tryFrame;\n    TValue thrownValue;\n#ifdef PXT_GC_THREAD_LIST\n    ThreadContext *next;\n    ThreadContext *prev;\n#endif\n};\n\n#ifdef PXT_GC_THREAD_LIST\nextern ThreadContext *threadContexts;\nvoid *threadAddressFor(ThreadContext *, void *sp);\n#endif\n\nvoid releaseThreadContext(ThreadContext *ctx);\nThreadContext *getThreadContext();\nvoid setThreadContext(ThreadContext *ctx);\n\n#ifndef PXT_GC_THREAD_LIST\nvoid gcProcessStacks(int flags);\n#endif\n\nvoid gcProcess(TValue v);\nvoid gcFreeze();\n#ifdef PXT_VM\nvoid gcStartup();\nvoid gcPreStartup();\nvoid *gcPrealloc(int numbytes);\nbool inGCPrealloc();\n#else\nstatic inline bool inGCPrealloc() {\n    return false;\n}\n#endif\n\nvoid coreReset();\nvoid gcReset();\nvoid systemReset();\n\nvoid *gcAllocate(int numbytes);\nvoid *gcAllocateArray(int numbytes);\nextern \"C\" void *app_alloc(int numbytes);\nextern \"C\" void *app_free(void *ptr);\nvoid gcPreAllocateBlock(uint32_t sz);\n\n#ifdef PXT64\n#define TOWORDS(bytes) (((bytes) + 7) >> 3)\n#else\n#define TOWORDS(bytes) (((bytes) + 3) >> 2)\n#endif\n\n#ifndef PXT_VM\n#define soft_panic target_panic\n#endif\n\nextern int debugFlags;\n\nenum class PerfCounters {\n    GC,\n};\n\n#ifdef PXT_PROFILE\n#ifndef PERF_NOW\n#error \"missing platform timer support\"\n#endif\n\nstruct PerfCounter {\n    uint32_t value;\n    uint32_t numstops;\n    uint32_t start;\n};\n\nextern struct PerfCounter *perfCounters;\n\nvoid initPerfCounters();\n//%\nvoid dumpPerfCounters();\n//%\nvoid startPerfCounter(PerfCounters n);\n//%\nvoid stopPerfCounter(PerfCounters n);\n#else\ninline void startPerfCounter(PerfCounters n) {}\ninline void stopPerfCounter(PerfCounters n) {}\ninline void initPerfCounters() {}\ninline void dumpPerfCounters() {}\n#endif\n\n#ifdef PXT_VM\nString mkInternalString(const char *str);\n#define PXT_DEF_STRING(name, val) String name = mkInternalString(val);\n#else\n#define PXT_DEF_STRING(name, val)                                                                  \\\n    static const char name[] __attribute__((aligned(4))) = \"@PXT@:\" val;\n#endif\n\n} // namespace pxt\n\nusing namespace pxt;\n\nnamespace numops {\n//%\nString toString(TValue v);\n//%\nint toBool(TValue v);\n//%\nint toBoolDecr(TValue v);\n} // namespace numops\n\nnamespace pxt {\ninline bool toBoolQuick(TValue v) {\n    if (v == TAG_TRUE)\n        return true;\n    if (v == TAG_FALSE || v == TAG_UNDEFINED || v == TAG_NULL)\n        return false;\n    return numops::toBool(v);\n}\n} // namespace pxt\n\nnamespace pxtrt {\n//%\nRefMap *mkMap();\n//%\nTValue mapGetByString(RefMap *map, String key);\n//%\nint lookupMapKey(String key);\n//%\nTValue mapGet(RefMap *map, unsigned key);\n//%\nvoid mapSetByString(RefMap *map, String key, TValue val);\n//%\nvoid mapSet(RefMap *map, unsigned key, TValue val);\n} // namespace pxtrt\n\nnamespace pins {\nBuffer createBuffer(int size);\n}\n\nnamespace String_ {\n//%\nint compare(String a, String b);\n} // namespace String_\n\nnamespace Array_ {\n//%\nRefCollection *mk();\n//%\nint length(RefCollection *c);\n//%\nvoid setLength(RefCollection *c, int newLength);\n//%\nvoid push(RefCollection *c, TValue x);\n//%\nTValue pop(RefCollection *c);\n//%\nTValue getAt(RefCollection *c, int x);\n//%\nvoid setAt(RefCollection *c, int x, TValue y);\n//%\nTValue removeAt(RefCollection *c, int x);\n//%\nvoid insertAt(RefCollection *c, int x, TValue value);\n//%\nint indexOf(RefCollection *c, TValue x, int start);\n//%\nbool removeElement(RefCollection *c, TValue x);\n} // namespace Array_\n\n#define NEW_GC(T, ...) new (gcAllocate(sizeof(T))) T(__VA_ARGS__)\n\n// The ARM Thumb generator in the JavaScript code is parsing\n// the hex file and looks for the magic numbers as present here.\n//\n// Then it fetches function pointer addresses from there.\n//\n// The vtable pointers are there, so that the ::emptyData for various types\n// can be patched with the right vtable.\n//\n#define PXT_SHIMS_BEGIN                                                                            \\\n    namespace pxt {                                                                                \\\n    const uintptr_t functionsAndBytecode[]                                                         \\\n        __attribute__((aligned(0x20))) = {0x08010801, 0x42424242, 0x08010801, 0x8de9d83e,\n\n#define PXT_SHIMS_END                                                                              \\\n    }                                                                                              \\\n    ;                                                                                              \\\n    }\n\n#if !defined(X86_64) && !defined(PXT_VM)\n#pragma GCC diagnostic ignored \"-Wpmf-conversions\"\n#endif\n\n#ifdef PXT_VM\n#define DEF_VTABLE(name, tp, valtype, ...)                                                         \\\n    const VTable name = {sizeof(tp), valtype, VTABLE_MAGIC, 0, BuiltInType::tp, BuiltInType::tp,   \\\n                         0,          0,       {__VA_ARGS__}};\n#else\n#define DEF_VTABLE(name, tp, valtype, ...)                                                         \\\n    const VTable name = {sizeof(tp), valtype, VTABLE_MAGIC, 0, BuiltInType::tp,                    \\\n                         0,          0,       {__VA_ARGS__}};\n#endif\n\n#define PXT_VTABLE(classname, valtp)                                                               \\\n    DEF_VTABLE(classname##_vtable, classname, valtp, (void *)&classname::destroy,                  \\\n               (void *)&classname::print, (void *)&classname::scan, (void *)&classname::gcsize)\n\n#define PXT_VTABLE_INIT(classname) RefObject(&classname##_vtable)\n\n#define PXT_VTABLE_CTOR(classname)                                                                 \\\n    PXT_VTABLE(classname, ValType::Object)                                                         \\\n    classname::classname() : PXT_VTABLE_INIT(classname)\n\n#define PXT_MAIN                                                                                   \\\n    int main() {                                                                                   \\\n        pxt::start();                                                                              \\\n        return 0;                                                                                  \\\n    }\n\n#define PXT_FNPTR(x) (uintptr_t)(void *)(x)\n\n#define PXT_ABI(...)\n\n#define JOIN(a, b) a##b\n/// Defines getClassName() function to fetch the singleton\n#define SINGLETON(ClassName)                                                                       \\\n    static ClassName *JOIN(inst, ClassName);                                                       \\\n    ClassName *JOIN(get, ClassName)() {                                                            \\\n        if (!JOIN(inst, ClassName))                                                                \\\n            JOIN(inst, ClassName) = new ClassName();                                               \\\n        return JOIN(inst, ClassName);                                                              \\\n    }\n\n/// Defines getClassName() function to fetch the singleton if PIN present\n#define SINGLETON_IF_PIN(ClassName, pin)                                                           \\\n    static ClassName *JOIN(inst, ClassName);                                                       \\\n    ClassName *JOIN(get, ClassName)() {                                                            \\\n        if (!JOIN(inst, ClassName) && LOOKUP_PIN(pin))                                             \\\n            JOIN(inst, ClassName) = new ClassName();                                               \\\n        return JOIN(inst, ClassName);                                                              \\\n    }\n\n#ifdef PXT_VM\n#include \"vm.h\"\n#endif\n\n#endif\n",
             "pxtcore.h": "#ifndef __PXTCORE_H\r\n#define __PXTCORE_H\r\n\r\n#include \"MicroBit.h\"\r\n#include \"MicroBitImage.h\"\r\n#include \"ManagedString.h\"\r\n#include \"ManagedType.h\"\r\n\r\nnamespace pxt {\r\nvoid debuglog(const char *format, ...);\r\n}\r\n\r\n// #define GC_GET_HEAP_SIZE() device_heap_size(0)\r\n#define xmalloc malloc\r\n#define xfree free\r\n\r\n#define GC_MAX_ALLOC_SIZE 9000\r\n\r\n#define GC_BLOCK_SIZE 256\r\n#define NON_GC_HEAP_RESERVATION 1024\r\n\r\n\r\n#ifdef CODAL_CONFIG_H\r\n#define MICROBIT_CODAL 1\r\n#else\r\n#define MICROBIT_CODAL 0\r\n#endif\r\n\r\n#if !MICROBIT_CODAL\r\n#undef DMESG\r\n#define DMESG NOLOG\r\n#endif\r\n\r\n#undef BYTES_TO_WORDS\r\n\r\n#endif\r\n",
             "pxtparts.json": "{\n    \"buttonpair\": {\n        \"simulationBehavior\": \"buttonpair\",\n        \"visual\": {\n            \"builtIn\": \"buttonpair\",\n            \"width\": 75,\n            \"height\": 45,\n            \"pinDistance\": 15,\n            \"pinLocations\": [\n                {\n                    \"x\": 0,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 45\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 75,\n                    \"y\": 45\n                }\n            ]\n        },\n        \"numberOfPins\": 4,\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P14\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"P15\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    2,\n                    3\n                ]\n            }\n        ]\n    },\n    \"microservo\": {\n        \"simulationBehavior\": \"microservo\",\n        \"visual\": {\n            \"builtIn\": \"microservo\",\n            \"width\": 74.85,\n            \"height\": 200,\n            \"pinDistance\": 10,\n            \"pinLocations\": [\n                {\n                    \"x\": 30,\n                    \"y\": 5\n                },\n                {\n                    \"x\": 37,\n                    \"y\": 5\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 5\n                }\n            ]\n        },\n        \"numberOfPins\": 3,\n        \"pinDefinitions\": [\n            {\n                \"target\": {\n                    \"pinInstantiationIdx\": 0\n                },\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"threeVolt\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            }\n        ],\n        \"instantiations\": [\n            {\n                \"kind\": \"function\",\n                \"fullyQualifiedName\": \"pins.servoWritePin,pins.servoSetPulse,PwmOnlyPin.servoWrite,PwmOnlyPin.servoSetPulse,servos.Servo.setAngle,servos.Servo.run,servos.Servo.setPulse\",\n                \"argumentRoles\": [\n                    {\n                        \"pinInstantiationIdx\": 0,\n                        \"partParameter\": \"name\"\n                    }\n                ]\n            }\n        ],\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    2\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            }\n        ]\n    },\n    \"neopixel\": {\n        \"simulationBehavior\": \"neopixel\",\n        \"visual\": {\n            \"builtIn\": \"neopixel\",\n            \"width\": 58,\n            \"height\": 113,\n            \"pinDistance\": 9,\n            \"pinLocations\": [\n                {\n                    \"x\": 10,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 19,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 28,\n                    \"y\": 0\n                }\n            ]\n        },\n        \"numberOfPins\": 3,\n        \"pinDefinitions\": [\n            {\n                \"target\": {\n                    \"pinInstantiationIdx\": 0\n                },\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"threeVolt\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"function\",\n            \"fullyQualifiedName\": \"neopixel.create\",\n            \"argumentRoles\": [\n                {\n                    \"pinInstantiationIdx\": 0,\n                    \"partParameter\": \"pin\"\n                },\n                {\n                    \"partParameter\": \"mode\"\n                }\n            ]\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    2\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            }\n        ]\n    },\n    \"ledmatrix\": {\n        \"visual\": {\n            \"builtIn\": \"ledmatrix\",\n            \"width\": 105,\n            \"height\": 105,\n            \"pinDistance\": 15,\n            \"pinLocations\": [\n                {\n                    \"x\": 0,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 15,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 105,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 0,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 15,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 60,\n                    \"y\": 0\n                }\n            ]\n        },\n        \"simulationBehavior\": \"ledmatrix\",\n        \"numberOfPins\": 10,\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P6\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P7\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P8\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P9\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P10\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P12\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P13\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P16\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P19\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P20\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            }\n        ],\n        \"assembly\": [\n            {\n                \"part\": true\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1,\n                    2,\n                    3,\n                    4\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    5,\n                    6,\n                    7,\n                    8,\n                    9\n                ]\n            }\n        ]\n    },\n    \"headphone\": {\n        \"numberOfPins\": 2,\n        \"visual\": {\n            \"image\": \"parts/headphone.svg\",\n            \"width\": 142,\n            \"height\": 180,\n            \"pinDistance\": 20,\n            \"pinLocations\": [\n                {\n                    \"x\": 17,\n                    \"y\": 11\n                },\n                {\n                    \"x\": 55,\n                    \"y\": 50\n                }\n            ]\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P0\",\n                \"style\": \"croc\",\n                \"orientation\": \"Y\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"Y\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    0\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    1\n                ]\n            }\n        ]\n    },\n    \"speaker\": {\n        \"numberOfPins\": 2,\n        \"visual\": {\n            \"image\": \"parts/speaker.svg\",\n            \"width\": 500,\n            \"height\": 500,\n            \"pinDistance\": 70,\n            \"pinLocations\": [\n                {\n                    \"x\": 180,\n                    \"y\": 135\n                },\n                {\n                    \"x\": 320,\n                    \"y\": 135\n                }\n            ]\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P0\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    0\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    1\n                ]\n            }\n        ]\n    }\n}",
@@ -2726,7 +2741,8 @@ var pxtTargetBundle = {
             "shims.d.ts": "// Auto-generated. Do not edit.\n\n\n    /**\n     * Creation, manipulation and display of LED images.\n     */\n    //% color=#7600A8 weight=31 icon=\"\\uf03e\"\n    //% advanced=true\ndeclare namespace images {\n\n    /**\n     * Creates an image that fits on the LED screen.\n     */\n    //% weight=75 help=images/create-image\n    //% blockId=device_build_image block=\"create image\"\n    //% parts=\"ledmatrix\" imageLiteral=1 shim=images::createImage\n    function createImage(leds: string): Image;\n\n    /**\n     * Creates an image with 2 frames.\n     */\n    //% weight=74 help=images/create-big-image\n    //% blockId=device_build_big_image block=\"create big image\" imageLiteral=2\n    //% parts=\"ledmatrix\" shim=images::createBigImage\n    function createBigImage(leds: string): Image;\n}\n\n\ndeclare interface Image {\n    /**\n     * Plots the image at a given column to the screen\n     */\n    //% help=images/plot-image\n    //% parts=\"ledmatrix\" xOffset.defl=0 shim=ImageMethods::plotImage\n    plotImage(xOffset?: int32): void;\n\n    /**\n     * Shows an frame from the image at offset ``x offset``.\n     * @param xOffset column index to start displaying the image\n     */\n    //% help=images/show-image weight=80 blockNamespace=images\n    //% blockId=device_show_image_offset block=\"show image %sprite(myImage)|at offset %offset\"\n    //% blockGap=8 parts=\"ledmatrix\" async interval.defl=400 shim=ImageMethods::showImage\n    showImage(xOffset: int32, interval?: int32): void;\n\n    /**\n     * Draws the ``index``-th frame of the image on the screen.\n     * @param xOffset column index to start displaying the image\n     */\n    //% help=images/plot-frame weight=80\n    //% parts=\"ledmatrix\" shim=ImageMethods::plotFrame\n    plotFrame(xOffset: int32): void;\n\n    /**\n     * Scrolls an image .\n     * @param frameOffset x offset moved on each animation step, eg: 1, 2, 5\n     * @param interval time between each animation step in milli seconds, eg: 200\n     */\n    //% help=images/scroll-image weight=79 async blockNamespace=images\n    //% blockId=device_scroll_image\n    //% block=\"scroll image %sprite(myImage)|with offset %frameoffset|and interval (ms) %delay\"\n    //% blockGap=8 parts=\"ledmatrix\" shim=ImageMethods::scrollImage\n    scrollImage(frameOffset: int32, interval: int32): void;\n\n    /**\n     * Sets all pixels off.\n     */\n    //% help=images/clear\n    //% parts=\"ledmatrix\" shim=ImageMethods::clear\n    clear(): void;\n\n    /**\n     * Sets a specific pixel brightness at a given position\n     */\n    //%\n    //% parts=\"ledmatrix\" shim=ImageMethods::setPixelBrightness\n    setPixelBrightness(x: int32, y: int32, value: int32): void;\n\n    /**\n     * Gets the pixel brightness ([0..255]) at a given position\n     */\n    //%\n    //% parts=\"ledmatrix\" shim=ImageMethods::pixelBrightness\n    pixelBrightness(x: int32, y: int32): int32;\n\n    /**\n     * Gets the width in columns\n     */\n    //% help=functions/width shim=ImageMethods::width\n    width(): int32;\n\n    /**\n     * Gets the height in rows (always 5)\n     */\n    //% shim=ImageMethods::height\n    height(): int32;\n\n    /**\n     * Set a pixel state at position ``(x,y)``\n     * @param x pixel column\n     * @param y pixel row\n     * @param value pixel state\n     */\n    //% help=images/set-pixel\n    //% parts=\"ledmatrix\" shim=ImageMethods::setPixel\n    setPixel(x: int32, y: int32, value: boolean): void;\n\n    /**\n     * Get the pixel state at position ``(x,y)``\n     * @param x pixel column\n     * @param y pixel row\n     */\n    //% help=images/pixel\n    //% parts=\"ledmatrix\" shim=ImageMethods::pixel\n    pixel(x: int32, y: int32): boolean;\n\n    /**\n     * Show a particular frame of the image strip.\n     * @param frame image frame to show\n     */\n    //% weight=70 help=images/show-frame\n    //% parts=\"ledmatrix\" interval.defl=400 shim=ImageMethods::showFrame\n    showFrame(frame: int32, interval?: int32): void;\n}\n\n\n    /**\n     * Provides access to basic micro:bit functionality.\n     */\n    //% color=#1E90FF weight=116 icon=\"\\uf00a\"\ndeclare namespace basic {\n\n    /**\n     * Draws an image on the LED screen.\n     * @param leds the pattern of LED to turn on/off\n     * @param interval time in milliseconds to pause after drawing\n     */\n    //% help=basic/show-leds\n    //% weight=95 blockGap=8\n    //% imageLiteral=1 async\n    //% blockId=device_show_leds\n    //% block=\"show leds\" icon=\"\\uf00a\"\n    //% parts=\"ledmatrix\" interval.defl=400 shim=basic::showLeds\n    function showLeds(leds: string, interval?: int32): void;\n\n    /**\n     * Display text on the display, one character at a time. If the string fits on the screen (i.e. is one letter), does not scroll.\n     * @param text the text to scroll on the screen, eg: \"Hello!\"\n     * @param interval how fast to shift characters; eg: 150, 100, 200, -100\n     */\n    //% help=basic/show-string\n    //% weight=87 blockGap=16\n    //% block=\"show|string %text\"\n    //% async\n    //% blockId=device_print_message\n    //% parts=\"ledmatrix\"\n    //% text.shadowOptions.toString=true interval.defl=150 shim=basic::showString\n    function showString(text: string, interval?: int32): void;\n\n    /**\n     * Turn off all LEDs\n     */\n    //% help=basic/clear-screen weight=79\n    //% blockId=device_clear_display block=\"clear screen\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=basic::clearScreen\n    function clearScreen(): void;\n\n    /**\n     * Shows a sequence of LED screens as an animation.\n     * @param leds pattern of LEDs to turn on/off\n     * @param interval time in milliseconds between each redraw\n     */\n    //% help=basic/show-animation imageLiteral=1 async\n    //% parts=\"ledmatrix\" interval.defl=400 shim=basic::showAnimation\n    function showAnimation(leds: string, interval?: int32): void;\n\n    /**\n     * Draws an image on the LED screen.\n     * @param leds pattern of LEDs to turn on/off\n     */\n    //% help=basic/plot-leds weight=80\n    //% parts=\"ledmatrix\" imageLiteral=1 shim=basic::plotLeds\n    function plotLeds(leds: string): void;\n\n    /**\n     * Repeats the code forever in the background. On each iteration, allows other codes to run.\n     * @param body code to execute\n     */\n    //% help=basic/forever weight=55 blockGap=16 blockAllowMultiple=1 afterOnStart=true\n    //% blockId=device_forever block=\"forever\" icon=\"\\uf01e\" shim=basic::forever\n    function forever(a: () => void): void;\n\n    /**\n     * Pause for the specified time in milliseconds\n     * @param ms how long to pause for, eg: 100, 200, 500, 1000, 2000\n     */\n    //% help=basic/pause weight=54\n    //% async block=\"pause (ms) %pause\" blockGap=16\n    //% blockId=device_pause icon=\"\\uf110\"\n    //% pause.shadow=timePicker shim=basic::pause\n    function pause(ms: int32): void;\n}\n\n\n\n    //% color=#D400D4 weight=111 icon=\"\\uf192\"\ndeclare namespace input {\n\n    /**\n     * Do something when a button (A, B or both A+B) is pushed down and released again.\n     * @param button the button that needs to be pressed\n     * @param body code to run when event is raised\n     */\n    //% help=input/on-button-pressed weight=85 blockGap=16\n    //% blockId=device_button_event block=\"on button|%NAME|pressed\"\n    //% parts=\"buttonpair\" shim=input::onButtonPressed\n    function onButtonPressed(button: Button, body: () => void): void;\n\n    /**\n     * Do something when when a gesture is done (like shaking the micro:bit).\n     * @param gesture the type of gesture to track, eg: Gesture.Shake\n     * @param body code to run when gesture is raised\n     */\n    //% help=input/on-gesture weight=84 blockGap=16\n    //% blockId=device_gesture_event block=\"on |%NAME\"\n    //% parts=\"accelerometer\"\n    //% NAME.fieldEditor=\"gestures\" NAME.fieldOptions.columns=4 shim=input::onGesture\n    function onGesture(gesture: Gesture, body: () => void): void;\n\n    /**\n     * Tests if a gesture is currently detected.\n     * @param gesture the type of gesture to detect, eg: Gesture.Shake\n     */\n    //% help=input/is-gesture weight=10 blockGap=8\n    //% blockId=deviceisgesture block=\"is %gesture gesture\"\n    //% parts=\"accelerometer\"\n    //% gesture.fieldEditor=\"gestures\" gesture.fieldOptions.columns=4 shim=input::isGesture\n    function isGesture(gesture: Gesture): boolean;\n\n    /**\n     * Do something when a pin is touched and released again (while also touching the GND pin).\n     * @param name the pin that needs to be pressed, eg: TouchPin.P0\n     * @param body the code to run when the pin is pressed\n     */\n    //% help=input/on-pin-pressed weight=83 blockGap=32\n    //% blockId=device_pin_event block=\"on pin %name|pressed\" shim=input::onPinPressed\n    function onPinPressed(name: TouchPin, body: () => void): void;\n\n    /**\n     * Do something when a pin is released.\n     * @param name the pin that needs to be released, eg: TouchPin.P0\n     * @param body the code to run when the pin is released\n     */\n    //% help=input/on-pin-released weight=6 blockGap=16\n    //% blockId=device_pin_released block=\"on pin %NAME|released\"\n    //% advanced=true shim=input::onPinReleased\n    function onPinReleased(name: TouchPin, body: () => void): void;\n\n    /**\n     * Get the button state (pressed or not) for ``A`` and ``B``.\n     * @param button the button to query the request, eg: Button.A\n     */\n    //% help=input/button-is-pressed weight=60\n    //% block=\"button|%NAME|is pressed\"\n    //% blockId=device_get_button2\n    //% icon=\"\\uf192\" blockGap=8\n    //% parts=\"buttonpair\" shim=input::buttonIsPressed\n    function buttonIsPressed(button: Button): boolean;\n\n    /**\n     * Get the pin state (pressed or not). Requires to hold the ground to close the circuit.\n     * @param name pin used to detect the touch, eg: TouchPin.P0\n     */\n    //% help=input/pin-is-pressed weight=58\n    //% blockId=\"device_pin_is_pressed\" block=\"pin %NAME|is pressed\"\n    //% blockGap=8 shim=input::pinIsPressed\n    function pinIsPressed(name: TouchPin): boolean;\n\n    /**\n     * Get the acceleration value in milli-gravitys (when the board is laying flat with the screen up, x=0, y=0 and z=-1024)\n     * @param dimension x, y, or z dimension, eg: Dimension.X\n     */\n    //% help=input/acceleration weight=58\n    //% blockId=device_acceleration block=\"acceleration (mg)|%NAME\" blockGap=8\n    //% parts=\"accelerometer\" shim=input::acceleration\n    function acceleration(dimension: Dimension): int32;\n\n    /**\n     * Reads the light level applied to the LED screen in a range from ``0`` (dark) to ``255`` bright.\n     */\n    //% help=input/light-level weight=57\n    //% blockId=device_get_light_level block=\"light level\" blockGap=8\n    //% parts=\"ledmatrix\" shim=input::lightLevel\n    function lightLevel(): int32;\n\n    /**\n     * Get the current compass heading in degrees.\n     */\n    //% help=input/compass-heading\n    //% weight=56\n    //% blockId=device_heading block=\"compass heading (°)\" blockGap=8\n    //% parts=\"compass\" shim=input::compassHeading\n    function compassHeading(): int32;\n\n    /**\n     * Gets the temperature in Celsius degrees (°C).\n     */\n    //% weight=55\n    //% help=input/temperature\n    //% blockId=device_temperature block=\"temperature (°C)\" blockGap=8\n    //% parts=\"thermometer\" shim=input::temperature\n    function temperature(): int32;\n\n    /**\n     * The pitch or roll of the device, rotation along the ``x-axis`` or ``y-axis``, in degrees.\n     * @param kind pitch or roll\n     */\n    //% help=input/rotation weight=52\n    //% blockId=device_get_rotation block=\"rotation (°)|%NAME\" blockGap=8\n    //% parts=\"accelerometer\" advanced=true shim=input::rotation\n    function rotation(kind: Rotation): int32;\n\n    /**\n     * Get the magnetic force value in ``micro-Teslas`` (``µT``). This function is not supported in the simulator.\n     * @param dimension the x, y, or z dimension, eg: Dimension.X\n     */\n    //% help=input/magnetic-force weight=51\n    //% blockId=device_get_magnetic_force block=\"magnetic force (µT)|%NAME\" blockGap=8\n    //% parts=\"compass\"\n    //% advanced=true shim=input::magneticForce\n    function magneticForce(dimension: Dimension): number;\n\n    /**\n     * Obsolete, compass calibration is automatic.\n     */\n    //% help=input/calibrate-compass advanced=true\n    //% blockId=\"input_compass_calibrate\" block=\"calibrate compass\"\n    //% weight=45 shim=input::calibrateCompass\n    function calibrateCompass(): void;\n\n    /**\n     * Sets the accelerometer sample range in gravities.\n     * @param range a value describe the maximum strengh of acceleration measured\n     */\n    //% help=input/set-accelerometer-range\n    //% blockId=device_set_accelerometer_range block=\"set accelerometer|range %range\"\n    //% weight=5\n    //% parts=\"accelerometer\"\n    //% advanced=true shim=input::setAccelerometerRange\n    function setAccelerometerRange(range: AcceleratorRange): void;\n}\n\n\n\n    //% weight=1 color=\"#333333\"\n    //% advanced=true\ndeclare namespace control {\n\n    /**\n     * Gets the number of milliseconds elapsed since power on.\n     */\n    //% help=control/millis weight=50\n    //% blockId=control_running_time block=\"millis (ms)\" shim=control::millis\n    function millis(): int32;\n\n    /**\n     * Gets current time in microseconds. Overflows every ~18 minutes.\n     */\n    //% shim=control::micros\n    function micros(): int32;\n\n    /**\n     * Schedules code that run in the background.\n     */\n    //% help=control/in-background blockAllowMultiple=1 afterOnStart=true\n    //% blockId=\"control_in_background\" block=\"run in background\" blockGap=8 shim=control::inBackground\n    function inBackground(a: () => void): void;\n\n    /**\n     * Blocks the calling thread until the specified event is raised.\n     */\n    //% help=control/wait-for-event async\n    //% blockId=control_wait_for_event block=\"wait for event|from %src|with value %value\" shim=control::waitForEvent\n    function waitForEvent(src: int32, value: int32): void;\n\n    /**\n     * Resets the BBC micro:bit.\n     */\n    //% weight=30 async help=control/reset blockGap=8\n    //% blockId=\"control_reset\" block=\"reset\" shim=control::reset\n    function reset(): void;\n\n    /**\n     * Blocks the current fiber for the given microseconds\n     * @param micros number of micro-seconds to wait. eg: 4\n     */\n    //% help=control/wait-micros weight=29\n    //% blockId=\"control_wait_us\" block=\"wait (µs)%micros\" shim=control::waitMicros\n    function waitMicros(micros: int32): void;\n\n    /**\n     * Raises an event in the event bus.\n     * @param src ID of the MicroBit Component that generated the event e.g. MICROBIT_ID_BUTTON_A.\n     * @param value Component specific code indicating the cause of the event.\n     * @param mode optional definition of how the event should be processed after construction (default is CREATE_AND_FIRE).\n     */\n    //% weight=21 blockGap=12 blockId=\"control_raise_event\" block=\"raise event|from source %src=control_event_source_id|with value %value=control_event_value_id\" blockExternalInputs=1\n    //% help=control/raise-event\n    //% mode.defl=1 shim=control::raiseEvent\n    function raiseEvent(src: int32, value: int32, mode?: EventCreationMode): void;\n\n    /**\n     * Registers an event handler.\n     */\n    //% weight=20 blockGap=8 blockId=\"control_on_event\" block=\"on event|from %src=control_event_source_id|with value %value=control_event_value_id\"\n    //% help=control/on-event\n    //% blockExternalInputs=1 flags.defl=0 shim=control::onEvent\n    function onEvent(src: int32, value: int32, handler: () => void, flags?: int32): void;\n\n    /**\n     * Gets the value of the last event executed on the bus\n     */\n    //% blockId=control_event_value\" block=\"event value\"\n    //% help=control/event-value\n    //% weight=18 shim=control::eventValue\n    function eventValue(): int32;\n\n    /**\n     * Gets the timestamp of the last event executed on the bus\n     */\n    //% blockId=control_event_timestamp\" block=\"event timestamp\"\n    //% help=control/event-timestamp\n    //% weight=19 blockGap=8 shim=control::eventTimestamp\n    function eventTimestamp(): int32;\n\n    /**\n     * Make a friendly name for the device based on its serial number\n     */\n    //% blockId=\"control_device_name\" block=\"device name\" weight=10 blockGap=8\n    //% advanced=true shim=control::deviceName\n    function deviceName(): string;\n\n    /**\n     * Derive a unique, consistent serial number of this device from internal data.\n     */\n    //% blockId=\"control_device_serial_number\" block=\"device serial number\" weight=9\n    //% advanced=true shim=control::deviceSerialNumber\n    function deviceSerialNumber(): int32;\n\n    /**\n     * Informs simulator/runtime of a MIDI message\n     * Internal function to support the simulator.\n     */\n    //% part=midioutput blockHidden=1 shim=control::__midiSend\n    function __midiSend(buffer: Buffer): void;\n\n    /**\n     *\n     */\n    //% shim=control::__log\n    function __log(text: string): void;\n}\n\n\n\n    //% color=#7600A8 weight=101 icon=\"\\uf205\"\ndeclare namespace led {\n\n    /**\n     * Turn on the specified LED using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED starting at 0\n     * @param y the vertical coordinate of the LED starting at 0\n     */\n    //% help=led/plot weight=78\n    //% blockId=device_plot block=\"plot|x %x|y %y\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1 shim=led::plot\n    function plot(x: int32, y: int32): void;\n\n    /**\n     * Turn on the specified LED with specific brightness using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED starting at 0\n     * @param y the vertical coordinate of the LED starting at 0\n     * @param brightness the brightness from 0 (off) to 255 (bright), eg:255\n     */\n    //% help=led/plot-brightness weight=78\n    //% blockId=device_plot_brightness block=\"plot|x %x|y %y|brightness %brightness\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4 brightness.min=0 brightness.max=255\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1\n    //% advanced=true shim=led::plotBrightness\n    function plotBrightness(x: int32, y: int32, brightness: int32): void;\n\n    /**\n     * Turn off the specified LED using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED\n     * @param y the vertical coordinate of the LED\n     */\n    //% help=led/unplot weight=77\n    //% blockId=device_unplot block=\"unplot|x %x|y %y\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1 shim=led::unplot\n    function unplot(x: int32, y: int32): void;\n\n    /**\n     * Get the brightness state of the specified LED using x, y coordinates. (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED\n     * @param y the vertical coordinate of the LED\n     */\n    //% help=led/point-brightness weight=76\n    //% blockId=device_point_brightness block=\"point|x %x|y %y brightness\"\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1\n    //% advanced=true shim=led::pointBrightness\n    function pointBrightness(x: int32, y: int32): int32;\n\n    /**\n     * Get the screen brightness from 0 (off) to 255 (full bright).\n     */\n    //% help=led/brightness weight=60\n    //% blockId=device_get_brightness block=\"brightness\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=led::brightness\n    function brightness(): int32;\n\n    /**\n     * Set the screen brightness from 0 (off) to 255 (full bright).\n     * @param value the brightness value, eg:255, 127, 0\n     */\n    //% help=led/set-brightness weight=59\n    //% blockId=device_set_brightness block=\"set brightness %value\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true\n    //% value.min=0 value.max=255 shim=led::setBrightness\n    function setBrightness(value: int32): void;\n\n    /**\n     * Cancels the current animation and clears other pending animations.\n     */\n    //% weight=50 help=led/stop-animation\n    //% blockId=device_stop_animation block=\"stop animation\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=led::stopAnimation\n    function stopAnimation(): void;\n\n    /**\n     * Sets the display mode between black and white and greyscale for rendering LEDs.\n     * @param mode mode the display mode in which the screen operates\n     */\n    //% weight=1 help=led/set-display-mode\n    //% parts=\"ledmatrix\" advanced=true weight=1\n    //% blockId=\"led_set_display_mode\" block=\"set display mode $mode\" shim=led::setDisplayMode\n    function setDisplayMode(mode: DisplayMode): void;\n\n    /**\n     * Gets the current display mode\n     */\n    //% weight=1 parts=\"ledmatrix\" advanced=true shim=led::displayMode\n    function displayMode(): DisplayMode;\n\n    /**\n     * Turns on or off the display\n     */\n    //% help=led/enable blockId=device_led_enable block=\"led enable %on\"\n    //% advanced=true parts=\"ledmatrix\" shim=led::enable\n    function enable(on: boolean): void;\n\n    /**\n     * Takes a screenshot of the LED screen and returns an image.\n     */\n    //% help=led/screenshot\n    //% parts=\"ledmatrix\" shim=led::screenshot\n    function screenshot(): Image;\n}\ndeclare namespace pins {\n\n    /**\n     * Read the specified pin or connector as either 0 or 1\n     * @param name pin to read from, eg: DigitalPin.P0\n     */\n    //% help=pins/digital-read-pin weight=30\n    //% blockId=device_get_digital_pin block=\"digital read|pin %name\" blockGap=8\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::digitalReadPin\n    function digitalReadPin(name: DigitalPin): int32;\n\n    /**\n     * Set a pin or connector value to either 0 or 1.\n     * @param name pin to write to, eg: DigitalPin.P0\n     * @param value value to set on the pin, 1 eg,0\n     */\n    //% help=pins/digital-write-pin weight=29\n    //% blockId=device_set_digital_pin block=\"digital write|pin %name|to %value\"\n    //% value.min=0 value.max=1\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::digitalWritePin\n    function digitalWritePin(name: DigitalPin, value: int32): void;\n\n    /**\n     * Read the connector value as analog, that is, as a value comprised between 0 and 1023.\n     * @param name pin to write to, eg: AnalogPin.P0\n     */\n    //% help=pins/analog-read-pin weight=25\n    //% blockId=device_get_analog_pin block=\"analog read|pin %name\" blockGap=\"8\"\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogReadPin\n    function analogReadPin(name: AnalogPin): int32;\n\n    /**\n     * Set the connector value as analog. Value must be comprised between 0 and 1023.\n     * @param name pin name to write to, eg: AnalogPin.P0\n     * @param value value to write to the pin between ``0`` and ``1023``. eg:1023,0\n     */\n    //% help=pins/analog-write-pin weight=24\n    //% blockId=device_set_analog_pin block=\"analog write|pin %name|to %value\" blockGap=8\n    //% value.min=0 value.max=1023\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogWritePin\n    function analogWritePin(name: AnalogPin, value: int32): void;\n\n    /**\n     * Configure the pulse-width modulation (PWM) period of the analog output in microseconds.\n     * If this pin is not configured as an analog output (using `analog write pin`), the operation has no effect.\n     * @param name analog pin to set period to, eg: AnalogPin.P0\n     * @param micros period in micro seconds. eg:20000\n     */\n    //% help=pins/analog-set-period weight=23 blockGap=8\n    //% blockId=device_set_analog_period block=\"analog set period|pin %pin|to (µs)%micros\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" shim=pins::analogSetPeriod\n    function analogSetPeriod(name: AnalogPin, micros: int32): void;\n\n    /**\n     * Configure the pin as a digital input and generate an event when the pin is pulsed either high or low.\n     * @param name digital pin to register to, eg: DigitalPin.P0\n     * @param pulse the value of the pulse, eg: PulseValue.High\n     */\n    //% help=pins/on-pulsed weight=22 blockGap=16 advanced=true\n    //% blockId=pins_on_pulsed block=\"on|pin %pin|pulsed %pulse\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::onPulsed\n    function onPulsed(name: DigitalPin, pulse: PulseValue, body: () => void): void;\n\n    /**\n     * Get the duration of the last pulse in microseconds. This function should be called from a ``onPulsed`` handler.\n     */\n    //% help=pins/pulse-duration advanced=true\n    //% blockId=pins_pulse_duration block=\"pulse duration (µs)\"\n    //% weight=21 blockGap=8 shim=pins::pulseDuration\n    function pulseDuration(): int32;\n\n    /**\n     * Return the duration of a pulse at a pin in microseconds.\n     * @param name the pin which measures the pulse, eg: DigitalPin.P0\n     * @param value the value of the pulse, eg: PulseValue.High\n     * @param maximum duration in microseconds\n     */\n    //% blockId=\"pins_pulse_in\" block=\"pulse in (µs)|pin %name|pulsed %value\"\n    //% weight=20 advanced=true\n    //% help=pins/pulse-in\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" maxDuration.defl=2000000 shim=pins::pulseIn\n    function pulseIn(name: DigitalPin, value: PulseValue, maxDuration?: int32): int32;\n\n    /**\n     * Write a value to the servo, controlling the shaft accordingly. On a standard servo, this will set the angle of the shaft (in degrees), moving the shaft to that orientation. On a continuous rotation servo, this will set the speed of the servo (with ``0`` being full-speed in one direction, ``180`` being full speed in the other, and a value near ``90`` being no movement).\n     * @param name pin to write to, eg: AnalogPin.P0\n     * @param value angle or rotation speed, eg:180,90,0\n     */\n    //% help=pins/servo-write-pin weight=20\n    //% blockId=device_set_servo_pin block=\"servo write|pin %name|to %value\" blockGap=8\n    //% parts=microservo trackArgs=0\n    //% value.min=0 value.max=180\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::servoWritePin\n    function servoWritePin(name: AnalogPin, value: int32): void;\n\n    /**\n     * Specifies that a continuous servo is connected.\n     */\n    //% shim=pins::servoSetContinuous\n    function servoSetContinuous(name: AnalogPin, value: boolean): void;\n\n    /**\n     * Configure the IO pin as an analog/pwm output and set a pulse width. The period is 20 ms period and the pulse width is set based on the value given in **microseconds** or `1/1000` milliseconds.\n     * @param name pin name\n     * @param micros pulse duration in micro seconds, eg:1500\n     */\n    //% help=pins/servo-set-pulse weight=19\n    //% blockId=device_set_servo_pulse block=\"servo set pulse|pin %value|to (µs) %micros\"\n    //% value.fieldEditor=\"gridpicker\" value.fieldOptions.columns=4\n    //% value.fieldOptions.tooltips=\"false\" value.fieldOptions.width=\"250\" shim=pins::servoSetPulse\n    function servoSetPulse(name: AnalogPin, micros: int32): void;\n\n    /**\n     * Set the pin used when using analog pitch or music.\n     * @param name pin to modulate pitch from\n     */\n    //% blockId=device_analog_set_pitch_pin block=\"analog set pitch pin %name\"\n    //% help=pins/analog-set-pitch-pin weight=3 advanced=true\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogSetPitchPin\n    function analogSetPitchPin(name: AnalogPin): void;\n\n    /**\n     * Sets the volume on the pitch pin\n     * @param volume the intensity of the sound from 0..255\n     */\n    //% blockId=device_analog_set_pitch_volume block=\"analog set pitch volume $volume\"\n    //% help=pins/analog-set-pitch-volume weight=3 advanced=true\n    //% volume.min=0 volume.max=255 shim=pins::analogSetPitchVolume\n    function analogSetPitchVolume(volume: int32): void;\n\n    /**\n     * Gets the volume the pitch pin from 0..255\n     */\n    //% blockId=device_analog_pitch_volume block=\"analog pitch volume\"\n    //% help=pins/analog-pitch-volume weight=3 advanced=true shim=pins::analogPitchVolume\n    function analogPitchVolume(): int32;\n\n    /**\n     * Emit a plse-width modulation (PWM) signal to the current pitch pin. Use `analog set pitch pin` to define the pitch pin.\n     * @param frequency frequency to modulate in Hz.\n     * @param ms duration of the pitch in milli seconds.\n     */\n    //% blockId=device_analog_pitch block=\"analog pitch %frequency|for (ms) %ms\"\n    //% help=pins/analog-pitch weight=4 async advanced=true blockGap=8 shim=pins::analogPitch\n    function analogPitch(frequency: int32, ms: int32): void;\n\n    /**\n     * Configure the pull directiion of of a pin.\n     * @param name pin to set the pull mode on, eg: DigitalPin.P0\n     * @param pull one of the mbed pull configurations, eg: PinPullMode.PullUp\n     */\n    //% help=pins/set-pull weight=3 advanced=true\n    //% blockId=device_set_pull block=\"set pull|pin %pin|to %pull\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::setPull\n    function setPull(name: DigitalPin, pull: PinPullMode): void;\n\n    /**\n     * Configure the events emitted by this pin. Events can be subscribed to\n     * using ``control.onEvent()``.\n     * @param name pin to set the event mode on, eg: DigitalPin.P0\n     * @param type the type of events for this pin to emit, eg: PinEventType.Edge\n     */\n    //% help=pins/set-events weight=4 advanced=true\n    //% blockId=device_set_pin_events block=\"set pin %pin|to emit %type|events\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::setEvents\n    function setEvents(name: DigitalPin, type: PinEventType): void;\n\n    /**\n     * Create a new zero-initialized buffer.\n     * @param size number of bytes in the buffer\n     */\n    //% shim=pins::createBuffer\n    function createBuffer(size: int32): Buffer;\n\n    /**\n     * Read `size` bytes from a 7-bit I2C `address`.\n     */\n    //% repeat.defl=0 shim=pins::i2cReadBuffer\n    function i2cReadBuffer(address: int32, size: int32, repeat?: boolean): Buffer;\n\n    /**\n     * Write bytes to a 7-bit I2C `address`.\n     */\n    //% repeat.defl=0 shim=pins::i2cWriteBuffer\n    function i2cWriteBuffer(address: int32, buf: Buffer, repeat?: boolean): int32;\n\n    /**\n     * Write to the SPI slave and return the response\n     * @param value Data to be sent to the SPI slave\n     */\n    //% help=pins/spi-write weight=5 advanced=true\n    //% blockId=spi_write block=\"spi write %value\" shim=pins::spiWrite\n    function spiWrite(value: int32): int32;\n\n    /**\n     * Set the SPI frequency\n     * @param frequency the clock frequency, eg: 1000000\n     */\n    //% help=pins/spi-frequency weight=4 advanced=true\n    //% blockId=spi_frequency block=\"spi frequency %frequency\" shim=pins::spiFrequency\n    function spiFrequency(frequency: int32): void;\n\n    /**\n     * Set the SPI bits and mode\n     * @param bits the number of bits, eg: 8\n     * @param mode the mode, eg: 3\n     */\n    //% help=pins/spi-format weight=3 advanced=true\n    //% blockId=spi_format block=\"spi format|bits %bits|mode %mode\" shim=pins::spiFormat\n    function spiFormat(bits: int32, mode: int32): void;\n\n    /**\n     * Set the MOSI, MISO, SCK pins used by the SPI connection\n     *\n     */\n    //% help=pins/spi-pins weight=2 advanced=true\n    //% blockId=spi_pins block=\"spi set pins|MOSI %mosi|MISO %miso|SCK %sck\"\n    //% mosi.fieldEditor=\"gridpicker\" mosi.fieldOptions.columns=4\n    //% mosi.fieldOptions.tooltips=\"false\" mosi.fieldOptions.width=\"250\"\n    //% miso.fieldEditor=\"gridpicker\" miso.fieldOptions.columns=4\n    //% miso.fieldOptions.tooltips=\"false\" miso.fieldOptions.width=\"250\"\n    //% sck.fieldEditor=\"gridpicker\" sck.fieldOptions.columns=4\n    //% sck.fieldOptions.tooltips=\"false\" sck.fieldOptions.width=\"250\" shim=pins::spiPins\n    function spiPins(mosi: DigitalPin, miso: DigitalPin, sck: DigitalPin): void;\n\n    /**\n    * Mounts a push button on the given pin\n    */\n    //% help=pins/push-button advanced=true shim=pins::pushButton\n    function pushButton(pin: DigitalPin): void;\n}\n\n\n\n    //% weight=2 color=#002050 icon=\"\\uf287\"\n    //% advanced=true\ndeclare namespace serial {\n\n    /**\n     * Read a line of text from the serial port and return the buffer when the delimiter is met.\n     * @param delimiter text delimiter that separates each text chunk\n     */\n    //% help=serial/read-until\n    //% blockId=serial_read_until block=\"serial|read until %delimiter=serial_delimiter_conv\"\n    //% weight=19 shim=serial::readUntil\n    function readUntil(delimiter: string): string;\n\n    /**\n     * Read the buffered received data as a string\n     */\n    //% help=serial/read-string\n    //% blockId=serial_read_buffer block=\"serial|read string\"\n    //% weight=18 shim=serial::readString\n    function readString(): string;\n\n    /**\n     * Register an event to be fired when one of the delimiter is matched.\n     * @param delimiters the characters to match received characters against.\n     */\n    //% help=serial/on-data-received\n    //% weight=18 blockId=serial_on_data_received block=\"serial|on data received %delimiters=serial_delimiter_conv\" shim=serial::onDataReceived\n    function onDataReceived(delimiters: string, body: () => void): void;\n\n    /**\n     * Send a piece of text through the serial connection.\n     */\n    //% help=serial/write-string\n    //% weight=87 blockGap=8\n    //% blockId=serial_writestring block=\"serial|write string %text\"\n    //% text.shadowOptions.toString=true shim=serial::writeString\n    function writeString(text: string): void;\n\n    /**\n     * Send a buffer through serial connection\n     */\n    //% blockId=serial_writebuffer block=\"serial|write buffer %buffer=serial_readbuffer\"\n    //% help=serial/write-buffer advanced=true weight=6 shim=serial::writeBuffer\n    function writeBuffer(buffer: Buffer): void;\n\n    /**\n     * Read multiple characters from the receive buffer. Pause until enough characters are present.\n     * @param length default buffer length, eg: 64\n     */\n    //% blockId=serial_readbuffer block=\"serial|read buffer %length\"\n    //% help=serial/read-buffer advanced=true weight=5 shim=serial::readBuffer\n    function readBuffer(length: int32): Buffer;\n\n    /**\n     * Set the serial input and output to use pins instead of the USB connection.\n     * @param tx the new transmission pin, eg: SerialPin.P0\n     * @param rx the new reception pin, eg: SerialPin.P1\n     * @param rate the new baud rate. eg: 115200\n     */\n    //% weight=10\n    //% help=serial/redirect\n    //% blockId=serial_redirect block=\"serial|redirect to|TX %tx|RX %rx|at baud rate %rate\"\n    //% blockExternalInputs=1\n    //% tx.fieldEditor=\"gridpicker\" tx.fieldOptions.columns=3\n    //% tx.fieldOptions.tooltips=\"false\"\n    //% rx.fieldEditor=\"gridpicker\" rx.fieldOptions.columns=3\n    //% rx.fieldOptions.tooltips=\"false\"\n    //% blockGap=8 shim=serial::redirect\n    function redirect(tx: SerialPin, rx: SerialPin, rate: BaudRate): void;\n\n    /**\n     * Direct the serial input and output to use the USB connection.\n     */\n    //% weight=9 help=serial/redirect-to-usb\n    //% blockId=serial_redirect_to_usb block=\"serial|redirect to USB\" shim=serial::redirectToUSB\n    function redirectToUSB(): void;\n\n    /**\n     * Sets the size of the RX buffer in bytes\n     * @param size length of the rx buffer in bytes, eg: 32\n     */\n    //% help=serial/set-rx-buffer-size\n    //% blockId=serialSetRxBufferSize block=\"serial set rx buffer size to $size\"\n    //% advanced=true shim=serial::setRxBufferSize\n    function setRxBufferSize(size: uint8): void;\n\n    /**\n     * Sets the size of the TX buffer in bytes\n     * @param size length of the tx buffer in bytes, eg: 32\n     */\n    //% help=serial/set-tx-buffer-size\n    //% blockId=serialSetTxBufferSize block=\"serial set tx buffer size to $size\"\n    //% advanced=true shim=serial::setTxBufferSize\n    function setTxBufferSize(size: uint8): void;\n}\n\n\n\n    //% indexerGet=BufferMethods::getByte indexerSet=BufferMethods::setByte\ndeclare interface Buffer {\n    /**\n     * Reads an unsigned byte at a particular location\n     */\n    //% shim=BufferMethods::getUint8\n    getUint8(off: int32): int32;\n\n    /**\n     * Returns false when the buffer can be written to.\n     */\n    //% shim=BufferMethods::isReadOnly\n    isReadOnly(): boolean;\n\n    /**\n     * Writes an unsigned byte at a particular location\n     */\n    //% shim=BufferMethods::setUint8\n    setUint8(off: int32, v: int32): void;\n\n    /**\n     * Write a number in specified format in the buffer.\n     */\n    //% shim=BufferMethods::setNumber\n    setNumber(format: NumberFormat, offset: int32, value: number): void;\n\n    /**\n     * Read a number in specified format from the buffer.\n     */\n    //% shim=BufferMethods::getNumber\n    getNumber(format: NumberFormat, offset: int32): number;\n\n    /** Returns the length of a Buffer object. */\n    //% property shim=BufferMethods::length\n    length: int32;\n\n    /**\n     * Fill (a fragment) of the buffer with given value.\n     */\n    //% offset.defl=0 length.defl=-1 shim=BufferMethods::fill\n    fill(value: int32, offset?: int32, length?: int32): void;\n\n    /**\n     * Return a copy of a fragment of a buffer.\n     */\n    //% offset.defl=0 length.defl=-1 shim=BufferMethods::slice\n    slice(offset?: int32, length?: int32): Buffer;\n\n    /**\n     * Shift buffer left in place, with zero padding.\n     * @param offset number of bytes to shift; use negative value to shift right\n     * @param start start offset in buffer. Default is 0.\n     * @param length number of elements in buffer. If negative, length is set as the buffer length minus\n     * start. eg: -1\n     */\n    //% start.defl=0 length.defl=-1 shim=BufferMethods::shift\n    shift(offset: int32, start?: int32, length?: int32): void;\n\n    /**\n     * Convert a buffer to string assuming UTF8 encoding\n     */\n    //% shim=BufferMethods::toString\n    toString(): string;\n\n    /**\n     * Convert a buffer to its hexadecimal representation.\n     */\n    //% shim=BufferMethods::toHex\n    toHex(): string;\n\n    /**\n     * Rotate buffer left in place.\n     * @param offset number of bytes to shift; use negative value to shift right\n     * @param start start offset in buffer. Default is 0.\n     * @param length number of elements in buffer. If negative, length is set as the buffer length minus\n     * start. eg: -1\n     */\n    //% start.defl=0 length.defl=-1 shim=BufferMethods::rotate\n    rotate(offset: int32, start?: int32, length?: int32): void;\n\n    /**\n     * Write contents of `src` at `dstOffset` in current buffer.\n     */\n    //% shim=BufferMethods::write\n    write(dstOffset: int32, src: Buffer): void;\n\n    /**\n     * Compute k-bit FNV-1 non-cryptographic hash of the buffer.\n     */\n    //% shim=BufferMethods::hash\n    hash(bits: int32): uint32;\n}\ndeclare namespace control {\n\n    /**\n     * Create a new zero-initialized buffer.\n     * @param size number of bytes in the buffer\n     */\n    //% deprecated=1 shim=control::createBuffer\n    function createBuffer(size: int32): Buffer;\n\n    /**\n     * Create a new buffer with UTF8-encoded string\n     * @param str the string to put in the buffer\n     */\n    //% deprecated=1 shim=control::createBufferFromUTF8\n    function createBufferFromUTF8(str: string): Buffer;\n}\n\n// Auto-generated. Do not edit. Really.\n",
             "templates.ts": "/**\n * Tagged hex literal converter\n */\n//% shim=@hex\nfunction hex(lits: any, ...args: any[]): Buffer { return null }\n",
             "test.ts": "let i = 1\nlet f = 0.5\nlet plus = i + f\nlet minus = i - f\n\nlet r = Math.random()\nlet ri = Math.randomRange(5, 10)\n\n\nfunction check(cond:boolean) { control.assert(cond, 108) }\n\ncheck(Buffer.pack(\"<2h\", [0x3412, 0x7856]).toHex() == \"12345678\")\ncheck(Buffer.pack(\">hh\", [0x3412, 0x7856]).toHex() == \"34127856\")\ncheck(Buffer.fromHex(\"F00d\").toHex() == \"f00d\")",
-            "trig.cpp": "#include \"pxtbase.h\"\n#include <limits.h>\n#include <stdlib.h>\n\nusing namespace std;\n\nnamespace Math_ {\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\n//%\nTNumber atan2(TNumber y, TNumber x) {\n    return fromDouble(::atan2(toDouble(y), toDouble(x)));\n}\n\n//%\nTNumber tan(TNumber x){SINGLE(tan)}\n\n//%\nTNumber sin(TNumber x){SINGLE(sin)}\n\n//%\nTNumber cos(TNumber x){SINGLE(cos)}\n\n//%\nTNumber atan(TNumber x){SINGLE(atan)}\n\n//%\nTNumber asin(TNumber x){SINGLE(asin)}\n\n//%\nTNumber acos(TNumber x){SINGLE(acos)}\n\n//%\nTNumber sqrt(TNumber x){SINGLE(sqrt)}\n\n}"
+            "trig.cpp": "#include \"pxtbase.h\"\n#include <limits.h>\n#include <stdlib.h>\n\nusing namespace std;\n\nnamespace Math_ {\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\n//%\nTNumber atan2(TNumber y, TNumber x) {\n    return fromDouble(::atan2(toDouble(y), toDouble(x)));\n}\n\n//%\nTNumber tan(TNumber x){SINGLE(tan)}\n\n//%\nTNumber sin(TNumber x){SINGLE(sin)}\n\n//%\nTNumber cos(TNumber x){SINGLE(cos)}\n\n//%\nTNumber atan(TNumber x){SINGLE(atan)}\n\n//%\nTNumber asin(TNumber x){SINGLE(asin)}\n\n//%\nTNumber acos(TNumber x){SINGLE(acos)}\n\n//%\nTNumber sqrt(TNumber x){SINGLE(sqrt)}\n\n}",
+            "uv3.ts": "\r\n\r\n\r\n  /**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace UV3{\r\n\r\n    //% block=\"create UV3 settings\"\r\n    //% blockSetVariable=\"UV3\"\r\n    //% weight=110\r\n    export function createUV3(): UV3 {\r\n        return new UV3();\r\n   }\r\n\r\n\r\n    export class UV3 extends bBoard.I2CSettings{\r\n    private readonly VEML6070_ADDR_ARA =(0x18 >> 1)\r\n    private readonly  VEML6070_ADDR_CMD =(0x70 >> 1)\r\n    private readonly  VEML6070_ADDR_DATA_LSB =(0x71 >> 1)\r\n    private readonly  VEML6070_ADDR_DATA_MSB =(0x73 >> 1)\r\n    // VEML6070 command register bits\r\n    private readonly  VEML6070_CMD_SD =0x01\r\n    private readonly  VEML6070_CMD_IT_0_5T = 0x00\r\n    private readonly  VEML6070_CMD_IT_1T = 0x04\r\n    private readonly  VEML6070_CMD_IT_2T= 0x08\r\n    private readonly  VEML6070_CMD_IT_4T =0x0C\r\n    private readonly  VEML6070_CMD_DEFAULT= 0x02\r\n    private controlReg : number;\r\n    \r\n      \r\n    \r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    constructor(){\r\n        super();\r\n    this.controlReg=0;\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n    \r\n    \r\n    initialize(clickBoardNum:clickBoardID)\r\n    {\r\n    \r\n        this.isInitialized[clickBoardNum]  = 1\r\n       \r\n        this.controlReg = this.VEML6070_CMD_DEFAULT; //Int disabled, 1/2T (~ 60ms) and shutdown disabled. \r\n\r\n        this.writeVEML6070(this.controlReg,clickBoardNum)\r\n \r\n        \r\n    \r\n    }\r\n\r\n\r\n    \r\n    \r\n       \r\n            //%blockId=VEML6070_write\r\n            //%block=\"$this Write $value to VEML6070 control register on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            writeVEML6070(value:number,clickBoardNum:clickBoardID)\r\n            {\r\n                this.i2cWriteNumber(this.VEML6070_ADDR_CMD,value,NumberFormat.UInt8LE,clickBoardNum,false)   \r\n             \r\n            }\r\n           \r\n\r\n            //%blockId=VEML6070_UVSteps\r\n            //%block=\"$this Get UV value on click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            UVSteps(clickBoardNum:clickBoardID)\r\n            {\r\n                \r\n           \r\n                if(this.isInitialized[clickBoardNum] == 0)\r\n                {\r\n                    this.initialize(clickBoardNum);\r\n                }\r\n                let MSB = this.readVEML6070(this.VEML6070_ADDR_DATA_MSB,clickBoardNum);\r\n                let LSB = this.readVEML6070(this.VEML6070_ADDR_DATA_LSB,clickBoardNum);\r\n\r\n                return ((MSB << 8) | LSB) \r\n             \r\n             \r\n            }\r\n\r\n            //%blockId=VEML6070_enable\r\n            //%block=\"$this Turn off device click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            enableShutdown(clickBoardNum:clickBoardID)\r\n            {\r\n            \r\n                \r\n                this.controlReg = this.controlReg & 0xFE; \r\n                this.writeVEML6070(this.controlReg,clickBoardNum);\r\n             \r\n             \r\n            }\r\n    \r\n\r\n            //%blockId=VEML6070_disable\r\n            //%block=\"$this Turn on device click$clickBoardNum\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            disableShutdown(clickBoardNum:clickBoardID)\r\n            {\r\n            \r\n                \r\n                this.controlReg = this.controlReg | 0x01; \r\n                this.writeVEML6070(this.controlReg,clickBoardNum);\r\n             \r\n             \r\n            }\r\n        \r\n    \r\n     \r\n        \r\n                 //%blockId=VEML6070_read\r\n                //%block=\"$this Read from slave address$slaveAddress on click$clickBoardNum\"\r\n                //% blockGap=7\r\n                //% advanced=true\r\n                //% blockNamespace=UV3\r\n                //% this.shadow=variables_get\r\n                //% this.defl=\"UV3\"\r\n                readVEML6070 (slaveAddress:number,  clickBoardNum:clickBoardID):number\r\n                {\r\n                   \r\n\r\n                   \r\n                   let i2cBuffer = this.I2CreadNoMem(slaveAddress ,1,clickBoardNum);\r\n\r\n                   let data:number; //A number variable to hold our value to return\r\n                 \r\n                    data= i2cBuffer.getUint8(0); //Extract the data from the buffer and store it in our variable\r\n                \r\n                    return  data\r\n            \r\n                        \r\n                \r\n                }\r\n                \r\n        \r\n        setVEML6070Addr(deviceAddr:number,clickBoardNum:clickBoardID)\r\n        {\r\n            this.deviceAddress[clickBoardNum] = deviceAddr;\r\n        }\r\n        getVEML6070Addr(clickBoardNum:clickBoardID):number\r\n        {\r\n            return this.deviceAddress[clickBoardNum];\r\n        }\r\n    \r\n    }\r\n}\r\n    \r\n    "
         },
         "radio": {
             "README.md": "# radio\n\nThe radio library.\n\n",
@@ -27046,7 +27062,9 @@ var pxtTargetBundle = {
                     "bBoard.SPIsetting": {
                         "kind": 8,
                         "retType": "bBoard.SPIsetting",
-                        "extendsTypes": []
+                        "extendsTypes": [
+                            "bBoard.SPIsetting"
+                        ]
                     },
                     "bBoard.SPIsetting.SPI_WRITE_id": {
                         "kind": 2,
@@ -36444,6 +36462,5749 @@ var pxtTargetBundle = {
                         "isInstance": true,
                         "pyQName": "Line_Follower.LineFollower.is_reflected"
                     },
+                    "Motion": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "➠",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Motion.Motion": {
+                        "kind": 8,
+                        "retType": "Motion.Motion",
+                        "extendsTypes": []
+                    },
+                    "Motion.Motion.isDetected": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "blockId": "Motion_isDetected",
+                            "block": "Has motion been detected on click%clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Has motion been detected on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Motion.Motion.is_detected"
+                    },
+                    "NFC_Tag_2": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#FF2F92",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "NFC_Tag_2.URICode": {
+                        "kind": 6,
+                        "retType": "NFC_Tag_2.URICode",
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode",
+                            "Number"
+                        ]
+                    },
+                    "NFC_Tag_2.URICode.zero": {
+                        "retType": "NFC_Tag_2.URICode.zero",
+                        "attributes": {
+                            "block": "Full URL",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Full URL",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.zero",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.ZERO"
+                    },
+                    "NFC_Tag_2.URICode.one": {
+                        "retType": "NFC_Tag_2.URICode.one",
+                        "attributes": {
+                            "block": "http://www.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "http://www.",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.one",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.ONE"
+                    },
+                    "NFC_Tag_2.URICode.two": {
+                        "retType": "NFC_Tag_2.URICode.two",
+                        "attributes": {
+                            "block": "https://www.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "https://www.",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.two",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.TWO"
+                    },
+                    "NFC_Tag_2.URICode.three": {
+                        "retType": "NFC_Tag_2.URICode.three",
+                        "attributes": {
+                            "block": "http://",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "http://",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.three",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.THREE"
+                    },
+                    "NFC_Tag_2.URICode.four": {
+                        "retType": "NFC_Tag_2.URICode.four",
+                        "attributes": {
+                            "block": "https://",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "https://",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.four",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.FOUR"
+                    },
+                    "NFC_Tag_2.createNFC_Tag": {
+                        "kind": -3,
+                        "retType": "NFC_Tag_2.NFC_Tag",
+                        "attributes": {
+                            "block": "create NFC_Tag settings",
+                            "blockSetVariable": "NFC_Tag",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create NFC_Tag settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": []
+                    },
+                    "NFC_Tag_2.NFC_Tag": {
+                        "kind": 8,
+                        "retType": "NFC_Tag_2.NFC_Tag",
+                        "extendsTypes": [
+                            "NFC_Tag_2.NFC_Tag",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "NFC_Tag_2.NFC_Tag.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "NFC_Tag_2.NFC_Tag.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "NFC_Tag_2.NFC_Tag.readCoveringPage": {
+                        "kind": -1,
+                        "retType": "number[]",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.read_covering_page"
+                    },
+                    "NFC_Tag_2.NFC_Tag.setURI": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_setURI",
+                            "block": "Write URL %URL to NFC device on click%clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write URL ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "URL",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to NFC device on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "URL",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "URL",
+                                "type": "string"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.set_uri"
+                    },
+                    "NFC_Tag_2.NFC_Tag.readUID": {
+                        "kind": -1,
+                        "retType": "number[]",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.read_uid"
+                    },
+                    "NFC_Tag_2.NFC_Tag.writeBlock": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_writeBlock",
+                            "block": "Write array %values to block %blockAddr on click%clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to block ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "blockAddr",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "blockAddr",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            },
+                            {
+                                "name": "blockAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.write_block"
+                    },
+                    "NFC_Tag_2.NFC_Tag.writeNT3H2111": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_write",
+                            "block": "Write array %values to NT3H2111 register%register on click%clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to NT3H2111 register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            },
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.write_nt3h2111"
+                    },
+                    "NFC_Tag_2.NFC_Tag.findI2C": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.find_i2c"
+                    },
+                    "NFC_Tag_2.NFC_Tag.readNT3H2111": {
+                        "kind": -1,
+                        "retType": "number[]",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_read",
+                            "block": "Read %numBytes bytes from register%register on click%clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Read ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numBytes",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " bytes from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "numBytes",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "numBytes"
+                            },
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.read_nt3h2111"
+                    },
+                    "NFC_Tag_2.NFC_Tag.setNT3H2111Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.set_nt3h2111_addr"
+                    },
+                    "NFC_Tag_2.NFC_Tag.getNT3H2111Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.get_nt3h2111_addr"
+                    },
+                    "Noise": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F20D0D",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Noise.createNoise": {
+                        "kind": -3,
+                        "retType": "Noise.Noise",
+                        "attributes": {
+                            "block": "create Noise settings",
+                            "blockSetVariable": "Noise",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Noise settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "Noise.create_noise"
+                    },
+                    "Noise.Noise": {
+                        "kind": 8,
+                        "retType": "Noise.Noise",
+                        "extendsTypes": [
+                            "Noise.Noise",
+                            "bBoard.SPIsetting"
+                        ]
+                    },
+                    "Noise.Noise.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.is_initialized"
+                    },
+                    "Noise.Noise.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Noise.Noise.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Noise.Noise.getNoiseLevel": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_getNoiseLevel",
+                            "block": "$this Get raw noise level on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get raw noise level on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.get_noise_level"
+                    },
+                    "Noise.Noise.isThresholdTriggered": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_isThresholdTriggered",
+                            "block": "$this Has noise threshold been triggered on click$clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has noise threshold been triggered on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.is_threshold_triggered"
+                    },
+                    "Noise.Noise.setThreshold": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_setThreshold",
+                            "block": "$this Set noise threshold to $threshold on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "paramMin": {
+                                "threshold": "0"
+                            },
+                            "paramMax": {
+                                "threshold": "100"
+                            },
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Set noise threshold to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "threshold",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.set_threshold"
+                    },
+                    "Noise.Noise.write": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_write",
+                            "block": "$this Write $value on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Reed": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Reed.createReed": {
+                        "kind": -3,
+                        "retType": "Reed.Reed",
+                        "attributes": {
+                            "block": "create Reed settings",
+                            "blockSetVariable": "Reed",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Reed settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "Reed.create_reed"
+                    },
+                    "Reed.Reed": {
+                        "kind": 8,
+                        "retType": "Reed.Reed",
+                        "extendsTypes": [
+                            "Reed.Reed",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Reed.Reed.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Reed.Reed.is_initialized"
+                    },
+                    "Reed.Reed.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Reed.Reed.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Reed.Reed.isActivated": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Reed"
+                            },
+                            "blockId": "Reed_isActivated",
+                            "block": "For $this Has reed been activated on click%clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Reed",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "For ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has reed been activated on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Reed.Reed.is_activated"
+                    },
+                    "Relay": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#66791B",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Relay.relay": {
+                        "kind": 6,
+                        "retType": "Relay.relay",
+                        "extendsTypes": [
+                            "Relay.relay",
+                            "Number"
+                        ]
+                    },
+                    "Relay.relay.Relay1": {
+                        "retType": "Relay.relay.Relay1",
+                        "extendsTypes": [
+                            "Relay.relay.Relay1",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.relay.RELAY1"
+                    },
+                    "Relay.relay.Relay2": {
+                        "retType": "Relay.relay.Relay2",
+                        "extendsTypes": [
+                            "Relay.relay.Relay2",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.relay.RELAY2"
+                    },
+                    "Relay.onOff": {
+                        "kind": 6,
+                        "retType": "Relay.onOff",
+                        "extendsTypes": [
+                            "Relay.onOff",
+                            "Number"
+                        ]
+                    },
+                    "Relay.onOff.On": {
+                        "retType": "Relay.onOff.On",
+                        "extendsTypes": [
+                            "Relay.onOff.On",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.onOff.ON"
+                    },
+                    "Relay.onOff.Off": {
+                        "retType": "Relay.onOff.Off",
+                        "extendsTypes": [
+                            "Relay.onOff.Off",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.onOff.OFF"
+                    },
+                    "Relay.createkeylock": {
+                        "kind": -3,
+                        "retType": "Relay.Relay",
+                        "attributes": {
+                            "block": "create Relay settings",
+                            "blockSetVariable": "Relay",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Relay settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": []
+                    },
+                    "Relay.Relay": {
+                        "kind": 8,
+                        "retType": "Relay.Relay",
+                        "extendsTypes": [
+                            "Relay.Relay",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Relay.Relay.relayOn": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Relay"
+                            },
+                            "blockId": "Relay_relayOn",
+                            "block": "$this Turn on relay $relayNum on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Relay",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn on relay ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "relayNum",
+                                "type": "Relay.relay",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Relay.Relay.relay_on"
+                    },
+                    "Relay.Relay.relayOff": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Relay"
+                            },
+                            "blockId": "Relay_relayOff",
+                            "block": "$this Turn off relay $relayNum on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Relay",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn off relay ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "relayNum",
+                                "type": "Relay.relay",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Relay.Relay.relay_off"
+                    },
+                    "Relay.Relay.relayOnOff": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Relay"
+                            },
+                            "blockId": "Relay_relayOnOff",
+                            "block": "$this Turn $onOff relay $relayNum on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Relay",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " relay ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "onOff",
+                                "type": "Relay.onOff",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "relayNum",
+                                "type": "Relay.relay",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Relay.Relay.relay_on_off"
+                    },
+                    "Stepper_5": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#EF697B",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Stepper_5.Rotation": {
+                        "kind": 6,
+                        "retType": "Stepper_5.Rotation",
+                        "extendsTypes": [
+                            "Stepper_5.Rotation",
+                            "Number"
+                        ]
+                    },
+                    "Stepper_5.Rotation.Forward": {
+                        "retType": "Stepper_5.Rotation.Forward",
+                        "attributes": {
+                            "block": "Forward",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Forward",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Stepper_5.Rotation.Forward",
+                            "Number"
+                        ],
+                        "pyQName": "Stepper_5.Rotation.FORWARD"
+                    },
+                    "Stepper_5.Rotation.Backwards": {
+                        "retType": "Stepper_5.Rotation.Backwards",
+                        "attributes": {
+                            "block": "Backwards",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Backwards",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Stepper_5.Rotation.Backwards",
+                            "Number"
+                        ],
+                        "pyQName": "Stepper_5.Rotation.BACKWARDS"
+                    },
+                    "Stepper_5.createStepper": {
+                        "kind": -3,
+                        "retType": "Stepper_5.Stepper",
+                        "attributes": {
+                            "block": "create Stepper settings",
+                            "blockSetVariable": "Stepper",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Stepper settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "Stepper_5.create_stepper"
+                    },
+                    "Stepper_5.Stepper": {
+                        "kind": 8,
+                        "retType": "Stepper_5.Stepper",
+                        "extendsTypes": [
+                            "Stepper_5.Stepper",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Stepper_5.Stepper.step": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Stepper"
+                            },
+                            "blockId": "step",
+                            "block": "$this Single step motor $direction on click$clickBoardNum",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Stepper_5",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Single step motor ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "direction",
+                                "type": "Stepper_5.Rotation",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Stepper_5.Stepper.stepNumber": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Stepper"
+                            },
+                            "blockId": "stepNum",
+                            "block": "$this Step motor $numSteps times $direction on click$clickBoardNum",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Stepper_5",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Step motor ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numSteps",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " times ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numSteps",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "numSteps"
+                            },
+                            {
+                                "name": "direction",
+                                "type": "Stepper_5.Rotation",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Stepper_5.Stepper.step_number"
+                    },
+                    "Temp_Log_2": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Temp_Log_2.createTemp_Log": {
+                        "kind": -3,
+                        "retType": "Temp_Log_2.Temp_Log",
+                        "attributes": {
+                            "block": "create Temp_Log settings",
+                            "blockSetVariable": "Temp_Log",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Temp_Log settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": []
+                    },
+                    "Temp_Log_2.Temp_Log": {
+                        "kind": 8,
+                        "retType": "Temp_Log_2.Temp_Log",
+                        "extendsTypes": [
+                            "Temp_Log_2.Temp_Log",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Temp_Log_2.Temp_Log.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Temp_Log_2.Temp_Log.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Temp_Log_2.Temp_Log.setTMP116Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.set_tmp116_addr"
+                    },
+                    "Temp_Log_2.Temp_Log.getTMP116Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.get_tmp116_addr"
+                    },
+                    "Temp_Log_2.Temp_Log.readTMP116Reg": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_tmp116_reg"
+                    },
+                    "Temp_Log_2.Temp_Log.readT": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_t"
+                    },
+                    "Temp_Log_2.Temp_Log.writeTMP116": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.write_tmp116"
+                    },
+                    "Temp_Log_2.Temp_Log.readTMP116": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_tmp116"
+                    },
+                    "Temp_Log_2.Temp_Log.readTemperatureC": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Temp_Log"
+                            },
+                            "blockId": "Temp_Log_readTemperatureC",
+                            "block": "$this Get temperature in Celcius on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Temp_Log_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get temperature in Celcius on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_temperature_c"
+                    },
+                    "Temp_Log_2.Temp_Log.readTemperatureF": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Temp_Log"
+                            },
+                            "blockId": "Temp_Log_readTemperatureF",
+                            "block": "$this Get temperature in Fahrenheit on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Temp_Log_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get temperature in Fahrenheit on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_temperature_f"
+                    },
+                    "Temp_Log_2.Temp_Log.readHighLimit": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_high_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.readLowLimit": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_low_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.writeHighLimit": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "limit"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.write_high_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.writeLowLimit": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "limit"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.write_low_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.readDeviceId": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_device_id"
+                    },
+                    "Thermo_6": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Thermo_6.createThermo": {
+                        "kind": -3,
+                        "retType": "Thermo_6.Thermo",
+                        "attributes": {
+                            "block": "create Thermo settings",
+                            "blockSetVariable": "Thermo",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Thermo settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "Thermo_6.create_thermo"
+                    },
+                    "Thermo_6.Thermo": {
+                        "kind": 8,
+                        "retType": "Thermo_6.Thermo",
+                        "extendsTypes": [
+                            "Thermo_6.Thermo",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Thermo_6.Thermo.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Thermo_6.Thermo.getTempC": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "Thermo6_getTempC",
+                            "block": "$this Get the temperature in Celcius on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get the temperature in Celcius on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.get_temp_c"
+                    },
+                    "Thermo_6.Thermo.getTempF": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "Thermo6_getTempF",
+                            "block": "$this Get the temperature in Fahrenheit on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get the temperature in Fahrenheit on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.get_temp_f"
+                    },
+                    "Thermo_6.Thermo.initialize": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "Thermo6_initialize",
+                            "block": "$this Initalize with i2c address $deviceAddr on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Initalize with i2c address ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Thermo_6.Thermo.writeMAX31875": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "MAX31875_write",
+                            "block": "$this Write $value to register$register on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.write_max31875"
+                    },
+                    "Thermo_6.Thermo.readMAX31875": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "MAX31875_read",
+                            "block": "$this Read from register$register on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.read_max31875"
+                    },
+                    "Thermo_6.Thermo.setMAX31875Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.set_max31875_addr"
+                    },
+                    "Thermo_6.Thermo.getMAX31875Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.get_max31875_addr"
+                    },
+                    "Touchpad": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F4B820",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Touchpad.createTouchpad": {
+                        "kind": -3,
+                        "retType": "Touchpad.Touchpad",
+                        "attributes": {
+                            "block": "create Touchpad settings",
+                            "blockSetVariable": "Touchpad",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Touchpad settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "Touchpad.create_touchpad"
+                    },
+                    "Touchpad.Touchpad": {
+                        "kind": 8,
+                        "retType": "Touchpad.Touchpad",
+                        "extendsTypes": [
+                            "Touchpad.Touchpad",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Touchpad.Touchpad.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Touchpad.Touchpad.initialize": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_initialize",
+                            "block": "$this Initalize touchpad with i2c address $deviceAddr on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Initalize touchpad with i2c address ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Touchpad.Touchpad.getX": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getX",
+                            "block": "$this Get X position on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get X position on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_x"
+                    },
+                    "Touchpad.Touchpad.getY": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getY",
+                            "block": "$this Get Y position on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get Y position on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_y"
+                    },
+                    "Touchpad.Touchpad.isTouched": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_isTouched",
+                            "block": "$this Has touch occured on click$clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has touch occured on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.is_touched"
+                    },
+                    "Touchpad.Touchpad.isGesture": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_isGesture",
+                            "block": "$this Has gesture occured on click$clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has gesture occured on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.is_gesture"
+                    },
+                    "Touchpad.Touchpad.getGestureName": {
+                        "kind": -1,
+                        "retType": "string",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getGestureName",
+                            "block": "$this Convert gesture ID $gestureID to a friendly name on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Convert gesture ID ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "gestureID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to a friendly name on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "gestureID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "gestureID"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_gesture_name"
+                    },
+                    "Touchpad.Touchpad.getTouchState": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getTouchState",
+                            "block": "$this Get touch status on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get touch status on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_touch_state"
+                    },
+                    "Touchpad.Touchpad.getGesture": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getGesture",
+                            "block": "$this Get gesture on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get gesture on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_gesture"
+                    },
+                    "Touchpad.Touchpad.writeMTCH6102": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_write",
+                            "block": "$this Write $value to register$register on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.write_mtch6102"
+                    },
+                    "Touchpad.Touchpad.readMTCH6102": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_read",
+                            "block": "$this Read from register$register on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.read_mtch6102"
+                    },
+                    "Touchpad.Touchpad.setMTCH6102Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.set_mtch6102_addr"
+                    },
+                    "Touchpad.Touchpad.getMTCH6102Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_mtch6102_addr"
+                    },
+                    "UV3": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "UV3.createUV3": {
+                        "kind": -3,
+                        "retType": "UV3.UV3",
+                        "attributes": {
+                            "block": "create UV3 settings",
+                            "blockSetVariable": "UV3",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create UV3 settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "UV3.create_uv3"
+                    },
+                    "UV3.UV3": {
+                        "kind": 8,
+                        "retType": "UV3.UV3",
+                        "extendsTypes": [
+                            "UV3.UV3",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "UV3.UV3.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "UV3.UV3.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "UV3.UV3.writeVEML6070": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_write",
+                            "block": "$this Write $value to VEML6070 control register on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to VEML6070 control register on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.write_veml6070"
+                    },
+                    "UV3.UV3.UVSteps": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_UVSteps",
+                            "block": "$this Get UV value on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get UV value on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.uv_steps"
+                    },
+                    "UV3.UV3.enableShutdown": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_enable",
+                            "block": "$this Turn off device click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn off device click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.enable_shutdown"
+                    },
+                    "UV3.UV3.disableShutdown": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_disable",
+                            "block": "$this Turn on device click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn on device click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.disable_shutdown"
+                    },
+                    "UV3.UV3.readVEML6070": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_read",
+                            "block": "$this Read from slave address$slaveAddress on click$clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from slave address",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "slaveAddress",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "slaveAddress",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "slaveAddress"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.read_veml6070"
+                    },
+                    "UV3.UV3.setVEML6070Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.set_veml6070_addr"
+                    },
+                    "UV3.UV3.getVEML6070Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.get_veml6070_addr"
+                    },
+                    "Water_Detect": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Water_Detect.createStepper": {
+                        "kind": -3,
+                        "retType": "Water_Detect.Water_Detect",
+                        "attributes": {
+                            "block": "create Water_Detect settings",
+                            "blockSetVariable": "Water_Detect",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Water_Detect settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "Water_Detect.create_stepper"
+                    },
+                    "Water_Detect.Water_Detect": {
+                        "kind": 8,
+                        "retType": "Water_Detect.Water_Detect",
+                        "extendsTypes": [
+                            "Water_Detect.Water_Detect",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Water_Detect.Water_Detect.isWater": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Water_Detect"
+                            },
+                            "blockId": "Water_Detect_isWater",
+                            "block": "$this Is water detected on click$clickBoardNum ?",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Water_Detect",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Is water detected on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Water_Detect.Water_Detect.is_water"
+                    },
+                    "Button_G": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F4B820",
+                            "icon": "",
+                            "advanced": true
+                        }
+                    },
+                    "Button_G.Light": {
+                        "kind": 6,
+                        "retType": "Button_G.Light",
+                        "extendsTypes": [
+                            "Button_G.Light",
+                            "Number"
+                        ]
+                    },
+                    "Button_G.Light.Off": {
+                        "retType": "Button_G.Light.Off",
+                        "extendsTypes": [
+                            "Button_G.Light.Off",
+                            "Number"
+                        ],
+                        "pyQName": "Button_G.Light.OFF"
+                    },
+                    "Button_G.Light.On": {
+                        "retType": "Button_G.Light.On",
+                        "extendsTypes": [
+                            "Button_G.Light.On",
+                            "Number"
+                        ],
+                        "pyQName": "Button_G.Light.ON"
+                    },
+                    "Button_G.createButton_G": {
+                        "kind": -3,
+                        "retType": "Button_G.Button_G",
+                        "attributes": {
+                            "block": "create Button_G settings",
+                            "blockSetVariable": "Button_G",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create Button_G settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": []
+                    },
+                    "Button_G.Button_G": {
+                        "kind": 8,
+                        "retType": "Button_G.Button_G",
+                        "extendsTypes": [
+                            "Button_G.Button_G",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Button_G.Button_G.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Button_G.Button_G.setLight": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Button_G"
+                            },
+                            "blockId": "ButtonG_SetLight",
+                            "block": "$this Turn button light $onOff on click$clickBoardNum",
+                            "blockNamespace": "Button_G",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn button light ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "onOff",
+                                "type": "Button_G.Light",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Button_G.Button_G.set_light"
+                    },
+                    "Button_G.Button_G.setLightPWM": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Button_G"
+                            },
+                            "blockId": "ButtonG_SetLight_PWM",
+                            "block": "$this Set button light to $PWMValue brightness on click$clickBoardNum",
+                            "paramMin": {
+                                "PWMValue": "0"
+                            },
+                            "paramMax": {
+                                "PWMValue": "100"
+                            },
+                            "blockNamespace": "Button_G",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Set button light to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "PWMValue",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " brightness on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "PWMValue",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "PWMValue",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Button_G.Button_G.set_light_pwm"
+                    },
+                    "Button_G.Button_G.getSwitch": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Button_G"
+                            },
+                            "blockId": "ButtonG_getSwitch",
+                            "block": "$this Read button state on click$clickBoardNum",
+                            "blockNamespace": "Button_G",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read button state on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Button_G.Button_G.get_switch"
+                    },
+                    "Heart_Rate": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Heart_Rate.initialize": {
+                        "kind": -3,
+                        "attributes": {
+                            "blockId": "heartrate_initialize",
+                            "block": "Initialize device on click%clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Initialize device on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Heart_Rate.MAX30100_getIRdata": {
+                        "kind": -3,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Heart_Rate.MAX30100_getREDdata": {
+                        "kind": -3,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Heart_Rate.writeMAX30100": {
+                        "kind": -3,
+                        "attributes": {
+                            "blockId": "MAX30100_write",
+                            "block": "Write array %values to MAX30100 register%register on click%clickBoardNum ?",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to MAX30100 register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            },
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Heart_Rate.write_max30100"
+                    },
+                    "Heart_Rate.MAX30100_readBlock": {
+                        "kind": -3,
+                        "retType": "number[]",
+                        "parameters": [
+                            {
+                                "name": "reg_addr"
+                            },
+                            {
+                                "name": "numBytes"
+                            },
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Heart_Rate.BPMRate": {
+                        "kind": -3,
+                        "retType": "number",
+                        "attributes": {
+                            "blockId": "Heart_Rate_getBPMRate",
+                            "block": "Get beats per minute on click%clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Get beats per minute on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Heart_Rate.bpm_rate"
+                    },
+                    "Heart_Rate.pulse": {
+                        "kind": -3,
+                        "retType": "number",
+                        "attributes": {
+                            "blockId": "Heart_Rate_getHRSignal",
+                            "block": "Get raw HR signal on click%clickBoardNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "paramHelp": {
+                                "clickBoardNum": "the location of the click board being used"
+                            },
+                            "jsDoc": "The current value of IR reflection normalized between 0 and 100 (Great for neopixels)",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Get raw HR signal on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "description": "the location of the click board being used",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "IRSensor": {
+                        "kind": 6,
+                        "retType": "IRSensor",
+                        "extendsTypes": [
+                            "IRSensor",
+                            "Number"
+                        ]
+                    },
+                    "IRSensor.LEFT": {
+                        "retType": "IRSensor.LEFT",
+                        "attributes": {
+                            "block": "left",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "left",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRSensor.LEFT",
+                            "Number"
+                        ]
+                    },
+                    "IRSensor.MIDDLE": {
+                        "retType": "IRSensor.MIDDLE",
+                        "attributes": {
+                            "block": "middle",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "middle",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRSensor.MIDDLE",
+                            "Number"
+                        ]
+                    },
+                    "IRSensor.RIGHT": {
+                        "retType": "IRSensor.RIGHT",
+                        "attributes": {
+                            "block": "right",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "right",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRSensor.RIGHT",
+                            "Number"
+                        ]
+                    },
+                    "IRColour": {
+                        "kind": 6,
+                        "retType": "IRColour",
+                        "extendsTypes": [
+                            "IRColour",
+                            "Number"
+                        ]
+                    },
+                    "IRColour.BLACK": {
+                        "retType": "IRColour.BLACK",
+                        "attributes": {
+                            "block": "black",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "black",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRColour.BLACK",
+                            "Number"
+                        ]
+                    },
+                    "IRColour.WHITE": {
+                        "retType": "IRColour.WHITE",
+                        "attributes": {
+                            "block": "white",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "white",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRColour.WHITE",
+                            "Number"
+                        ]
+                    },
+                    "Motor": {
+                        "kind": 6,
+                        "retType": "Motor",
+                        "extendsTypes": [
+                            "Motor",
+                            "Number"
+                        ]
+                    },
+                    "Motor.LEFT": {
+                        "retType": "Motor.LEFT",
+                        "attributes": {
+                            "block": "left",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "left",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Motor.LEFT",
+                            "Number"
+                        ]
+                    },
+                    "Motor.RIGHT": {
+                        "retType": "Motor.RIGHT",
+                        "attributes": {
+                            "block": "right",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "right",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Motor.RIGHT",
+                            "Number"
+                        ]
+                    },
+                    "MotorDirection": {
+                        "kind": 6,
+                        "retType": "MotorDirection",
+                        "extendsTypes": [
+                            "MotorDirection",
+                            "Number"
+                        ]
+                    },
+                    "MotorDirection.FORWARD": {
+                        "retType": "MotorDirection.FORWARD",
+                        "attributes": {
+                            "block": "forward",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "forward",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorDirection.FORWARD",
+                            "Number"
+                        ]
+                    },
+                    "MotorDirection.REVERSE": {
+                        "retType": "MotorDirection.REVERSE",
+                        "attributes": {
+                            "block": "reverse",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "reverse",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorDirection.REVERSE",
+                            "Number"
+                        ]
+                    },
+                    "MotorPower": {
+                        "kind": 6,
+                        "retType": "MotorPower",
+                        "extendsTypes": [
+                            "MotorPower",
+                            "Number"
+                        ]
+                    },
+                    "MotorPower.ON": {
+                        "retType": "MotorPower.ON",
+                        "attributes": {
+                            "block": "on",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "on",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorPower.ON",
+                            "Number"
+                        ]
+                    },
+                    "MotorPower.OFF": {
+                        "retType": "MotorPower.OFF",
+                        "attributes": {
+                            "block": "off",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "off",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorPower.OFF",
+                            "Number"
+                        ]
+                    },
+                    "Comparison": {
+                        "kind": 6,
+                        "retType": "Comparison",
+                        "extendsTypes": [
+                            "Comparison",
+                            "Number"
+                        ]
+                    },
+                    "Comparison.CLOSER": {
+                        "retType": "Comparison.CLOSER",
+                        "attributes": {
+                            "block": "closer",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "closer",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Comparison.CLOSER",
+                            "Number"
+                        ]
+                    },
+                    "Comparison.FURTHER": {
+                        "retType": "Comparison.FURTHER",
+                        "attributes": {
+                            "block": "further",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "further",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Comparison.FURTHER",
+                            "Number"
+                        ]
+                    },
+                    "k8": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 0,
+                            "color": "#421C52",
+                            "icon": "",
+                            "advanced": true
+                        }
+                    },
+                    "k8.IR_SENSOR_LEFT": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.IR_SENSOR_MIDDLE": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.SPEAKER": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.IR_SENSOR_RIGHT": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.SERVO_2": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.SONAR": {
+                        "kind": 4,
+                        "retType": "DigitalPin"
+                    },
+                    "k8.SERVO_1": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.M2_PWR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.M2_DIR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.M1_PWR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.M1_DIR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.createK8": {
+                        "kind": -3,
+                        "retType": "k8.K8",
+                        "attributes": {
+                            "block": "create K8 settings",
+                            "blockSetVariable": "K8",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "create K8 settings",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "pyQName": "k8.create_k8"
+                    },
+                    "k8.K8": {
+                        "kind": 8,
+                        "retType": "k8.K8",
+                        "extendsTypes": []
+                    },
+                    "k8.K8.__constructor": {
+                        "kind": -3,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "k8.K8.checkSensor": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this $sensor| sensor is $colour|",
+                            "blockId": "line_check_sensor",
+                            "weight": 60,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "paramHelp": {
+                                "sensor": "which of the three sensors",
+                                "colour": "whether the sensor looks for black or white"
+                            },
+                            "jsDoc": "Check if a chosen sensor is reading black or white",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "sensor",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " sensor is ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "colour",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "sensor",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "colour",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "sensor",
+                                "description": "which of the three sensors",
+                                "type": "IRSensor",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "colour",
+                                "description": "whether the sensor looks for black or white",
+                                "type": "IRColour",
+                                "initializer": "IRColour.WHITE",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.check_sensor"
+                    },
+                    "k8.K8.displaySensors": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "blockId": "Line_Sensor",
+                            "block": "$this Display Current Status",
+                            "group": "Line Sensor",
+                            "weight": 50,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Displays current status of all line sensors",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Display Current Status",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.display_sensors"
+                    },
+                    "k8.K8.plotBar": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "x"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.plot_bar"
+                    },
+                    "k8.K8.unplotBar": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "x"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.unplot_bar"
+                    },
+                    "k8.K8.checkSonar": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "true",
+                            "group": "Sonar",
+                            "weight": 50,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Returns the distance the robot is from an object (in centimetres)\r\nMax range 150cm",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "true",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.check_sonar"
+                    },
+                    "k8.K8.isSonar": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this sonar is $comparison| than $threshold cm",
+                            "group": "Sonar",
+                            "blockId": "sonar_is",
+                            "weight": 60,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Test that sonar is closer or further than the threshold in cm.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " sonar is ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "comparison",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " than ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " cm",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "comparison",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "comparison",
+                                "type": "Comparison",
+                                "initializer": "Comparison.FURTHER",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "threshold"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.is_sonar"
+                    },
+                    "k8.K8.displaySonar": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "true",
+                            "group": "Sonar",
+                            "weight": 40,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Display the current sonar reading to leds.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "true",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.display_sonar"
+                    },
+                    "k8.K8.ping": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "k8.K8.driveStraight": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this drive straight |speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_drive_straight",
+                            "paramMin": {
+                                "speed": "-100"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 70,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Drives the robot straight at a specified speed",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " drive straight ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "-100"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.drive_straight"
+                    },
+                    "k8.K8.turnLeft": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this turn left |speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_turn_left",
+                            "paramMin": {
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 60,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Turns the robot to the left at a specified speed",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " turn left ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.turn_left"
+                    },
+                    "k8.K8.turnRight": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this turn right |speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_turn_right",
+                            "paramMin": {
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 50,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Turns the robot to the right at a specified speed",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " turn right ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.turn_right"
+                    },
+                    "k8.K8.stop": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this stop motors",
+                            "group": "Motion",
+                            "blockId": "motion_stop",
+                            "weight": 45,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Stop the motors",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " stop motors",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "k8.K8.drive": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this drive |left: $leftWheelSpeed|right: $rightWheelSpeed",
+                            "group": "Motion",
+                            "blockId": "motion_drive",
+                            "paramMin": {
+                                "leftWheelSpeed": "-100",
+                                "rightWheelSpeed": "-100"
+                            },
+                            "paramMax": {
+                                "leftWheelSpeed": "100",
+                                "rightWheelSpeed": "100"
+                            },
+                            "weight": 40,
+                            "advanced": false,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Control both wheels in one function.\r\nSpeeds range from -100 to 100.\r\nNegative speeds go backwards, positive go forwards.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " drive ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "left: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "leftWheelSpeed",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "right: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rightWheelSpeed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "leftWheelSpeed",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rightWheelSpeed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "leftWheelSpeed",
+                                "options": {
+                                    "min": {
+                                        "value": "-100"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "rightWheelSpeed",
+                                "options": {
+                                    "min": {
+                                        "value": "-100"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "k8.K8.driveWheel": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this drive |wheel: $wheel|speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_single",
+                            "paramMin": {
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 30,
+                            "advanced": false,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Control the speed and direction of a single wheel",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " drive ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "wheel: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "wheel",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "wheel",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "wheel",
+                                "type": "Motor",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.drive_wheel"
+                    },
+                    "k8.K8.setPowers": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this turn motors |power: $power",
+                            "group": "Motion",
+                            "blockId": "motion_power",
+                            "weight": 20,
+                            "advanced": false,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Turn the motors on/off - default on",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " turn motors ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "power: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "power",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "power",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "power",
+                                "type": "MotorPower",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.set_powers"
+                    },
+                    "k8.K8.motorControl": {
+                        "kind": -1,
+                        "attributes": {
+                            "jsDoc": "Advanced control of an individual motor. PWM is set to constant value."
+                        },
+                        "parameters": [
+                            {
+                                "name": "whichMotor",
+                                "type": "Motor",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "speed"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.motor_control"
+                    },
+                    "k8.K8.remapSpeed": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "s"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.remap_speed"
+                    },
                     "i": {
                         "kind": 4,
                         "retType": "number"
@@ -36479,7 +42240,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "d311b2bc616a614c7d298959527215dc666fa3dc8b901822d692bf2194900b9f"
+            "sha": "14659ffec724df5505b05ff1b41aa133553e9a1797a40f74678e4800be523e54"
         },
         "libs/radio": {
             "apis": {
@@ -37895,7 +43656,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "d6f3a8a19f0ec659cb7a1f1664c394c2f3199e7da91944604623b2dbd732bcb2"
+            "sha": "3a7b418621c4166fe6eea8990e46d06c062c7eeea0a32fadc3974f47bc6d039d"
         },
         "libs/devices": {
             "apis": {
@@ -39932,7 +45693,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "bdc01c9960ff9438c23e15ae98a5c72082f8b468446ea930ad4dc54af1d32811"
+            "sha": "9457417c06f188fc5f68cf48021334e7ed522b58a6c270e93ee8dd8fbc816618"
         },
         "libs/bluetooth": {
             "apis": {
@@ -40883,7 +46644,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "9267302e08ae23b4efe31480b35f1f0dbcafb5777a1d6ccfad905b7b9acb9ec1"
+            "sha": "6d828eecbde5b288000cc82eb44985572ecd970c09f90402530df7aac6f50a8a"
         },
         "libs/servo": {
             "apis": {
@@ -41525,7 +47286,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "7895e9049bb1f92989ad3705a8a62605523bb2ee3eed8310b6c51fc0bd69ecfe"
+            "sha": "807dea591369d11a66f81b51d2722f9563e1d6c66e992f3ed19885c98a061f56"
         },
         "libs/radio-broadcast": {
             "apis": {
@@ -43084,7 +48845,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "5b1f78eef3420f98d1093858949b3c6317090c7178eab27534ff2fb1e68c8a5b"
+            "sha": "a941156dbb48d1e387509184fef951d449c3757691880a3feffb504775651fb3"
         },
         "libs/microphone": {
             "apis": {
@@ -43250,7 +49011,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "9c4e458030f87958180d7d89b4a0ef20b46d9736c073cdda30ee2d9e255a8457"
+            "sha": "f562dfd5370c3c6e07454d6c0cb8925378d844bd549673f90afef76241f83498"
         },
         "libs\\blocksprj": {
             "apis": {
@@ -44666,7 +50427,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "b2daaca1edb875f402006cdf1e8dc9fb44b40bddca77dbcff65c50fa41a877ae"
+            "sha": "186a570dc3475d2d95d0c5d9cacb534e30729e853ece8f20ade29c95ca99f5f1"
         },
         "libs\\bluetoothprj": {
             "apis": {
@@ -45617,7 +51378,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "6e0d9ab0dcd58b1ce48ba8bd9d0808ad6a6bb38afca6f6f6b575707370ac1db5"
+            "sha": "fba415dc7302e49a462e7cc510d4c3f9281ebd04ff37ae42f0c30e1ce4b62098"
         },
         "libs\\tsprj": {
             "apis": {
@@ -47033,7 +52794,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "b0891fa1a82c2f4aeaa0ccadd46c2ab490ecc2a67a7d6997416d15f76f6b2ff2"
+            "sha": "eaaec683fa588608a4e4a62b671a0c9432a55a3fce558ff1cdbd932022890313"
         }
     }
 }

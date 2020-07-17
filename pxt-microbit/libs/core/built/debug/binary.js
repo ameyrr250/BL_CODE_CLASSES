@@ -1,4 +1,4 @@
-// total=66914 new=88.82% cached=0.00% other=11.18%
+// total=82266 new=88.90% cached=0.00% other=11.10%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -64,6 +64,7 @@ pxtrt.mapKeyNames = [
  "pitchClick",
  "pitchPin",
  "receivedData",
+ "registerValue",
  "response"
 ];
 __this.setupPerfCounters([]);
@@ -91,7 +92,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P822576(s) {
+function _main___P5401959(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -101,47 +102,47 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___822879 = (undefined);
-    globals.listeners___822890 = (undefined);
+    globals._intervals___5402262 = (undefined);
+    globals.listeners___5402273 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___823124 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___823124, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___5402507 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___5402507, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___823136 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___823136, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___5402519 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___5402519, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___823146 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___823146, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___5402529 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___5402529, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___823156 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___823156, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___5402539 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___5402539, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___823166 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___823166, 2, 0, 2);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C823211_VT);
+    globals.READ_BBOARD_TX_BUFFER___5402549 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___5402549, 2, 0, 2);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C5402594_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_UARTSettings_constructor__P823219_mk(s);
+    s.tmp_1 = bBoard_UARTSettings_constructor__P5402602_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 1; return s.tmp_1;
   case 1:
     r0 = s.retval;
-    globals.UARTs___823245 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C823211_VT);
+    globals.UARTs___5402628 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_UARTSettings__C5402594_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_UARTSettings_constructor__P823219_mk(s);
+    s.tmp_1 = bBoard_UARTSettings_constructor__P5402602_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 2; return s.tmp_1;
   case 2:
     r0 = s.retval;
-    globals.UARTs___823253 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(WiFiSetResponses_SetResponse__C823247_VT);
+    globals.UARTs___5402636 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(WiFiSetResponses_SetResponse__C5402630_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = WiFiSetResponses_SetResponse_constructor__P823251_mk(s);
+    s.tmp_1 = WiFiSetResponses_SetResponse_constructor__P5402634_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 3; return s.tmp_1;
   case 3:
     r0 = s.retval;
-    globals.SetResponseObj___823256 = (s.tmp_0);
+    globals.SetResponseObj___5402639 = (s.tmp_0);
     r0 = pxsim_pxtrt.mkMap();
     s.tmp_0 = r0;
     r0 = pxsim_String_.mkEmpty();
@@ -159,173 +160,257 @@ switch (step) {
     r0 = pxsim_String_.mkEmpty();
     s.tmp_5 = r0;
     r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "value", s.tmp_5);
-    globals.MQTTMessageObject___823268 = (s.tmp_0);
+    globals.MQTTMessageObject___5402651 = (s.tmp_0);
     r0 = pxsim_Array__mk();
     s.tmp_0 = r0;
-    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___823268);
-    globals.mqttMessageList___823270 = (s.tmp_0);
-    r0 = pxsim_Array_.pop(globals.mqttMessageList___823270);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C823220_VT);
+    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___5402651);
+    globals.mqttMessageList___5402653 = (s.tmp_0);
+    r0 = pxsim_Array_.pop(globals.mqttMessageList___5402653);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P823226_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 4; return s.tmp_1;
   case 4:
     r0 = s.retval;
-    globals.PINs___823280 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C823220_VT);
+    globals.PINs___5402663 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P823226_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 5; return s.tmp_1;
   case 5:
     r0 = s.retval;
-    globals.PINs___823329 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_SPIsetting__C823229_VT);
+    globals.PINs___5402712 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_SPIsetting__C5402612_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_SPIsetting_constructor__P823237_mk(s);
+    s.tmp_1 = bBoard_SPIsetting_constructor__P5402620_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 6; return s.tmp_1;
   case 6:
     r0 = s.retval;
-    globals.SPIs___823332 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C823238_VT);
+    globals.SPIs___5402715 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C5402621_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_I2CSettings_constructor__P823243_mk(s);
+    s.tmp_1 = bBoard_I2CSettings_constructor__P5402626_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 7; return s.tmp_1;
   case 7:
     r0 = s.retval;
-    globals.i2csettingsobj___823374 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C823220_VT);
+    globals.i2csettingsobj___5402757 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P823226_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 8; return s.tmp_1;
   case 8:
     r0 = s.retval;
-    globals.PINs___823389 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C823238_VT);
+    globals.PINs___5402772 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C5402621_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_I2CSettings_constructor__P823243_mk(s);
+    s.tmp_1 = bBoard_I2CSettings_constructor__P5402626_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 9; return s.tmp_1;
   case 9:
     r0 = s.retval;
-    globals.I2Cs___823392 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C823220_VT);
+    globals.I2Cs___5402775 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P823226_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 10; return s.tmp_1;
   case 10:
     r0 = s.retval;
-    globals.PINs___823420 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C823238_VT);
+    globals.PINs___5402803 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C5402621_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_I2CSettings_constructor__P823243_mk(s);
+    s.tmp_1 = bBoard_I2CSettings_constructor__P5402626_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 11; return s.tmp_1;
   case 11:
     r0 = s.retval;
-    globals.I2Cs___823423 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C823220_VT);
+    globals.I2Cs___5402806 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P823226_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 12; return s.tmp_1;
   case 12:
     r0 = s.retval;
-    globals.PINs___823442 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PWMSettings__C823205_VT);
+    globals.PINs___5402825 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PWMSettings__C5402588_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PWMSettings_constructor__P823210_mk(s);
+    s.tmp_1 = bBoard_PWMSettings_constructor__P5402593_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 13; return s.tmp_1;
   case 13:
     r0 = s.retval;
-    globals.pwms___823445 = (s.tmp_0);
-    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C823220_VT);
+    globals.pwms___5402828 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
     s.tmp_0 = r0;
-    s.tmp_1 = bBoard_PinSettings_constructor__P823226_mk(s);
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
     s.tmp_1.arg0 = s.tmp_0;
     s.pc = 14; return s.tmp_1;
   case 14:
     r0 = s.retval;
-    globals.PINs___823471 = (s.tmp_0);
-    globals.i___823565 = (1);
-    globals.f___823567 = (0.5);
-    r0 = (globals.i___823565 + globals.f___823567);
-    globals.plus___823570 = (r0);
-    r0 = (globals.i___823565 - globals.f___823567);
-    globals.minus___823574 = (r0);
+    globals.PINs___5402854 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PinSettings__C5402603_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = bBoard_PinSettings_constructor__P5402609_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 15; return s.tmp_1;
+  case 15:
+    r0 = s.retval;
+    globals.PINs___5402964 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_PWMSettings__C5402588_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = bBoard_PWMSettings_constructor__P5402593_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 16; return s.tmp_1;
+  case 16:
+    r0 = s.retval;
+    globals.PWMs___5403054 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(bBoard_I2CSettings__C5402621_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = bBoard_I2CSettings_constructor__P5402626_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 17; return s.tmp_1;
+  case 17:
+    r0 = s.retval;
+    globals.I2Cs___5403070 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(Heart_Rate_interrupt_stat_register__C5403073_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = Heart_Rate_interrupt_stat_register_constructor__P5403086_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 18; return s.tmp_1;
+  case 18:
+    r0 = s.retval;
+    globals.interrupt_stat_bits___5403088 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(Heart_Rate_interrupt_en_register__C5403090_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = Heart_Rate_interrupt_en_register_constructor__P5403103_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 19; return s.tmp_1;
+  case 19:
+    r0 = s.retval;
+    globals.interrupt_en_bits___5403105 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(Heart_Rate_mode_config_register__C5403107_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = Heart_Rate_mode_config_register_constructor__P5403118_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.tmp_1.arg1 = 0;
+    s.pc = 20; return s.tmp_1;
+  case 20:
+    r0 = s.retval;
+    globals.mode_config_bits___5403120 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(Heart_Rate_spo2_config_register__C5403122_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = Heart_Rate_spo2_config_register_constructor__P5403131_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 21; return s.tmp_1;
+  case 21:
+    r0 = s.retval;
+    globals.spo2_config_bits___5403133 = (s.tmp_0);
+    r0 = pxsim_pxtcore_mkClassInstance(Heart_Rate_led_config_register__C5403135_VT);
+    s.tmp_0 = r0;
+    s.tmp_1 = Heart_Rate_led_config_register_constructor__P5403142_mk(s);
+    s.tmp_1.arg0 = s.tmp_0;
+    s.pc = 22; return s.tmp_1;
+  case 22:
+    r0 = s.retval;
+    globals.led_config_bits___5403144 = (s.tmp_0);
+    r0 = pxsim_Array__mk();
+    s.tmp_0 = r0;
+    r0 = pxsim_Array__push(s.tmp_0, 0);
+    r0 = pxsim_Array__push(s.tmp_0, 0);
+    r0 = pxsim_pxtrt.mkMap();
+    s.tmp_1 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_1, "v_ctr", s.tmp_0);
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_1, "dcW", 0);
+    globals.irFilters___5403147 = (s.tmp_1);
+    r0 = pxsim_Array__mk();
+    globals.rates___5403161 = (r0);
+    s.tmp_0 = helpers_arrayFill__P5402125_mk(s);
+    s.tmp_0.arg0 = globals.rates___5403161;
+    s.tmp_0.arg1 = 0;
+    s.tmp_0.arg2 = 0;
+    s.tmp_0.arg3 = 6;
+    s.pc = 23; return s.tmp_0;
+  case 23:
+    r0 = s.retval;
+    globals.i___5403318 = (1);
+    globals.f___5403320 = (0.5);
+    r0 = (globals.i___5403318 + globals.f___5403320);
+    globals.plus___5403323 = (r0);
+    r0 = (globals.i___5403318 - globals.f___5403320);
+    globals.minus___5403327 = (r0);
     r0 = pxsim.Math_.random();
-    globals.r___823577 = (r0);
+    globals.r___5403330 = (r0);
     r0 = pxsim.Math_.randomRange(5, 10);
-    globals.ri___823580 = (r0);
+    globals.ri___5403333 = (r0);
     r0 = pxsim_Array__mk();
     s.tmp_0 = r0;
     r0 = pxsim_Array__push(s.tmp_0, 13330);
     r0 = pxsim_Array__push(s.tmp_0, 30806);
-    s.tmp_1 = check__P823582_mk(s);
-    s.tmp_4 = Buffer_pack__P823063_mk(s);
+    s.tmp_1 = check__P5403335_mk(s);
+    s.tmp_4 = Buffer_pack__P5402446_mk(s);
     s.tmp_4.arg0 = "<2h";
     s.tmp_4.arg1 = s.tmp_0;
-    s.pc = 16; return s.tmp_4;
-  case 16:
+    s.pc = 25; return s.tmp_4;
+  case 25:
     r0 = s.retval;
     s.tmp_3 = r0;
     r0 = pxsim.BufferMethods.toHex(s.tmp_3);
     s.tmp_2 = r0;
     r0 = (s.tmp_2 == "12345678");
     s.tmp_1.arg0 = r0;
-    s.pc = 15; return s.tmp_1;
-  case 15:
+    s.pc = 24; return s.tmp_1;
+  case 24:
     r0 = s.retval;
     r0 = pxsim_Array__mk();
     s.tmp_0 = r0;
     r0 = pxsim_Array__push(s.tmp_0, 13330);
     r0 = pxsim_Array__push(s.tmp_0, 30806);
-    s.tmp_1 = check__P823582_mk(s);
-    s.tmp_4 = Buffer_pack__P823063_mk(s);
+    s.tmp_1 = check__P5403335_mk(s);
+    s.tmp_4 = Buffer_pack__P5402446_mk(s);
     s.tmp_4.arg0 = ">hh";
     s.tmp_4.arg1 = s.tmp_0;
-    s.pc = 18; return s.tmp_4;
-  case 18:
+    s.pc = 27; return s.tmp_4;
+  case 27:
     r0 = s.retval;
     s.tmp_3 = r0;
     r0 = pxsim.BufferMethods.toHex(s.tmp_3);
     s.tmp_2 = r0;
     r0 = (s.tmp_2 == "34127856");
     s.tmp_1.arg0 = r0;
-    s.pc = 17; return s.tmp_1;
-  case 17:
+    s.pc = 26; return s.tmp_1;
+  case 26:
     r0 = s.retval;
-    s.tmp_0 = check__P823582_mk(s);
-    s.tmp_3 = Buffer_fromHex__P823056_mk(s);
+    s.tmp_0 = check__P5403335_mk(s);
+    s.tmp_3 = Buffer_fromHex__P5402439_mk(s);
     s.tmp_3.arg0 = "F00d";
-    s.pc = 20; return s.tmp_3;
-  case 20:
+    s.pc = 29; return s.tmp_3;
+  case 29:
     r0 = s.retval;
     s.tmp_2 = r0;
     r0 = pxsim.BufferMethods.toHex(s.tmp_2);
     s.tmp_1 = r0;
     r0 = (s.tmp_1 == "f00d");
     s.tmp_0.arg0 = r0;
-    s.pc = 19; return s.tmp_0;
-  case 19:
+    s.pc = 28; return s.tmp_0;
+  case 28:
     r0 = s.retval;
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P822576.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
-_main___P822576.continuations = [  ]
+_main___P5401959.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
+_main___P5401959.continuations = [  ]
 
-function _main___P822576_mk(s) {
+function _main___P5401959_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P822576, depth: s.depth + 1,
+        parent: s, fn: _main___P5401959, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -339,7 +424,7 @@ function _main___P822576_mk(s) {
 
 
 
-function Buffer_fromHex__P823056(s) {
+function Buffer_fromHex__P5402439(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -349,58 +434,58 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.hexStr___823602 = undefined;
-    s.res___823604 = undefined;
-    s.i___823615 = undefined;
-    s.p0___823621 = undefined;
-    s.p1___823632 = undefined;
+    s.hexStr___5403355 = undefined;
+    s.res___5403357 = undefined;
+    s.i___5403368 = undefined;
+    s.p0___5403374 = undefined;
+    s.p1___5403385 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.hexStr___823602 = ("0123456789abcdef");
+    s.hexStr___5403355 = ("0123456789abcdef");
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_1 = r0;
     r0 = (s.tmp_1 >> 1);
     s.tmp_0 = r0;
     r0 = pxsim.control.createBuffer(s.tmp_0);
-    s.res___823604 = (r0);
-    s.tmp_0 = helpers_stringToLowerCase__P822763_mk(s);
+    s.res___5403357 = (r0);
+    s.tmp_0 = helpers_stringToLowerCase__P5402146_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.pc = 7; return s.tmp_0;
   case 7:
     r0 = s.retval;
     s.arg0 = (r0);
-    s.i___823615 = (0);
+    s.i___5403368 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___823615;
+    s.tmp_1 = r0 = s.i___5403368;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 6; continue; }
-    s.tmp_3 = r0 = s.hexStr___823602;
-    r0 = pxsim_String_.charAt(s.arg0, s.i___823615);
+    s.tmp_3 = r0 = s.hexStr___5403355;
+    r0 = pxsim_String_.charAt(s.arg0, s.i___5403368);
     s.tmp_4 = r0;
     r0 = pxsim_String_.indexOf(s.tmp_3, s.tmp_4, undefined);
-    s.p0___823621 = (r0);
-    s.tmp_0 = r0 = s.hexStr___823602;
+    s.p0___5403374 = (r0);
+    s.tmp_0 = r0 = s.hexStr___5403355;
     s.tmp_2 = r0 = s.arg0;
-    r0 = (s.i___823615 + 1);
+    r0 = (s.i___5403368 + 1);
     s.tmp_3 = r0;
     r0 = pxsim_String_.charAt(s.tmp_2, s.tmp_3);
     s.tmp_1 = r0;
     r0 = pxsim_String_.indexOf(s.tmp_0, s.tmp_1, undefined);
-    s.p1___823632 = (r0);
-    r0 = (s.p0___823621 < 0);
+    s.p1___5403385 = (r0);
+    r0 = (s.p0___5403374 < 0);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (!r0) { step = 2; continue; }
     r0 = s.tmp_0;
     { step = 3; continue; }
   case 2:
-    r0 = (s.p1___823632 < 0);
+    r0 = (s.p1___5403385 < 0);
   case 3:
     // jmp value (already in r0)
     s.tmp_1 = r0;
@@ -409,28 +494,28 @@ switch (step) {
     r0 = pxsim_pxtcore.throwValue("Invalid hex");
   case 4:
   case 5:
-    s.tmp_2 = r0 = s.res___823604;
-    r0 = (s.i___823615 >> 1);
+    s.tmp_2 = r0 = s.res___5403357;
+    r0 = (s.i___5403368 >> 1);
     s.tmp_3 = r0;
-    r0 = (s.p0___823621 << 4);
+    r0 = (s.p0___5403374 << 4);
     s.tmp_5 = r0;
-    r0 = (s.tmp_5 | s.p1___823632);
+    r0 = (s.tmp_5 | s.p1___5403385);
     s.tmp_4 = r0;
     r0 = pxsim.BufferMethods.setByte(s.tmp_2, s.tmp_3, s.tmp_4);
-    r0 = (s.i___823615 + 2);
-    s.i___823615 = (r0);
+    r0 = (s.i___5403368 + 2);
+    s.i___5403368 = (r0);
     { step = 1; continue; }
   case 6:
-    r0 = s.res___823604;
+    r0 = s.res___5403357;
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_fromHex__P823056.info = {"start":6683,"length":469,"line":240,"column":4,"endLine":252,"endColumn":5,"fileName":"buffer.ts","functionName":"fromHex","argumentNames":["hex"]}
+Buffer_fromHex__P5402439.info = {"start":6683,"length":469,"line":240,"column":4,"endLine":252,"endColumn":5,"fileName":"buffer.ts","functionName":"fromHex","argumentNames":["hex"]}
 
-function Buffer_fromHex__P823056_mk(s) {
+function Buffer_fromHex__P5402439_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_fromHex__P823056, depth: s.depth + 1,
+        parent: s, fn: Buffer_fromHex__P5402439, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -438,11 +523,11 @@ function Buffer_fromHex__P823056_mk(s) {
   tmp_3: undefined,
   tmp_4: undefined,
   tmp_5: undefined,
-  hexStr___823602: undefined,
-  res___823604: undefined,
-  i___823615: undefined,
-  p0___823621: undefined,
-  p1___823632: undefined,
+  hexStr___5403355: undefined,
+  res___5403357: undefined,
+  i___5403368: undefined,
+  p0___5403374: undefined,
+  p1___5403385: undefined,
   arg0: undefined,
 } }
 
@@ -450,7 +535,7 @@ function Buffer_fromHex__P823056_mk(s) {
 
 
 
-function helpers_stringToLowerCase__P822763(s) {
+function helpers_stringToLowerCase__P5402146(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -460,54 +545,54 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.r___823663 = undefined;
-    s.prev___823664 = undefined;
-    s.i___823665 = undefined;
-    s.c___823671 = undefined;
+    s.r___5403416 = undefined;
+    s.prev___5403417 = undefined;
+    s.i___5403418 = undefined;
+    s.c___5403424 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
     r0 = pxsim_String_.mkEmpty();
-    s.r___823663 = (r0);
-    s.prev___823664 = (0);
-    s.i___823665 = (0);
+    s.r___5403416 = (r0);
+    s.prev___5403417 = (0);
+    s.i___5403418 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___823665;
+    s.tmp_1 = r0 = s.i___5403418;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 6; continue; }
-    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___823665);
-    s.c___823671 = (r0);
-    r0 = (65 <= s.c___823671);
+    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___5403418);
+    s.c___5403424 = (r0);
+    r0 = (65 <= s.c___5403424);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 2; continue; }
     r0 = s.tmp_0;
     { step = 3; continue; }
   case 2:
-    r0 = (s.c___823671 <= 90);
+    r0 = (s.c___5403424 <= 90);
   case 3:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 4; continue; }
-    if ((s.r___823663) && (s.r___823663).vtable) {
+    if ((s.r___5403416) && (s.r___5403416).vtable) {
     setupResume(s, 7);
-    pxsim_String__stringConv(s.r___823663);
+    pxsim_String__stringConv(s.r___5403416);
     checkResumeConsumed();
     return;
-    } else { s.retval = (s.r___823663) + ""; }
+    } else { s.retval = (s.r___5403416) + ""; }
   case 7:
     r0 = s.retval;
     s.tmp_2 = r0;
-    s.tmp_7 = helpers_stringSlice__P822762_mk(s);
+    s.tmp_7 = helpers_stringSlice__P5402145_mk(s);
     s.tmp_7.arg0 = s.arg0;
-    s.tmp_7.arg1 = s.prev___823664;
-    s.tmp_7.arg2 = s.i___823665;
+    s.tmp_7.arg1 = s.prev___5403417;
+    s.tmp_7.arg2 = s.i___5403418;
     s.pc = 8; return s.tmp_7;
   case 8:
     r0 = s.retval;
@@ -521,7 +606,7 @@ switch (step) {
   case 9:
     r0 = s.retval;
     s.tmp_5 = r0;
-    r0 = (s.c___823671 + 32);
+    r0 = (s.c___5403424 + 32);
     s.tmp_10 = r0;
     r0 = pxsim_String_.fromCharCode(s.tmp_10);
     s.tmp_9 = r0;
@@ -546,27 +631,27 @@ switch (step) {
     r0 = s.retval;
     s.tmp_3 = r0;
     r0 = pxsim_String__concat(s.tmp_2, s.tmp_3);
-    s.r___823663 = (r0);
-    r0 = (s.i___823665 + 1);
-    s.prev___823664 = (r0);
+    s.r___5403416 = (r0);
+    r0 = (s.i___5403418 + 1);
+    s.prev___5403417 = (r0);
   case 4:
   case 5:
-    r0 = (s.i___823665 + 1);
-    s.i___823665 = (r0);
+    r0 = (s.i___5403418 + 1);
+    s.i___5403418 = (r0);
     { step = 1; continue; }
   case 6:
-    if ((s.r___823663) && (s.r___823663).vtable) {
+    if ((s.r___5403416) && (s.r___5403416).vtable) {
     setupResume(s, 12);
-    pxsim_String__stringConv(s.r___823663);
+    pxsim_String__stringConv(s.r___5403416);
     checkResumeConsumed();
     return;
-    } else { s.retval = (s.r___823663) + ""; }
+    } else { s.retval = (s.r___5403416) + ""; }
   case 12:
     r0 = s.retval;
     s.tmp_0 = r0;
-    s.tmp_3 = helpers_stringSlice__P822762_mk(s);
+    s.tmp_3 = helpers_stringSlice__P5402145_mk(s);
     s.tmp_3.arg0 = s.arg0;
-    s.tmp_3.arg1 = s.prev___823664;
+    s.tmp_3.arg1 = s.prev___5403417;
     s.tmp_3.arg2 = undefined;
     s.pc = 13; return s.tmp_3;
   case 13:
@@ -582,17 +667,17 @@ switch (step) {
     r0 = s.retval;
     s.tmp_1 = r0;
     r0 = pxsim_String__concat(s.tmp_0, s.tmp_1);
-    s.r___823663 = (r0);
-    r0 = s.r___823663;
+    s.r___5403416 = (r0);
+    r0 = s.r___5403416;
     return leave(s, r0)
   default: oops()
 } } }
-helpers_stringToLowerCase__P822763.info = {"start":11538,"length":386,"line":393,"column":4,"endLine":405,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringToLowerCase","argumentNames":["s"]}
+helpers_stringToLowerCase__P5402146.info = {"start":11538,"length":386,"line":393,"column":4,"endLine":405,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringToLowerCase","argumentNames":["s"]}
 
-function helpers_stringToLowerCase__P822763_mk(s) {
+function helpers_stringToLowerCase__P5402146_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: helpers_stringToLowerCase__P822763, depth: s.depth + 1,
+        parent: s, fn: helpers_stringToLowerCase__P5402146, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -605,10 +690,10 @@ function helpers_stringToLowerCase__P822763_mk(s) {
   tmp_8: undefined,
   tmp_9: undefined,
   tmp_10: undefined,
-  r___823663: undefined,
-  prev___823664: undefined,
-  i___823665: undefined,
-  c___823671: undefined,
+  r___5403416: undefined,
+  prev___5403417: undefined,
+  i___5403418: undefined,
+  c___5403424: undefined,
   arg0: undefined,
 } }
 
@@ -616,7 +701,7 @@ function helpers_stringToLowerCase__P822763_mk(s) {
 
 
 
-function helpers_stringSlice__P822762(s) {
+function helpers_stringSlice__P5402145(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -626,7 +711,7 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.len___823722 = undefined;
+    s.len___5403475 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
@@ -634,13 +719,13 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = pxsim_String_.length(s.arg0);
-    s.len___823722 = (r0);
+    s.len___5403475 = (r0);
     r0 = (s.arg1 < 0);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 1; continue; }
-    s.tmp_1 = Math_max__P822772_mk(s);
-    r0 = (s.len___823722 + s.arg1);
+    s.tmp_1 = Math_max__P5402155_mk(s);
+    r0 = (s.len___5403475 + s.arg1);
     s.tmp_1.arg0 = r0;
     s.tmp_1.arg1 = 0;
     s.pc = 7; return s.tmp_1;
@@ -653,14 +738,14 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 3; continue; }
-    s.arg2 = (s.len___823722);
+    s.arg2 = (s.len___5403475);
   case 3:
   case 4:
     r0 = (s.arg2 < 0);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 5; continue; }
-    r0 = (s.len___823722 + s.arg2);
+    r0 = (s.len___5403475 + s.arg2);
     s.arg2 = (r0);
   case 5:
   case 6:
@@ -672,17 +757,17 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-helpers_stringSlice__P822762.info = {"start":11047,"length":365,"line":373,"column":4,"endLine":389,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringSlice","argumentNames":["s","start","end"]}
+helpers_stringSlice__P5402145.info = {"start":11047,"length":365,"line":373,"column":4,"endLine":389,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringSlice","argumentNames":["s","start","end"]}
 
-function helpers_stringSlice__P822762_mk(s) {
+function helpers_stringSlice__P5402145_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: helpers_stringSlice__P822762, depth: s.depth + 1,
+        parent: s, fn: helpers_stringSlice__P5402145, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
   tmp_2: undefined,
-  len___823722: undefined,
+  len___5403475: undefined,
   arg0: undefined,
   arg1: undefined,
   arg2: undefined,
@@ -692,7 +777,7 @@ function helpers_stringSlice__P822762_mk(s) {
 
 
 
-function Math_max__P822772(s) {
+function Math_max__P5402155(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -720,12 +805,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Math_max__P822772.info = {"start":15575,"length":105,"line":529,"column":4,"endLine":532,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"max","argumentNames":["a","b"]}
+Math_max__P5402155.info = {"start":15575,"length":105,"line":529,"column":4,"endLine":532,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"max","argumentNames":["a","b"]}
 
-function Math_max__P822772_mk(s) {
+function Math_max__P5402155_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Math_max__P822772, depth: s.depth + 1,
+        parent: s, fn: Math_max__P5402155, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -736,7 +821,7 @@ function Math_max__P822772_mk(s) {
 
 
 
-function Buffer_pack__P823063(s) {
+function Buffer_pack__P5402446(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -746,43 +831,43 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.buf___823760 = undefined;
+    s.buf___5403513 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
       s.lambdaArgs = null;
     }
-    s.tmp_1 = Buffer_packedSize__P823062_mk(s);
+    s.tmp_1 = Buffer_packedSize__P5402445_mk(s);
     s.tmp_1.arg0 = s.arg0;
     s.pc = 1; return s.tmp_1;
   case 1:
     r0 = s.retval;
     s.tmp_0 = r0;
     r0 = pxsim.control.createBuffer(s.tmp_0);
-    s.buf___823760 = (r0);
-    s.tmp_0 = Buffer___packUnpackCore__P823066_mk(s);
+    s.buf___5403513 = (r0);
+    s.tmp_0 = Buffer___packUnpackCore__P5402449_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.tmp_0.arg1 = s.arg1;
-    s.tmp_0.arg2 = s.buf___823760;
+    s.tmp_0.arg2 = s.buf___5403513;
     s.tmp_0.arg3 = true;
     s.tmp_0.arg4 = 0;
     s.pc = 2; return s.tmp_0;
   case 2:
     r0 = s.retval;
-    r0 = s.buf___823760;
+    r0 = s.buf___5403513;
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_pack__P823063.info = {"start":9148,"length":181,"line":328,"column":4,"endLine":332,"endColumn":5,"fileName":"buffer.ts","functionName":"pack","argumentNames":["format","nums"]}
+Buffer_pack__P5402446.info = {"start":9148,"length":181,"line":328,"column":4,"endLine":332,"endColumn":5,"fileName":"buffer.ts","functionName":"pack","argumentNames":["format","nums"]}
 
-function Buffer_pack__P823063_mk(s) {
+function Buffer_pack__P5402446_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_pack__P823063, depth: s.depth + 1,
+        parent: s, fn: Buffer_pack__P5402446, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
-  buf___823760: undefined,
+  buf___5403513: undefined,
   arg0: undefined,
   arg1: undefined,
 } }
@@ -791,7 +876,7 @@ function Buffer_pack__P823063_mk(s) {
 
 
 
-function Buffer___packUnpackCore__P823066(s) {
+function Buffer___packUnpackCore__P5402449(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -801,12 +886,12 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.isBig___823775 = undefined;
-    s.idx___823776 = undefined;
-    s.i___823777 = undefined;
-    s.i0___823790 = undefined;
-    s.reps___823798 = undefined;
-    s.fmt___823812 = undefined;
+    s.isBig___5403528 = undefined;
+    s.idx___5403529 = undefined;
+    s.i___5403530 = undefined;
+    s.i0___5403543 = undefined;
+    s.reps___5403551 = undefined;
+    s.fmt___5403565 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
@@ -815,18 +900,18 @@ switch (step) {
       s.arg4 = (s.lambdaArgs[4]);
       s.lambdaArgs = null;
     }
-    s.isBig___823775 = (false);
-    s.idx___823776 = (0);
-    s.i___823777 = (0);
+    s.isBig___5403528 = (false);
+    s.idx___5403529 = (0);
+    s.i___5403530 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___823777;
+    s.tmp_1 = r0 = s.i___5403530;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 22; continue; }
-    r0 = pxsim_String_.charAt(s.arg0, s.i___823777);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___5403530);
     s.tmp_3 = r0;
     r0 = pxsim_pxtcore.switch_eq(" ", s.tmp_3);
     if (r0) { step = 2; continue; }
@@ -845,21 +930,21 @@ switch (step) {
   case 2:
   case 3:
   case 4:
-    s.isBig___823775 = (false);
+    s.isBig___5403528 = (false);
     { step = 21; continue; }
   case 5:
   case 6:
-    s.isBig___823775 = (true);
+    s.isBig___5403528 = (true);
     { step = 21; continue; }
   case 7:
     r0 = (s.arg4 + 1);
     s.arg4 = (r0);
     { step = 21; continue; }
   case 8:
-    s.i0___823790 = (s.i___823777);
+    s.i0___5403543 = (s.i___5403530);
   case 9:
-    s.tmp_1 = Buffer_isDigit__P823065_mk(s);
-    r0 = pxsim_String_.charAt(s.arg0, s.i___823777);
+    s.tmp_1 = Buffer_isDigit__P5402448_mk(s);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___5403530);
     s.tmp_1.arg0 = r0;
     s.pc = 23; return s.tmp_1;
   case 23:
@@ -867,20 +952,20 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 10; continue; }
-    r0 = (s.i___823777 + 1);
-    s.i___823777 = (r0);
+    r0 = (s.i___5403530 + 1);
+    s.i___5403530 = (r0);
     { step = 9; continue; }
   case 10:
-    s.reps___823798 = (1);
-    r0 = (s.i0___823790 != s.i___823777);
+    s.reps___5403551 = (1);
+    r0 = (s.i0___5403543 != s.i___5403530);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 11; continue; }
-    s.tmp_1 = parseInt__P822741_mk(s);
-    s.tmp_2 = helpers_stringSlice__P822762_mk(s);
+    s.tmp_1 = parseInt__P5402124_mk(s);
+    s.tmp_2 = helpers_stringSlice__P5402145_mk(s);
     s.tmp_2.arg0 = s.arg0;
-    s.tmp_2.arg1 = s.i0___823790;
-    s.tmp_2.arg2 = s.i___823777;
+    s.tmp_2.arg1 = s.i0___5403543;
+    s.tmp_2.arg2 = s.i___5403530;
     s.pc = 25; return s.tmp_2;
   case 25:
     r0 = s.retval;
@@ -889,29 +974,29 @@ switch (step) {
     s.pc = 24; return s.tmp_1;
   case 24:
     r0 = s.retval;
-    s.reps___823798 = (r0);
+    s.reps___5403551 = (r0);
   case 11:
   case 12:
   case 13:
-    s.tmp_0 = r0 = s.reps___823798;
+    s.tmp_0 = r0 = s.reps___5403551;
     r0 = (s.tmp_0 - 1);
-    s.reps___823798 = (r0);
+    s.reps___5403551 = (r0);
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 20; continue; }
-    s.tmp_1 = Buffer_getFormat__P823064_mk(s);
-    r0 = pxsim_String_.charAt(s.arg0, s.i___823777);
+    s.tmp_1 = Buffer_getFormat__P5402447_mk(s);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___5403530);
     s.tmp_1.arg0 = r0;
-    s.tmp_1.arg1 = s.isBig___823775;
+    s.tmp_1.arg1 = s.isBig___5403528;
     s.pc = 26; return s.tmp_1;
   case 26:
     r0 = s.retval;
-    s.fmt___823812 = (r0);
-    r0 = (s.fmt___823812 === null);
+    s.fmt___5403565 = (r0);
+    r0 = (s.fmt___5403565 === null);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 14; continue; }
-    s.tmp_1 = control_fail__P822875_mk(s);
-    r0 = pxsim_String_.charAt(s.arg0, s.i___823777);
+    s.tmp_1 = control_fail__P5402258_mk(s);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___5403530);
     s.tmp_3 = r0;
     if ((s.tmp_3) && (s.tmp_3).vtable) {
     setupResume(s, 28);
@@ -933,11 +1018,11 @@ switch (step) {
     if (!r0) { step = 17; continue; }
     r0 = pxsim_numops_toBoolDecr(s.arg3);
     if (!r0) { step = 15; continue; }
-    s.tmp_0 = r0 = s.idx___823776;
+    s.tmp_0 = r0 = s.idx___5403529;
     r0 = (s.tmp_0 + 1);
-    s.idx___823776 = (r0);
+    s.idx___5403529 = (r0);
     s.tmp_1 = r0 = s.arg2;
-    s.tmp_2 = r0 = s.fmt___823812;
+    s.tmp_2 = r0 = s.fmt___5403565;
     s.tmp_3 = r0 = s.arg4;
     r0 = pxsim_Array__getAt(s.arg1, s.tmp_0);
     s.tmp_4 = r0;
@@ -945,15 +1030,15 @@ switch (step) {
     { step = 16; continue; }
   case 15:
     s.tmp_0 = r0 = s.arg1;
-    r0 = pxsim.BufferMethods.getNumber(s.arg2, s.fmt___823812, s.arg4);
+    r0 = pxsim.BufferMethods.getNumber(s.arg2, s.fmt___5403565, s.arg4);
     s.tmp_1 = r0;
     r0 = pxsim_Array__push(s.tmp_0, s.tmp_1);
   case 16:
   case 17:
   case 18:
     s.tmp_0 = r0 = s.arg4;
-    s.tmp_2 = Buffer_sizeOfNumberFormat__P823067_mk(s);
-    s.tmp_2.arg0 = s.fmt___823812;
+    s.tmp_2 = Buffer_sizeOfNumberFormat__P5402450_mk(s);
+    s.tmp_2.arg0 = s.fmt___5403565;
     s.pc = 29; return s.tmp_2;
   case 29:
     r0 = s.retval;
@@ -964,32 +1049,32 @@ switch (step) {
     { step = 13; continue; }
   case 20:
   case 21:
-    r0 = (s.i___823777 + 1);
-    s.i___823777 = (r0);
+    r0 = (s.i___5403530 + 1);
+    s.i___5403530 = (r0);
     { step = 1; continue; }
   case 22:
     r0 = s.arg4;
     return leave(s, r0)
   default: oops()
 } } }
-Buffer___packUnpackCore__P823066.info = {"start":10393,"length":1537,"line":364,"column":4,"endLine":406,"endColumn":5,"fileName":"buffer.ts","functionName":"__packUnpackCore","argumentNames":["format","nums","buf","isPack","off"]}
+Buffer___packUnpackCore__P5402449.info = {"start":10393,"length":1537,"line":364,"column":4,"endLine":406,"endColumn":5,"fileName":"buffer.ts","functionName":"__packUnpackCore","argumentNames":["format","nums","buf","isPack","off"]}
 
-function Buffer___packUnpackCore__P823066_mk(s) {
+function Buffer___packUnpackCore__P5402449_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer___packUnpackCore__P823066, depth: s.depth + 1,
+        parent: s, fn: Buffer___packUnpackCore__P5402449, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
   tmp_2: undefined,
   tmp_3: undefined,
   tmp_4: undefined,
-  isBig___823775: undefined,
-  idx___823776: undefined,
-  i___823777: undefined,
-  i0___823790: undefined,
-  reps___823798: undefined,
-  fmt___823812: undefined,
+  isBig___5403528: undefined,
+  idx___5403529: undefined,
+  i___5403530: undefined,
+  i0___5403543: undefined,
+  reps___5403551: undefined,
+  fmt___5403565: undefined,
   arg0: undefined,
   arg1: undefined,
   arg2: undefined,
@@ -1001,7 +1086,7 @@ function Buffer___packUnpackCore__P823066_mk(s) {
 
 
 
-function Buffer_sizeOfNumberFormat__P823067(s) {
+function Buffer_sizeOfNumberFormat__P5402450(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1080,12 +1165,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_sizeOfNumberFormat__P823067.info = {"start":12009,"length":856,"line":411,"column":4,"endLine":435,"endColumn":5,"fileName":"buffer.ts","functionName":"sizeOfNumberFormat","argumentNames":["format"]}
+Buffer_sizeOfNumberFormat__P5402450.info = {"start":12009,"length":856,"line":411,"column":4,"endLine":435,"endColumn":5,"fileName":"buffer.ts","functionName":"sizeOfNumberFormat","argumentNames":["format"]}
 
-function Buffer_sizeOfNumberFormat__P823067_mk(s) {
+function Buffer_sizeOfNumberFormat__P5402450_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_sizeOfNumberFormat__P823067, depth: s.depth + 1,
+        parent: s, fn: Buffer_sizeOfNumberFormat__P5402450, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1095,7 +1180,7 @@ function Buffer_sizeOfNumberFormat__P823067_mk(s) {
 
 
 
-function control_fail__P822875(s) {
+function control_fail__P5402258(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1109,12 +1194,12 @@ switch (step) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.tmp_0 = console_log__P822891_mk(s);
+    s.tmp_0 = console_log__P5402274_mk(s);
     s.tmp_0.arg0 = "Fatal failure: ";
     s.pc = 1; return s.tmp_0;
   case 1:
     r0 = s.retval;
-    s.tmp_0 = console_log__P822891_mk(s);
+    s.tmp_0 = console_log__P5402274_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.pc = 2; return s.tmp_0;
   case 2:
@@ -1124,12 +1209,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-control_fail__P822875.info = {"start":1320,"length":132,"line":50,"column":4,"endLine":54,"endColumn":5,"fileName":"control.ts","functionName":"fail","argumentNames":["message"]}
+control_fail__P5402258.info = {"start":1320,"length":132,"line":50,"column":4,"endLine":54,"endColumn":5,"fileName":"control.ts","functionName":"fail","argumentNames":["message"]}
 
-function control_fail__P822875_mk(s) {
+function control_fail__P5402258_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: control_fail__P822875, depth: s.depth + 1,
+        parent: s, fn: control_fail__P5402258, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1139,7 +1224,7 @@ function control_fail__P822875_mk(s) {
 
 
 
-function console_log__P822891(s) {
+function console_log__P5402274(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1149,7 +1234,7 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.i___823910 = undefined;
+    s.i___5403663 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
@@ -1166,27 +1251,27 @@ switch (step) {
     r0 = pxsim_String__concat(s.tmp_0, "\r\n");
     s.arg0 = (r0);
     r0 = pxsim.control.__log(s.arg0);
-    r0 = pxsim_numops_toBoolDecr(globals.listeners___822890);
+    r0 = pxsim_numops_toBoolDecr(globals.listeners___5402273);
     if (!r0) { step = 3; continue; }
-    s.i___823910 = (0);
+    s.i___5403663 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___823910;
-    r0 = pxsim_Array__length(globals.listeners___822890);
+    s.tmp_1 = r0 = s.i___5403663;
+    r0 = pxsim_Array__length(globals.listeners___5402273);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 2; continue; }
     s.tmp_3 = lambda_2_mk(s);
-    r0 = pxsim_Array__getAt(globals.listeners___822890, s.i___823910);
+    r0 = pxsim_Array__getAt(globals.listeners___5402273, s.i___5403663);
     s.tmp_3.argL = r0;
     s.tmp_3.arg0 = s.arg0;
     setupLambda(s.tmp_3, s.tmp_3.argL);
     s.pc = 6; return s.tmp_3;
   case 6:
     r0 = s.retval;
-    r0 = (s.i___823910 + 1);
-    s.i___823910 = (r0);
+    r0 = (s.i___5403663 + 1);
+    s.i___5403663 = (r0);
     { step = 1; continue; }
   case 2:
   case 3:
@@ -1195,18 +1280,18 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-console_log__P822891.info = {"start":479,"length":285,"line":20,"column":4,"endLine":28,"endColumn":5,"fileName":"console.ts","functionName":"log","argumentNames":["text"]}
+console_log__P5402274.info = {"start":479,"length":285,"line":20,"column":4,"endLine":28,"endColumn":5,"fileName":"console.ts","functionName":"log","argumentNames":["text"]}
 
-function console_log__P822891_mk(s) {
+function console_log__P5402274_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: console_log__P822891, depth: s.depth + 1,
+        parent: s, fn: console_log__P5402274, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
   tmp_2: undefined,
   tmp_3: undefined,
-  i___823910: undefined,
+  i___5403663: undefined,
   arg0: undefined,
 } }
 
@@ -1214,7 +1299,7 @@ function console_log__P822891_mk(s) {
 
 
 
-function Buffer_getFormat__P823064(s) {
+function Buffer_getFormat__P5402447(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1340,12 +1425,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_getFormat__P823064.info = {"start":9335,"length":928,"line":334,"column":4,"endLine":357,"endColumn":5,"fileName":"buffer.ts","functionName":"getFormat","argumentNames":["pychar","isBig"]}
+Buffer_getFormat__P5402447.info = {"start":9335,"length":928,"line":334,"column":4,"endLine":357,"endColumn":5,"fileName":"buffer.ts","functionName":"getFormat","argumentNames":["pychar","isBig"]}
 
-function Buffer_getFormat__P823064_mk(s) {
+function Buffer_getFormat__P5402447_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_getFormat__P823064, depth: s.depth + 1,
+        parent: s, fn: Buffer_getFormat__P5402447, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1362,7 +1447,7 @@ function Buffer_getFormat__P823064_mk(s) {
 
 
 
-function parseInt__P822741(s) {
+function parseInt__P5402124(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1372,13 +1457,13 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.start___823964 = undefined;
-    s.sign___823994 = undefined;
-    s.output___824039 = undefined;
-    s.hasDigit___824040 = undefined;
-    s.i___824041 = undefined;
-    s.code___824048 = undefined;
-    s.val___824055 = undefined;
+    s.start___5403717 = undefined;
+    s.sign___5403747 = undefined;
+    s.output___5403792 = undefined;
+    s.hasDigit___5403793 = undefined;
+    s.i___5403794 = undefined;
+    s.code___5403801 = undefined;
+    s.val___5403808 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
@@ -1425,9 +1510,9 @@ switch (step) {
     { step = 46; continue; }
   case 7:
   case 8:
-    s.start___823964 = (0);
+    s.start___5403717 = (0);
   case 9:
-    s.tmp_1 = r0 = s.start___823964;
+    s.tmp_1 = r0 = s.start___5403717;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
@@ -1437,8 +1522,8 @@ switch (step) {
     r0 = s.tmp_0;
     { step = 11; continue; }
   case 10:
-    s.tmp_3 = helpers_isWhitespace__P822767_mk(s);
-    r0 = pxsim_String_.charCodeAt(s.arg0, s.start___823964);
+    s.tmp_3 = helpers_isWhitespace__P5402150_mk(s);
+    r0 = pxsim_String_.charCodeAt(s.arg0, s.start___5403717);
     s.tmp_3.arg0 = r0;
     s.pc = 47; return s.tmp_3;
   case 47:
@@ -1448,11 +1533,11 @@ switch (step) {
     s.tmp_4 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_4);
     if (!r0) { step = 12; continue; }
-    r0 = (s.start___823964 + 1);
-    s.start___823964 = (r0);
+    r0 = (s.start___5403717 + 1);
+    s.start___5403717 = (r0);
     { step = 9; continue; }
   case 12:
-    s.tmp_1 = r0 = s.start___823964;
+    s.tmp_1 = r0 = s.start___5403717;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 === s.tmp_2);
@@ -1463,8 +1548,8 @@ switch (step) {
     { step = 46; continue; }
   case 13:
   case 14:
-    s.sign___823994 = (1);
-    r0 = pxsim_String_.charAt(s.arg0, s.start___823964);
+    s.sign___5403747 = (1);
+    r0 = pxsim_String_.charAt(s.arg0, s.start___5403717);
     s.tmp_0 = r0;
     r0 = pxsim_pxtcore.switch_eq("-", s.tmp_0);
     if (r0) { step = 15; continue; }
@@ -1473,10 +1558,10 @@ switch (step) {
     r0 = s.tmp_0;
     { step = 17; continue; }
   case 15:
-    s.sign___823994 = (-1);
+    s.sign___5403747 = (-1);
   case 16:
-    r0 = (s.start___823964 + 1);
-    s.start___823964 = (r0);
+    r0 = (s.start___5403717 + 1);
+    s.start___5403717 = (r0);
   case 17:
     r0 = pxsim_numops_toBoolDecr(s.arg1);
     s.tmp_1 = r0;
@@ -1496,7 +1581,7 @@ switch (step) {
     r0 = s.tmp_2;
     { step = 21; continue; }
   case 20:
-    r0 = pxsim_String_.charAt(s.arg0, s.start___823964);
+    r0 = pxsim_String_.charAt(s.arg0, s.start___5403717);
     s.tmp_3 = r0;
     r0 = ("0" === s.tmp_3);
   case 21:
@@ -1508,7 +1593,7 @@ switch (step) {
     { step = 25; continue; }
   case 22:
     s.tmp_7 = r0 = s.arg0;
-    r0 = (s.start___823964 + 1);
+    r0 = (s.start___5403717 + 1);
     s.tmp_8 = r0;
     r0 = pxsim_String_.charAt(s.tmp_7, s.tmp_8);
     s.tmp_6 = r0;
@@ -1520,7 +1605,7 @@ switch (step) {
     { step = 24; continue; }
   case 23:
     s.tmp_10 = r0 = s.arg0;
-    r0 = (s.start___823964 + 1);
+    r0 = (s.start___5403717 + 1);
     s.tmp_11 = r0;
     r0 = pxsim_String_.charAt(s.tmp_10, s.tmp_11);
     s.tmp_9 = r0;
@@ -1535,8 +1620,8 @@ switch (step) {
     r0 = pxsim_numops_toBoolDecr(s.tmp_13);
     if (!r0) { step = 26; continue; }
     s.arg1 = (16);
-    r0 = (s.start___823964 + 2);
-    s.start___823964 = (r0);
+    r0 = (s.start___5403717 + 2);
+    s.start___5403717 = (r0);
     { step = 29; continue; }
   case 26:
     r0 = pxsim_numops_toBoolDecr(s.arg1);
@@ -1549,73 +1634,73 @@ switch (step) {
   case 27:
   case 28:
   case 29:
-    s.output___824039 = (0);
-    s.hasDigit___824040 = (false);
-    s.i___824041 = (s.start___823964);
+    s.output___5403792 = (0);
+    s.hasDigit___5403793 = (false);
+    s.i___5403794 = (s.start___5403717);
   case 30:
-    s.tmp_1 = r0 = s.i___824041;
+    s.tmp_1 = r0 = s.i___5403794;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 45; continue; }
-    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___824041);
+    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___5403794);
     s.tmp_3 = r0;
     r0 = (s.tmp_3 | 32);
-    s.code___824048 = (r0);
-    s.val___824055 = (undefined);
-    r0 = (s.code___824048 >= 48);
+    s.code___5403801 = (r0);
+    s.val___5403808 = (undefined);
+    r0 = (s.code___5403801 >= 48);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 31; continue; }
     r0 = s.tmp_0;
     { step = 32; continue; }
   case 31:
-    r0 = (s.code___824048 < 58);
+    r0 = (s.code___5403801 < 58);
   case 32:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 33; continue; }
-    r0 = (s.code___824048 - 48);
-    s.val___824055 = (r0);
+    r0 = (s.code___5403801 - 48);
+    s.val___5403808 = (r0);
     { step = 38; continue; }
   case 33:
-    r0 = (s.code___824048 >= 97);
+    r0 = (s.code___5403801 >= 97);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 34; continue; }
     r0 = s.tmp_0;
     { step = 35; continue; }
   case 34:
-    r0 = (s.code___824048 < 123);
+    r0 = (s.code___5403801 < 123);
   case 35:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 36; continue; }
-    r0 = (10 + s.code___824048);
+    r0 = (10 + s.code___5403801);
     s.tmp_2 = r0;
     r0 = (s.tmp_2 - 97);
-    s.val___824055 = (r0);
+    s.val___5403808 = (r0);
   case 36:
   case 37:
   case 38:
-    r0 = (s.val___824055 == undefined);
+    r0 = (s.val___5403808 == undefined);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (!r0) { step = 39; continue; }
     r0 = s.tmp_0;
     { step = 40; continue; }
   case 39:
-    r0 = (s.val___824055 >= s.arg1);
+    r0 = (s.val___5403808 >= s.arg1);
   case 40:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 43; continue; }
-    r0 = pxsim_numops_toBoolDecr(s.hasDigit___824040);
+    r0 = pxsim_numops_toBoolDecr(s.hasDigit___5403793);
     s.tmp_3 = r0;
     r0 = pxsim_Boolean__bang(s.tmp_3);
     s.tmp_2 = r0;
@@ -1628,26 +1713,26 @@ switch (step) {
     { step = 45; continue; }
   case 43:
   case 44:
-    s.hasDigit___824040 = (true);
-    r0 = (s.output___824039 * s.arg1);
+    s.hasDigit___5403793 = (true);
+    r0 = (s.output___5403792 * s.arg1);
     s.tmp_0 = r0;
-    r0 = (s.tmp_0 + s.val___824055);
-    s.output___824039 = (r0);
-    r0 = (s.i___824041 + 1);
-    s.i___824041 = (r0);
+    r0 = (s.tmp_0 + s.val___5403808);
+    s.output___5403792 = (r0);
+    r0 = (s.i___5403794 + 1);
+    s.i___5403794 = (r0);
     { step = 30; continue; }
   case 45:
-    r0 = (s.sign___823994 * s.output___824039);
+    r0 = (s.sign___5403747 * s.output___5403792);
   case 46:
     return leave(s, r0)
   default: oops()
 } } }
-parseInt__P822741.info = {"start":1064,"length":1690,"line":44,"column":0,"endLine":103,"endColumn":1,"fileName":"pxt-helpers.ts","functionName":"parseInt","argumentNames":["text","radix"]}
+parseInt__P5402124.info = {"start":1064,"length":1690,"line":44,"column":0,"endLine":103,"endColumn":1,"fileName":"pxt-helpers.ts","functionName":"parseInt","argumentNames":["text","radix"]}
 
-function parseInt__P822741_mk(s) {
+function parseInt__P5402124_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: parseInt__P822741, depth: s.depth + 1,
+        parent: s, fn: parseInt__P5402124, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1663,13 +1748,13 @@ function parseInt__P822741_mk(s) {
   tmp_11: undefined,
   tmp_12: undefined,
   tmp_13: undefined,
-  start___823964: undefined,
-  sign___823994: undefined,
-  output___824039: undefined,
-  hasDigit___824040: undefined,
-  i___824041: undefined,
-  code___824048: undefined,
-  val___824055: undefined,
+  start___5403717: undefined,
+  sign___5403747: undefined,
+  output___5403792: undefined,
+  hasDigit___5403793: undefined,
+  i___5403794: undefined,
+  code___5403801: undefined,
+  val___5403808: undefined,
   arg0: undefined,
   arg1: undefined,
 } }
@@ -1678,7 +1763,7 @@ function parseInt__P822741_mk(s) {
 
 
 
-function helpers_isWhitespace__P822767(s) {
+function helpers_isWhitespace__P5402150(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1735,12 +1820,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-helpers_isWhitespace__P822767.info = {"start":13875,"length":674,"line":476,"column":4,"endLine":493,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"isWhitespace","argumentNames":["c"]}
+helpers_isWhitespace__P5402150.info = {"start":13875,"length":674,"line":476,"column":4,"endLine":493,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"isWhitespace","argumentNames":["c"]}
 
-function helpers_isWhitespace__P822767_mk(s) {
+function helpers_isWhitespace__P5402150_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: helpers_isWhitespace__P822767, depth: s.depth + 1,
+        parent: s, fn: helpers_isWhitespace__P5402150, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1750,7 +1835,7 @@ function helpers_isWhitespace__P822767_mk(s) {
 
 
 
-function Buffer_isDigit__P823065(s) {
+function Buffer_isDigit__P5402448(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1760,21 +1845,21 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.code___824112 = undefined;
+    s.code___5403865 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
     r0 = pxsim_String_.charCodeAt(s.arg0, 0);
-    s.code___824112 = (r0);
-    r0 = (48 <= s.code___824112);
+    s.code___5403865 = (r0);
+    r0 = (48 <= s.code___5403865);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 1; continue; }
     r0 = s.tmp_0;
     { step = 2; continue; }
   case 1:
-    r0 = (s.code___824112 <= 57);
+    r0 = (s.code___5403865 <= 57);
   case 2:
     // jmp value (already in r0)
     s.tmp_1 = r0;
@@ -1782,16 +1867,16 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_isDigit__P823065.info = {"start":10269,"length":118,"line":359,"column":4,"endLine":362,"endColumn":5,"fileName":"buffer.ts","functionName":"isDigit","argumentNames":["ch"]}
+Buffer_isDigit__P5402448.info = {"start":10269,"length":118,"line":359,"column":4,"endLine":362,"endColumn":5,"fileName":"buffer.ts","functionName":"isDigit","argumentNames":["ch"]}
 
-function Buffer_isDigit__P823065_mk(s) {
+function Buffer_isDigit__P5402448_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_isDigit__P823065, depth: s.depth + 1,
+        parent: s, fn: Buffer_isDigit__P5402448, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
-  code___824112: undefined,
+  code___5403865: undefined,
   arg0: undefined,
 } }
 
@@ -1799,7 +1884,7 @@ function Buffer_isDigit__P823065_mk(s) {
 
 
 
-function Buffer_packedSize__P823062(s) {
+function Buffer_packedSize__P5402445(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1813,7 +1898,7 @@ switch (step) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.tmp_0 = Buffer___packUnpackCore__P823066_mk(s);
+    s.tmp_0 = Buffer___packUnpackCore__P5402449_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.tmp_0.arg1 = null;
     s.tmp_0.arg2 = null;
@@ -1825,12 +1910,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_packedSize__P823062.info = {"start":9034,"length":108,"line":324,"column":4,"endLine":326,"endColumn":5,"fileName":"buffer.ts","functionName":"packedSize","argumentNames":["format"]}
+Buffer_packedSize__P5402445.info = {"start":9034,"length":108,"line":324,"column":4,"endLine":326,"endColumn":5,"fileName":"buffer.ts","functionName":"packedSize","argumentNames":["format"]}
 
-function Buffer_packedSize__P823062_mk(s) {
+function Buffer_packedSize__P5402445_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_packedSize__P823062, depth: s.depth + 1,
+        parent: s, fn: Buffer_packedSize__P5402445, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1840,7 +1925,7 @@ function Buffer_packedSize__P823062_mk(s) {
 
 
 
-function check__P823582(s) {
+function check__P5403335(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1854,7 +1939,7 @@ switch (step) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.tmp_0 = control_assert__P822874_mk(s);
+    s.tmp_0 = control_assert__P5402257_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.tmp_0.arg1 = 108;
     s.pc = 1; return s.tmp_0;
@@ -1864,12 +1949,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-check__P823582.info = {"start":115,"length":58,"line":9,"column":0,"endLine":9,"endColumn":58,"fileName":"test.ts","functionName":"check","argumentNames":["cond"]}
+check__P5403335.info = {"start":115,"length":58,"line":9,"column":0,"endLine":9,"endColumn":58,"fileName":"test.ts","functionName":"check","argumentNames":["cond"]}
 
-function check__P823582_mk(s) {
+function check__P5403335_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: check__P823582, depth: s.depth + 1,
+        parent: s, fn: check__P5403335, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1879,7 +1964,7 @@ function check__P823582_mk(s) {
 
 
 
-function control_assert__P822874(s) {
+function control_assert__P5402257(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1900,7 +1985,7 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 3; continue; }
-    s.tmp_2 = console_log__P822891_mk(s);
+    s.tmp_2 = console_log__P5402274_mk(s);
     s.tmp_2.arg0 = "ASSERTION FAILED";
     s.pc = 5; return s.tmp_2;
   case 5:
@@ -1909,7 +1994,7 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 1; continue; }
-    s.tmp_1 = console_log__P822891_mk(s);
+    s.tmp_1 = console_log__P5402274_mk(s);
     s.tmp_1.arg0 = s.arg1;
     s.pc = 6; return s.tmp_1;
   case 6:
@@ -1923,12 +2008,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-control_assert__P822874.info = {"start":1070,"length":244,"line":40,"column":4,"endLine":48,"endColumn":5,"fileName":"control.ts","functionName":"assert","argumentNames":["condition","msg"]}
+control_assert__P5402257.info = {"start":1070,"length":244,"line":40,"column":4,"endLine":48,"endColumn":5,"fileName":"control.ts","functionName":"assert","argumentNames":["condition","msg"]}
 
-function control_assert__P822874_mk(s) {
+function control_assert__P5402257_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: control_assert__P822874, depth: s.depth + 1,
+        parent: s, fn: control_assert__P5402257, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1941,7 +2026,187 @@ function control_assert__P822874_mk(s) {
 
 
 
-function bBoard_PWMSettings_constructor__P823210(s) {
+function helpers_arrayFill__P5402125(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    s.len___5403901 = undefined;
+    s.relativeStart___5403905 = undefined;
+    s.k___5403912 = undefined;
+    s.relativeEnd___5403922 = undefined;
+    s.final___5403930 = undefined;
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.arg1 = (s.lambdaArgs[1]);
+      s.arg2 = (s.lambdaArgs[2]);
+      s.arg3 = (s.lambdaArgs[3]);
+      s.lambdaArgs = null;
+    }
+    r0 = pxsim_Array__length(s.arg0);
+    s.tmp_0 = r0;
+    r0 = (s.tmp_0 >>> 0);
+    s.len___5403901 = (r0);
+    r0 = (s.arg2 === undefined);
+    s.tmp_0 = r0;
+    r0 = pxsim_numops_toBoolDecr(s.tmp_0);
+    if (!r0) { step = 1; continue; }
+    r0 = 0;
+    { step = 2; continue; }
+  case 1:
+    r0 = (s.arg2 >> 0);
+  case 2:
+    // jmp value (already in r0)
+    s.tmp_1 = r0;
+    s.relativeStart___5403905 = (s.tmp_1);
+    r0 = (s.relativeStart___5403905 < 0);
+    s.tmp_0 = r0;
+    r0 = pxsim_numops_toBoolDecr(s.tmp_0);
+    if (!r0) { step = 3; continue; }
+    s.tmp_1 = Math_max__P5402155_mk(s);
+    r0 = (s.len___5403901 + s.relativeStart___5403905);
+    s.tmp_1.arg0 = r0;
+    s.tmp_1.arg1 = 0;
+    s.pc = 11; return s.tmp_1;
+  case 11:
+    r0 = s.retval;
+    { step = 4; continue; }
+  case 3:
+    s.tmp_2 = Math_min__P5402156_mk(s);
+    s.tmp_2.arg0 = s.relativeStart___5403905;
+    s.tmp_2.arg1 = s.len___5403901;
+    s.pc = 12; return s.tmp_2;
+  case 12:
+    r0 = s.retval;
+  case 4:
+    // jmp value (already in r0)
+    s.tmp_3 = r0;
+    s.k___5403912 = (s.tmp_3);
+    r0 = (s.arg3 === undefined);
+    s.tmp_0 = r0;
+    r0 = pxsim_numops_toBoolDecr(s.tmp_0);
+    if (!r0) { step = 5; continue; }
+    r0 = s.len___5403901;
+    { step = 6; continue; }
+  case 5:
+    r0 = (s.arg3 >> 0);
+  case 6:
+    // jmp value (already in r0)
+    s.tmp_1 = r0;
+    s.relativeEnd___5403922 = (s.tmp_1);
+    r0 = (s.relativeEnd___5403922 < 0);
+    s.tmp_0 = r0;
+    r0 = pxsim_numops_toBoolDecr(s.tmp_0);
+    if (!r0) { step = 7; continue; }
+    s.tmp_1 = Math_max__P5402155_mk(s);
+    r0 = (s.len___5403901 + s.relativeEnd___5403922);
+    s.tmp_1.arg0 = r0;
+    s.tmp_1.arg1 = 0;
+    s.pc = 13; return s.tmp_1;
+  case 13:
+    r0 = s.retval;
+    { step = 8; continue; }
+  case 7:
+    s.tmp_2 = Math_min__P5402156_mk(s);
+    s.tmp_2.arg0 = s.relativeEnd___5403922;
+    s.tmp_2.arg1 = s.len___5403901;
+    s.pc = 14; return s.tmp_2;
+  case 14:
+    r0 = s.retval;
+  case 8:
+    // jmp value (already in r0)
+    s.tmp_3 = r0;
+    s.final___5403930 = (s.tmp_3);
+  case 9:
+    r0 = (s.k___5403912 < s.final___5403930);
+    s.tmp_0 = r0;
+    r0 = pxsim_numops_toBoolDecr(s.tmp_0);
+    if (!r0) { step = 10; continue; }
+    r0 = pxsim_Array_.setAt(s.arg0, s.k___5403912, s.arg1);
+    r0 = (s.k___5403912 + 1);
+    s.k___5403912 = (r0);
+    { step = 9; continue; }
+  case 10:
+    r0 = s.arg0;
+    return leave(s, r0)
+  default: oops()
+} } }
+helpers_arrayFill__P5402125.info = {"start":2780,"length":856,"line":106,"column":4,"endLine":135,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"arrayFill","argumentNames":["O","value","start","end"]}
+
+function helpers_arrayFill__P5402125_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: helpers_arrayFill__P5402125, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  tmp_0: undefined,
+  tmp_1: undefined,
+  tmp_2: undefined,
+  tmp_3: undefined,
+  len___5403901: undefined,
+  relativeStart___5403905: undefined,
+  k___5403912: undefined,
+  relativeEnd___5403922: undefined,
+  final___5403930: undefined,
+  arg0: undefined,
+  arg1: undefined,
+  arg2: undefined,
+  arg3: undefined,
+} }
+
+
+
+
+
+function Math_min__P5402156(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.arg1 = (s.lambdaArgs[1]);
+      s.lambdaArgs = null;
+    }
+    r0 = (s.arg0 <= s.arg1);
+    s.tmp_0 = r0;
+    r0 = pxsim_numops_toBoolDecr(s.tmp_0);
+    if (!r0) { step = 1; continue; }
+    r0 = s.arg0;
+    { step = 3; continue; }
+  case 1:
+  case 2:
+    r0 = s.arg1;
+  case 3:
+    return leave(s, r0)
+  default: oops()
+} } }
+Math_min__P5402156.info = {"start":15790,"length":105,"line":538,"column":4,"endLine":541,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"min","argumentNames":["a","b"]}
+
+function Math_min__P5402156_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: Math_min__P5402156, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  tmp_0: undefined,
+  arg0: undefined,
+  arg1: undefined,
+} }
+
+
+
+
+
+function Heart_Rate_led_config_register_constructor__P5403142(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1956,19 +2221,18 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_PWMSettings__C823205_VT)) failedCast(r0);
-    r0 = (s.arg0).fields["pitchPin"] = (32768);
-    r0 = (s.arg0).fields["pitchClick"] = (1);
+    if (!checkSubtype(r0, Heart_Rate_led_config_register__C5403135_VT)) failedCast(r0);
+    r0 = (s.arg0).fields["registerValue"] = (0);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_PWMSettings_constructor__P823210.info = {"start":11241,"length":113,"line":423,"column":8,"endLine":426,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+Heart_Rate_led_config_register_constructor__P5403142.info = {"start":9915,"length":55,"line":347,"column":4,"endLine":349,"endColumn":5,"fileName":"heartrate.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_PWMSettings_constructor__P823210_mk(s) {
+function Heart_Rate_led_config_register_constructor__P5403142_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_PWMSettings_constructor__P823210, depth: s.depth + 1,
+        parent: s, fn: Heart_Rate_led_config_register_constructor__P5403142, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -1977,7 +2241,7 @@ function bBoard_PWMSettings_constructor__P823210_mk(s) {
 
 
 
-function bBoard_I2CSettings_constructor__P823243(s) {
+function Heart_Rate_spo2_config_register_constructor__P5403131(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1992,7 +2256,185 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_I2CSettings__C823238_VT)) failedCast(r0);
+    if (!checkSubtype(r0, Heart_Rate_spo2_config_register__C5403122_VT)) failedCast(r0);
+    r0 = (s.arg0).fields["registerValue"] = (0);
+    r0 = undefined;
+    return leave(s, r0)
+  default: oops()
+} } }
+Heart_Rate_spo2_config_register_constructor__P5403131.info = {"start":8944,"length":55,"line":304,"column":4,"endLine":306,"endColumn":5,"fileName":"heartrate.ts","functionName":"inline","argumentNames":["this"]}
+
+function Heart_Rate_spo2_config_register_constructor__P5403131_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: Heart_Rate_spo2_config_register_constructor__P5403131, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  arg0: undefined,
+} }
+
+
+
+
+
+function Heart_Rate_mode_config_register_constructor__P5403118(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.arg1 = (s.lambdaArgs[1]);
+      s.lambdaArgs = null;
+    }
+    r0 = s.arg0;
+    if (!checkSubtype(r0, Heart_Rate_mode_config_register__C5403107_VT)) failedCast(r0);
+    r0 = (s.arg0).fields["registerValue"] = (s.arg1);
+    r0 = undefined;
+    return leave(s, r0)
+  default: oops()
+} } }
+Heart_Rate_mode_config_register_constructor__P5403118.info = {"start":7757,"length":84,"line":254,"column":4,"endLine":256,"endColumn":5,"fileName":"heartrate.ts","functionName":"inline","argumentNames":["this","initialValue"]}
+
+function Heart_Rate_mode_config_register_constructor__P5403118_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: Heart_Rate_mode_config_register_constructor__P5403118, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  arg0: undefined,
+  arg1: undefined,
+} }
+
+
+
+
+
+function Heart_Rate_interrupt_en_register_constructor__P5403103(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.lambdaArgs = null;
+    }
+    r0 = s.arg0;
+    if (!checkSubtype(r0, Heart_Rate_interrupt_en_register__C5403090_VT)) failedCast(r0);
+    r0 = (s.arg0).fields["registerValue"] = (0);
+    r0 = undefined;
+    return leave(s, r0)
+  default: oops()
+} } }
+Heart_Rate_interrupt_en_register_constructor__P5403103.info = {"start":6335,"length":55,"line":197,"column":4,"endLine":199,"endColumn":5,"fileName":"heartrate.ts","functionName":"inline","argumentNames":["this"]}
+
+function Heart_Rate_interrupt_en_register_constructor__P5403103_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: Heart_Rate_interrupt_en_register_constructor__P5403103, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  arg0: undefined,
+} }
+
+
+
+
+
+function Heart_Rate_interrupt_stat_register_constructor__P5403086(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.lambdaArgs = null;
+    }
+    r0 = s.arg0;
+    if (!checkSubtype(r0, Heart_Rate_interrupt_stat_register__C5403073_VT)) failedCast(r0);
+    r0 = (s.arg0).fields["registerValue"] = (0);
+    r0 = undefined;
+    return leave(s, r0)
+  default: oops()
+} } }
+Heart_Rate_interrupt_stat_register_constructor__P5403086.info = {"start":4926,"length":55,"line":140,"column":4,"endLine":142,"endColumn":5,"fileName":"heartrate.ts","functionName":"inline","argumentNames":["this"]}
+
+function Heart_Rate_interrupt_stat_register_constructor__P5403086_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: Heart_Rate_interrupt_stat_register_constructor__P5403086, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  arg0: undefined,
+} }
+
+
+
+
+
+function bBoard_PWMSettings_constructor__P5402593(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.lambdaArgs = null;
+    }
+    r0 = s.arg0;
+    if (!checkSubtype(r0, bBoard_PWMSettings__C5402588_VT)) failedCast(r0);
+    r0 = (s.arg0).fields["pitchPin"] = (32768);
+    r0 = (s.arg0).fields["pitchClick"] = (1);
+    r0 = undefined;
+    return leave(s, r0)
+  default: oops()
+} } }
+bBoard_PWMSettings_constructor__P5402593.info = {"start":11241,"length":113,"line":423,"column":8,"endLine":426,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+
+function bBoard_PWMSettings_constructor__P5402593_mk(s) {
+    checkStack(s.depth);
+    return {
+        parent: s, fn: bBoard_PWMSettings_constructor__P5402593, depth: s.depth + 1,
+        pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  arg0: undefined,
+} }
+
+
+
+
+
+function bBoard_I2CSettings_constructor__P5402626(s) {
+let r0 = s.r0, step = s.pc;
+s.pc = -1;
+
+
+while (true) {
+if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
+switch (step) {
+  case 0:
+
+    if (s.lambdaArgs) {
+      s.arg0 = (s.lambdaArgs[0]);
+      s.lambdaArgs = null;
+    }
+    r0 = s.arg0;
+    if (!checkSubtype(r0, bBoard_I2CSettings__C5402621_VT)) failedCast(r0);
     r0 = (s.arg0).fields["I2C_WRITE_id"] = (1);
     r0 = (s.arg0).fields["I2C_READ_id"] = (2);
     r0 = (s.arg0).fields["I2C_WRITE_NO_MEM_id"] = (3);
@@ -2001,12 +2443,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_I2CSettings_constructor__P823243.info = {"start":47050,"length":199,"line":1341,"column":12,"endLine":1347,"endColumn":13,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_I2CSettings_constructor__P5402626.info = {"start":47050,"length":199,"line":1341,"column":12,"endLine":1347,"endColumn":13,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_I2CSettings_constructor__P823243_mk(s) {
+function bBoard_I2CSettings_constructor__P5402626_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_I2CSettings_constructor__P823243, depth: s.depth + 1,
+        parent: s, fn: bBoard_I2CSettings_constructor__P5402626, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -2015,7 +2457,7 @@ function bBoard_I2CSettings_constructor__P823243_mk(s) {
 
 
 
-function bBoard_SPIsetting_constructor__P823237(s) {
+function bBoard_SPIsetting_constructor__P5402620(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -2030,7 +2472,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_SPIsetting__C823229_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_SPIsetting__C5402612_VT)) failedCast(r0);
     r0 = (s.arg0).fields["SPI_WRITE_id"] = (1);
     r0 = (s.arg0).fields["SPI_READ_id"] = (2);
     r0 = (s.arg0).fields["SPI_CONFIG_id"] = (3);
@@ -2043,12 +2485,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_SPIsetting_constructor__P823237.info = {"start":36432,"length":296,"line":1053,"column":8,"endLine":1063,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_SPIsetting_constructor__P5402620.info = {"start":36432,"length":296,"line":1053,"column":8,"endLine":1063,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_SPIsetting_constructor__P823237_mk(s) {
+function bBoard_SPIsetting_constructor__P5402620_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_SPIsetting_constructor__P823237, depth: s.depth + 1,
+        parent: s, fn: bBoard_SPIsetting_constructor__P5402620, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -2057,7 +2499,7 @@ function bBoard_SPIsetting_constructor__P823237_mk(s) {
 
 
 
-function bBoard_PinSettings_constructor__P823226(s) {
+function bBoard_PinSettings_constructor__P5402609(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -2072,8 +2514,8 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_PinSettings__C823220_VT)) failedCast(r0);
-    s.tmp_0 = bBoard_IOSettings_constructor__P823204_mk(s);
+    if (!checkSubtype(r0, bBoard_PinSettings__C5402603_VT)) failedCast(r0);
+    s.tmp_0 = bBoard_IOSettings_constructor__P5402587_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.pc = 1; return s.tmp_0;
   case 1:
@@ -2082,12 +2524,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_PinSettings_constructor__P823226.info = {"start":26542,"length":47,"line":817,"column":8,"endLine":819,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_PinSettings_constructor__P5402609.info = {"start":26542,"length":47,"line":817,"column":8,"endLine":819,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_PinSettings_constructor__P823226_mk(s) {
+function bBoard_PinSettings_constructor__P5402609_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_PinSettings_constructor__P823226, depth: s.depth + 1,
+        parent: s, fn: bBoard_PinSettings_constructor__P5402609, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -2097,7 +2539,7 @@ function bBoard_PinSettings_constructor__P823226_mk(s) {
 
 
 
-function bBoard_IOSettings_constructor__P823204(s) {
+function bBoard_IOSettings_constructor__P5402587(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -2112,7 +2554,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_IOSettings__C823200_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_IOSettings__C5402583_VT)) failedCast(r0);
     r0 = (s.arg0).fields["DIRSET_id"] = (2);
     r0 = (s.arg0).fields["DIRCLR_id"] = (3);
     r0 = (s.arg0).fields["GPIO_id"] = (4);
@@ -2125,12 +2567,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_IOSettings_constructor__P823204.info = {"start":6069,"length":251,"line":291,"column":8,"endLine":300,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_IOSettings_constructor__P5402587.info = {"start":6069,"length":251,"line":291,"column":8,"endLine":300,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_IOSettings_constructor__P823204_mk(s) {
+function bBoard_IOSettings_constructor__P5402587_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_IOSettings_constructor__P823204, depth: s.depth + 1,
+        parent: s, fn: bBoard_IOSettings_constructor__P5402587, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -2139,7 +2581,7 @@ function bBoard_IOSettings_constructor__P823204_mk(s) {
 
 
 
-function WiFiSetResponses_SetResponse_constructor__P823251(s) {
+function WiFiSetResponses_SetResponse_constructor__P5402634(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -2154,7 +2596,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, WiFiSetResponses_SetResponse__C823247_VT)) failedCast(r0);
+    if (!checkSubtype(r0, WiFiSetResponses_SetResponse__C5402630_VT)) failedCast(r0);
     r0 = (s.arg0).fields["defaultWiFiTimeoutmS"] = (10000);
     r0 = (s.arg0).fields["response"] = (2);
     s.tmp_0 = r0 = s.arg0;
@@ -2170,12 +2612,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-WiFiSetResponses_SetResponse_constructor__P823251.info = {"start":291,"length":396,"line":11,"column":4,"endLine":17,"endColumn":5,"fileName":"WiFi_BLE.ts","functionName":"inline","argumentNames":["this"]}
+WiFiSetResponses_SetResponse_constructor__P5402634.info = {"start":291,"length":396,"line":11,"column":4,"endLine":17,"endColumn":5,"fileName":"WiFi_BLE.ts","functionName":"inline","argumentNames":["this"]}
 
-function WiFiSetResponses_SetResponse_constructor__P823251_mk(s) {
+function WiFiSetResponses_SetResponse_constructor__P5402634_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: WiFiSetResponses_SetResponse_constructor__P823251, depth: s.depth + 1,
+        parent: s, fn: WiFiSetResponses_SetResponse_constructor__P5402634, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -2186,7 +2628,7 @@ function WiFiSetResponses_SetResponse_constructor__P823251_mk(s) {
 
 
 
-function bBoard_UARTSettings_constructor__P823219(s) {
+function bBoard_UARTSettings_constructor__P5402602(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -2201,7 +2643,7 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = s.arg0;
-    if (!checkSubtype(r0, bBoard_UARTSettings__C823211_VT)) failedCast(r0);
+    if (!checkSubtype(r0, bBoard_UARTSettings__C5402594_VT)) failedCast(r0);
     r0 = (s.arg0).fields["UART_STATUS"] = (0);
     r0 = (s.arg0).fields["UART_INTEN"] = (2);
     r0 = (s.arg0).fields["UART_INTENCLR"] = (3);
@@ -2214,12 +2656,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bBoard_UARTSettings_constructor__P823219.info = {"start":16399,"length":302,"line":562,"column":8,"endLine":572,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
+bBoard_UARTSettings_constructor__P5402602.info = {"start":16399,"length":302,"line":562,"column":8,"endLine":572,"endColumn":9,"fileName":"bBoard.ts","functionName":"inline","argumentNames":["this"]}
 
-function bBoard_UARTSettings_constructor__P823219_mk(s) {
+function bBoard_UARTSettings_constructor__P5402602_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bBoard_UARTSettings_constructor__P823219, depth: s.depth + 1,
+        parent: s, fn: bBoard_UARTSettings_constructor__P5402602, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -2241,7 +2683,7 @@ function lambda_2_mk(s) {
   arg1: undefined,
 } }
 
-const bBoard_UARTSettings__C823211_VT = mkVTable({
+const bBoard_UARTSettings__C5402594_VT = mkVTable({
   name: "UARTSettings",
   numFields: 8,
   classNo: 16,
@@ -2268,7 +2710,7 @@ const bBoard_UARTSettings__C823211_VT = mkVTable({
     "set/UART_CLEAR_RX_DATA": null,
   },
 });
-const WiFiSetResponses_SetResponse__C823247_VT = mkVTable({
+const WiFiSetResponses_SetResponse__C5402630_VT = mkVTable({
   name: "SetResponse",
   numFields: 5,
   classNo: 17,
@@ -2289,7 +2731,7 @@ const WiFiSetResponses_SetResponse__C823247_VT = mkVTable({
     "set/MQTTMessage": null,
   },
 });
-const bBoard_IOSettings__C823200_VT = mkVTable({
+const bBoard_IOSettings__C5402583_VT = mkVTable({
   name: "IOSettings",
   numFields: 8,
   classNo: 18,
@@ -2316,7 +2758,7 @@ const bBoard_IOSettings__C823200_VT = mkVTable({
     "set/ODC_id": null,
   },
 });
-const bBoard_PinSettings__C823220_VT = mkVTable({
+const bBoard_PinSettings__C5402603_VT = mkVTable({
   name: "PinSettings",
   numFields: 8,
   classNo: 19,
@@ -2343,7 +2785,7 @@ const bBoard_PinSettings__C823220_VT = mkVTable({
     "set/ODC_id": null,
   },
 });
-const bBoard_SPIsetting__C823229_VT = mkVTable({
+const bBoard_SPIsetting__C5402612_VT = mkVTable({
   name: "SPIsetting",
   numFields: 8,
   classNo: 20,
@@ -2370,7 +2812,7 @@ const bBoard_SPIsetting__C823229_VT = mkVTable({
     "set/SPI_CONFIG_CS_id": null,
   },
 });
-const bBoard_I2CSettings__C823238_VT = mkVTable({
+const bBoard_I2CSettings__C5402621_VT = mkVTable({
   name: "I2CSettings",
   numFields: 4,
   classNo: 21,
@@ -2389,7 +2831,7 @@ const bBoard_I2CSettings__C823238_VT = mkVTable({
     "set/I2C_READ_NO_MEM_id": null,
   },
 });
-const bBoard_PWMSettings__C823205_VT = mkVTable({
+const bBoard_PWMSettings__C5402588_VT = mkVTable({
   name: "PWMSettings",
   numFields: 2,
   classNo: 22,
@@ -2404,8 +2846,73 @@ const bBoard_PWMSettings__C823205_VT = mkVTable({
     "set/pitchClick": null,
   },
 });
+const Heart_Rate_interrupt_stat_register__C5403073_VT = mkVTable({
+  name: "interrupt_stat_register",
+  numFields: 1,
+  classNo: 23,
+  lastSubtypeNo: 23,
+  maxBgInstances: null,
+  methods: {
+  },
+  iface: {
+    "registerValue": null,
+    "set/registerValue": null,
+  },
+});
+const Heart_Rate_interrupt_en_register__C5403090_VT = mkVTable({
+  name: "interrupt_en_register",
+  numFields: 1,
+  classNo: 24,
+  lastSubtypeNo: 24,
+  maxBgInstances: null,
+  methods: {
+  },
+  iface: {
+    "registerValue": null,
+    "set/registerValue": null,
+  },
+});
+const Heart_Rate_mode_config_register__C5403107_VT = mkVTable({
+  name: "mode_config_register",
+  numFields: 1,
+  classNo: 25,
+  lastSubtypeNo: 25,
+  maxBgInstances: null,
+  methods: {
+  },
+  iface: {
+    "registerValue": null,
+    "set/registerValue": null,
+  },
+});
+const Heart_Rate_spo2_config_register__C5403122_VT = mkVTable({
+  name: "spo2_config_register",
+  numFields: 1,
+  classNo: 26,
+  lastSubtypeNo: 26,
+  maxBgInstances: null,
+  methods: {
+  },
+  iface: {
+    "registerValue": null,
+    "set/registerValue": null,
+  },
+});
+const Heart_Rate_led_config_register__C5403135_VT = mkVTable({
+  name: "led_config_register",
+  numFields: 1,
+  classNo: 27,
+  lastSubtypeNo: 27,
+  maxBgInstances: null,
+  methods: {
+  },
+  iface: {
+    "registerValue": null,
+    "set/registerValue": null,
+  },
+});
 
-const breakpoints = setupDebugger(1, ["_intervals___822879","CLEAR_BBOARD_TX_BUFFER___823124","CLEAR_BBOARD_RX_BUFFER___823136","READ_TX_BUFFER_SIZE___823146","EXECUTE_BBOARD_COMMAND___823156","READ_BBOARD_TX_BUFFER___823166","UARTs___823245","UARTs___823253","SetResponseObj___823256","MQTTMessageObject___823268","mqttMessageList___823270","PINs___823280","PINs___823329","SPIs___823332","i2csettingsobj___823374","PINs___823389","I2Cs___823392","PINs___823420","I2Cs___823423","PINs___823442","pwms___823445","PINs___823471","plus___823570","i___823565","f___823567","minus___823574","r___823577","ri___823580","listeners___822890"])
+const breakpoints = setupDebugger(1, ["_intervals___5402262","CLEAR_BBOARD_TX_BUFFER___5402507","CLEAR_BBOARD_RX_BUFFER___5402519","READ_TX_BUFFER_SIZE___5402529","EXECUTE_BBOARD_COMMAND___5402539","READ_BBOARD_TX_BUFFER___5402549","UARTs___5402628","UARTs___5402636","SetResponseObj___5402639","MQTTMessageObject___5402651","mqttMessageList___5402653","PINs___5402663","PINs___5402712","SPIs___5402715","i2csettingsobj___5402757","PINs___5402772","I2Cs___5402775","PINs___5402803","I2Cs___5402806","PINs___5402825","pwms___5402828","PINs___5402854","PINs___5402964","PWMs___5403054","I2Cs___5403070","interrupt_stat_bits___5403088","interrupt_en_bits___5403105","mode_config_bits___5403120","spo2_config_bits___5403133","led_config_bits___5403144","irFilters___5403147","rates___5403161","plus___5403323","i___5403318","f___5403320","minus___5403327","r___5403330","ri___5403333","listeners___5402273"])
 
-return _main___P822576
+return _main___P5401959
 })
