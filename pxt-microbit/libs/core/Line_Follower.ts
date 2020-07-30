@@ -36,21 +36,29 @@ namespace Line_Follower{
         U5 = 5
     }
 
+
+    /**
+     * Sets LineFollower Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param LineFollower the LineFollower Object
+     */
     //% block="create Line Follower settings"
     //% blockSetVariable="LineFollower"
     //% weight=110
-    export function createLineFollower(): LineFollower {
-        return new LineFollower();
+    export function createLineFollower(clickBoardNum: clickBoardID): LineFollower {
+        return new LineFollower(clickBoardNum);
     }
 
     export class LineFollower extends bBoard.PinSettings{
    
    
     isInitialized : Array<number>;
+    private clickBoardNumGlobal:number 
     
-    constructor(){
+    constructor(clickBoardNum: clickBoardID){
         super();
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        this.clickBoardNumGlobal=clickBoardNum
     }
  
 
@@ -77,19 +85,19 @@ namespace Line_Follower{
     }
     
     //%blockId=Line_Follower_getWhiteDirection
-    //%block="$this Correction required to follow white line (on click$clickBoardNum)"
+    //%block="$this Correction required to follow white line"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=Line_Follower
     //% this.shadow=variables_get
     //% this.defl="LineFollower"
-    getWhiteDirection(clickBoardNum:clickBoardID) {
+    getWhiteDirection() {
 
-    let u1_now = this.getU1(clickBoardNum);
-    let u2_now = this.getU2(clickBoardNum);
-    let u3_now = this.getU3(clickBoardNum);
-    let u4_now = this.getU4(clickBoardNum);
-    let u5_now = this.getU5(clickBoardNum);
+    let u1_now = this.getU1(this.clickBoardNumGlobal);
+    let u2_now = this.getU2(this.clickBoardNumGlobal);
+    let u3_now = this.getU3(this.clickBoardNumGlobal);
+    let u4_now = this.getU4(this.clickBoardNumGlobal);
+    let u5_now = this.getU5(this.clickBoardNumGlobal);
     
     if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){
        
@@ -132,19 +140,19 @@ namespace Line_Follower{
 
    
     //%blockId=Line_Follower_getBlackDirection
-    //%block="$this Correction required to follow black line (on click$clickBoardNum)"
+    //%block="$this Correction required to follow black line"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=Line_Follower
     //% this.shadow=variables_get
     //% this.defl="LineFollower"
-    getBlackDirection(clickBoardNum:clickBoardID) {
+    getBlackDirection() {
 
-        let u1_now = this.getU1(clickBoardNum);
-        let u2_now = this.getU2(clickBoardNum);
-        let u3_now = this.getU3(clickBoardNum);
-        let u4_now = this.getU4(clickBoardNum);
-        let u5_now = this.getU5(clickBoardNum);
+        let u1_now = this.getU1(this.clickBoardNumGlobal);
+        let u2_now = this.getU2(this.clickBoardNumGlobal);
+        let u3_now = this.getU3(this.clickBoardNumGlobal);
+        let u4_now = this.getU4(this.clickBoardNumGlobal);
+        let u5_now = this.getU5(this.clickBoardNumGlobal);
 
 
         if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){
@@ -223,36 +231,36 @@ getU5(clickBoardNum:clickBoardID):number{
 }
 
     //%blockId=Line_Follower_isReflected
-    //%block="$this Has light been reflected on $sensorNum on click$clickBoardNum ?"
+    //%block="$this Has light been reflected on $sensorNum"
     //% blockGap=7
     //% advanced=true
     //% blockNamespace=Line_Follower
     //% this.shadow=variables_get
     //% this.defl="LineFollower"
-   isReflected(sensorNum:IRsensor,clickBoardNum:clickBoardID):boolean{
+   isReflected(sensorNum:IRsensor):boolean{
         
         let reflectedValue = 1
 
         switch (sensorNum)
         {
             case IRsensor.U1:
-                reflectedValue = this.getU1(clickBoardNum);
+                reflectedValue = this.getU1(this.clickBoardNumGlobal);
             break;
         
             case IRsensor.U2:
-                 reflectedValue = this.getU2(clickBoardNum);
+                 reflectedValue = this.getU2(this.clickBoardNumGlobal);
             break;
         
             case IRsensor.U3:
-                 reflectedValue = this.getU3(clickBoardNum);
+                 reflectedValue = this.getU3(this.clickBoardNumGlobal);
             break;
         
             case IRsensor.U4:
-                 reflectedValue = this.getU4(clickBoardNum);
+                 reflectedValue = this.getU4(this.clickBoardNumGlobal);
             break;
         
             case IRsensor.U5:
-                 reflectedValue = this.getU5(clickBoardNum);
+                 reflectedValue = this.getU5(this.clickBoardNumGlobal);
             break;                                
         }
         

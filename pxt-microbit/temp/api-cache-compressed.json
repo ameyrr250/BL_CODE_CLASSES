@@ -22461,6 +22461,11 @@
                         "jsDoc": "Custom clickBoard"
                     }
                 },
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "bBoard.createIOSettings": {
                     "kind": -3,
                     "retType": "bBoard.IOSettings",
@@ -28026,6 +28031,119 @@
                     ],
                     "pyQName": "lineNumber.TWO"
                 },
+                "LCDSettings": {
+                    "kind": 6,
+                    "retType": "LCDSettings",
+                    "extendsTypes": [
+                        "LCDSettings",
+                        "Number"
+                    ]
+                },
+                "LCDSettings.one": {
+                    "retType": "LCDSettings.one",
+                    "attributes": {
+                        "block": "1",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "1",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "LCDSettings.one",
+                        "Number"
+                    ],
+                    "pyQName": "LCDSettings.ONE"
+                },
+                "LCDSettings.two": {
+                    "retType": "LCDSettings.two",
+                    "attributes": {
+                        "block": "2",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "2",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "LCDSettings.two",
+                        "Number"
+                    ],
+                    "pyQName": "LCDSettings.TWO"
+                },
+                "LCDSettings.three": {
+                    "retType": "LCDSettings.three",
+                    "attributes": {
+                        "block": "3",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "3",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "LCDSettings.three",
+                        "Number"
+                    ],
+                    "pyQName": "LCDSettings.THREE"
+                },
+                "LCDSettings.four": {
+                    "retType": "LCDSettings.four",
+                    "attributes": {
+                        "block": "4",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "4",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "LCDSettings.four",
+                        "Number"
+                    ],
+                    "pyQName": "LCDSettings.FOUR"
+                },
+                "LCDSettings.five": {
+                    "retType": "LCDSettings.five",
+                    "attributes": {
+                        "block": "5",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "5",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "LCDSettings.five",
+                        "Number"
+                    ],
+                    "pyQName": "LCDSettings.FIVE"
+                },
                 "LCD_Mini": {
                     "kind": 5,
                     "retType": "",
@@ -28040,21 +28158,45 @@
                     "kind": -3,
                     "retType": "LCD_Mini.LCDSettings",
                     "attributes": {
-                        "block": "create lcd settings",
+                        "block": "create lcd settings on clickboard number $clickBoardNum",
                         "blockSetVariable": "LCDSettings",
+                        "blockId": "LCDSettings",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "LCDSettings": "the LCDSettings"
+                        },
+                        "jsDoc": "Sets LCD object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create lcd settings",
+                                    "text": "create lcd settings on clickboard number ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "LCD_Mini.create_lcd_settings"
                 },
                 "LCD_Mini.LCDSettings": {
@@ -28062,9 +28204,21 @@
                     "retType": "LCD_Mini.LCDSettings",
                     "extendsTypes": []
                 },
+                "LCD_Mini.LCDSettings.clickBoardNumGlobal": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "LCD_Mini.LCDSettings.click_board_num_global"
+                },
                 "LCD_Mini.LCDSettings.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "LCD_Mini.LCDSettings.LOWval": {
@@ -28355,7 +28509,7 @@
                         "paramDefl": {
                             "this": "LCDSettings"
                         },
-                        "block": "$this Write a $LCDstring to line $lineNum on click board $clickBoardNum",
+                        "block": "$this Write a $LCDstring to line $lineNum",
                         "blockId": "LCDWriteString",
                         "blockNamespace": "LCD_Mini",
                         "_shadowOverrides": {
@@ -28401,16 +28555,6 @@
                                     "kind": "param",
                                     "name": "lineNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click board ",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -28429,11 +28573,6 @@
                                     "kind": "param",
                                     "name": "lineNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -28448,12 +28587,6 @@
                             "name": "lineNum",
                             "description": "the lineNum",
                             "type": "lineNumber",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "description": "the clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -39446,11 +39579,16 @@
                 }
             }
         },
-        "sha": "14659ffec724df5505b05ff1b41aa133553e9a1797a40f74678e4800be523e54"
+        "sha": "9a05c4442e5d92c95e3c40d53f780bebeb9b49ad24b90e13bd47c97636a73c51"
     },
     "libs/radio": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -40862,11 +41000,16 @@
                 }
             }
         },
-        "sha": "3a7b418621c4166fe6eea8990e46d06c062c7eeea0a32fadc3974f47bc6d039d"
+        "sha": "eb322040ad5dbde50f6f9ff3253c4d7af0b3254afd6f02605aa025857565ce3f"
     },
     "libs/devices": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "bluetooth": {
                     "kind": 5,
                     "retType": "",
@@ -42899,11 +43042,16 @@
                 }
             }
         },
-        "sha": "9457417c06f188fc5f68cf48021334e7ed522b58a6c270e93ee8dd8fbc816618"
+        "sha": "e36c812128571f058488843e62c216a5686074febb33e3f916bcc71eaf47ae11"
     },
     "libs/bluetooth": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "bluetooth": {
                     "kind": 5,
                     "retType": "",
@@ -43850,11 +43998,16 @@
                 }
             }
         },
-        "sha": "6d828eecbde5b288000cc82eb44985572ecd970c09f90402530df7aac6f50a8a"
+        "sha": "7fba6998f0cce437e5e4bda9c2f5fad5f0990f07c04ddcb9bd9dc6a2931ffe29"
     },
     "libs/servo": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "servos": {
                     "kind": 5,
                     "retType": "",
@@ -44492,11 +44645,16 @@
                 }
             }
         },
-        "sha": "807dea591369d11a66f81b51d2722f9563e1d6c66e992f3ed19885c98a061f56"
+        "sha": "cb28643d40aa6473aa68cc1d34546bd9737d3c8231d63353877646c8f9b9934f"
     },
     "libs/radio-broadcast": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -46051,11 +46209,16 @@
                 }
             }
         },
-        "sha": "a941156dbb48d1e387509184fef951d449c3757691880a3feffb504775651fb3"
+        "sha": "e2883239459ef9691bffb381bb3e3d6e610c6b9b612108cf8614a9c06544f0ec"
     },
     "libs/microphone": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "LoudnessCondition": {
                     "kind": 6,
                     "retType": "LoudnessCondition",
@@ -46217,11 +46380,16 @@
                 }
             }
         },
-        "sha": "f562dfd5370c3c6e07454d6c0cb8925378d844bd549673f90afef76241f83498"
+        "sha": "cbffb778166f204a03ee85418d56fa1dd539b75a6d1c904dfc3bbb2a7e35aefd"
     },
     "libs\\blocksprj": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -47633,11 +47801,16 @@
                 }
             }
         },
-        "sha": "186a570dc3475d2d95d0c5d9cacb534e30729e853ece8f20ade29c95ca99f5f1"
+        "sha": "a7d16a0721b1cef456906065825c6a3ada64950886b4a6e41c4ebd3609722b00"
     },
     "libs\\bluetoothprj": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "bluetooth": {
                     "kind": 5,
                     "retType": "",
@@ -48584,11 +48757,16 @@
                 }
             }
         },
-        "sha": "fba415dc7302e49a462e7cc510d4c3f9281ebd04ff37ae42f0c30e1ce4b62098"
+        "sha": "e4895bb4a617ffde8b0452801bebe16fb82e236b23bc4418b5f90b9d4b672c0b"
     },
     "libs\\tsprj": {
         "apis": {
             "byQName": {
+                "bBoard.arrayClick": {
+                    "kind": 4,
+                    "retType": "clickBoardID[]",
+                    "pyQName": "bBoard.array_click"
+                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -50000,6 +50178,6 @@
                 }
             }
         },
-        "sha": "eaaec683fa588608a4e4a62b671a0c9432a55a3fce558ff1cdbd932022890313"
+        "sha": "06c11538604fdf3eb332c6d31cdaef70a870de2e144d1750278de1b2e12a75ba"
     }
 }

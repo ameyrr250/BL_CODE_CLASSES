@@ -5,11 +5,16 @@
 //% advanced=true
 namespace Temp_Log_2{
 
-    //% block="create Temp_Log settings"
+    /**
+     * Sets Temp_Log Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param Temp_Log the Temp_Log Object
+     */
+    //% block="create Temp_Log settings on clickBoard $clickBoardNum"
     //% blockSetVariable="Temp_Log"
     //% weight=110
-    export function createTemp_Log(): Temp_Log {
-        return new Temp_Log();
+    export function createTemp_Log(clickBoardNum: clickBoardID): Temp_Log {
+        return new Temp_Log(clickBoardNum);
     }
 
 
@@ -26,11 +31,14 @@ namespace Temp_Log_2{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    constructor(){
-        super();
+    private clickBoardNumGlobal:number 
+    
+    constructor(clickBoardNum: clickBoardID){
+    super();
 
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    this.clickBoardNumGlobal=clickBoardNum
     }
 
     initialize(deviceAddr:number,clickBoardNum:clickBoardID)
@@ -55,7 +63,7 @@ namespace Temp_Log_2{
     
     readT(clickBoardNum:clickBoardID):number
     {
-        return this.readTemperatureC(clickBoardNum);
+        return this.readTemperatureC();
     }
     
     
@@ -93,34 +101,34 @@ namespace Temp_Log_2{
     }
     
     //%blockId=Temp_Log_readTemperatureC
-    //%block="$this Get temperature in Celcius on click$clickBoardNum"
+    //%block="$this Get temperature in Celcius"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=Temp_Log_2
     //% this.shadow=variables_get
     //% this.defl="Temp_Log"
-    readTemperatureC(clickBoardNum:clickBoardID):number
+    readTemperatureC():number
     {
     
     
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(this.TMP116_DEVICE_ADDRESS,clickBoardNum)
+            this.initialize(this.TMP116_DEVICE_ADDRESS,this.clickBoardNumGlobal)
             
         }
-        return (this.readTMP116(this.TMP116_REG_TEMP,clickBoardNum) * 0.0078125)
+        return (this.readTMP116(this.TMP116_REG_TEMP,this.clickBoardNumGlobal) * 0.0078125)
     }
     //%blockId=Temp_Log_readTemperatureF
-    //%block="$this Get temperature in Fahrenheit on click$clickBoardNum"
+    //%block="$this Get temperature in Fahrenheit"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=Temp_Log_2
     //% this.shadow=variables_get
     //% this.defl="Temp_Log"
-    readTemperatureF(clickBoardNum:clickBoardID):number
+    readTemperatureF():number
     {
       
-        return ((this.readTemperatureC(clickBoardNum))* 9.0/5.0 + 32.0)
+        return ((this.readTemperatureC())* 9.0/5.0 + 32.0)
     }
     
     readHighLimit(clickBoardNum:clickBoardID):number

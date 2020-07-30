@@ -11,21 +11,28 @@ namespace Reed{
         Not_Activated = 0,
     }
 
-    //% block="create Reed settings"
+    /**
+     * Sets Reed Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param Reed the Reed Object
+     */
+    //% block="create Reed settings on clickBoard $clickBoardNum"
     //% blockSetVariable="Reed"
     //% weight=110
-    export function createReed(): Reed {
-        return new Reed();
+    export function createReed(clickBoardNum: clickBoardID): Reed {
+        return new Reed(clickBoardNum);
     }
 
     export class Reed extends bBoard.PinSettings{
 
     isInitialized : Array<number>;
     
-
-    constructor(){
+    private clickBoardNumGlobal:number 
+    
+    constructor(clickBoardNum: clickBoardID){
         super();
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        this.clickBoardNumGlobal=clickBoardNum
     }
 
 initialize(clickBoardNum:clickBoardID)
@@ -39,22 +46,22 @@ initialize(clickBoardNum:clickBoardID)
     
     
     
-       //%blockId=Reed_isActivated
-        //%block="For $this Has reed been activated on click%clickBoardNum ?"
+        //%blockId=Reed_isActivated
+        //%block="For $this Has reed been activated"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Reed
         //% this.shadow=variables_get
         //% this.defl="Reed"
-    isActivated(clickBoardNum:clickBoardID):boolean
+    isActivated():boolean
     {
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(clickBoardNum)
+            this.initialize(this.clickBoardNumGlobal)
             
         }
 
-       if(this.digitalReadPin(clickIOPin.CS,clickBoardNum) == reed.Activated)
+       if(this.digitalReadPin(clickIOPin.CS,this.clickBoardNumGlobal) == reed.Activated)
        {
         return true
        }

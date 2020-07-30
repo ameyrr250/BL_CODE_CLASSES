@@ -6,7 +6,7 @@
 
 
 enum clickBoardID{
-  
+
     //% block="1"
     one = 1,
     //% block="2"
@@ -154,6 +154,7 @@ output = 2
 //-------------------------Click Board Blocks Begin -----------------------------------
 //% weight=100 color=#9E4894 icon=""
 namespace bBoard {
+    export let arrayClick: clickBoardID[]=[]
 
        //% block="create IO settings"
     //% blockSetVariable="IOSettings"

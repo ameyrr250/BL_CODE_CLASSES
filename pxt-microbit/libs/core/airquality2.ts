@@ -45,11 +45,17 @@
 //% weight=100 color=#33BEBB icon=""
 //% advanced=false
 namespace AirQuality2{
-         //% block="create AirQuality settings"
+
+    /**
+     * Sets LCD object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param AirQuality the LCDSettings
+     */
+    //% block="create AirQuality settings on clickBoard $clickBoardNum"
     //% blockSetVariable="AirQuality"
     //% weight=110
-    export function createAirQuality(): AirQuality {
-        return new AirQuality();
+    export function createAirQuality(clickBoardNum: clickBoardID): AirQuality {
+        return new AirQuality(clickBoardNum);
     }
 
     let PINs = new bBoard.PinSettings();
@@ -128,10 +134,11 @@ namespace AirQuality2{
     readonly APP_VERIFY : number                      
     readonly APP_START : number                       
     readonly SW_RESET : number
-    readonly CCS811_DEVICE_ADDRESS : number                        
+    readonly CCS811_DEVICE_ADDRESS : number
+    private clickBoardNumGlobal:number                        
     isInitialized : Array<number>;
     deviceAddress : Array<number>;
-    constructor(){
+    constructor(clickBoardNum: clickBoardID){
         this.STATUS = 0x00
         this.MEAS_MODE = 0x01
         this.ALG_RESULT_DATA =0x02
@@ -153,6 +160,7 @@ namespace AirQuality2{
         this.CCS811_DEVICE_ADDRESS = 0x5A
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        this.clickBoardNumGlobal=clickBoardNum
     }
     
      
@@ -172,13 +180,13 @@ namespace AirQuality2{
         //% this.shadow=variables_get
         //% this.defl="AirQuality"
         //%blockId=CCS811DataReady
-        //%block="Is $this data ready on click%clickBoardNum ?"
+        //%block="Is $this data ready"
         //% blockNamespace=AirQuality2
         //% blockGap=7
         //% advanced=false
-    dataReady(clickBoardNum:clickBoardID):boolean
+    dataReady():boolean
     {
-    let statusReg = this.ccs811Status(clickBoardNum);
+    let statusReg = this.ccs811Status(this.clickBoardNumGlobal);
     
     if((statusReg & 0x08) == 0x08)
     {
@@ -196,7 +204,7 @@ namespace AirQuality2{
         
         this.CCS811AppStart(clickBoardNum)
        statusReg =  this.ccs811Status(clickBoardNum);
-        this.writeCCS811([0x10],this.MEAS_MODE,clickBoardNum); // constant power mode (001), no interrupts
+        this.writeCCS811([0x10],this.MEAS_MODE); // constant power mode (001), no interrupts
         statusReg =  this.ccs811Status(clickBoardNum);
     
     
@@ -218,15 +226,15 @@ namespace AirQuality2{
     //
     ccs811Shutdown(clickBoardNum:clickBoardID)
     {
-        this.writeCCS811([0x00],this.MEAS_MODE,clickBoardNum); // Idle mode
+        this.writeCCS811([0x00],this.MEAS_MODE); // Idle mode
     
     } /* ccs811Shutdown() */
     
     ccs811Status(clickBoardNum:clickBoardID):number
     {
-        let returnValue = this.readCCS811(1,this.STATUS,clickBoardNum); // Idle mode
-        this.readCCS811(1,this.MEAS_MODE,clickBoardNum)
-        this.readCCS811(1,this.ERROR_ID,clickBoardNum)
+        let returnValue = this.readCCS811(1,this.STATUS); // Idle mode
+        this.readCCS811(1,this.MEAS_MODE)
+        this.readCCS811(1,this.ERROR_ID)
         return returnValue[0]
     
     } /* ccs811Shutdown() */
@@ -237,7 +245,7 @@ namespace AirQuality2{
     
         let resetSequence= [0x11, 0xE5, 0x72, 0x8A];
         
-        this.writeCCS811(resetSequence,this.SW_RESET,clickBoardNum); // Idle mode
+        this.writeCCS811(resetSequence,this.SW_RESET); // Idle mode
         control.waitMicros(100); //Wait for reset
     } /* ccs811Shutdown() */
     
@@ -249,20 +257,20 @@ namespace AirQuality2{
         
     
         //%blockId=CCS811Calibration
-    //%block="Calibrate $this sensor to temperature $fTemp F and humidity $fHumid \\% on click$clickBoardNum"
+    //%block="Calibrate $this sensor to temperature $fTemp F and humidity $fHumid"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=AirQuality2
     //% this.shadow=variables_get
     //% this.defl="AirQuality"
-    ccs811SetCalibration(fTemp:number, fHumid:humidity, clickBoardNum:clickBoardID)
+    ccs811SetCalibration(fTemp:number, fHumid:humidity)
     {
     let i:number = 0;
     let ucTemp = [];
     
-    if(this.isInitialized[clickBoardNum] == 0)
+    if(this.isInitialized[this.clickBoardNumGlobal] == 0)
     {
-        this.initialize(this.CCS811_DEVICE_ADDRESS,clickBoardNum)
+        this.initialize(this.CCS811_DEVICE_ADDRESS,this.clickBoardNumGlobal)
         
     }
     
@@ -273,7 +281,7 @@ namespace AirQuality2{
             i = ((fTemp  - 25.0) * 512.0); // offset of -25C
             ucTemp[2] = (0xFF00)&&(i >> 8); // high byte
             ucTemp[3] = (0x00FF)&&i; // low byte
-            this.writeCCS811(ucTemp,this.ENV_DATA,clickBoardNum); // constant power mode (001), no interrupts
+            this.writeCCS811(ucTemp,this.ENV_DATA); // constant power mode (001), no interrupts
     
     } /* ccs811SetCalibration() */
     
@@ -281,13 +289,13 @@ namespace AirQuality2{
     
         
     //%blockId=CCS811AirQuality
-    //%block="Read $this $valueToRetrieve value on click$clickBoardNum"
+    //%block="Read $this $valueToRetrieve value"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=AirQuality2
     //% this.shadow=variables_get
     //% this.defl="AirQuality"
-    ccs811AirQuality(valueToRetrieve:airQualityValue,clickBoardNum:clickBoardID):number
+    ccs811AirQuality(valueToRetrieve:airQualityValue):number
     {
         let ucTemp = [];
         let i:number;
@@ -295,12 +303,12 @@ namespace AirQuality2{
         let eCO2value:number;
         let TVOCvalue:number;
     
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(this.CCS811_DEVICE_ADDRESS,clickBoardNum)
+            this.initialize(this.CCS811_DEVICE_ADDRESS,this.clickBoardNumGlobal)
             
         }
-        ucTemp = this.readCCS811(6,this.ALG_RESULT_DATA,clickBoardNum) 
+        ucTemp = this.readCCS811(6,this.ALG_RESULT_DATA) 
     
     
             if (ucTemp[4] & 1) // error, read the error value
@@ -349,16 +357,16 @@ namespace AirQuality2{
     
        
             //%blockId=CCS811_write
-            //%block="Write $this array $values to CCS811 register$register on click$clickBoardNum ?"
+            //%block="Write $this array $values to CCS811 register$register"
             //% blockGap=7
             //% advanced=true
             //% blockNamespace=AirQuality2
             //% this.shadow=variables_get
             //% this.defl="AirQuality"
-            writeCCS811(values:number[],register:number,clickBoardNum:clickBoardID)
+            writeCCS811(values:number[],register:number)
             {
             
-                PINs.clearPin(clickIOPin.CS,clickBoardNum)
+                PINs.clearPin(clickIOPin.CS,this.clickBoardNumGlobal)
                 control.waitMicros(50); //according to datasheet, 50uS minimum to wake
                 let i2cBuffer = pins.createBuffer(values.length+1)
                 i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register) 
@@ -370,8 +378,8 @@ namespace AirQuality2{
                 }
         
             
-                I2Cs.i2cWriteBuffer(this.getCCS811Addr(clickBoardNum),i2cBuffer,clickBoardNum);
-                PINs.setPin(clickIOPin.CS,clickBoardNum)
+                I2Cs.i2cWriteBuffer(this.getCCS811Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
+                PINs.setPin(clickIOPin.CS,this.clickBoardNumGlobal)
              
             }
            
@@ -380,20 +388,20 @@ namespace AirQuality2{
     
      
         
-                 //%blockId=CCS811_read
-                //%block="$this Read $numBytes bytes from register$register on click$clickBoardNum"
+                //%blockId=CCS811_read
+                //%block="$this Read $numBytes bytes from register$register"
                 //% blockGap=7
                 //% advanced=true
                 //% blockNamespace=AirQuality2
                 //% this.shadow=variables_get
                 //% this.defl="AirQuality"
-                readCCS811 (numBytes:number, register:number,  clickBoardNum:clickBoardID):number[]
+                readCCS811 (numBytes:number, register:number):number[]
                 {
                    
-                    PINs.clearPin(clickIOPin.CS,clickBoardNum)
+                    PINs.clearPin(clickIOPin.CS,this.clickBoardNumGlobal)
                     control.waitMicros(50); //according to datasheet, 50uS minimum to wake
-                    I2Cs.i2cWriteNumber(this.getCCS811Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)
-                   let i2cBuffer = I2Cs.I2CreadNoMem(this.getCCS811Addr(clickBoardNum) ,numBytes,clickBoardNum);
+                    I2Cs.i2cWriteNumber(this.getCCS811Addr(this.clickBoardNumGlobal),register,NumberFormat.UInt8LE,this.clickBoardNumGlobal,true)
+                   let i2cBuffer = I2Cs.I2CreadNoMem(this.getCCS811Addr(this.clickBoardNumGlobal) ,numBytes,this.clickBoardNumGlobal);
         
                     let dataArray:number[] = []; //Create an array to hold our read values
                     for(let i=0; i<numBytes;i++)
@@ -401,7 +409,7 @@ namespace AirQuality2{
                         dataArray[i] = i2cBuffer.getUint8(i); //Extract byte i from the buffer and store it in position i of our array
                     }
                    
-                    PINs.setPin(clickIOPin.CS,clickBoardNum)
+                    PINs.setPin(clickIOPin.CS,this.clickBoardNumGlobal)
                     return  dataArray
             
                         

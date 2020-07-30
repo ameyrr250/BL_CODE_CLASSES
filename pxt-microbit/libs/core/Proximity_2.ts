@@ -8,11 +8,16 @@ namespace Proximity_2{
     enum Proximity2_Interrupts {ALS_INT, PROX_INT, NO_INT};
     let i2csettingsobj= new bBoard.I2CSettings();
 
-    //% block="create Proximity2 settings"
+    /**
+     * Sets Proximity2 Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param Proximity2 the Proximity2 Object
+    */
+    //% block="create Proximity2 settings on clickBoard $clickBoardNum"
     //% blockSetVariable="Proximity2"
     //% weight=110
-    export function createProximity2Settings(): Proximity2 {
-        return new Proximity2();
+    export function createProximity2Settings(clickBoardNum: clickBoardID): Proximity2 {
+        return new Proximity2(clickBoardNum);
    }
 
     export class Proximity2{
@@ -36,7 +41,9 @@ namespace Proximity_2{
      readonly ADDRESS  : number;
     isInitialized : Array<number>;
     
-    constructor(){
+    private clickBoardNumGlobal:number 
+    
+    constructor(clickBoardNum: clickBoardID){
     this.INTERRUPT_STATUS= 0x00
     this.MAIN_CONFIGURATION = 0x01
     this.RECEIVE_CONFIGURATION=   0x02
@@ -56,45 +63,46 @@ namespace Proximity_2{
     
     this.ADDRESS = 0b1001010;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    this.clickBoardNumGlobal=clickBoardNum
     
     }
 
         //%blockId=Proximity2_ReadProximity
-        //%block="Get $this proximity reading on click$clickBoardNum"
+        //%block="Get $this proximity reading"
         //% blockGap=7
         //% weight=90   color=#9E4894 icon=""
         //% advanced=false
         //% blockNamespace=Proximity_2
         //% this.shadow=variables_get
         //% this.defl="ProximitySettings"
-        Proximity2_Read_Proximity(clickBoardNum:clickBoardID):number
+        Proximity2_Read_Proximity():number
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.Proximity2_Initialize(clickBoardNum)
+                this.Proximity2_Initialize(this.clickBoardNumGlobal)
                 
             }
-            let val = this.Read_Proximity2_Register(this.ADC_BYTE_PROX,clickBoardNum);
+            let val = this.Read_Proximity2_Register(this.ADC_BYTE_PROX,this.clickBoardNumGlobal);
             return val;
         }
         
         
         
         //%blockId=Proximity2_ReadALS
-        //%block="Get $this ambient light reading on click$clickBoardNum"
+        //%block="Get $this ambient light reading"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Proximity_2
         //% this.shadow=variables_get
         //% this.defl="ProximitySettings"
-        Proximity2_Read_Als(clickBoardNum:clickBoardID):number
+        Proximity2_Read_Als():number
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.Proximity2_Initialize(clickBoardNum)
+                this.Proximity2_Initialize(this.clickBoardNumGlobal)
                 
             }
-            let val = (this.Read_Proximity2_Register(this.ADC_HIGH_ALS,clickBoardNum) << 8) | this.Read_Proximity2_Register(this.ADC_LOW_ALS,clickBoardNum);
+            let val = (this.Read_Proximity2_Register(this.ADC_HIGH_ALS,this.clickBoardNumGlobal) << 8) | this.Read_Proximity2_Register(this.ADC_LOW_ALS,this.clickBoardNumGlobal);
             return val;
         }
     

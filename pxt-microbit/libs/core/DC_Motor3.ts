@@ -5,11 +5,11 @@
 //% advanced=true
 
 namespace DC_Motor3 {
-     //% block="create DC_MOTOR settings"
+     //% block="create DC_MOTOR settings on clickBoard $clickBoardNum"
     //% blockSetVariable="DC_MOTOR"
     //% weight=110
-    export function createDC_MOTOR(): DC_MOTOR {
-      return new DC_MOTOR();
+    export function createDC_MOTOR(clickBoardNum: clickBoardID): DC_MOTOR {
+      return new DC_MOTOR(clickBoardNum);
   }
     let PINs = new bBoard.PinSettings();
     let pwms = new bBoard.PWMSettings();
@@ -28,14 +28,16 @@ namespace DC_Motor3 {
     private IN2  : number
     private  SLP : number
     private  PWM : number
+    private clickBoardNumGlobal:number 
     isInitialized : Array<number>;
-    constructor(){
+    constructor(clickBoardNum: clickBoardID){
       super();
         this.IN1 = clickIOPin.AN
         this.IN2 = clickIOPin.RST
         this.SLP = clickIOPin.CS
         this.PWM = clickIOPin.PWM
-        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];      
+        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        this.clickBoardNumGlobal=clickBoardNum      
     }
     
     get IN1val() {
@@ -97,7 +99,7 @@ namespace DC_Motor3 {
         }
     
         //% blockId=Motor_speedDirection
-        //% block="Set $this speed to %speed with direction%direction on click%clickBoardNum"
+        //% block="Set $this speed to %speed with direction%direction"
         //% Speed.min=0 Speed.max=100
         //% advanced=false
         //% speed.min=0 speed.max=100
@@ -105,15 +107,15 @@ namespace DC_Motor3 {
         //% this.shadow=variables_get
         //% this.defl="DC_MOTOR"
     
-        motorSpeedDirection(speed: number,direction: MotorDirection,clickBoardNum: clickBoardID): void {
-            if(this.isInitialized[clickBoardNum] == 0)
+        motorSpeedDirection(speed: number,direction: MotorDirection): void {
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(clickBoardNum)
+                this.initialize(this.clickBoardNumGlobal)
                 
             }
     
-            this.motorRotation(direction,clickBoardNum);
-            this.motorSpeed(speed,clickBoardNum)
+            this.motorRotation(direction,this.clickBoardNumGlobal);
+            this.motorSpeed(speed,this.clickBoardNumGlobal)
           
            
         }

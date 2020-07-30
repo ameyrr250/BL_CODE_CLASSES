@@ -44,6 +44,8 @@ namespace Weather {
         return new Weather();
        }
 
+    let I2Cs= new bBoard.I2CSettings();
+
     export class Weather{
 
         Weather_I2C_ADDR : number;
@@ -107,6 +109,7 @@ namespace Weather {
 
         getreg(reg: number): number {
             pins.i2cWriteNumber(this.Weather_I2C_ADDR, reg, NumberFormat.UInt8BE);
+            //I2Cs.i2cWriteNumber(this.Weather_I2C_ADDR, reg, clickBoardNum, NumberFormat.UInt8BE, false)
             return pins.i2cReadNumber(this.Weather_I2C_ADDR, NumberFormat.UInt8BE);
         }
 

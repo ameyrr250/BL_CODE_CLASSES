@@ -14,11 +14,16 @@ namespace Noise {
 
     let PINs =  new bBoard.PinSettings();
 
-    //% block="create Noise settings"
+    /**
+     * Sets Noise Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param Noise the Noise Object
+    */
+    //% block="create Noise settings on clickBoard $clickBoardNum"
     //% blockSetVariable="Noise"
     //% weight=110
-    export function createNoise(): Noise {
-        return new Noise();
+    export function createNoise(clickBoardNum: clickBoardID): Noise {
+        return new Noise(clickBoardNum);
     }
 
 
@@ -27,9 +32,12 @@ namespace Noise {
     
     isInitialized : Array<number>;
 
-    constructor(){
+    private clickBoardNumGlobal:number 
+    
+    constructor(clickBoardNum: clickBoardID){
         super();
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+        this.clickBoardNumGlobal=clickBoardNum 
     }
     
     
@@ -45,37 +53,37 @@ namespace Noise {
     
     
         //%blockId=Noise_getNoiseLevel
-        //%block="$this Get raw noise level on click$clickBoardNum"
+        //%block="$this Get raw noise level"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Noise
         //% this.shadow=variables_get
         //% this.defl="Noise"
-        getNoiseLevel(clickBoardNum:clickBoardID):number
+        getNoiseLevel():number
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(clickBoardNum)
+                this.initialize(this.clickBoardNumGlobal)
                 
             }
-            return bBoard.analogRead(clickADCPin.AN,clickBoardNum)
+            return bBoard.analogRead(clickADCPin.AN,this.clickBoardNumGlobal)
         }
 
     //%blockId=Noise_isThresholdTriggered
-    //%block="$this Has noise threshold been triggered on click$clickBoardNum ?"
+    //%block="$this Has noise threshold been triggered"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=Noise
     //% this.shadow=variables_get
     //% this.defl="Noise"
-    isThresholdTriggered(clickBoardNum:clickBoardID):boolean
+    isThresholdTriggered():boolean
     {   
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(clickBoardNum)
+            this.initialize(this.clickBoardNumGlobal)
             
         }
-        if(PINs.digitalReadPin(clickIOPin.INT,clickBoardNum) == threshold.triggered)
+        if(PINs.digitalReadPin(clickIOPin.INT,this.clickBoardNumGlobal) == threshold.triggered)
         {
             return true;
         }
@@ -85,18 +93,18 @@ namespace Noise {
         }
      }
            //%blockId=Noise_setThreshold
-            //%block="$this Set noise threshold to $threshold on click$clickBoardNum"
+            //%block="$this Set noise threshold to $threshold"
             //% blockGap=7
             //% advanced=false
             //% threshold.min=0 threshold.max=100
             //% blockNamespace=Noise
             //% this.shadow=variables_get
             //% this.defl="Noise"
-            setThreshold(threshold:number,clickBoardNum:clickBoardID)
+            setThreshold(threshold:number)
             {
-                if(this.isInitialized[clickBoardNum] == 0)
+                if(this.isInitialized[this.clickBoardNumGlobal] == 0)
                 {
-                    this.initialize(clickBoardNum)
+                    this.initialize(this.clickBoardNumGlobal)
                     
                 }
                 let config = 0x7000; //DACa, Buffered output, 1x Gain, Shutdown disabled
@@ -110,26 +118,26 @@ namespace Noise {
                 }
                 threshold = threshold * 40.96 - 1 //Convert to a 12 bit number
     
-                this.write(threshold|config,clickBoardNum);
+                this.write(threshold|config);
     
             }
             //%blockId=Noise_write
-            //%block="$this Write $value on click$clickBoardNum"
+            //%block="$this Write $value"
             //% blockGap=7
             //% advanced=true
             //% blockNamespace=Noise
             //% this.shadow=variables_get
             //% this.defl="Noise"
-        write(value:number,clickBoardNum:clickBoardID)
+        write(value:number)
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(clickBoardNum)
+                this.initialize(this.clickBoardNumGlobal)
                 
             }
             let valueArray:number[] = [value>>8,value&0xFF]; //Split the value to be written into a LSB and MSB
-            this.spiCS(clickIOPin.CS,clickBoardNum)//Set the CS pin
-            this.SPIWriteArray(valueArray,clickBoardNum)
+            this.spiCS(clickIOPin.CS,this.clickBoardNumGlobal)//Set the CS pin
+            this.SPIWriteArray(valueArray,this.clickBoardNumGlobal)
         }
 
     }

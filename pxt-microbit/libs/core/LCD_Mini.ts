@@ -13,16 +13,38 @@ enum lineNumber{
 }
 
 
+enum LCDSettings{
+  
+  //% block="1"
+  one = 1,
+  //% block="2"
+  two,
+  //% block="3"
+  three,
+  //% block="4"
+  four,
+  //% block="5"
+  five
+
+}
+
 
 //-------------------------Click Board Blocks Begin -----------------------------------
 //% weight=100 color=#D400D4 icon=""
 //% advanced=true
 namespace LCD_Mini{
-    //% block="create lcd settings"
+
+    /**
+     * Sets LCD object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param LCDSettings the LCDSettings
+     */
+    //% block="create lcd settings on clickboard number $clickBoardNum"
     //% blockSetVariable="LCDSettings"
+    //% blockId=LCDSettings
     //% weight=110
-    export function createLCDSettings(): LCDSettings {
-        return new LCDSettings();
+    export function createLCDSettings(clickBoardNum: clickBoardID): LCDSettings {
+        return new LCDSettings(clickBoardNum);
    }
 
    let PINs = new bBoard.PinSettings();
@@ -37,8 +59,17 @@ export class LCDSettings{
         private IODIRB : number;
         private OLATB : number;
         private WRITE_BYTE : number;
+        private clickBoardNumGlobal:number;
 
-        constructor(){
+        constructor(clickBoardNum: clickBoardID){
+        if(bBoard.arrayClick.indexOf(clickBoardNum) !== -1){
+          console.log("----------------------------------------------------Array "+bBoard.arrayClick[0])
+    
+        } else{
+          bBoard.arrayClick.push(clickBoardNum)
+          console.log("----------------------------------------------------Array Not "+bBoard.arrayClick[0])
+        }
+              
         this.LOW = 0; 
         this.HIGH = 1;
         this.LCDInitialize = false;
@@ -48,6 +79,7 @@ export class LCDSettings{
         this.IODIRB = 0x01;
         this.OLATB = 0x15;
         this.WRITE_BYTE = 0b01000000;
+        this.clickBoardNumGlobal = clickBoardNum
         }
 
         get LOWval() {
@@ -236,30 +268,30 @@ export class LCDSettings{
          * @param lineNum the lineNum
          * @param clickBoardNum the clickBoardNum
          */
-        //% block="$this Write a $LCDstring to line $lineNum on click board $clickBoardNum"
+        //% block="$this Write a $LCDstring to line $lineNum"
         //% blockId=LCDWriteString
         //% blockNamespace=LCD_Mini
         //% this.shadow=variables_get
         //% this.defl="LCDSettings"
         //% weight=90 blockGap=12 color=#9E4894 icon=""
 
-        lcd_writeString(LCDstring:string, lineNum: lineNumber, clickBoardNum: clickBoardID) {
+        lcd_writeString(LCDstring:string, lineNum: lineNumber){ //, clickBoardNum: clickBoardID) {
             //let LCDstring1=['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x']
             if(this.LCDInitialize == false)
             {
-                this.lcd_setup(clickBoardNum);
-                this.lcd_setContrast(0x30,clickBoardNum)
+                this.lcd_setup(this.clickBoardNumGlobal);
+                this.lcd_setContrast(0x30,this.clickBoardNumGlobal)
                 this.LCDInitialize = true; //LCD has been initialized
             }
     
-            this.lcd_setAddr(lineNum, 0,clickBoardNum);
+            this.lcd_setAddr(lineNum, 0,this.clickBoardNumGlobal);
             let i = 0;
             for (i = 1; i < 16; i++) {
                 if (LCDstring[i]) {
-                    this.lcd_writeChar(LCDstring[i],clickBoardNum);
+                    this.lcd_writeChar(LCDstring[i],this.clickBoardNumGlobal);
                 }
             }
-            this.lcd_returnHome(clickBoardNum);
+            this.lcd_returnHome(this.clickBoardNumGlobal);
             }
 
         //% blockId=LCD_Clear
@@ -278,6 +310,10 @@ export class LCDSettings{
 
     }
 
+    //% fixedInstance
+    let D0: LCDSettings;
+    //% fixedInstance
+    let D1: LCDSettings;
 
 
 

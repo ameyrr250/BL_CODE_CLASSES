@@ -42,11 +42,16 @@ namespace Touchpad{
         Left_Swipe_Hold = 0x62
     }
 
-    //% block="create Touchpad settings"
+    /**
+     * Sets Touchpad Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param Touchpad the Touchpad Object
+    */
+    //% block="create Touchpad settings on clickBoard $clickBoardNum"
     //% blockSetVariable="Touchpad"
     //% weight=110
-    export function createTouchpad(): Touchpad {
-        return new Touchpad();
+    export function createTouchpad(clickBoardNum: clickBoardID): Touchpad {
+        return new Touchpad(clickBoardNum);
    }
 
     export class Touchpad extends bBoard.I2CSettings{
@@ -73,99 +78,102 @@ namespace Touchpad{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    constructor(){
-        super();
+    private clickBoardNumGlobal:number 
+    
+    constructor(clickBoardNum: clickBoardID){
+    super();
 
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    this.clickBoardNumGlobal=clickBoardNum
     }
     
-       //%blockId=Touchpad_initialize
-        //%block="$this Initalize touchpad with i2c address $deviceAddr on click$clickBoardNum"
+        //%blockId=Touchpad_initialize
+        //%block="$this Initalize touchpad with i2c address $deviceAddr"
         //% blockGap=7
         //% advanced=true
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    initialize(deviceAddr:number,clickBoardNum:clickBoardID)
+    initialize(deviceAddr:number)
     {
         //setTMP116Addr(deviceAddr,clickBoardNum)
-        this.isInitialized[clickBoardNum]  = 1
-        this.setMTCH6102Addr(deviceAddr,clickBoardNum)
-        this.writeMTCH6102(0b0011,this.MODE,clickBoardNum) //Set the mode to full 
+        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.setMTCH6102Addr(deviceAddr,this.clickBoardNumGlobal)
+        this.writeMTCH6102(0b0011,this.MODE) //Set the mode to full 
     
     
     }
     
         //%blockId=Touchpad_getX
-        //%block="$this Get X position on click$clickBoardNum"
+        //%block="$this Get X position"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    getX(clickBoardNum:clickBoardID):number
+    getX():number
     {
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)
+            this.initialize(this.DEFAULT_I2C_ADDRESS)
             
         }
-        return this.readMTCH6102( this.TOUCH_XREG,clickBoardNum);
+        return this.readMTCH6102( this.TOUCH_XREG);
     }
     
         //%blockId=Touchpad_getY
-        //%block="$this Get Y position on click$clickBoardNum"
+        //%block="$this Get Y position"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    getY(clickBoardNum:clickBoardID):number
+    getY():number
     {
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)
+            this.initialize(this.DEFAULT_I2C_ADDRESS)
             
         }
-        return this.readMTCH6102(this.TOUCH_YREG,clickBoardNum);
+        return this.readMTCH6102(this.TOUCH_YREG);
     }
     
         //%blockId=Touchpad_isTouched
-        //%block="$this Has touch occured on click$clickBoardNum ?"
+        //%block="$this Has touch occured"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    isTouched(clickBoardNum:clickBoardID):boolean
+    isTouched():boolean
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)
+                this.initialize(this.DEFAULT_I2C_ADDRESS)
                 
             }
         
             
-            return this.readMTCH6102(this.TOUCH_STATE,clickBoardNum)&this.touch_mask? true:false;
+            return this.readMTCH6102(this.TOUCH_STATE)&this.touch_mask? true:false;
         }
     
         //%blockId=Touchpad_isGesture
-        //%block="$this Has gesture occured on click$clickBoardNum ?"
+        //%block="$this Has gesture occured"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-        isGesture(clickBoardNum:clickBoardID):boolean
+        isGesture():boolean
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)
+                this.initialize(this.DEFAULT_I2C_ADDRESS)
                 
             }
         
-           let  gestureState = this.readMTCH6102(this.TOUCH_STATE,clickBoardNum)
+           let  gestureState = this.readMTCH6102(this.TOUCH_STATE)
     
            if(((gestureState&this.gesture_mask)>>1) == 1)
            {
@@ -175,13 +183,13 @@ namespace Touchpad{
         }
     
         //%blockId=Touchpad_getGestureName
-        //%block="$this Convert gesture ID $gestureID to a friendly name on click$clickBoardNum"
+        //%block="$this Convert gesture ID $gestureID to a friendly name"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-        getGestureName(gestureID:number,clickBoardNum:clickBoardID):string
+        getGestureName(gestureID:number):string
         {
     switch (gestureID)
     {
@@ -235,46 +243,46 @@ namespace Touchpad{
         }
     
         //%blockId=Touchpad_getTouchState
-        //%block="$this Get touch status on click$clickBoardNum"
+        //%block="$this Get touch status"
         //% blockGap=7
         //% advanced=true
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    getTouchState(clickBoardNum:clickBoardID):number
+    getTouchState():number
     {
      
         
-        return this.readMTCH6102(this.TOUCH_STATE,clickBoardNum);
+        return this.readMTCH6102(this.TOUCH_STATE);
     }
     
         //%blockId=Touchpad_getGesture
-        //%block="$this Get gesture on click$clickBoardNum"
+        //%block="$this Get gesture"
         //% blockGap=7
         //% advanced=false
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-        getGesture(clickBoardNum:clickBoardID):number
+        getGesture():number
         {
-            if(this.isInitialized[clickBoardNum] == 0)
+            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(this.DEFAULT_I2C_ADDRESS,clickBoardNum)
+                this.initialize(this.DEFAULT_I2C_ADDRESS)
                 
             }
         
             
-            return this.readMTCH6102(this.GESTURESTATE,clickBoardNum);
+            return this.readMTCH6102(this.GESTURESTATE);
         }
     
         //%blockId=Touchpad_write
-        //%block="$this Write $value to register$register on click$clickBoardNum"
+        //%block="$this Write $value to register$register"
         //% blockGap=7
         //% advanced=true
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    writeMTCH6102(value:number,register:number,clickBoardNum:clickBoardID)
+    writeMTCH6102(value:number,register:number)
     {
     
     
@@ -284,24 +292,24 @@ namespace Touchpad{
         i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value ) 
         
     
-        this.i2cWriteBuffer(this.getMTCH6102Addr(clickBoardNum),i2cBuffer,clickBoardNum);
+        this.i2cWriteBuffer(this.getMTCH6102Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
      
     }
     
         //%blockId=Touchpad_read
-        //%block="$this Read from register$register on click$clickBoardNum"
+        //%block="$this Read from register$register"
         //% blockGap=7
         //% advanced=true
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    readMTCH6102( register:number, clickBoardNum:clickBoardID):number
+    readMTCH6102( register:number):number
     {
         let i2cBuffer = pins.createBuffer(1);
     
-        this.i2cWriteNumber(this.getMTCH6102Addr(clickBoardNum),register,NumberFormat.Int8LE,clickBoardNum,true)
+        this.i2cWriteNumber(this.getMTCH6102Addr(this.clickBoardNumGlobal),register,NumberFormat.Int8LE,this.clickBoardNumGlobal,true)
     
-    return this.I2CreadNoMem(this.getMTCH6102Addr(clickBoardNum),1,clickBoardNum).getUint8(0);
+    return this.I2CreadNoMem(this.getMTCH6102Addr(this.clickBoardNumGlobal),1,this.clickBoardNumGlobal).getUint8(0);
     
     
     

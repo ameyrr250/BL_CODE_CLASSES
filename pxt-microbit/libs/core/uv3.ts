@@ -8,11 +8,16 @@
 //% advanced=true
 namespace UV3{
 
-    //% block="create UV3 settings"
+    /**
+     * Sets UV3 Click object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param UV3 the UV3 Object
+     */
+    //% block="create UV3 settings on clickBoard $clickBoardNum"
     //% blockSetVariable="UV3"
     //% weight=110
-    export function createUV3(): UV3 {
-        return new UV3();
+    export function createUV3(clickBoardNum: clickBoardID): UV3 {
+        return new UV3(clickBoardNum);
    }
 
 
@@ -35,11 +40,14 @@ namespace UV3{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    constructor(){
+    private clickBoardNumGlobal:number 
+    
+    constructor(clickBoardNum: clickBoardID){
         super();
     this.controlReg=0;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    this.clickBoardNumGlobal=clickBoardNum
     }
     
     
@@ -50,7 +58,7 @@ namespace UV3{
        
         this.controlReg = this.VEML6070_CMD_DEFAULT; //Int disabled, 1/2T (~ 60ms) and shutdown disabled. 
 
-        this.writeVEML6070(this.controlReg,clickBoardNum)
+        this.writeVEML6070(this.controlReg)
  
         
     
@@ -61,36 +69,36 @@ namespace UV3{
     
        
             //%blockId=VEML6070_write
-            //%block="$this Write $value to VEML6070 control register on click$clickBoardNum"
+            //%block="$this Write $value to VEML6070 control register"
             //% blockGap=7
             //% advanced=true
             //% blockNamespace=UV3
             //% this.shadow=variables_get
             //% this.defl="UV3"
-            writeVEML6070(value:number,clickBoardNum:clickBoardID)
+            writeVEML6070(value:number)
             {
-                this.i2cWriteNumber(this.VEML6070_ADDR_CMD,value,NumberFormat.UInt8LE,clickBoardNum,false)   
+                this.i2cWriteNumber(this.VEML6070_ADDR_CMD,value,NumberFormat.UInt8LE,this.clickBoardNumGlobal,false)   
              
             }
            
 
             //%blockId=VEML6070_UVSteps
-            //%block="$this Get UV value on click$clickBoardNum"
+            //%block="$this Get UV value"
             //% blockGap=7
             //% advanced=false
             //% blockNamespace=UV3
             //% this.shadow=variables_get
             //% this.defl="UV3"
-            UVSteps(clickBoardNum:clickBoardID)
+            UVSteps()
             {
                 
            
-                if(this.isInitialized[clickBoardNum] == 0)
+                if(this.isInitialized[this.clickBoardNumGlobal] == 0)
                 {
-                    this.initialize(clickBoardNum);
+                    this.initialize(this.clickBoardNumGlobal);
                 }
-                let MSB = this.readVEML6070(this.VEML6070_ADDR_DATA_MSB,clickBoardNum);
-                let LSB = this.readVEML6070(this.VEML6070_ADDR_DATA_LSB,clickBoardNum);
+                let MSB = this.readVEML6070(this.VEML6070_ADDR_DATA_MSB);
+                let LSB = this.readVEML6070(this.VEML6070_ADDR_DATA_LSB);
 
                 return ((MSB << 8) | LSB) 
              
@@ -98,36 +106,36 @@ namespace UV3{
             }
 
             //%blockId=VEML6070_enable
-            //%block="$this Turn off device click$clickBoardNum"
+            //%block="$this Turn off device"
             //% blockGap=7
             //% advanced=true
             //% blockNamespace=UV3
             //% this.shadow=variables_get
             //% this.defl="UV3"
-            enableShutdown(clickBoardNum:clickBoardID)
+            enableShutdown()
             {
             
                 
                 this.controlReg = this.controlReg & 0xFE; 
-                this.writeVEML6070(this.controlReg,clickBoardNum);
+                this.writeVEML6070(this.controlReg);
              
              
             }
     
 
             //%blockId=VEML6070_disable
-            //%block="$this Turn on device click$clickBoardNum"
+            //%block="$this Turn on device"
             //% blockGap=7
             //% advanced=true
             //% blockNamespace=UV3
             //% this.shadow=variables_get
             //% this.defl="UV3"
-            disableShutdown(clickBoardNum:clickBoardID)
+            disableShutdown()
             {
             
                 
                 this.controlReg = this.controlReg | 0x01; 
-                this.writeVEML6070(this.controlReg,clickBoardNum);
+                this.writeVEML6070(this.controlReg);
              
              
             }
@@ -136,18 +144,18 @@ namespace UV3{
      
         
                  //%blockId=VEML6070_read
-                //%block="$this Read from slave address$slaveAddress on click$clickBoardNum"
+                //%block="$this Read from slave address$slaveAddress"
                 //% blockGap=7
                 //% advanced=true
                 //% blockNamespace=UV3
                 //% this.shadow=variables_get
                 //% this.defl="UV3"
-                readVEML6070 (slaveAddress:number,  clickBoardNum:clickBoardID):number
+                readVEML6070 (slaveAddress:number):number
                 {
                    
 
                    
-                   let i2cBuffer = this.I2CreadNoMem(slaveAddress ,1,clickBoardNum);
+                   let i2cBuffer = this.I2CreadNoMem(slaveAddress ,1,this.clickBoardNumGlobal);
 
                    let data:number; //A number variable to hold our value to return
                  
