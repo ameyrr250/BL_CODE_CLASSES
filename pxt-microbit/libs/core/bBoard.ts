@@ -5,7 +5,7 @@
 // Configuring command messages...
 
 
-enum clickBoardID{
+const enum clickBoardID{
 
     //% block="1"
     one = 1,
@@ -74,6 +74,19 @@ enum clickBoardID{
 
 }
 
+// function checkifexists(): number{
+//     let retval=25;
+//     for (var _i = 2; _i < 24; _i++) {
+//         if(bBoard.arrayClick.indexOf(_i) !== -1){
+//             retval= 25;
+//         }
+//         else{
+//             retval= _i;
+//         }
+//     }
+//     console.log("RetVal "+retval)
+//     return retval;
+// }
 
 enum clickIOPin {
 
@@ -155,6 +168,8 @@ output = 2
 //% weight=100 color=#9E4894 icon=""
 namespace bBoard {
     export let arrayClick: clickBoardID[]=[]
+
+ //   export let arrayClickList: clickBoardID[]=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
        //% block="create IO settings"
     //% blockSetVariable="IOSettings"
@@ -620,7 +635,7 @@ let ADC_READ_id = 16
             pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)
     }
 
-       //%blockId=is_UART_Data_Avail
+    //%blockId=is_UART_Data_Avail
     //%block="Is $this UART data available on click$clickBoardNum ?"
     //% blockGap=7
     //% weight=90   color=#9E4894 icon=""
@@ -642,7 +657,8 @@ let ADC_READ_id = 16
         }
      return false;
     }
- /**
+    
+    /**
     * Set the UART frequency
     * @param frequency the clock frequency, eg: 115200
     */
@@ -675,7 +691,7 @@ let ADC_READ_id = 16
 
     }
 
-    //%blockId=send_UART_Buffer
+        //%blockId=send_UART_Buffer
         //%block="$this Send buffer $Buf to click $clickBoardNum"
         //% blockGap=7
         //% weight=90   color=#9E4894 icon=""

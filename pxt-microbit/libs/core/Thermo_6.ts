@@ -34,19 +34,18 @@ namespace Thermo_6{
     
     constructor(clickBoardNum: clickBoardID){
     super();
-
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.clickBoardNumGlobal=clickBoardNum
     }
    
-      //%blockId=Thermo6_getTempC
-       //%block="$this Get the temperature in Celcius"
-       //% blockGap=7
-       //% advanced=false
-       //% blockNamespace=Thermo_6
-        //% this.shadow=variables_get
-        //% this.defl="Thermo"
+    //%blockId=Thermo6_getTempC
+    //%block="$this Get the temperature in Celcius"
+    //% blockGap=7
+    //% advanced=false
+    //% blockNamespace=Thermo_6
+    //% this.shadow=variables_get
+    //% this.defl="Thermo"
        getTempC():number
        {
           
@@ -61,13 +60,13 @@ namespace Thermo_6{
        
        }
    
-        //%blockId=Thermo6_getTempF
-       //%block="$this Get the temperature in Fahrenheit"
-       //% blockGap=7
-       //% advanced=false
-       //% blockNamespace=Thermo_6
-        //% this.shadow=variables_get
-        //% this.defl="Thermo"
+    //%blockId=Thermo6_getTempF
+    //%block="$this Get the temperature in Fahrenheit"
+    //% blockGap=7
+    //% advanced=false
+    //% blockNamespace=Thermo_6
+    //% this.shadow=variables_get
+    //% this.defl="Thermo"
        getTempF():number
        {
           
@@ -84,13 +83,13 @@ namespace Thermo_6{
        
        }
    
-        //%blockId=Thermo6_initialize
-       //%block="$this Initalize with i2c address $deviceAddr"
-       //% blockGap=7
-       //% advanced=true
-       //% blockNamespace=Thermo_6
-        //% this.shadow=variables_get
-        //% this.defl="Thermo"
+    //%blockId=Thermo6_initialize
+    //%block="$this Initalize with i2c address $deviceAddr"
+    //% blockGap=7
+    //% advanced=true
+    //% blockNamespace=Thermo_6
+    //% this.shadow=variables_get
+    //% this.defl="Thermo"
    initialize(deviceAddr:number)
    {
       
@@ -103,10 +102,10 @@ namespace Thermo_6{
 
 
     //%blockId=MAX31875_write
-   //%block="$this Write $value to register$register"
-   //% blockGap=7
-   //% advanced=true
-   //% blockNamespace=Thermo_6
+    //%block="$this Write $value to register$register"
+    //% blockGap=7
+    //% advanced=true
+    //% blockNamespace=Thermo_6
     //% this.shadow=variables_get
     //% this.defl="Thermo"
    writeMAX31875(value:number,register:number)
@@ -124,13 +123,13 @@ namespace Thermo_6{
     
    }
    
-        //%blockId=MAX31875_read
-       //%block="$this Read from register$register"
-       //% blockGap=7
-       //% advanced=true
-       //% blockNamespace=Thermo_6
-        //% this.shadow=variables_get
-        //% this.defl="Thermo"
+    //%blockId=MAX31875_read
+    //%block="$this Read from register$register"
+    //% blockGap=7
+    //% advanced=true
+    //% blockNamespace=Thermo_6
+    //% this.shadow=variables_get
+    //% this.defl="Thermo"
     readMAX31875( register:number):number
    {
        let i2cBuffer = pins.createBuffer(2);

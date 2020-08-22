@@ -83,7 +83,8 @@
         "K8.ts",
         "K8.ts.rej",
         "neopixel.ts.rej",
-        "sendBuffer.asm"
+        "sendBuffer.asm",
+        "Test_Module.ts"
 
     ],
     "public": true,

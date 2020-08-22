@@ -28204,12 +28204,6 @@
                     "retType": "LCD_Mini.LCDSettings",
                     "extendsTypes": []
                 },
-                "LCD_Mini.LCDSettings.clickBoardNumGlobal": {
-                    "kind": 2,
-                    "retType": "number",
-                    "isInstance": true,
-                    "pyQName": "LCD_Mini.LCDSettings.click_board_num_global"
-                },
                 "LCD_Mini.LCDSettings.__constructor": {
                     "kind": -3,
                     "parameters": [
@@ -28509,7 +28503,7 @@
                         "paramDefl": {
                             "this": "LCDSettings"
                         },
-                        "block": "$this Write a $LCDstring to line $lineNum",
+                        "block": "$this Write 2 a $LCDstring to line $lineNum",
                         "blockId": "LCDWriteString",
                         "blockNamespace": "LCD_Mini",
                         "_shadowOverrides": {
@@ -28538,7 +28532,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Write a ",
+                                    "text": " Write 2 a ",
                                     "style": []
                                 },
                                 {
@@ -28672,20 +28666,43 @@
                     "kind": -3,
                     "retType": "Force_Click.Force",
                     "attributes": {
-                        "block": "create force settings",
+                        "block": "create force settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Force",
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Force": "the Force Object"
+                        },
+                        "jsDoc": "Sets Force Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create force settings",
+                                    "text": "create force settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Force_Click.create_force_settings"
                 },
                 "Force_Click.Force": {
@@ -28726,7 +28743,13 @@
                 },
                 "Force_Click.Force.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Force_Click.Force.forceclickstring": {
@@ -28737,7 +28760,7 @@
                             "this": "Force"
                         },
                         "help": "Force_Click/Force/forceclickstring",
-                        "block": "Get string value at $this of force on click$clickBoardNum",
+                        "block": "Get string value at $this of force",
                         "blockId": "forceS",
                         "blockNamespace": "Force_Click",
                         "_shadowOverrides": {
@@ -28750,9 +28773,6 @@
                         "blockGap": "12",
                         "color": "#9E4894",
                         "icon": "",
-                        "paramHelp": {
-                            "clickBoardNum": "the clickboard number at which connected"
-                        },
                         "jsDoc": "Measures force and returns string value.",
                         "_def": {
                             "parts": [
@@ -28769,13 +28789,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " of force on click",
+                                    "text": " of force",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -28784,23 +28799,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "description": "the clickboard number at which connected",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true
                 },
                 "Force_Click.Force.forceclick": {
@@ -28811,7 +28814,7 @@
                             "this": "Force"
                         },
                         "help": "Force_Click/Force/forceclickstring",
-                        "block": "Get value at $this of force on click$clickBoardNum",
+                        "block": "Get value at $this of force",
                         "blockId": "force",
                         "blockNamespace": "Force_Click",
                         "_shadowOverrides": {
@@ -28824,9 +28827,6 @@
                         "blockGap": "12",
                         "color": "#9E4894",
                         "icon": "",
-                        "paramHelp": {
-                            "clickBoardNum": "the clickboard number at which connected"
-                        },
                         "jsDoc": "Measures force and returns value.",
                         "_def": {
                             "parts": [
@@ -28843,13 +28843,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " of force on click",
+                                    "text": " of force",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -28858,23 +28853,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "description": "the clickboard number at which connected",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true
                 },
                 "Proximity_2": {
@@ -28892,21 +28875,44 @@
                     "kind": -3,
                     "retType": "Proximity_2.Proximity2",
                     "attributes": {
-                        "block": "create Proximity2 settings",
+                        "block": "create Proximity2 settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Proximity2",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Proximity2": "the Proximity2 Object"
+                        },
+                        "jsDoc": "Sets Proximity2 Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Proximity2 settings",
+                                    "text": "create Proximity2 settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Proximity_2.create_proximity2_settings"
                 },
                 "Proximity_2.Proximity2": {
@@ -29024,7 +29030,13 @@
                 },
                 "Proximity_2.Proximity2.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Proximity_2.Proximity2.Proximity2_Read_Proximity": {
@@ -29035,7 +29047,7 @@
                             "this": "ProximitySettings"
                         },
                         "blockId": "Proximity2_ReadProximity",
-                        "block": "Get $this proximity reading on click$clickBoardNum",
+                        "block": "Get $this proximity reading",
                         "blockGap": "7",
                         "weight": 90,
                         "color": "#9E4894",
@@ -29063,13 +29075,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " proximity reading on click",
+                                    "text": " proximity reading",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -29078,22 +29085,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true
                 },
                 "Proximity_2.Proximity2.Proximity2_Read_Als": {
@@ -29104,7 +29100,7 @@
                             "this": "ProximitySettings"
                         },
                         "blockId": "Proximity2_ReadALS",
-                        "block": "Get $this ambient light reading on click$clickBoardNum",
+                        "block": "Get $this ambient light reading",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Proximity_2",
@@ -29129,13 +29125,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " ambient light reading on click",
+                                    "text": " ambient light reading",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -29144,22 +29135,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true
                 },
                 "Proximity_2.Proximity2.Read_Proximity2_Register": {
@@ -29277,6 +29257,11 @@
                         "block": "create Servo settings",
                         "blockSetVariable": "Servo",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Servo": "the Servo Object"
+                        },
+                        "jsDoc": "Sets Servo Click object.",
                         "_def": {
                             "parts": [
                                 {
@@ -29288,7 +29273,14 @@
                             "parameters": []
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Servo.create_lcd_settings"
                 },
                 "Servo.Servo": {
@@ -29430,7 +29422,13 @@
                 },
                 "Servo.Servo.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Servo.Servo.setServoPulse": {
@@ -29663,7 +29661,7 @@
                             "this": "Servo"
                         },
                         "blockId": "Servo_initialize",
-                        "block": "Initalize $this PCA9685 to i2c address $PCA9685Addr and LTC2497 to i2c address $LTC2497Addr on click$clickBoardNum",
+                        "block": "Initalize $this PCA9685 to i2c address $PCA9685Addr and LTC2497 to i2c address $LTC2497Addr",
                         "blockGap": "7",
                         "weight": 90,
                         "color": "#9E4894",
@@ -29708,16 +29706,6 @@
                                     "kind": "param",
                                     "name": "LTC2497Addr",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -29736,11 +29724,6 @@
                                     "kind": "param",
                                     "name": "LTC2497Addr",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -29751,11 +29734,6 @@
                         },
                         {
                             "name": "LTC2497Addr"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true
@@ -29767,7 +29745,7 @@
                             "this": "Servo"
                         },
                         "blockId": "Servo_Angle",
-                        "block": "Set $this servo $n to $angle on click$clickBoardNum",
+                        "block": "Set $this servo $n to $angle",
                         "blockGap": "7",
                         "weight": 90,
                         "color": "#9E4894",
@@ -29812,16 +29790,6 @@
                                     "kind": "param",
                                     "name": "angle",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -29840,11 +29808,6 @@
                                     "kind": "param",
                                     "name": "angle",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -29855,11 +29818,6 @@
                         },
                         {
                             "name": "angle"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -29873,7 +29831,7 @@
                             "this": "Servo"
                         },
                         "blockId": "Servo_AngleAdjusted",
-                        "block": "Set $this servo $n to $angle with pulse range min $pulseMin and max $pulseMax on click$clickBoardNum",
+                        "block": "Set $this servo $n to $angle with pulse range min $pulseMin and max $pulseMax",
                         "blockGap": "7",
                         "advanced": true,
                         "paramMin": {
@@ -29942,16 +29900,6 @@
                                     "kind": "param",
                                     "name": "pulseMax",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -29980,11 +29928,6 @@
                                     "kind": "param",
                                     "name": "pulseMax",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -30011,11 +29954,6 @@
                         },
                         {
                             "name": "pulseMax"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -30029,7 +29967,7 @@
                             "this": "Servo"
                         },
                         "blockId": "Servo_setPWM",
-                        "block": "Set $this servo $num to be on $on and off $off on click$clickBoardNum",
+                        "block": "Set $this servo $num to be on $on and off $off",
                         "blockGap": "7",
                         "advanced": true,
                         "paramMin": {
@@ -30088,16 +30026,6 @@
                                     "kind": "param",
                                     "name": "off",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -30120,11 +30048,6 @@
                                 {
                                     "kind": "param",
                                     "name": "off",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
                                     "ref": true
                                 }
                             ]
@@ -30149,11 +30072,6 @@
                         },
                         {
                             "name": "off"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -30166,7 +30084,7 @@
                             "this": "Servo"
                         },
                         "blockId": "PCA9685_write",
-                        "block": "$this Write array $values to PCA9685 register$register on click$clickBoardNum ?",
+                        "block": "$this Write array $values to PCA9685 register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Servo",
@@ -30203,21 +30121,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
-                                    "style": []
                                 }
                             ],
                             "parameters": [
@@ -30236,11 +30139,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -30249,11 +30147,6 @@
                         {
                             "name": "values",
                             "type": "number[]"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -30267,7 +30160,7 @@
                             "this": "Servo"
                         },
                         "blockId": "PCA9685_read",
-                        "block": "$this Read from register$register on click$clickBoardNum",
+                        "block": "$this Read from register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Servo",
@@ -30294,16 +30187,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -30317,11 +30200,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -30329,11 +30207,6 @@
                     "parameters": [
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -30354,21 +30227,44 @@
                     "kind": -3,
                     "retType": "AirQuality2.AirQuality",
                     "attributes": {
-                        "block": "create AirQuality settings",
+                        "block": "create AirQuality settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "AirQuality",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "AirQuality": "the LCDSettings"
+                        },
+                        "jsDoc": "Sets LCD object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create AirQuality settings",
+                                    "text": "create AirQuality settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "AirQuality2.create_air_quality"
                 },
                 "AirQuality2.humidity": {
@@ -30955,7 +30851,13 @@
                 },
                 "AirQuality2.AirQuality.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "AirQuality2.AirQuality.initialize": {
@@ -30987,7 +30889,7 @@
                             "this"
                         ],
                         "blockId": "CCS811DataReady",
-                        "block": "Is $this data ready on click%clickBoardNum ?",
+                        "block": "Is $this data ready",
                         "blockGap": "7",
                         "advanced": false,
                         "_def": {
@@ -31005,17 +30907,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " data ready on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
+                                    "text": " data ready",
                                     "style": []
                                 }
                             ],
@@ -31025,22 +30917,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "AirQuality2.AirQuality.data_ready"
                 },
@@ -31112,7 +30993,7 @@
                             "this": "AirQuality"
                         },
                         "blockId": "CCS811Calibration",
-                        "block": "Calibrate $this sensor to temperature $fTemp F and humidity $fHumid \\% on click$clickBoardNum",
+                        "block": "Calibrate $this sensor to temperature $fTemp F and humidity $fHumid",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "AirQuality2",
@@ -31154,16 +31035,6 @@
                                     "kind": "param",
                                     "name": "fHumid",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " % on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -31182,11 +31053,6 @@
                                     "kind": "param",
                                     "name": "fHumid",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -31198,11 +31064,6 @@
                         {
                             "name": "fHumid",
                             "type": "AirQuality2.humidity",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -31217,7 +31078,7 @@
                             "this": "AirQuality"
                         },
                         "blockId": "CCS811AirQuality",
-                        "block": "Read $this $valueToRetrieve value on click$clickBoardNum",
+                        "block": "Read $this $valueToRetrieve value",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "AirQuality2",
@@ -31252,13 +31113,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " value on click",
+                                    "text": " value",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -31272,11 +31128,6 @@
                                     "kind": "param",
                                     "name": "valueToRetrieve",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -31285,11 +31136,6 @@
                         {
                             "name": "valueToRetrieve",
                             "type": "AirQuality2.airQualityValue",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -31303,7 +31149,7 @@
                             "this": "AirQuality"
                         },
                         "blockId": "CCS811_write",
-                        "block": "Write $this array $values to CCS811 register$register on click$clickBoardNum ?",
+                        "block": "Write $this array $values to CCS811 register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "AirQuality2",
@@ -31345,21 +31191,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
-                                    "style": []
                                 }
                             ],
                             "parameters": [
@@ -31378,11 +31209,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -31394,11 +31220,6 @@
                         },
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -31412,7 +31233,7 @@
                             "this": "AirQuality"
                         },
                         "blockId": "CCS811_read",
-                        "block": "$this Read $numBytes bytes from register$register on click$clickBoardNum",
+                        "block": "$this Read $numBytes bytes from register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "AirQuality2",
@@ -31449,16 +31270,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -31477,11 +31288,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -31492,11 +31298,6 @@
                         },
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -31544,21 +31345,38 @@
                     "kind": -3,
                     "retType": "DC_Motor3.DC_MOTOR",
                     "attributes": {
-                        "block": "create DC_MOTOR settings",
+                        "block": "create DC_MOTOR settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "DC_MOTOR",
                         "weight": 110,
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create DC_MOTOR settings",
+                                    "text": "create DC_MOTOR settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": []
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ]
                 },
                 "DC_Motor3.MotorDirection": {
                     "kind": 6,
@@ -31626,7 +31444,13 @@
                 },
                 "DC_Motor3.DC_MOTOR.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "DC_Motor3.DC_MOTOR.IN1val": {
@@ -31714,7 +31538,7 @@
                             "this": "DC_MOTOR"
                         },
                         "blockId": "Motor_speedDirection",
-                        "block": "Set $this speed to %speed with direction%direction on click%clickBoardNum",
+                        "block": "Set $this speed to %speed with direction%direction",
                         "paramMin": {
                             "Speed": "0",
                             "speed": "0"
@@ -31763,16 +31587,6 @@
                                     "kind": "param",
                                     "name": "direction",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ],
                             "parameters": [
@@ -31790,11 +31604,6 @@
                                 {
                                     "kind": "param",
                                     "name": "direction",
-                                    "ref": false
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
                                     "ref": false
                                 }
                             ]
@@ -31815,11 +31624,6 @@
                         {
                             "name": "direction",
                             "type": "DC_Motor3.MotorDirection",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -33405,6 +33209,11 @@
                         "block": "create Line Follower settings",
                         "blockSetVariable": "LineFollower",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "LineFollower": "the LineFollower Object"
+                        },
+                        "jsDoc": "Sets LineFollower Click object.",
                         "_def": {
                             "parts": [
                                 {
@@ -33416,7 +33225,14 @@
                             "parameters": []
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Line_Follower.create_line_follower"
                 },
                 "Line_Follower.LineFollower": {
@@ -33436,7 +33252,13 @@
                 },
                 "Line_Follower.LineFollower.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Line_Follower.LineFollower.initialize": {
@@ -33523,7 +33345,7 @@
                             "this": "LineFollower"
                         },
                         "blockId": "Line_Follower_getWhiteDirection",
-                        "block": "$this Correction required to follow white line (on click$clickBoardNum)",
+                        "block": "$this Correction required to follow white line",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Line_Follower",
@@ -33543,17 +33365,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Correction required to follow white line (on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": ")",
+                                    "text": " Correction required to follow white line",
                                     "style": []
                                 }
                             ],
@@ -33563,22 +33375,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Line_Follower.LineFollower.get_white_direction"
                 },
@@ -33590,7 +33391,7 @@
                             "this": "LineFollower"
                         },
                         "blockId": "Line_Follower_getBlackDirection",
-                        "block": "$this Correction required to follow black line (on click$clickBoardNum)",
+                        "block": "$this Correction required to follow black line",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Line_Follower",
@@ -33610,17 +33411,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Correction required to follow black line (on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": ")",
+                                    "text": " Correction required to follow black line",
                                     "style": []
                                 }
                             ],
@@ -33630,22 +33421,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Line_Follower.LineFollower.get_black_direction"
                 },
@@ -33722,7 +33502,7 @@
                             "this": "LineFollower"
                         },
                         "blockId": "Line_Follower_isReflected",
-                        "block": "$this Has light been reflected on $sensorNum on click$clickBoardNum ?",
+                        "block": "$this Has light been reflected on $sensorNum",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Line_Follower",
@@ -33749,21 +33529,6 @@
                                     "kind": "param",
                                     "name": "sensorNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
-                                    "style": []
                                 }
                             ],
                             "parameters": [
@@ -33777,11 +33542,6 @@
                                     "kind": "param",
                                     "name": "sensorNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -33790,11 +33550,6 @@
                         {
                             "name": "sensorNum",
                             "type": "Line_Follower.IRsensor",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -33993,6 +33748,11 @@
                         "block": "create NFC_Tag settings",
                         "blockSetVariable": "NFC_Tag",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "NFC_Tag": "the NFC_Tag Object"
+                        },
+                        "jsDoc": "Sets NFC_Tag Click object.",
                         "_def": {
                             "parts": [
                                 {
@@ -34004,7 +33764,14 @@
                             "parameters": []
                         }
                     },
-                    "parameters": []
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ]
                 },
                 "NFC_Tag_2.NFC_Tag": {
                     "kind": 8,
@@ -34016,7 +33783,13 @@
                 },
                 "NFC_Tag_2.NFC_Tag.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "NFC_Tag_2.NFC_Tag.initialize": {
@@ -34053,7 +33826,7 @@
                             "this": "NFC_Tag"
                         },
                         "blockId": "NT3H2111_setURI",
-                        "block": "Write URL %URL to NFC device on click%clickBoardNum",
+                        "block": "Write URL %URL to NFC device",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "NFC_Tag_2",
@@ -34077,24 +33850,14 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " to NFC device on click",
+                                    "text": " to NFC device",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ],
                             "parameters": [
                                 {
                                     "kind": "param",
                                     "name": "URL",
-                                    "ref": false
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
                                     "ref": false
                                 }
                             ]
@@ -34104,11 +33867,6 @@
                         {
                             "name": "URL",
                             "type": "string"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -34134,7 +33892,7 @@
                             "this": "NFC_Tag"
                         },
                         "blockId": "NT3H2111_writeBlock",
-                        "block": "Write array %values to block %blockAddr on click%clickBoardNum ?",
+                        "block": "Write array %values to block %blockAddr",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "NFC_Tag_2",
@@ -34165,21 +33923,6 @@
                                     "kind": "param",
                                     "name": "blockAddr",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
-                                    "style": []
                                 }
                             ],
                             "parameters": [
@@ -34192,11 +33935,6 @@
                                     "kind": "param",
                                     "name": "blockAddr",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ]
                         }
@@ -34208,11 +33946,6 @@
                         },
                         {
                             "name": "blockAddr"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -34225,7 +33958,7 @@
                             "this": "NFC_Tag"
                         },
                         "blockId": "NT3H2111_write",
-                        "block": "Write array %values to NT3H2111 register%register on click%clickBoardNum ?",
+                        "block": "Write array %values to NT3H2111 register%register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "NFC_Tag_2",
@@ -34256,21 +33989,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
-                                    "style": []
                                 }
                             ],
                             "parameters": [
@@ -34283,11 +34001,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ]
                         }
@@ -34299,11 +34012,6 @@
                         },
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -34329,7 +34037,7 @@
                             "this": "NFC_Tag"
                         },
                         "blockId": "NT3H2111_read",
-                        "block": "Read %numBytes bytes from register%register on click%clickBoardNum",
+                        "block": "Read %numBytes bytes from register%register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "NFC_Tag_2",
@@ -34360,16 +34068,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ],
                             "parameters": [
@@ -34382,11 +34080,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": false
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ]
                         }
@@ -34397,11 +34090,6 @@
                         },
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -34450,21 +34138,44 @@
                     "kind": -3,
                     "retType": "Noise.Noise",
                     "attributes": {
-                        "block": "create Noise settings",
+                        "block": "create Noise settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Noise",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Noise": "the Noise Object"
+                        },
+                        "jsDoc": "Sets Noise Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Noise settings",
+                                    "text": "create Noise settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Noise.create_noise"
                 },
                 "Noise.Noise": {
@@ -34483,7 +34194,13 @@
                 },
                 "Noise.Noise.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Noise.Noise.initialize": {
@@ -34505,7 +34222,7 @@
                             "this": "Noise"
                         },
                         "blockId": "Noise_getNoiseLevel",
-                        "block": "$this Get raw noise level on click$clickBoardNum",
+                        "block": "$this Get raw noise level",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Noise",
@@ -34525,13 +34242,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get raw noise level on click",
+                                    "text": " Get raw noise level",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -34540,22 +34252,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Noise.Noise.get_noise_level"
                 },
@@ -34567,7 +34268,7 @@
                             "this": "Noise"
                         },
                         "blockId": "Noise_isThresholdTriggered",
-                        "block": "$this Has noise threshold been triggered on click$clickBoardNum ?",
+                        "block": "$this Has noise threshold been triggered",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Noise",
@@ -34587,17 +34288,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Has noise threshold been triggered on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
+                                    "text": " Has noise threshold been triggered",
                                     "style": []
                                 }
                             ],
@@ -34607,22 +34298,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Noise.Noise.is_threshold_triggered"
                 },
@@ -34633,7 +34313,7 @@
                             "this": "Noise"
                         },
                         "blockId": "Noise_setThreshold",
-                        "block": "$this Set noise threshold to $threshold on click$clickBoardNum",
+                        "block": "$this Set noise threshold to $threshold",
                         "blockGap": "7",
                         "advanced": false,
                         "paramMin": {
@@ -34666,16 +34346,6 @@
                                     "kind": "param",
                                     "name": "threshold",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -34688,11 +34358,6 @@
                                 {
                                     "kind": "param",
                                     "name": "threshold",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
                                     "ref": true
                                 }
                             ]
@@ -34709,11 +34374,6 @@
                                     "value": "100"
                                 }
                             }
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -34726,7 +34386,7 @@
                             "this": "Noise"
                         },
                         "blockId": "Noise_write",
-                        "block": "$this Write $value on click$clickBoardNum",
+                        "block": "$this Write $value",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Noise",
@@ -34753,16 +34413,6 @@
                                     "kind": "param",
                                     "name": "value",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -34776,11 +34426,6 @@
                                     "kind": "param",
                                     "name": "value",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -34788,11 +34433,6 @@
                     "parameters": [
                         {
                             "name": "value"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true
@@ -34812,21 +34452,44 @@
                     "kind": -3,
                     "retType": "Reed.Reed",
                     "attributes": {
-                        "block": "create Reed settings",
+                        "block": "create Reed settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Reed",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Reed": "the Reed Object"
+                        },
+                        "jsDoc": "Sets Reed Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Reed settings",
+                                    "text": "create Reed settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Reed.create_reed"
                 },
                 "Reed.Reed": {
@@ -34846,7 +34509,13 @@
                 },
                 "Reed.Reed.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Reed.Reed.initialize": {
@@ -34868,7 +34537,7 @@
                             "this": "Reed"
                         },
                         "blockId": "Reed_isActivated",
-                        "block": "For $this Has reed been activated on click%clickBoardNum ?",
+                        "block": "For $this Has reed been activated",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Reed",
@@ -34893,17 +34562,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Has reed been activated on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
+                                    "text": " Has reed been activated",
                                     "style": []
                                 }
                             ],
@@ -34913,22 +34572,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": false
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Reed.Reed.is_activated"
                 },
@@ -34995,21 +34643,44 @@
                     "kind": -3,
                     "retType": "Relay.Relay",
                     "attributes": {
-                        "block": "create Relay settings",
+                        "block": "create Relay settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Relay",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Relay": "the Relay Object"
+                        },
+                        "jsDoc": "Sets Relay Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Relay settings",
+                                    "text": "create Relay settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": []
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ]
                 },
                 "Relay.Relay": {
                     "kind": 8,
@@ -35020,6 +34691,17 @@
                         "bBoard.IOSettings"
                     ]
                 },
+                "Relay.Relay.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
                 "Relay.Relay.relayOn": {
                     "kind": -1,
                     "attributes": {
@@ -35027,7 +34709,7 @@
                             "this": "Relay"
                         },
                         "blockId": "Relay_relayOn",
-                        "block": "$this Turn on relay $relayNum on click$clickBoardNum",
+                        "block": "$this Turn on relay $relayNum",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Relay",
@@ -35054,16 +34736,6 @@
                                     "kind": "param",
                                     "name": "relayNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -35077,11 +34749,6 @@
                                     "kind": "param",
                                     "name": "relayNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -35090,11 +34757,6 @@
                         {
                             "name": "relayNum",
                             "type": "Relay.relay",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -35108,7 +34770,7 @@
                             "this": "Relay"
                         },
                         "blockId": "Relay_relayOff",
-                        "block": "$this Turn off relay $relayNum on click$clickBoardNum",
+                        "block": "$this Turn off relay $relayNum",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Relay",
@@ -35135,16 +34797,6 @@
                                     "kind": "param",
                                     "name": "relayNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -35158,11 +34810,6 @@
                                     "kind": "param",
                                     "name": "relayNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -35171,11 +34818,6 @@
                         {
                             "name": "relayNum",
                             "type": "Relay.relay",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -35189,7 +34831,7 @@
                             "this": "Relay"
                         },
                         "blockId": "Relay_relayOnOff",
-                        "block": "$this Turn $onOff relay $relayNum on click$clickBoardNum",
+                        "block": "$this Turn $onOff relay $relayNum",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Relay",
@@ -35226,16 +34868,6 @@
                                     "kind": "param",
                                     "name": "relayNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -35254,11 +34886,6 @@
                                     "kind": "param",
                                     "name": "relayNum",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -35272,11 +34899,6 @@
                         {
                             "name": "relayNum",
                             "type": "Relay.relay",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -35568,21 +35190,44 @@
                     "kind": -3,
                     "retType": "Temp_Log_2.Temp_Log",
                     "attributes": {
-                        "block": "create Temp_Log settings",
+                        "block": "create Temp_Log settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Temp_Log",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Temp_Log": "the Temp_Log Object"
+                        },
+                        "jsDoc": "Sets Temp_Log Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Temp_Log settings",
+                                    "text": "create Temp_Log settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": []
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ]
                 },
                 "Temp_Log_2.Temp_Log": {
                     "kind": 8,
@@ -35594,7 +35239,13 @@
                 },
                 "Temp_Log_2.Temp_Log.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Temp_Log_2.Temp_Log.initialize": {
@@ -35710,7 +35361,7 @@
                             "this": "Temp_Log"
                         },
                         "blockId": "Temp_Log_readTemperatureC",
-                        "block": "$this Get temperature in Celcius on click$clickBoardNum",
+                        "block": "$this Get temperature in Celcius",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Temp_Log_2",
@@ -35730,13 +35381,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get temperature in Celcius on click",
+                                    "text": " Get temperature in Celcius",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -35745,22 +35391,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Temp_Log_2.Temp_Log.read_temperature_c"
                 },
@@ -35772,7 +35407,7 @@
                             "this": "Temp_Log"
                         },
                         "blockId": "Temp_Log_readTemperatureF",
-                        "block": "$this Get temperature in Fahrenheit on click$clickBoardNum",
+                        "block": "$this Get temperature in Fahrenheit",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Temp_Log_2",
@@ -35792,13 +35427,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get temperature in Fahrenheit on click",
+                                    "text": " Get temperature in Fahrenheit",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -35807,22 +35437,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Temp_Log_2.Temp_Log.read_temperature_f"
                 },
@@ -35910,21 +35529,44 @@
                     "kind": -3,
                     "retType": "Thermo_6.Thermo",
                     "attributes": {
-                        "block": "create Thermo settings",
+                        "block": "create Thermo settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Thermo",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Thermo": "the Thermo Object"
+                        },
+                        "jsDoc": "Sets Thermo Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Thermo settings",
+                                    "text": "create Thermo settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Thermo_6.create_thermo"
                 },
                 "Thermo_6.Thermo": {
@@ -35937,7 +35579,13 @@
                 },
                 "Thermo_6.Thermo.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Thermo_6.Thermo.getTempC": {
@@ -35948,7 +35596,7 @@
                             "this": "Thermo"
                         },
                         "blockId": "Thermo6_getTempC",
-                        "block": "$this Get the temperature in Celcius on click$clickBoardNum",
+                        "block": "$this Get the temperature in Celcius",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Thermo_6",
@@ -35968,13 +35616,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get the temperature in Celcius on click",
+                                    "text": " Get the temperature in Celcius",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -35983,22 +35626,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Thermo_6.Thermo.get_temp_c"
                 },
@@ -36010,7 +35642,7 @@
                             "this": "Thermo"
                         },
                         "blockId": "Thermo6_getTempF",
-                        "block": "$this Get the temperature in Fahrenheit on click$clickBoardNum",
+                        "block": "$this Get the temperature in Fahrenheit",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Thermo_6",
@@ -36030,13 +35662,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get the temperature in Fahrenheit on click",
+                                    "text": " Get the temperature in Fahrenheit",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36045,22 +35672,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Thermo_6.Thermo.get_temp_f"
                 },
@@ -36071,7 +35687,7 @@
                             "this": "Thermo"
                         },
                         "blockId": "Thermo6_initialize",
-                        "block": "$this Initalize with i2c address $deviceAddr on click$clickBoardNum",
+                        "block": "$this Initalize with i2c address $deviceAddr",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Thermo_6",
@@ -36098,16 +35714,6 @@
                                     "kind": "param",
                                     "name": "deviceAddr",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36121,11 +35727,6 @@
                                     "kind": "param",
                                     "name": "deviceAddr",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -36133,11 +35734,6 @@
                     "parameters": [
                         {
                             "name": "deviceAddr"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true
@@ -36149,7 +35745,7 @@
                             "this": "Thermo"
                         },
                         "blockId": "MAX31875_write",
-                        "block": "$this Write $value to register$register on click$clickBoardNum",
+                        "block": "$this Write $value to register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Thermo_6",
@@ -36186,16 +35782,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36214,11 +35800,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -36229,11 +35810,6 @@
                         },
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -36247,7 +35823,7 @@
                             "this": "Thermo"
                         },
                         "blockId": "MAX31875_read",
-                        "block": "$this Read from register$register on click$clickBoardNum",
+                        "block": "$this Read from register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Thermo_6",
@@ -36274,16 +35850,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36297,11 +35863,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -36309,11 +35870,6 @@
                     "parameters": [
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -36362,21 +35918,44 @@
                     "kind": -3,
                     "retType": "Touchpad.Touchpad",
                     "attributes": {
-                        "block": "create Touchpad settings",
+                        "block": "create Touchpad settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Touchpad",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Touchpad": "the Touchpad Object"
+                        },
+                        "jsDoc": "Sets Touchpad Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Touchpad settings",
+                                    "text": "create Touchpad settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Touchpad.create_touchpad"
                 },
                 "Touchpad.Touchpad": {
@@ -36389,7 +35968,13 @@
                 },
                 "Touchpad.Touchpad.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Touchpad.Touchpad.initialize": {
@@ -36399,7 +35984,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_initialize",
-                        "block": "$this Initalize touchpad with i2c address $deviceAddr on click$clickBoardNum",
+                        "block": "$this Initalize touchpad with i2c address $deviceAddr",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Touchpad",
@@ -36426,16 +36011,6 @@
                                     "kind": "param",
                                     "name": "deviceAddr",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36449,11 +36024,6 @@
                                     "kind": "param",
                                     "name": "deviceAddr",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -36461,11 +36031,6 @@
                     "parameters": [
                         {
                             "name": "deviceAddr"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true
@@ -36478,7 +36043,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_getX",
-                        "block": "$this Get X position on click$clickBoardNum",
+                        "block": "$this Get X position",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Touchpad",
@@ -36498,13 +36063,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get X position on click",
+                                    "text": " Get X position",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36513,22 +36073,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Touchpad.Touchpad.get_x"
                 },
@@ -36540,7 +36089,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_getY",
-                        "block": "$this Get Y position on click$clickBoardNum",
+                        "block": "$this Get Y position",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Touchpad",
@@ -36560,13 +36109,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get Y position on click",
+                                    "text": " Get Y position",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36575,22 +36119,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Touchpad.Touchpad.get_y"
                 },
@@ -36602,7 +36135,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_isTouched",
-                        "block": "$this Has touch occured on click$clickBoardNum ?",
+                        "block": "$this Has touch occured",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Touchpad",
@@ -36622,17 +36155,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Has touch occured on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
+                                    "text": " Has touch occured",
                                     "style": []
                                 }
                             ],
@@ -36642,22 +36165,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Touchpad.Touchpad.is_touched"
                 },
@@ -36669,7 +36181,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_isGesture",
-                        "block": "$this Has gesture occured on click$clickBoardNum ?",
+                        "block": "$this Has gesture occured",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Touchpad",
@@ -36689,17 +36201,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Has gesture occured on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
+                                    "text": " Has gesture occured",
                                     "style": []
                                 }
                             ],
@@ -36709,22 +36211,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Touchpad.Touchpad.is_gesture"
                 },
@@ -36736,7 +36227,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_getGestureName",
-                        "block": "$this Convert gesture ID $gestureID to a friendly name on click$clickBoardNum",
+                        "block": "$this Convert gesture ID $gestureID to a friendly name",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Touchpad",
@@ -36766,13 +36257,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " to a friendly name on click",
+                                    "text": " to a friendly name",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36786,11 +36272,6 @@
                                     "kind": "param",
                                     "name": "gestureID",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -36798,11 +36279,6 @@
                     "parameters": [
                         {
                             "name": "gestureID"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -36816,7 +36292,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_getTouchState",
-                        "block": "$this Get touch status on click$clickBoardNum",
+                        "block": "$this Get touch status",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Touchpad",
@@ -36836,13 +36312,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get touch status on click",
+                                    "text": " Get touch status",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36851,22 +36322,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Touchpad.Touchpad.get_touch_state"
                 },
@@ -36878,7 +36338,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_getGesture",
-                        "block": "$this Get gesture on click$clickBoardNum",
+                        "block": "$this Get gesture",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "Touchpad",
@@ -36898,13 +36358,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get gesture on click",
+                                    "text": " Get gesture",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -36913,22 +36368,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Touchpad.Touchpad.get_gesture"
                 },
@@ -36939,7 +36383,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_write",
-                        "block": "$this Write $value to register$register on click$clickBoardNum",
+                        "block": "$this Write $value to register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Touchpad",
@@ -36976,16 +36420,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37004,11 +36438,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -37019,11 +36448,6 @@
                         },
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -37037,7 +36461,7 @@
                             "this": "Touchpad"
                         },
                         "blockId": "Touchpad_read",
-                        "block": "$this Read from register$register on click$clickBoardNum",
+                        "block": "$this Read from register$register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "Touchpad",
@@ -37064,16 +36488,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37087,11 +36501,6 @@
                                     "kind": "param",
                                     "name": "register",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -37099,11 +36508,6 @@
                     "parameters": [
                         {
                             "name": "register"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -37152,21 +36556,44 @@
                     "kind": -3,
                     "retType": "UV3.UV3",
                     "attributes": {
-                        "block": "create UV3 settings",
+                        "block": "create UV3 settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "UV3",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "UV3": "the UV3 Object"
+                        },
+                        "jsDoc": "Sets UV3 Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create UV3 settings",
+                                    "text": "create UV3 settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "UV3.create_uv3"
                 },
                 "UV3.UV3": {
@@ -37179,7 +36606,13 @@
                 },
                 "UV3.UV3.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "UV3.UV3.initialize": {
@@ -37200,7 +36633,7 @@
                             "this": "UV3"
                         },
                         "blockId": "VEML6070_write",
-                        "block": "$this Write $value to VEML6070 control register on click$clickBoardNum",
+                        "block": "$this Write $value to VEML6070 control register",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "UV3",
@@ -37230,13 +36663,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " to VEML6070 control register on click",
+                                    "text": " to VEML6070 control register",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37250,11 +36678,6 @@
                                     "kind": "param",
                                     "name": "value",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -37262,11 +36685,6 @@
                     "parameters": [
                         {
                             "name": "value"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -37280,7 +36698,7 @@
                             "this": "UV3"
                         },
                         "blockId": "VEML6070_UVSteps",
-                        "block": "$this Get UV value on click$clickBoardNum",
+                        "block": "$this Get UV value",
                         "blockGap": "7",
                         "advanced": false,
                         "blockNamespace": "UV3",
@@ -37300,13 +36718,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Get UV value on click",
+                                    "text": " Get UV value",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37315,22 +36728,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "UV3.UV3.uv_steps"
                 },
@@ -37341,7 +36743,7 @@
                             "this": "UV3"
                         },
                         "blockId": "VEML6070_enable",
-                        "block": "$this Turn off device click$clickBoardNum",
+                        "block": "$this Turn off device",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "UV3",
@@ -37361,13 +36763,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Turn off device click",
+                                    "text": " Turn off device",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37376,22 +36773,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "UV3.UV3.enable_shutdown"
                 },
@@ -37402,7 +36788,7 @@
                             "this": "UV3"
                         },
                         "blockId": "VEML6070_disable",
-                        "block": "$this Turn on device click$clickBoardNum",
+                        "block": "$this Turn on device",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "UV3",
@@ -37422,13 +36808,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Turn on device click",
+                                    "text": " Turn on device",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37437,22 +36818,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "UV3.UV3.disable_shutdown"
                 },
@@ -37464,7 +36834,7 @@
                             "this": "UV3"
                         },
                         "blockId": "VEML6070_read",
-                        "block": "$this Read from slave address$slaveAddress on click$clickBoardNum",
+                        "block": "$this Read from slave address$slaveAddress",
                         "blockGap": "7",
                         "advanced": true,
                         "blockNamespace": "UV3",
@@ -37491,16 +36861,6 @@
                                     "kind": "param",
                                     "name": "slaveAddress",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37514,11 +36874,6 @@
                                     "kind": "param",
                                     "name": "slaveAddress",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -37526,11 +36881,6 @@
                     "parameters": [
                         {
                             "name": "slaveAddress"
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -37579,21 +36929,44 @@
                     "kind": -3,
                     "retType": "Water_Detect.Water_Detect",
                     "attributes": {
-                        "block": "create Water_Detect settings",
+                        "block": "create Water_Detect settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Water_Detect",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Water_Detect": "the Water_Detect Object"
+                        },
+                        "jsDoc": "Sets Water_Detect Click object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Water_Detect settings",
+                                    "text": "create Water_Detect settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "pyQName": "Water_Detect.create_stepper"
                 },
                 "Water_Detect.Water_Detect": {
@@ -37605,6 +36978,17 @@
                         "bBoard.IOSettings"
                     ]
                 },
+                "Water_Detect.Water_Detect.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
                 "Water_Detect.Water_Detect.isWater": {
                     "kind": -1,
                     "retType": "number",
@@ -37613,7 +36997,7 @@
                             "this": "Water_Detect"
                         },
                         "blockId": "Water_Detect_isWater",
-                        "block": "$this Is water detected on click$clickBoardNum ?",
+                        "block": "$this Is water detected",
                         "weight": 100,
                         "blockGap": "7",
                         "blockNamespace": "Water_Detect",
@@ -37633,17 +37017,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Is water detected on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ?",
+                                    "text": " Is water detected",
                                     "style": []
                                 }
                             ],
@@ -37653,22 +37027,11 @@
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
                     },
-                    "parameters": [
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
-                        }
-                    ],
+                    "parameters": [],
                     "isInstance": true,
                     "pyQName": "Water_Detect.Water_Detect.is_water"
                 },
@@ -37710,21 +37073,44 @@
                     "kind": -3,
                     "retType": "Button_G.Button_G",
                     "attributes": {
-                        "block": "create Button_G settings",
+                        "block": "create Button_G settings on clickBoard $clickBoardNum",
                         "blockSetVariable": "Button_G",
                         "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Button_G": "the Button_G Object"
+                        },
+                        "jsDoc": "Sets Button G object.",
                         "_def": {
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Button_G settings",
+                                    "text": "create Button_G settings on clickBoard ",
                                     "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
                                 }
                             ],
-                            "parameters": []
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                }
+                            ]
                         }
                     },
-                    "parameters": []
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ]
                 },
                 "Button_G.Button_G": {
                     "kind": 8,
@@ -37737,7 +37123,13 @@
                 },
                 "Button_G.Button_G.__constructor": {
                     "kind": -3,
-                    "parameters": [],
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        }
+                    ],
                     "isInstance": true
                 },
                 "Button_G.Button_G.setLight": {
@@ -37747,7 +37139,7 @@
                             "this": "Button_G"
                         },
                         "blockId": "ButtonG_SetLight",
-                        "block": "$this Turn button light $onOff on click$clickBoardNum",
+                        "block": "$this Turn button light $onOff",
                         "blockNamespace": "Button_G",
                         "_shadowOverrides": {
                             "this": "variables_get"
@@ -37772,16 +37164,6 @@
                                     "kind": "param",
                                     "name": "onOff",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " on click",
-                                    "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37795,11 +37177,6 @@
                                     "kind": "param",
                                     "name": "onOff",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ]
                         }
@@ -37808,11 +37185,6 @@
                         {
                             "name": "onOff",
                             "type": "Button_G.Light",
-                            "isEnum": true
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
                             "isEnum": true
                         }
                     ],
@@ -37826,7 +37198,7 @@
                             "this": "Button_G"
                         },
                         "blockId": "ButtonG_SetLight_PWM",
-                        "block": "$this Set button light to $PWMValue brightness on click$clickBoardNum",
+                        "block": "$this Set button light to $PWMValue brightness",
                         "paramMin": {
                             "PWMValue": "0"
                         },
@@ -37860,13 +37232,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " brightness on click",
+                                    "text": " brightness",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37879,11 +37246,6 @@
                                 {
                                     "kind": "param",
                                     "name": "PWMValue",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
                                     "ref": true
                                 }
                             ]
@@ -37900,11 +37262,6 @@
                                     "value": "100"
                                 }
                             }
-                        },
-                        {
-                            "name": "clickBoardNum",
-                            "type": "clickBoardID",
-                            "isEnum": true
                         }
                     ],
                     "isInstance": true,
@@ -37918,7 +37275,7 @@
                             "this": "Button_G"
                         },
                         "blockId": "ButtonG_getSwitch",
-                        "block": "$this Read button state on click$clickBoardNum",
+                        "block": "$this Read button state",
                         "blockNamespace": "Button_G",
                         "_shadowOverrides": {
                             "this": "variables_get"
@@ -37936,13 +37293,8 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " Read button state on click",
+                                    "text": " Read button state",
                                     "style": []
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
-                                    "ref": true
                                 }
                             ],
                             "parameters": [
@@ -37950,11 +37302,6 @@
                                     "kind": "param",
                                     "name": "this",
                                     "shadowBlockId": "variables_get",
-                                    "ref": true
-                                },
-                                {
-                                    "kind": "param",
-                                    "name": "clickBoardNum",
                                     "ref": true
                                 }
                             ]
@@ -39544,6 +38891,204 @@
                     "isInstance": true,
                     "pyQName": "k8.K8.remap_speed"
                 },
+                "Test_Module": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "color": "#1E90FF",
+                        "weight": 116,
+                        "icon": "",
+                        "advanced": true,
+                        "jsDoc": "//* Testing of click modules.\n//"
+                    }
+                },
+                "Test_Module.createTestSettings": {
+                    "kind": -3,
+                    "retType": "Test_Module.Test",
+                    "attributes": {
+                        "block": "create Test object on clickBoardNumLCD $clickBoardNumLCD , clickBoardNumForce $clickBoardNumForce, clickBoardNumRelay $clickBoardNumRelay",
+                        "blockSetVariable": "Test",
+                        "paramHelp": {
+                            "clickBoardNumForce": "the clickBoardNum",
+                            "Test": "the Test Object"
+                        },
+                        "jsDoc": "Sets Test object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "create Test object on clickBoardNumLCD ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNumLCD",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " , clickBoardNumForce ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNumForce",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": ", clickBoardNumRelay ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNumRelay",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNumLCD",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNumForce",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNumRelay",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNumLCD",
+                            "type": "clickBoardID",
+                            "initializer": "clickBoardID.one",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickBoardNumForce",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "initializer": "clickBoardID.two",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickBoardNumRelay",
+                            "type": "clickBoardID",
+                            "initializer": "clickBoardID.three",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "Test_Module.create_test_settings"
+                },
+                "Test_Module.Test": {
+                    "kind": 8,
+                    "retType": "Test_Module.Test",
+                    "extendsTypes": []
+                },
+                "Test_Module.Test.TestOkForce": {
+                    "kind": 2,
+                    "retType": "boolean",
+                    "isInstance": true,
+                    "pyQName": "Test_Module.Test.test_ok_force"
+                },
+                "Test_Module.Test.TestOkRelay": {
+                    "kind": 2,
+                    "retType": "boolean",
+                    "isInstance": true,
+                    "pyQName": "Test_Module.Test.test_ok_relay"
+                },
+                "Test_Module.Test.TestCheckForce": {
+                    "kind": 2,
+                    "retType": "string",
+                    "isInstance": true,
+                    "pyQName": "Test_Module.Test.test_check_force"
+                },
+                "Test_Module.Test.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNumLCD",
+                            "type": "clickBoardID",
+                            "initializer": "clickBoardID.one",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickBoardNumForce",
+                            "type": "clickBoardID",
+                            "initializer": "clickBoardID.two",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickBoardNumRelay",
+                            "type": "clickBoardID",
+                            "initializer": "clickBoardID.three",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "Test_Module.Test.TestForce": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Test"
+                        },
+                        "help": "Force_Click/Force/forceclickstring",
+                        "block": "Display a string value at $this of force",
+                        "blockId": "forceTest",
+                        "blockNamespace": "Test_Module",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "weight": 90,
+                        "blockGap": "12",
+                        "color": "#9E4894",
+                        "icon": "",
+                        "jsDoc": "Tests force and displays string value on LCD.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Display a string value at ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " of force",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Test_Module.Test.test_force"
+                },
                 "i": {
                     "kind": 4,
                     "retType": "number"
@@ -39579,16 +39124,11 @@
                 }
             }
         },
-        "sha": "9a05c4442e5d92c95e3c40d53f780bebeb9b49ad24b90e13bd47c97636a73c51"
+        "sha": "f6e3ea260c7248332a50bb092b69668f8859b5f3055952db782e8684b9b2186c"
     },
     "libs/radio": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -41000,16 +40540,11 @@
                 }
             }
         },
-        "sha": "eb322040ad5dbde50f6f9ff3253c4d7af0b3254afd6f02605aa025857565ce3f"
+        "sha": "755e556ac2cc9110a608e275031442e34865a13c124541d6da2ed88511c95c42"
     },
     "libs/devices": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "bluetooth": {
                     "kind": 5,
                     "retType": "",
@@ -43042,16 +42577,11 @@
                 }
             }
         },
-        "sha": "e36c812128571f058488843e62c216a5686074febb33e3f916bcc71eaf47ae11"
+        "sha": "86c7b314d0a38ee34fb164282a2aac84de47647d4b887b8f1c473110f4d18b84"
     },
     "libs/bluetooth": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "bluetooth": {
                     "kind": 5,
                     "retType": "",
@@ -43998,16 +43528,11 @@
                 }
             }
         },
-        "sha": "7fba6998f0cce437e5e4bda9c2f5fad5f0990f07c04ddcb9bd9dc6a2931ffe29"
+        "sha": "4ab2cf08a4079e44d4d1bd160ad6ee9437e15a0eed204b0d030b4e8f38aa0ae8"
     },
     "libs/servo": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "servos": {
                     "kind": 5,
                     "retType": "",
@@ -44645,16 +44170,11 @@
                 }
             }
         },
-        "sha": "cb28643d40aa6473aa68cc1d34546bd9737d3c8231d63353877646c8f9b9934f"
+        "sha": "f565695c86726c0bae584723c14aee11e1c3aa935a1c5c4f98f5b8a44a47b35d"
     },
     "libs/radio-broadcast": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -46209,16 +45729,11 @@
                 }
             }
         },
-        "sha": "e2883239459ef9691bffb381bb3e3d6e610c6b9b612108cf8614a9c06544f0ec"
+        "sha": "a248d434a9145254d087c26b24b7539c2e2904385b0a1ef185e0a8a8a6b37e24"
     },
     "libs/microphone": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "LoudnessCondition": {
                     "kind": 6,
                     "retType": "LoudnessCondition",
@@ -46380,16 +45895,11 @@
                 }
             }
         },
-        "sha": "cbffb778166f204a03ee85418d56fa1dd539b75a6d1c904dfc3bbb2a7e35aefd"
+        "sha": "3459f04dd69c449eae8321a738f328346021f4bd6a8df0eba35c49e0ff7f2cd4"
     },
     "libs\\blocksprj": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -47801,16 +47311,11 @@
                 }
             }
         },
-        "sha": "a7d16a0721b1cef456906065825c6a3ada64950886b4a6e41c4ebd3609722b00"
+        "sha": "74ef3fa3aa8c03cfd6310653d6026935e2f6918d33c338e14791f92bd38a8729"
     },
     "libs\\bluetoothprj": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "bluetooth": {
                     "kind": 5,
                     "retType": "",
@@ -48757,16 +48262,11 @@
                 }
             }
         },
-        "sha": "e4895bb4a617ffde8b0452801bebe16fb82e236b23bc4418b5f90b9d4b672c0b"
+        "sha": "e2cce9fa818deaf6bd345d7c6b267abfe36f35a8391e5ee3c45a82aad0c52640"
     },
     "libs\\tsprj": {
         "apis": {
             "byQName": {
-                "bBoard.arrayClick": {
-                    "kind": 4,
-                    "retType": "clickBoardID[]",
-                    "pyQName": "bBoard.array_click"
-                },
                 "radio": {
                     "kind": 5,
                     "retType": "",
@@ -50178,6 +49678,6 @@
                 }
             }
         },
-        "sha": "06c11538604fdf3eb332c6d31cdaef70a870de2e144d1750278de1b2e12a75ba"
+        "sha": "24e68bb2aa11a5a50df0dfbbe248af62fca7915c8254535a676e5d1a0e0b167b"
     }
 }

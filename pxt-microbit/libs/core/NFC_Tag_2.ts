@@ -123,7 +123,7 @@ namespace NFC_Tag_2{
 
     //Information found from https://www.remy.org.uk/elec.php?elec=1510617600#smoke
     //https://learn.adafruit.com/adafruit-pn532-rfid-nfc/ndef
- let bytesWritten = 0; //Track the amount of bytes written to the chip
+let bytesWritten = 0; //Track the amount of bytes written to the chip
 
 //NDEF Section
 let NDEFHeader = 0xD1; //FirstRecord&LastRecord&ShortPayload&TypeNameFormate=1

@@ -45,10 +45,11 @@ namespace LCD_Mini{
     //% weight=110
     export function createLCDSettings(clickBoardNum: clickBoardID): LCDSettings {
         return new LCDSettings(clickBoardNum);
-   }
+    }
 
    let PINs = new bBoard.PinSettings();
    let SPIs = new bBoard.SPIsetting();
+
 export class LCDSettings{
         private LOW : number;
         private HIGH : number;
@@ -268,7 +269,7 @@ export class LCDSettings{
          * @param lineNum the lineNum
          * @param clickBoardNum the clickBoardNum
          */
-        //% block="$this Write a $LCDstring to line $lineNum"
+        //% block="$this Write 2 a $LCDstring to line $lineNum"
         //% blockId=LCDWriteString
         //% blockNamespace=LCD_Mini
         //% this.shadow=variables_get
