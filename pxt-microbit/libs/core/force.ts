@@ -12,10 +12,10 @@ namespace Force_Click{
      * @param clickBoardNum the clickBoardNum
      *  @param Force the Force Object
      */
-    //% block="create force settings on clickBoard $clickBoardNum"
+    //% block="create force settings at $clickBoardNum on slot $clickSlot"
     //% blockSetVariable="Force"
-    export function createForceSettings(clickBoardNum: clickBoardID): Force {
-        return new Force(clickBoardNum);
+    export function createForceSettings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Force {
+        return new Force(clickBoardNum, clickSlot);
    }
  
     export class Force{
@@ -25,16 +25,18 @@ namespace Force_Click{
        Force_val : number;
        rangefactor : number;
        Vadc_3 : number;       
-       private clickBoardNumGlobal:number 
+       private clickBoardNumGlobal:number;
+       private clickSlotNumGlobal:number; 
     
-       constructor(clickBoardNum: clickBoardID){
+       constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
        this.A=0;
        this.sumA=0;
        this.Force_voltage=0;
        this.Force_val=0;
        this.rangefactor=20/3.3
        this.Vadc_3=3.3/4096;
-       this.clickBoardNumGlobal=clickBoardNum 
+       this.clickBoardNumGlobal=clickBoardNum;
+       this.clickSlotNumGlobal = clickSlot; 
        }
 
         /**
@@ -69,7 +71,7 @@ namespace Force_Click{
         forceclick() : number{
         for (let i=1;i<=20;i++)
         {
-            this.A=(bBoard.analogRead(clickADCPin.AN,this.clickBoardNumGlobal))
+            this.A=(bBoard.analogRead(clickADCPin.AN,this.clickBoardNumGlobal, this.clickSlotNumGlobal))
             this.sumA+=this.A;
         }
         this.sumA=this.sumA/20;

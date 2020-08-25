@@ -39,16 +39,15 @@ namespace LCD_Mini{
      * @param clickBoardNum the clickBoardNum
      *  @param LCDSettings the LCDSettings
      */
-    //% block="create lcd settings on clickboard number $clickBoardNum"
+    //% block="create lcd settings at $clickBoardNum on slot $clickSlot"
     //% blockSetVariable="LCDSettings"
     //% blockId=LCDSettings
     //% weight=110
-    export function createLCDSettings(clickBoardNum: clickBoardID): LCDSettings {
-        return new LCDSettings(clickBoardNum);
+    export function createLCDSettings(clickBoardNum:clickBoardID, clickSlot:clickBoardSlot): LCDSettings {
+        return new LCDSettings(clickBoardNum, clickSlot);
     }
 
-   let PINs = new bBoard.PinSettings();
-   let SPIs = new bBoard.SPIsetting();
+   
 
 export class LCDSettings{
         private LOW : number;
@@ -61,8 +60,11 @@ export class LCDSettings{
         private OLATB : number;
         private WRITE_BYTE : number;
         private clickBoardNumGlobal:number;
+        private clickSlotNumGlobal:number;
+        private PINs:bBoard.PinSettings;
+        private SPIs:bBoard.SPIsetting;
 
-        constructor(clickBoardNum: clickBoardID){
+        constructor(clickBoardNum:clickBoardID, clickSlot:clickBoardSlot){
         if(bBoard.arrayClick.indexOf(clickBoardNum) !== -1){
           console.log("----------------------------------------------------Array "+bBoard.arrayClick[0])
     
@@ -81,6 +83,9 @@ export class LCDSettings{
         this.OLATB = 0x15;
         this.WRITE_BYTE = 0b01000000;
         this.clickBoardNumGlobal = clickBoardNum
+        this.clickSlotNumGlobal = clickSlot
+        this.PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
+        this.SPIs = new bBoard.SPIsetting(clickBoardNum, clickSlot);
         }
 
         get LOWval() {
@@ -159,106 +164,103 @@ export class LCDSettings{
 
         }
 
-        lcd_sendNibble(nibble: number, RSbit: number, clickBoardNum: clickBoardID){
+        lcd_sendNibble(nibble: number, RSbit: number){
         let packet = (nibble << 4) | (RSbit << 2);
-        this.expander_setOutput(packet, clickBoardNum);
-        this.expander_setOutput(packet | (1<<3), clickBoardNum);
+        this.expander_setOutput(packet);
+        this.expander_setOutput(packet | (1<<3));
         this.__delay_us(1);
-        this.expander_setOutput(packet, clickBoardNum);
+        this.expander_setOutput(packet);
         this.__delay_us(40);
         }
 
 
-        lcd_sendByte(byte: number, RSbit:number, clickBoardNum: clickBoardID){
+        lcd_sendByte(byte: number, RSbit:number){
         let nibbleHigh = byte >> 4;
         let nibbleLow = byte & 0xF;
         let packetHigh = (nibbleHigh << 4) | (RSbit << 2);
         let packetLow = (nibbleLow << 4) | (RSbit << 2);
         
-        this.expander_setOutput(packetHigh,clickBoardNum);
+        this.expander_setOutput(packetHigh);
         this.__delay_us(2);
-        this.expander_setOutput(packetHigh | (1<<3),clickBoardNum);
+        this.expander_setOutput(packetHigh | (1<<3));
         this.__delay_us(2);
-        this.expander_setOutput(packetLow,clickBoardNum)
+        this.expander_setOutput(packetLow)
         this.__delay_us(2);
-        this.expander_setOutput(packetLow | (1<<3),clickBoardNum);
+        this.expander_setOutput(packetLow | (1<<3));
         this.__delay_us(40);
         }
     
-        lcd_returnHome(clickBoardNum: clickBoardID){
-            this.lcd_sendByte(0b10, 0,clickBoardNum);
+        lcd_returnHome(){
+            this.lcd_sendByte(0b10, 0);
             basic.pause(2)
            
         }
 
 
-        lcd_setAddr(row:number, character:number, clickBoardNum: clickBoardID){
-        this.lcd_sendByte(0x80 | (character + (row*40)), 0,clickBoardNum);
+        lcd_setAddr(row:number, character:number){
+        this.lcd_sendByte(0x80 | (character + (row*40)), 0);
         }
 
-        lcd_writeChar(character:string, clickBoardNum: clickBoardID){
-        this.lcd_sendByte(character.charCodeAt(0),1,clickBoardNum);
+        lcd_writeChar(character:string){
+        this.lcd_sendByte(character.charCodeAt(0),1);
         }
 
-        lcd_setContrast(contrast:number, clickBoardNum: clickBoardID){
-        this.digipot_setWiper(contrast,clickBoardNum);
+        lcd_setContrast(contrast:number){
+        this.digipot_setWiper(contrast);
         }
 
-        lcd_setup( clickBoardNum: clickBoardID){
-        const PinSet = new bBoard.PinSettings;
-        PINs.writePin(this.HIGH,this.RST, clickBoardNum);
-        PINs.writePin(this.HIGH,this.CS2, clickBoardNum);
-        PINs.writePin(this.HIGH,this.CS, clickBoardNum);
+        lcd_setup(){
+        this.PINs.writePin(this.HIGH,this.RST);
+        this.PINs.writePin(this.HIGH,this.CS2);
+        this.PINs.writePin(this.HIGH,this.CS);
 
-        this.expander_setup(clickBoardNum);
-        this.expander_setOutput(0,clickBoardNum);
+        this.expander_setup();
+        this.expander_setOutput(0);
         basic.pause(40)
-        this.lcd_sendNibble(0b11, 0,clickBoardNum);
+        this.lcd_sendNibble(0b11, 0);
         basic.pause(10)
 
-        this.lcd_sendNibble(0b11,  0,clickBoardNum);
+        this.lcd_sendNibble(0b11,  0);
         basic.pause(10)
 
-        this.lcd_sendNibble(0b11,  0,clickBoardNum);
+        this.lcd_sendNibble(0b11,  0);
         basic.pause(10)
 
-        this.lcd_sendNibble(0x2, 0,clickBoardNum);
-        this.lcd_sendByte(0x2C,  0,clickBoardNum);
-        this.lcd_sendByte(0b1100,  0,clickBoardNum);
-        this.lcd_sendByte(0x06,  0,clickBoardNum);
-        this.lcd_sendByte(0x0C,  0,clickBoardNum);
+        this.lcd_sendNibble(0x2, 0);
+        this.lcd_sendByte(0x2C,  0);
+        this.lcd_sendByte(0b1100,  0);
+        this.lcd_sendByte(0x06,  0);
+        this.lcd_sendByte(0x0C,  0);
         basic.pause(2)
 
-        this.lcd_returnHome(clickBoardNum);
-        this.lcd_clearDisplay(clickBoardNum);
+        this.lcd_returnHome();
+        this.lcd_clearDisplay();
         }
 
 
-        expander_sendByte(addr:number, byte:number, clickBoardNum: clickBoardID){
+        expander_sendByte(addr:number, byte:number){
         //spi1_master_open(LCD);
         //  LCDMini_nCS_LAT = 0;
-        const SPIObj= new bBoard.SPIsetting;
         let cmd=[this.WRITE_BYTE,addr,byte];
         //bBoard.clearPin(CS,clickBoardNum)
-        SPIs.SPIWriteArray(cmd,clickBoardNum)
+        this.SPIs.SPIWriteArray(cmd)
         //bBoard.setPin(CS,clickBoardNum)
         }
 
-        expander_setup( clickBoardNum: clickBoardID){
-        this.expander_sendByte(this.IODIRB, 0,clickBoardNum);
+        expander_setup( ){
+        this.expander_sendByte(this.IODIRB, 0);
         }
 
-        expander_setOutput(output:number, clickBoardNum: clickBoardID){
-        this.expander_sendByte(this.OLATB, output,clickBoardNum);
+        expander_setOutput(output:number){
+        this.expander_sendByte(this.OLATB, output);
         }
 
-        digipot_setWiper(val:number, clickBoardNum: clickBoardID){
+        digipot_setWiper(val:number){
         let cmd = [0,val];
-        const SPIObj= new bBoard.SPIsetting;
         // bBoard.clearPin(CS2,clickBoardNum)
-        SPIs.spiCS(this.CS2,clickBoardNum)
-        SPIs.SPIWriteArray(cmd,clickBoardNum)
-        SPIs.spiCS(this.CS,clickBoardNum)
+        this.SPIs.spiCS(this.CS2)
+        this.SPIs.SPIWriteArray(cmd)
+        this.SPIs.spiCS(this.CS)
         //bBoard.setPin(CS2,clickBoardNum)
         }
 
@@ -280,41 +282,36 @@ export class LCDSettings{
             //let LCDstring1=['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x']
             if(this.LCDInitialize == false)
             {
-                this.lcd_setup(this.clickBoardNumGlobal);
-                this.lcd_setContrast(0x30,this.clickBoardNumGlobal)
+                this.lcd_setup();
+                this.lcd_setContrast(0x30)
                 this.LCDInitialize = true; //LCD has been initialized
             }
     
-            this.lcd_setAddr(lineNum, 0,this.clickBoardNumGlobal);
+            this.lcd_setAddr(lineNum, 0);
             let i = 0;
             for (i = 1; i < 16; i++) {
                 if (LCDstring[i]) {
-                    this.lcd_writeChar(LCDstring[i],this.clickBoardNumGlobal);
+                    this.lcd_writeChar(LCDstring[i]);
                 }
             }
-            this.lcd_returnHome(this.clickBoardNumGlobal);
+            this.lcd_returnHome();
             }
 
         //% blockId=LCD_Clear
-        //% block="Clear $this LCD on click $clickBoardNum"
+        //% block="Clear $this LCD"
         //% weight=80
         //% blockGap=7
         //% blockNamespace=LCD_Mini
         //% this.shadow=variables_get
         //% this.defl="LCDSettings"
-        lcd_clearDisplay( clickBoardNum: clickBoardID){
-            this.lcd_sendByte(1, 0,clickBoardNum);
+        lcd_clearDisplay(){
+            this.lcd_sendByte(1, 0);
             basic.pause(2)
             }
 
 
 
     }
-
-    //% fixedInstance
-    let D0: LCDSettings;
-    //% fixedInstance
-    let D1: LCDSettings;
 
 
 

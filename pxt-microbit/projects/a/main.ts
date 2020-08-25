@@ -1,5 +1,6 @@
-basic.pause(1000)
-let Test = Test_Module.createTestSettings(clickBoardID.one, clickBoardID.two, clickBoardID.three)
+let Force = Force_Click.createForceSettings(clickBoardID.zero, clickBoardSlot.B)
+let LCDSettings2 = LCD_Mini.createLCDSettings(clickBoardID.zero, clickBoardSlot.A)
+LCDSettings2.lcd_clearDisplay()
 basic.forever(function () {
-    Test.TestForce()
+    LCDSettings2.lcd_writeString(Force.forceclickstring(), lineNumber.one)
 })

@@ -304,6 +304,7 @@ let ADC_READ_id = 16
         this.GPIOPULLENSET_id = 0x0B
         this.ODC_id = 0x0D
         this.clickBoardNumGlobalIO=clickBoardNum+clickSlot;
+        createIOSettings(clickBoardNum, clickSlot)
         }
 
 
