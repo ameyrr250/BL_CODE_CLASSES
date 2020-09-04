@@ -39,7 +39,7 @@ namespace LCD_Mini{
      * @param clickBoardNum the clickBoardNum
      *  @param LCDSettings the LCDSettings
      */
-    //% block="create lcd settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="LCDSettings"
     //% blockId=LCDSettings
     //% weight=110
@@ -269,7 +269,6 @@ export class LCDSettings{
          * Writes string value.
          * @param LCDstring the string
          * @param lineNum the lineNum
-         * @param clickBoardNum the clickBoardNum
          */
         //% block="$this Write 2 a $LCDstring to line $lineNum"
         //% blockId=LCDWriteString

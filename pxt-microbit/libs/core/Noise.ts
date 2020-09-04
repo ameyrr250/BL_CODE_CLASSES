@@ -12,18 +12,18 @@ namespace Noise {
         triggered = 0x01
     }
 
-    let PINs =  new bBoard.PinSettings();
+    
 
     /**
      * Sets Noise Click object.
      * @param clickBoardNum the clickBoardNum
      *  @param Noise the Noise Object
     */
-    //% block="create Noise settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Noise"
     //% weight=110
-    export function createNoise(clickBoardNum: clickBoardID): Noise {
-        return new Noise(clickBoardNum);
+    export function createNoise(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Noise {
+        return new Noise(clickBoardNum, clickSlot);
     }
 
 
@@ -32,20 +32,24 @@ namespace Noise {
     
     isInitialized : Array<number>;
 
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
+    private PINs : bBoard.PinSettings;
     
-    constructor(clickBoardNum: clickBoardID){
-        super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+        super(clickBoardNum, clickSlot);
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum 
+        this.clickBoardNumGlobal=clickBoardNum
+        this.clickSlotNumGlobal=clickSlot
+        this.PINs =  new bBoard.PinSettings(clickBoardNum, clickSlot);
     }
     
     
-    initialize(clickBoardNum:clickBoardID)
+    initialize()
     {
      
-        this.isInitialized[clickBoardNum]  = 1
-        PINs.clearPin(clickIOPin.RST,clickBoardNum) // Enable the device
+        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.PINs.clearPin(clickIOPin.RST) // Enable the device
     
     
     
@@ -63,10 +67,10 @@ namespace Noise {
         {
             if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(this.clickBoardNumGlobal)
+                this.initialize()
                 
             }
-            return bBoard.analogRead(clickADCPin.AN,this.clickBoardNumGlobal)
+            return bBoard.analogRead(clickADCPin.AN, this.clickBoardNumGlobal, this.clickSlotNumGlobal)
         }
 
     //%blockId=Noise_isThresholdTriggered
@@ -80,10 +84,10 @@ namespace Noise {
     {   
         if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(this.clickBoardNumGlobal)
+            this.initialize()
             
         }
-        if(PINs.digitalReadPin(clickIOPin.INT,this.clickBoardNumGlobal) == threshold.triggered)
+        if(this.PINs.digitalReadPin(clickIOPin.INT) == threshold.triggered)
         {
             return true;
         }
@@ -92,7 +96,7 @@ namespace Noise {
             return false;
         }
      }
-           //%blockId=Noise_setThreshold
+            //%blockId=Noise_setThreshold
             //%block="$this Set noise threshold to $threshold"
             //% blockGap=7
             //% advanced=false
@@ -104,7 +108,7 @@ namespace Noise {
             {
                 if(this.isInitialized[this.clickBoardNumGlobal] == 0)
                 {
-                    this.initialize(this.clickBoardNumGlobal)
+                    this.initialize()
                     
                 }
                 let config = 0x7000; //DACa, Buffered output, 1x Gain, Shutdown disabled
@@ -121,6 +125,7 @@ namespace Noise {
                 this.write(threshold|config);
     
             }
+
             //%blockId=Noise_write
             //%block="$this Write $value"
             //% blockGap=7
@@ -132,12 +137,12 @@ namespace Noise {
         {
             if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.initialize(this.clickBoardNumGlobal)
+                this.initialize()
                 
             }
             let valueArray:number[] = [value>>8,value&0xFF]; //Split the value to be written into a LSB and MSB
-            this.spiCS(clickIOPin.CS,this.clickBoardNumGlobal)//Set the CS pin
-            this.SPIWriteArray(valueArray,this.clickBoardNumGlobal)
+            this.spiCS(clickIOPin.CS)//Set the CS pin
+            this.SPIWriteArray(valueArray)
         }
 
     }

@@ -11,20 +11,22 @@ namespace Water_Detect {
      * @param clickBoardNum the clickBoardNum
      *  @param Water_Detect the Water_Detect Object
      */
-    //% block="create Water_Detect settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Water_Detect"
     //% weight=110
-    export function createStepper(clickBoardNum: clickBoardID): Water_Detect {
-        return new Water_Detect(clickBoardNum);
+    export function createStepper(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Water_Detect {
+        return new Water_Detect(clickBoardNum, clickSlot);
    }
 
     export class Water_Detect extends bBoard.PinSettings{
 
-        private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number 
     
-    constructor(clickBoardNum: clickBoardID){
-        super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+        super(clickBoardNum, clickSlot);
         this.clickBoardNumGlobal=clickBoardNum
+        this.clickSlotNumGlobal=clickSlot
     }
 
     //% blockId=Water_Detect_isWater
@@ -35,7 +37,7 @@ namespace Water_Detect {
     //% this.shadow=variables_get
     //% this.defl="Water_Detect"
     isWater(): number {
-           if(this.digitalReadPin(clickIOPin.INT,this.clickBoardNumGlobal) == 1)
+           if(this.digitalReadPin(clickIOPin.INT) == 1)
            {
                return 1;
            }

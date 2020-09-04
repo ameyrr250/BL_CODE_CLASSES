@@ -28,7 +28,7 @@ namespace Test_Module{
     private clickBoardNumGlobalForce:number
     private clickBoardNumGlobalLCD:number
     TestCheckForce="Testing";
-   	constructor(clickBoardNumLCD:clickBoardID = clickBoardID.one, clickBoardNumForce: clickBoardID = clickBoardID.two, clickBoardNumRelay: clickBoardID = clickBoardID.three){
+   	constructor(clickBoardNumLCD:clickBoardID, clickBoardNumForce: clickBoardID = clickBoardID.two, clickBoardNumRelay: clickBoardID = clickBoardID.three){
        this.TestOkForce=false;
        this.TestOkRelay=false;
        this.clickBoardNumGlobalForce=clickBoardNumForce;
@@ -49,7 +49,7 @@ namespace Test_Module{
         TestForce(){
             
             let ForceString="Test..."
-            let LCDTest = new LCD_Mini.LCDSettings(this.clickBoardNumGlobalLCD);
+            let LCDTest = new LCD_Mini.LCDSettings(this.clickBoardNumGlobalLCD, this.clickSlotNumLCD);
            // LCDTest.lcd_writeString(ForceString, 1);
             Force_Click.createForceSettings(this.clickBoardNumGlobalForce);
             LCD_Mini.createLCDSettings(this.clickBoardNumGlobalLCD);

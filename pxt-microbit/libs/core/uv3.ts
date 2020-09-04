@@ -13,11 +13,11 @@ namespace UV3{
      * @param clickBoardNum the clickBoardNum
      *  @param UV3 the UV3 Object
      */
-    //% block="create UV3 settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlott"
     //% blockSetVariable="UV3"
     //% weight=110
-    export function createUV3(clickBoardNum: clickBoardID): UV3 {
-        return new UV3(clickBoardNum);
+    export function createUV3(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): UV3 {
+        return new UV3(clickBoardNum, clickSlot);
    }
 
 
@@ -40,28 +40,27 @@ namespace UV3{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number 
     
-    constructor(clickBoardNum: clickBoardID){
-        super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    super(clickBoardNum, clickSlot);
     this.controlReg=0;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.clickBoardNumGlobal=clickBoardNum
+    this.clickSlotNumGlobal=clickSlot
     }
     
     
-    initialize(clickBoardNum:clickBoardID)
+    initialize()
     {
     
-        this.isInitialized[clickBoardNum]  = 1
+        this.isInitialized[this.clickBoardNumGlobal]  = 1
        
         this.controlReg = this.VEML6070_CMD_DEFAULT; //Int disabled, 1/2T (~ 60ms) and shutdown disabled. 
 
         this.writeVEML6070(this.controlReg)
- 
-        
-    
     }
 
 
@@ -77,7 +76,7 @@ namespace UV3{
             //% this.defl="UV3"
             writeVEML6070(value:number)
             {
-                this.i2cWriteNumber(this.VEML6070_ADDR_CMD,value,NumberFormat.UInt8LE,this.clickBoardNumGlobal,false)   
+                this.i2cWriteNumber(this.VEML6070_ADDR_CMD,value,NumberFormat.UInt8LE,false)   
              
             }
            
@@ -95,7 +94,7 @@ namespace UV3{
            
                 if(this.isInitialized[this.clickBoardNumGlobal] == 0)
                 {
-                    this.initialize(this.clickBoardNumGlobal);
+                    this.initialize();
                 }
                 let MSB = this.readVEML6070(this.VEML6070_ADDR_DATA_MSB);
                 let LSB = this.readVEML6070(this.VEML6070_ADDR_DATA_LSB);
@@ -143,7 +142,7 @@ namespace UV3{
     
      
         
-                 //%blockId=VEML6070_read
+                //%blockId=VEML6070_read
                 //%block="$this Read from slave address$slaveAddress"
                 //% blockGap=7
                 //% advanced=true
@@ -155,7 +154,7 @@ namespace UV3{
                    
 
                    
-                   let i2cBuffer = this.I2CreadNoMem(slaveAddress ,1,this.clickBoardNumGlobal);
+                   let i2cBuffer = this.I2CreadNoMem(slaveAddress ,1);
 
                    let data:number; //A number variable to hold our value to return
                  
@@ -168,13 +167,13 @@ namespace UV3{
                 }
                 
         
-        setVEML6070Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+        setVEML6070Addr(deviceAddr:number)
         {
-            this.deviceAddress[clickBoardNum] = deviceAddr;
+            this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
         }
-        getVEML6070Addr(clickBoardNum:clickBoardID):number
+        getVEML6070Addr():number
         {
-            return this.deviceAddress[clickBoardNum];
+            return this.deviceAddress[this.clickBoardNumGlobal];
         }
     
     }

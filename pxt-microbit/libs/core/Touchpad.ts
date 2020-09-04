@@ -47,11 +47,11 @@ namespace Touchpad{
      * @param clickBoardNum the clickBoardNum
      *  @param Touchpad the Touchpad Object
     */
-    //% block="create Touchpad settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Touchpad"
     //% weight=110
-    export function createTouchpad(clickBoardNum: clickBoardID): Touchpad {
-        return new Touchpad(clickBoardNum);
+    export function createTouchpad(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Touchpad {
+        return new Touchpad(clickBoardNum, clickSlot);
    }
 
     export class Touchpad extends bBoard.I2CSettings{
@@ -78,14 +78,16 @@ namespace Touchpad{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID){
-    super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    super(clickBoardNum, clickSlot);
 
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.clickBoardNumGlobal=clickBoardNum
+    this.clickSlotNumGlobal=clickSlot;
     }
     
         //%blockId=Touchpad_initialize
@@ -99,7 +101,7 @@ namespace Touchpad{
     {
         //setTMP116Addr(deviceAddr,clickBoardNum)
         this.isInitialized[this.clickBoardNumGlobal]  = 1
-        this.setMTCH6102Addr(deviceAddr,this.clickBoardNumGlobal)
+        this.setMTCH6102Addr(deviceAddr)
         this.writeMTCH6102(0b0011,this.MODE) //Set the mode to full 
     
     
@@ -146,7 +148,7 @@ namespace Touchpad{
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    isTouched():boolean
+        isTouched():boolean
         {
             if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
@@ -191,8 +193,8 @@ namespace Touchpad{
         //% this.defl="Touchpad"
         getGestureName(gestureID:number):string
         {
-    switch (gestureID)
-    {
+        switch (gestureID)
+        {
       
     
         case  gestures.Single_Click:
@@ -238,8 +240,8 @@ namespace Touchpad{
         case  gestures.Left_Swipe_Hold: 
         return "Left Hold"
         break;
-    }
-    return "None"
+        }
+        return "None"
         }
     
         //%blockId=Touchpad_getTouchState
@@ -249,12 +251,10 @@ namespace Touchpad{
         //% blockNamespace=Touchpad
         //% this.shadow=variables_get
         //% this.defl="Touchpad"
-    getTouchState():number
-    {
-     
-        
+        getTouchState():number
+        {
         return this.readMTCH6102(this.TOUCH_STATE);
-    }
+        }
     
         //%blockId=Touchpad_getGesture
         //%block="$this Get gesture"
@@ -292,7 +292,7 @@ namespace Touchpad{
         i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value ) 
         
     
-        this.i2cWriteBuffer(this.getMTCH6102Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
+        this.i2cWriteBuffer(this.getMTCH6102Addr(),i2cBuffer);
      
     }
     
@@ -307,22 +307,22 @@ namespace Touchpad{
     {
         let i2cBuffer = pins.createBuffer(1);
     
-        this.i2cWriteNumber(this.getMTCH6102Addr(this.clickBoardNumGlobal),register,NumberFormat.Int8LE,this.clickBoardNumGlobal,true)
+        this.i2cWriteNumber(this.getMTCH6102Addr(),register,NumberFormat.Int8LE,true)
     
-    return this.I2CreadNoMem(this.getMTCH6102Addr(this.clickBoardNumGlobal),1,this.clickBoardNumGlobal).getUint8(0);
+    return this.I2CreadNoMem(this.getMTCH6102Addr(),1).getUint8(0);
     
     
     
     }
     
     
-    setMTCH6102Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+    setMTCH6102Addr(deviceAddr:number)
     {
-        this.deviceAddress[clickBoardNum] = deviceAddr;
+        this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
     }
-    getMTCH6102Addr(clickBoardNum:clickBoardID):number
+    getMTCH6102Addr():number
     {
-        return this.deviceAddress[clickBoardNum];
+        return this.deviceAddress[this.clickBoardNumGlobal];
     }
     
     }

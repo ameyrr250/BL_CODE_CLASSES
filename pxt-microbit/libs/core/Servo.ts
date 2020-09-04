@@ -5,20 +5,16 @@
 //% weight=100 color=#EF697B icon=""
 //% advanced=true
 namespace Servo{
-  let PINs = new bBoard.PinSettings();
-
-  let I2Cs= new bBoard.I2CSettings();
-
     /**
      * Sets Servo Click object.
      * @param clickBoardNum the clickBoardNum
      *  @param Servo the Servo Object
      */
-    //% block="create Servo settings"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Servo"
     //% weight=110
-    export function createLCDSettings(clickBoardNum: clickBoardID): Servo {
-      return new Servo(clickBoardNum);
+    export function createLCDSettings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Servo {
+      return new Servo(clickBoardNum, clickSlot);
  }
 
     export class Servo{
@@ -52,9 +48,13 @@ namespace Servo{
     servoAngleMin : Array<number>;
     servoAngleMax : Array<number>;
     
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
+
+    private PINs : bBoard.PinSettings
+    private I2Cs : bBoard.I2CSettings
     
-    constructor(clickBoardNum: clickBoardID){
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
     this.PCA9685_DEFAULT_I2C_ADDRESS =  0x40  
     this.LTC2497_DEFAULT_I2C_ADDRESS =  0x48  
     this.PCA9685_SUBADR1 =0x2 /**< i2c bus address 1 */
@@ -85,12 +85,16 @@ namespace Servo{
     this.servoAngleMin  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.servoAngleMax = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
-    this.clickBoardNumGlobal=clickBoardNum   
+    this.clickBoardNumGlobal=clickBoardNum;
+    this.clickSlotNumGlobal=clickSlot;
+    
+    this.PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
+    this.I2Cs= new bBoard.I2CSettings(clickBoardNum, clickSlot);
     }
     
     // you can use this if you'd like to set the pulse length in seconds
     // e.g. setServoPulse(0, 0.001) is a ~1 millisecond pulse width. its not precise!
-    setServoPulse( servoNumber:number, pulse:number,clickBoardNum:clickBoardID) {
+    setServoPulse( servoNumber:number, pulse:number) {
         
         
         let pulselength = 1000000;   // 1,000,000 us per second
@@ -101,42 +105,42 @@ namespace Servo{
         pulse = pulse/pulselength ;  // convert to us
         
         
-        this.setPWM(servoNumber, 0, pulse,clickBoardNum);
+        this.setPWM(servoNumber, 0, pulse);
       }
     
     
-     getServoAngleMin(clickBoardNum:clickBoardID):number
+     getServoAngleMin():number
       {
-        return this.servoAngleMin[clickBoardNum];
+        return this.servoAngleMin[this.clickBoardNumGlobal];
       }
-      getServoAngleMax(clickBoardNum:clickBoardID):number
+      getServoAngleMax():number
       {
-        return this.servoAngleMax[clickBoardNum];
+        return this.servoAngleMax[this.clickBoardNumGlobal];
       }
-      getServoPulseMin(clickBoardNum:clickBoardID):number
+      getServoPulseMin():number
       {
-        return this.servoPulseMin[clickBoardNum];
+        return this.servoPulseMin[this.clickBoardNumGlobal];
       }
-      getServoPulseMax(clickBoardNum:clickBoardID):number
+      getServoPulseMax():number
       {
-        return this.servoPulseMax[clickBoardNum];
+        return this.servoPulseMax[this.clickBoardNumGlobal];
       }
     
     
     /*!
      *  @brief  Sends a reset command to the PCA9685 chip over I2C
      */
-    reset(clickBoardNum:clickBoardID) {
+    reset() {
     
-      this.writePCA9685Array([this.PCA9685_MODE1, 0x80])
-     control.waitMicros(10000)
+    this.writePCA9685Array([this.PCA9685_MODE1, 0x80])
+    control.waitMicros(10000)
     
     }
     
     /*!
      *  @brief  Puts board into sleep mode
      */
-    sleep(clickBoardNum:clickBoardID) {
+    sleep() {
       let awake = this.readPCA9685(this.PCA9685_MODE1);
       let sleep = awake | 0x10; // set sleep bit high
       this.writePCA9685Array([this.PCA9685_MODE1, sleep])
@@ -146,7 +150,7 @@ namespace Servo{
     /*!
      *  @brief  Wakes board from sleep
      */
-    wakeup(clickBoardNum:clickBoardID) {
+    wakeup() {
       let sleep = this.readPCA9685(this.PCA9685_MODE1);
       let wakeup = sleep & ~0x10; // set sleep bit low
       this.writePCA9685Array([this.PCA9685_MODE1, wakeup])
@@ -159,7 +163,7 @@ namespace Servo{
        clock
     */
     /**************************************************************************/
-    setExtClk(prescale:number,clickBoardNum:clickBoardID) {
+    setExtClk(prescale:number) {
       let oldmode = this.readPCA9685(this.PCA9685_MODE1)
       let newmode = (oldmode & 0x7F) | 0x10; // sleep
       this.writePCA9685Array([this.PCA9685_MODE1, newmode])
@@ -181,7 +185,7 @@ namespace Servo{
      *  @brief  Sets the PWM frequency for the entire chip, up to ~1.6 KHz
      *  @param  freq Floating point frequency that we will attempt to match
      */
-    setPWMFreq(freq:number,clickBoardNum:clickBoardID) {
+    setPWMFreq(freq:number) {
     
     
         freq *= 0.9; // Correct for overshoot in the frequency setting (see issue #11).
@@ -212,7 +216,7 @@ namespace Servo{
      *  only be driven in open drain mode. 
      *  @param  totempole Totempole if true, open drain if false. 
      */
-    setOutputMode( totempole:boolean, clickBoardNum:clickBoardID) {  
+    setOutputMode( totempole:boolean) {  
        let oldmode =  this.readPCA9685(this.PCA9685_MODE2)
     
     let  newmode = 0;
@@ -245,9 +249,9 @@ namespace Servo{
      *  @param  off At what point in the 4096-part cycle to turn the PWM output OFF
      */
       
-    setPWM(servoNumber:number, on:number, off:number,clickBoardNum:clickBoardID)  {
+    setPWM(servoNumber:number, on:number, off:number)  {
     
-        if(this.isInitialized[clickBoardNum] == 0)
+        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
           this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS);
         }
@@ -276,7 +280,7 @@ namespace Servo{
      * from 0 to 4095 inclusive.
      *   @param  invert If true, inverts the output, defaults to 'false'
      */
-    setPin(servoNumber:number, val:number, invert:boolean,clickBoardNum:clickBoardID) {
+    setPin(servoNumber:number, val:number, invert:boolean) {
     
        
       // Clamp value between 0 and 4095 inclusive.
@@ -284,33 +288,33 @@ namespace Servo{
       if (invert) {
         if (val == 0) {
           // Special value for signal fully on.
-          this.setPWM(servoNumber-1, 4096, 0,clickBoardNum);
+          this.setPWM(servoNumber-1, 4096, 0);
         } else if (val == 4095) {
           // Special value for signal fully off.
-          this.setPWM(servoNumber-1, 0, 4096,clickBoardNum);
+          this.setPWM(servoNumber-1, 0, 4096);
         } else {
-            this.setPWM(servoNumber-1, 0, 4095 - val,clickBoardNum);
+            this.setPWM(servoNumber-1, 0, 4095 - val);
         }
       } else {
         if (val == 4095) {
           // Special value for signal fully on.
-          this.setPWM(servoNumber-1, 4096, 0,clickBoardNum);
+          this.setPWM(servoNumber-1, 4096, 0);
         } else if (val == 0) {
           // Special value for signal fully off.
-          this.setPWM(servoNumber-1, 0, 4096,clickBoardNum);
+          this.setPWM(servoNumber-1, 0, 4096);
         } else {
-            this.setPWM(servoNumber-1, 0, val,clickBoardNum);
+            this.setPWM(servoNumber-1, 0, val);
         }
       }
     }
     
-            setPCA9685Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+            setPCA9685Addr(deviceAddr:number)
             {
-                this.deviceAddress[clickBoardNum] = deviceAddr;
+                this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
             }
-            getPCA9685Addr(clickBoardNum:clickBoardID):number
+            getPCA9685Addr():number
             {
-                return this.deviceAddress[clickBoardNum];
+                return this.deviceAddress[this.clickBoardNumGlobal];
             }
 
 
@@ -327,9 +331,9 @@ namespace Servo{
             {
                
                 this.isInitialized[this.clickBoardNumGlobal]  = 1;
-                this.setPCA9685Addr(PCA9685Addr,this.clickBoardNumGlobal);
-                PINs.clearPin(clickIOPin.CS,this.clickBoardNumGlobal);
-                this.setPWMFreq(60,this.clickBoardNumGlobal);
+                this.setPCA9685Addr(PCA9685Addr);
+                this.PINs.clearPin(clickIOPin.CS);
+                this.setPWMFreq(60);
             
             }
         
@@ -366,7 +370,7 @@ namespace Servo{
         let pulseRange = (pulseMax - pulseMin)  
         let pulseWidth = (((angle - angleMin) * pulseRange) / angleRange) + pulseMin
     
-        this.setServoPulse(servoNumber-1,pulseWidth,this.clickBoardNumGlobal)
+        this.setServoPulse(servoNumber-1,pulseWidth)
       }
     
          //%blockId=Servo_AngleAdjusted
@@ -393,7 +397,7 @@ namespace Servo{
         let pulseWidth = (((angle - angleMin) * pulseRange) / angleRange) + pulseMin
         servoNumber = Math.clamp(1,16,servoNumber)
        
-        this.setServoPulse(servoNumber-1,pulseWidth,this.clickBoardNumGlobal)
+        this.setServoPulse(servoNumber-1,pulseWidth)
       }
     
      
@@ -412,7 +416,7 @@ namespace Servo{
         userSetPWM(servoNumber:number, on:number, off:number)  
         {
           servoNumber = Math.clamp(1,16,servoNumber)
-          this.setPWM(servoNumber-1,on,off,this.clickBoardNumGlobal)
+          this.setPWM(servoNumber-1,on,off)
         }
     
     
@@ -440,7 +444,7 @@ namespace Servo{
             }
         
             
-                I2Cs.i2cWriteBuffer(this.getPCA9685Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
+                this.I2Cs.i2cWriteBuffer(this.getPCA9685Addr(),i2cBuffer);
              
             }
            
@@ -458,10 +462,10 @@ namespace Servo{
             {
                 
         
-                I2Cs.i2cWriteNumber(this.getPCA9685Addr(this.clickBoardNumGlobal),register,NumberFormat.UInt8LE,this.clickBoardNumGlobal,true)
+                this.I2Cs.i2cWriteNumber(this.getPCA9685Addr(),register,NumberFormat.UInt8LE,true)
     
         
-                return  I2Cs.I2CreadNoMem(this.getPCA9685Addr(this.clickBoardNumGlobal),1,this.clickBoardNumGlobal).getUint8(0)
+                return  this.I2Cs.I2CreadNoMem(this.getPCA9685Addr(),1).getUint8(0)
         
                     
             

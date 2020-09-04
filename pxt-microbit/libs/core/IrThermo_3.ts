@@ -37,11 +37,11 @@ namespace IrThermo_3 {
       //...
     } 
 
-     //% block="create IrThermo settings"
+     //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="IrThermo"
     //% weight=110
-    export function createIrThermo(): IrThermo {
-        return new IrThermo();
+    export function createIrThermo(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): IrThermo {
+        return new IrThermo(clickBoardNum, clickSlot);
     }
     
 export class IrThermo extends bBoard.I2CSettings{
@@ -114,7 +114,8 @@ private readonly I2C_SPEED_STANDARD  =      100000
 private readonly I2C_SPEED_FAST       =     400000
 
 private readonly MAX_WAIT = 750; //Number of ms to wait before giving up. Some sensor actions take 512ms.
-
+private clickBoardNumGlobal:number
+private clickSlotNumGlobal:number
 
 
 /*
@@ -173,8 +174,8 @@ private MLX90632_DEFAULT_ADDRESS : number;
 private isInitialized : Array<number>;
 private returnError : Array<number>;
 
-constructor(){
-super();
+constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+super(clickBoardNum, clickSlot);
 this.P_R = 0;
 this.P_G= 0;
 this.P_T= 0;
@@ -196,6 +197,8 @@ this.sensorTemp; //Internal temp of the MLX sensor
 this.MLX90632_DEFAULT_ADDRESS =0x3A
 this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 this.returnError = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+this.clickBoardNumGlobal=clickBoardNum;
+this.clickSlotNumGlobal=clickSlot;
 }
 
 get P_Rval(){
@@ -354,7 +357,7 @@ set MLX90632_DEFAULT_ADDRESSval(value){
 //This begins the communication with the device
 //Returns a status error if anything went wrong
 
-begin(clickBoardNum:clickBoardID)
+begin()
 {
 
   let deviceAddress = this.MLX90632_DEFAULT_ADDRESS; //Get the I2C address from user
@@ -367,60 +370,60 @@ begin(clickBoardNum:clickBoardID)
 
   //Check communication with IC
 
-let thisAddress = this.readRegister16(this.EE_I2C_ADDRESS, clickBoardNum);
+let thisAddress = this.readRegister16(this.EE_I2C_ADDRESS);
   
   
   //Wait for eeprom_busy to clear
   let counter = 0;
-  while (this.eepromBusy(clickBoardNum))
+  while (this.eepromBusy())
   {
     control.waitMicros(1);
     counter++;
     if (counter == this.MAX_WAIT)
     {
     
-        this.returnError[clickBoardNum]  = status.SENSOR_TIMEOUT_ERROR;
+        this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_TIMEOUT_ERROR;
       
     }
   }
 
-  this.setMode(this.MODE_SLEEP,clickBoardNum); //Before reading EEPROM sensor needs to stop taking readings
+  this.setMode(this.MODE_SLEEP); //Before reading EEPROM sensor needs to stop taking readings
 
   //Load all the static calibration factors
   let tempValue16;
   let tempValue32;
-  tempValue32 =this.readRegister32(this.EE_P_R, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_P_R);
   this.P_R = tempValue32 * Math.pow(2, -8);
-  tempValue32 =this.readRegister32(this.EE_P_G, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_P_G);
   this.P_G = tempValue32 * Math.pow(2, -20);
-  tempValue32 =this.readRegister32(this.EE_P_T, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_P_T);
   this.P_T = tempValue32 * Math.pow(2, -44);
 
-  tempValue32 =this.readRegister32(this.EE_P_O, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_P_O);
   this.P_O = tempValue32 * Math.pow(2, -8);
 
-  tempValue32 =this.readRegister32(this.EE_Ea, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_Ea);
   this.Ea = tempValue32 * Math.pow(2, -16);
-  tempValue32 =this.readRegister32(this.EE_Eb, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_Eb);
   this.Eb = tempValue32 * Math.pow(2, -8);
-  tempValue32 =this.readRegister32(this.EE_Fa, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_Fa);
   this.Fa = tempValue32 * Math.pow(2, -46);
-  tempValue32 =this.readRegister32(this.EE_Fb, clickBoardNum);
+  tempValue32 =this.readRegister32(this.EE_Fb);
   this.Fb = tempValue32 * Math.pow(2, -36);
-  tempValue32 = this.readRegister32(this.EE_Ga, clickBoardNum);
+  tempValue32 = this.readRegister32(this.EE_Ga);
   this.Ga = tempValue32 * Math.pow(2, -36);
 
 
-  tempValue16 = this.readRegister16(this.EE_Gb, clickBoardNum);
+  tempValue16 = this.readRegister16(this.EE_Gb);
   this.Gb = tempValue16 * Math.pow(2, -10);
 
-  tempValue16 = this.readRegister16(this.EE_Ka, clickBoardNum);
+  tempValue16 = this.readRegister16(this.EE_Ka);
   this.Ka = tempValue16 * Math.pow(2, -10);
 
-  tempValue16 = this.readRegister16(this.EE_Ha, clickBoardNum);
+  tempValue16 = this.readRegister16(this.EE_Ha);
   this.Ha = tempValue16 * Math.pow(2, -14); //Ha!
 
-  tempValue16 = this.readRegister16(this.EE_Hb, clickBoardNum);
+  tempValue16 = this.readRegister16(this.EE_Hb);
   this.Hb = tempValue16 * Math.pow(2, -14);
 
   //Note, sensor is in sleep mode
@@ -431,46 +434,46 @@ let thisAddress = this.readRegister16(this.EE_I2C_ADDRESS, clickBoardNum);
 //Read all calibration values and calculate the temperature of the thing we are looking at
 //Depending on mode, initiates a measurement
 //If in sleep or step mode, clears the new_data bit, sets the SOC bit
-     //%blockId=IRThermo_getObjectTemp
-    //%block="$this Get surface temperature in Celcius on click$clickBoardNum"
+    //%blockId=IRThermo_getObjectTemp
+    //%block="$this Get surface temperature in Celcius"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=IrThermo_3
     //% this.shadow=variables_get
     //% this.defl="IrThermo"
-getObjectTemp(clickBoardNum:clickBoardID):number
+getObjectTemp():number
 {
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS;
-    if(this.isInitialized[clickBoardNum] == 0)
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS;
+    if(this.isInitialized[this.clickBoardNumGlobal] == 0)
     {
-        this.begin(clickBoardNum)
-        this.isInitialized[clickBoardNum] = 1; //Device is initialied
+        this.begin()
+        this.isInitialized[this.clickBoardNumGlobal] = 1; //Device is initialied
     }
   //If the sensor is not in continuous mode then the tell sensor to take reading
-  if(this.getMode(clickBoardNum) != this.MODE_CONTINUOUS){
-    this.setSOC(clickBoardNum);
+  if(this.getMode() != this.MODE_CONTINUOUS){
+    this.setSOC();
 
   } 
 
   //Write new_data = 0
-  this.clearNewData(clickBoardNum);
+  this.clearNewData();
 
   //Check when new_data = 1
   let counter = 0;
-  while (this.dataAvailable(clickBoardNum) == false)
+  while (this.dataAvailable() == false)
   {
     control.waitMicros(1);
     counter++;
     if (counter == this.MAX_WAIT)
     {
 basic.showString("E")
-    this.returnError[clickBoardNum]  = status.SENSOR_TIMEOUT_ERROR;
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_TIMEOUT_ERROR;
       return (0.0); //Error
     }
   }
 
-  this.gatherSensorTemp(clickBoardNum );
-  if (this.returnError[clickBoardNum]  != status.SENSOR_SUCCESS)
+  this.gatherSensorTemp( );
+  if (this.returnError[this.clickBoardNumGlobal]  != status.SENSOR_SUCCESS)
   {
     
     basic.showString("F")
@@ -482,31 +485,31 @@ basic.showString("E")
   let upperRAM = 0;
 
   //Get RAM_6 and RAM_9
-  let sixRAM = this.readRegister16(this.RAM_6,clickBoardNum);
-  let nineRAM = this.readRegister16(this.RAM_9, clickBoardNum);
+  let sixRAM = this.readRegister16(this.RAM_6);
+  let nineRAM = this.readRegister16(this.RAM_9);
 
   //Read cycle_pos to get measurement pointer
-  let cyclePosition = this.getCyclePosition(clickBoardNum);
+  let cyclePosition = this.getCyclePosition();
 
   //If cycle_pos = 1
   //Calculate TA and TO based on RAM_4, RAM_5, RAM_6, RAM_9
   if (cyclePosition == 1)
   {
-    lowerRAM = this.readRegister16(this.RAM_4, clickBoardNum);
-    upperRAM = this.readRegister16(this.RAM_5, clickBoardNum);
+    lowerRAM = this.readRegister16(this.RAM_4);
+    upperRAM = this.readRegister16(this.RAM_5);
   }
   //If cycle_pos = 2
   //Calculate TA and TO based on RAM_7, RAM_8, RAM_6, RAM_9
   else if (cyclePosition == 2)
   {
-    lowerRAM = this.readRegister16(this.RAM_7, clickBoardNum);
-    upperRAM = this.readRegister16(this.RAM_8, clickBoardNum);
+    lowerRAM = this.readRegister16(this.RAM_7);
+    upperRAM = this.readRegister16(this.RAM_8);
   }
   else
   {
   
-    lowerRAM = this.readRegister16(this.RAM_4, clickBoardNum);
-    upperRAM = this.readRegister16(this.RAM_5, clickBoardNum);
+    lowerRAM = this.readRegister16(this.RAM_4);
+    upperRAM = this.readRegister16(this.RAM_5);
   }
 
   //Object temp requires 3 iterations
@@ -539,61 +542,61 @@ basic.showString("E")
   return (this.TO0);
 }
 
-     //%blockId=IRThermo_getObjectTempF
-    //%block="$this Get surface temperature in Fahrenheit on click$clickBoardNum"
+    //%blockId=IRThermo_getObjectTempF
+    //%block="$this Get surface temperature in Fahrenheit"
     //% blockGap=7
     //% advanced=false
     //% blockNamespace=IrThermo_3
     //% this.shadow=variables_get
     //% this.defl="IrThermo"
-getObjectTempF(clickBoardNum:clickBoardID):number
+getObjectTempF():number
 {
     
-  let tempC = this.getObjectTemp(clickBoardNum);
+  let tempC = this.getObjectTemp();
   let tempF = tempC * 9.0/5.0 + 32.0;
   return(tempF);
 }
 
 
 
-getSensorTemp(clickBoardNum:clickBoardID ):number
+getSensorTemp():number
 {
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS;
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS;
 
   //If the sensor is not in continuous mode then the tell sensor to take reading
-  if(this.getMode(clickBoardNum) != this.MODE_CONTINUOUS) {
-    this.setSOC(clickBoardNum);
+  if(this.getMode() != this.MODE_CONTINUOUS) {
+    this.setSOC();
   }
   //Write new_data = 0
-  this.clearNewData(clickBoardNum);
+  this.clearNewData();
 
   //Wait for new data
   let counter = 0;
-  while (this.dataAvailable(clickBoardNum) == false)
+  while (this.dataAvailable() == false)
   {
     control.waitMicros(1);
     counter++;
     if (counter == this.MAX_WAIT)
     {
-        this.returnError[clickBoardNum]  = status.SENSOR_TIMEOUT_ERROR;
+        this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_TIMEOUT_ERROR;
       return (0.0); //Error
     }
   }
 
-  return (this.gatherSensorTemp(clickBoardNum ));
+  return (this.gatherSensorTemp( ));
 }
 
 //This reads all the temperature calibration factors for the sensor itself
 //This is needed so that it can be called from getObjectTemp *and* users can call getSensorTemp 
 //without causing a let read
-gatherSensorTemp(clickBoardNum:clickBoardID ):number
+gatherSensorTemp( ):number
 {
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS;
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS;
 
   //Get RAM_6 and RAM_9
-  let sixRAM = this.readRegister16(this.RAM_6, clickBoardNum);
+  let sixRAM = this.readRegister16(this.RAM_6);
   
-  let nineRAM=  this.readRegister16(this.RAM_9, clickBoardNum);
+  let nineRAM=  this.readRegister16(this.RAM_9);
 
 
   let VRta = nineRAM + (this.Gb * (sixRAM / 12.0));
@@ -609,109 +612,109 @@ gatherSensorTemp(clickBoardNum:clickBoardID ):number
 
 //Returns true if device is busy doing measurement
 //Always true in continuous mode
-deviceBusy(clickBoardNum:clickBoardID):boolean
+deviceBusy():boolean
 {
-  if (this.getStatus(clickBoardNum) & (1 << this.BIT_DEVICE_BUSY)) {return (true);}
+  if (this.getStatus() & (1 << this.BIT_DEVICE_BUSY)) {return (true);}
   return (false);
 }
 
 //Returns true if eeprom is busy
 //EEPROM is busy during boot up and during EEPROM write/erase
-eepromBusy(clickBoardNum:clickBoardID):boolean
+eepromBusy():boolean
 {
-  if (this.getStatus(clickBoardNum) & (1 << this.BIT_EEPROM_BUSY)) 
+  if (this.getStatus() & (1 << this.BIT_EEPROM_BUSY)) 
   {return (true);}
   return (false);
 }
 
 //Returns the cycle_pos from status register. cycle_pos is 0 to 31
-getCyclePosition(clickBoardNum:clickBoardID):number
+getCyclePosition():number
 {
-  let status = (this.getStatus(clickBoardNum) >> this.BIT_CYCLE_POS); //Shave off last two bits
+  let status = (this.getStatus() >> this.BIT_CYCLE_POS); //Shave off last two bits
   status &= 0x1F; //Get lower 5 bits.
   return (status);
 }
 
 //Returns true if new data is available
-dataAvailable(clickBoardNum:clickBoardID):boolean
+dataAvailable():boolean
 {
-  if (this.getStatus(clickBoardNum) & (1 << this.BIT_NEW_DATA)) {return (true);}
+  if (this.getStatus() & (1 << this.BIT_NEW_DATA)) {return (true);}
   return (false);
 }
 
 //Sets the brown_out bit. Datasheet says 'Customer should set bit to 1'. Ok.
-setBrownOut(clickBoardNum:clickBoardID)
+setBrownOut()
 {
-let reg = this.getStatus(clickBoardNum); //Get current bits
+let reg = this.getStatus(); //Get current bits
   reg |= (1 << this.BIT_BROWN_OUT); //Set the bit
-  this.writeRegister16(this.REG_STATUS, reg,clickBoardNum); //Set the mode bits
+  this.writeRegister16(this.REG_STATUS, reg); //Set the mode bits
 }
 
 //Clear the new_data bit. This is done after a measurement is complete
-clearNewData(clickBoardNum:clickBoardID)
+clearNewData()
 {
-  let reg = this.getStatus(clickBoardNum); //Get current bits
+  let reg = this.getStatus(); //Get current bits
   reg &= ~(1 << this.BIT_NEW_DATA); //Clear the bit
-  this.writeRegister16(this.REG_STATUS, reg,clickBoardNum); //Set the mode bits
+  this.writeRegister16(this.REG_STATUS, reg); //Set the mode bits
 }
 
-getStatus(clickBoardNum:clickBoardID)
+getStatus()
 {
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
-  let deviceStatus   = this.readRegister16(this.REG_STATUS, clickBoardNum);
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+  let deviceStatus   = this.readRegister16(this.REG_STATUS);
 
   return (deviceStatus);
 }
 
 
 //Changes the mode to sleep
-sleepMode(clickBoardNum:clickBoardID)
+sleepMode()
 {
-    this.setMode(this.MODE_SLEEP,clickBoardNum);
+    this.setMode(this.MODE_SLEEP);
 }
 
 //Changes the mode to step
-stepMode(clickBoardNum:clickBoardID)
+stepMode()
 {
-    this.setMode(this.MODE_STEP,clickBoardNum);
+    this.setMode(this.MODE_STEP);
 }
 
 //Changes the mode to continuous read
-continuousMode(clickBoardNum:clickBoardID)
+continuousMode()
 {
-    this.setMode(this.MODE_CONTINUOUS,clickBoardNum);
+    this.setMode(this.MODE_CONTINUOUS);
 }
 
 //Sets the Start of Conversion (SOC) bit
-setSOC(clickBoardNum:clickBoardID)
+setSOC()
 {
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
-  let reg = this.readRegister16(this.REG_CONTROL, clickBoardNum); //Get current bits
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+  let reg = this.readRegister16(this.REG_CONTROL); //Get current bits
 
   reg |= (1 << 3); //Set the bit
-  this.writeRegister16(this.REG_CONTROL, reg,clickBoardNum); //Set the bit
+  this.writeRegister16(this.REG_CONTROL, reg); //Set the bit
 
 }
 
 //Sets the sensing mode (3 modes availabe)
-setMode(mode:number,clickBoardNum:clickBoardID )
+setMode(mode:number )
 {
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
     
-  let reg = this.readRegister16(this.REG_CONTROL, clickBoardNum)//Get current bits
+  let reg = this.readRegister16(this.REG_CONTROL)//Get current bits
    
   reg &= ~(0x0003 << 1); //Clear the mode bits
   reg |= (mode << 1); //Set the bits
-  this.writeRegister16(this.REG_CONTROL, reg,clickBoardNum); //Set the mode bits
+  this.writeRegister16(this.REG_CONTROL, reg); //Set the mode bits
   
 }
 
 //Returns the mode of the sensor
-getMode(clickBoardNum:clickBoardID )
+getMode()
 {
   
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
-let mode = this.readRegister16(this.REG_CONTROL, clickBoardNum); //Get current register settings
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+let mode = this.readRegister16(this.REG_CONTROL); //Get current register settings
   
   mode = (mode >> 1) & 0x0003; //Clear all other bits
   return (mode);
@@ -721,13 +724,13 @@ let mode = this.readRegister16(this.REG_CONTROL, clickBoardNum); //Get current r
 
 //Reads two consecutive bytes from a given location
 //Stores the result at the provided outputPointer
-readRegister16( addr:number, clickBoardNum:clickBoardID):number
+readRegister16( addr:number):number
 {
     let i2cBuffer = pins.createBuffer(2);
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
-    super.i2cWriteNumber(this.MLX90632_DEFAULT_ADDRESS,addr,NumberFormat.Int16BE,clickBoardNum,true)
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    super.i2cWriteNumber(this.MLX90632_DEFAULT_ADDRESS,addr,NumberFormat.Int16BE,true)
 
- i2cBuffer = super.I2CreadNoMem(this.MLX90632_DEFAULT_ADDRESS,2,clickBoardNum);
+ i2cBuffer = super.I2CreadNoMem(this.MLX90632_DEFAULT_ADDRESS,2);
 
 
  let msb = i2cBuffer.getUint8(0)
@@ -739,23 +742,23 @@ return  (msb << 8 | lsb)
 }
 
 //Reads two 16-bit registers and combines them into 32 bits
-readRegister32(addr:number,  clickBoardNum:clickBoardID):number
+readRegister32(addr:number):number
 {
 
-    this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
  
   //For the MLX90632 the first 16-bit chunk is LSB, the 2nd is MSB
-  let lower = this.readRegister16(addr,clickBoardNum)
-  let upper =this.readRegister16(addr+1,clickBoardNum)
+  let lower = this.readRegister16(addr)
+  let upper =this.readRegister16(addr+1)
 
 
   return (upper << 16 | lower)
 }
 
 //Write two bytes to a spot
-writeRegister16(addr:number,  val:number,clickBoardNum:clickBoardID)
+writeRegister16(addr:number,  val:number)
 {
-  this.returnError[clickBoardNum]  = status.SENSOR_SUCCESS; //By default, return success
+  this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
 let i2cBuffer = pins.createBuffer(4)
 
 i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, addr >> 8 )
@@ -763,7 +766,7 @@ i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, addr & 0xFF)
 i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, val >> 8) 
 i2cBuffer.setNumber(NumberFormat.UInt8LE, 3, val & 0xFF)
 
-super.i2cWriteBuffer(this.MLX90632_DEFAULT_ADDRESS,i2cBuffer,clickBoardNum);
+super.i2cWriteBuffer(this.MLX90632_DEFAULT_ADDRESS,i2cBuffer);
 
   
 
@@ -775,24 +778,24 @@ super.i2cWriteBuffer(this.MLX90632_DEFAULT_ADDRESS,i2cBuffer,clickBoardNum);
 //The datasheet doesn't go a good job of explaining how writing to EEPROM works.
 //This should work but doesn't. It seems the IC is very sensitive to I2C traffic while
 //the sensor is recording the new EEPROM.
-writeEEPROM(addr:number,  val:number,clickBoardNum:clickBoardID)
+writeEEPROM(addr:number,  val:number)
 {
   //Put device into halt mode (page 15)
-  let originalMode = this.getMode(clickBoardNum);
-  this.setMode(this.MODE_SLEEP,clickBoardNum);
+  let originalMode = this.getMode();
+  this.setMode(this.MODE_SLEEP);
 
   //Wait for complete
-  while (this.deviceBusy(clickBoardNum)) control.waitMicros(1);
+  while (this.deviceBusy()) control.waitMicros(1);
 
   //Magic unlock (page 17)
-  this.writeRegister16(0x3005, 0x554C,clickBoardNum);
+  this.writeRegister16(0x3005, 0x554C);
 
   //Wait for complete
   control.waitMicros(100);
 
   //Now we can write to one EEPROM word
   //Write =0x0000 to user's location (page 16) to erase
-  this.writeRegister16(addr, 0x0000,clickBoardNum);
+  this.writeRegister16(addr, 0x0000);
 
   //Wait for complete
   control.waitMicros(100);
@@ -800,13 +803,13 @@ writeEEPROM(addr:number,  val:number,clickBoardNum:clickBoardID)
   //while (deviceBusy()) control.waitMicros(1);
 
   //Magic unlock again
-  this.writeRegister16(0x3005, 0x554C,clickBoardNum);
+  this.writeRegister16(0x3005, 0x554C);
 
   //Wait for complete
   control.waitMicros(100);
 
   //Now we can write to one EEPROM word
-  this.writeRegister16(addr, val,clickBoardNum);
+  this.writeRegister16(addr, val);
 
   //Wait for complete
   control.waitMicros(100);
@@ -814,7 +817,7 @@ writeEEPROM(addr:number,  val:number,clickBoardNum:clickBoardID)
   //while (deviceBusy()) control.waitMicros(1);
 
   //Return to original mode
-  this.setMode(originalMode,clickBoardNum);
+  this.setMode(originalMode);
 }
 
 }

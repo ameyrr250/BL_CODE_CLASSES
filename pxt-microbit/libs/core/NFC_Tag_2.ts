@@ -22,14 +22,14 @@ namespace NFC_Tag_2{
 
     /**
      * Sets NFC_Tag Click object.
-     * @param clickBoardNum the clickBoardNum
+     *  @param clickBoardNum the clickBoardNum
      *  @param NFC_Tag the NFC_Tag Object
      */
-    //% block="create NFC_Tag settings"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="NFC_Tag"
     //% weight=110
-    export function createNFC_Tag(clickBoardNum: clickBoardID): NFC_Tag {
-        return new NFC_Tag(clickBoardNum);
+    export function createNFC_Tag(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): NFC_Tag {
+        return new NFC_Tag(clickBoardNum, clickSlot);
     }
 
     export class NFC_Tag extends bBoard.I2CSettings{
@@ -54,56 +54,46 @@ namespace NFC_Tag_2{
 
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID){
-            super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+            super(clickBoardNum, clickSlot);
             this.DEFAULT_I2C_ADDRESS =  0x55  
-
-
             this.COVERING_PAGE_REG = 0x0
             this.USER_START_REG =0x1
-
             this.NFC_BLOCK_SIZE = 16
             this.UID_SIZE = 7
-
-
             this.USER_END_REG  = 0x38 // just the first 8 bytes for the 1K
             this.CONFIG_REG	=   0x3A
-
-
             this.SRAM_START_REG= 0xF8
             this.SRAM_END_REG  = 0xFB // just the first 8 bytes
             this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-            this.clickBoardNumGlobal=clickBoardNum
+            this.clickBoardNumGlobal=clickBoardNum;
+            this.clickSlotNumGlobal=clickSlot;
         }
 
   
 
      
-        initialize(deviceAddr:number,clickBoardNum:clickBoardID)
-        {
-
-           
-           
-            this.isInitialized[clickBoardNum]  = 1
-            this.setNT3H2111Addr(deviceAddr,clickBoardNum)
-            
+        initialize(deviceAddr:number)
+        {     
+            this.isInitialized[this.clickBoardNumGlobal]  = 1
+            this.setNT3H2111Addr(deviceAddr)  
             let arrayTest = this.readNT3H2111(16, 0) //Need to read the first page of the tag memory
             arrayTest[0] = this.DEFAULT_I2C_ADDRESS<<1 //Set the very first byte (the i2c address). The chip always returns 0x04 (manufacturer ID) and not the I2C address (0x55)
             arrayTest[12] = 225 //The last 4 bytes are part of the container and need to be set
             arrayTest[13] = 16
             arrayTest[14] = 109
             arrayTest[15] = 0
-
             this.writeNT3H2111(arrayTest, 0)//Now write this back to the first block of memory
         
         }
 
-        readCoveringPage(clickBoardNum:clickBoardID):number[] { //Get the entire covering page from the NT3H2111
-    return this.readNT3H2111(this.NFC_BLOCK_SIZE,this.COVERING_PAGE_REG);
-}
+        readCoveringPage():number[] { //Get the entire covering page from the NT3H2111
+        return this.readNT3H2111(this.NFC_BLOCK_SIZE,this.COVERING_PAGE_REG);
+        }
 
 
         //%blockId=NT3H2111_setURI
@@ -114,10 +104,10 @@ namespace NFC_Tag_2{
         //% this.shadow=variables_get
         //% this.defl="NFC_Tag"
     setURI(URL:string)
-{
+    {
     if(this.isInitialized[this.clickBoardNumGlobal] == 0)
     {
-        this.initialize(this.DEFAULT_I2C_ADDRESS,this.clickBoardNumGlobal)
+        this.initialize(this.DEFAULT_I2C_ADDRESS)
         
     }
 
@@ -188,7 +178,7 @@ TLVValue[1] = TLVLength; //Now write this length to the TLV length field
     //arrayTest = [0x6c, 0x61, 0x62, 0x73, 0x2e, 0x63, 0x61, 0xfe, 0, 0, 0, 0, 0, 0, 0, 0]
    // NFC_Tag_2.writeNT3H2111(arrayTest, 2, clickBoardID.one)
 
-readUID(clickBoardNum:clickBoardID):number[] { //Extracts the first 7 bytes of the 
+readUID():number[] { //Extracts the first 7 bytes of the 
     return this.readNT3H2111(this.UID_SIZE, this.COVERING_PAGE_REG);
 }
 
@@ -224,7 +214,7 @@ readUID(clickBoardNum:clickBoardID):number[] { //Extracts the first 7 bytes of t
         }
     
         
-        this.i2cWriteBuffer(this.getNT3H2111Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
+        this.i2cWriteBuffer(this.getNT3H2111Addr(),i2cBuffer);
          
         }
 
@@ -249,19 +239,19 @@ readUID(clickBoardNum:clickBoardID):number[] { //Extracts the first 7 bytes of t
         }
     
         
-        this.i2cWriteBuffer(this.getNT3H2111Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
+        this.i2cWriteBuffer(this.getNT3H2111Addr(),i2cBuffer);
          
         }
        
 
         
      
-            findI2C(  clickBoardNum:clickBoardID)
+            findI2C()
             {
                
                 for(let i=0;i<128;i++)
                 {
-                    this.i2cWriteNumber(i,0,NumberFormat.UInt8LE,clickBoardNum,false)
+                    this.i2cWriteNumber(i,0,NumberFormat.UInt8LE,false)
                 }
                 
              
@@ -281,8 +271,8 @@ readUID(clickBoardNum:clickBoardID):number[] { //Extracts the first 7 bytes of t
         {
            
             
-            this.i2cWriteNumber(this.getNT3H2111Addr(this.clickBoardNumGlobal),register,NumberFormat.UInt8LE,this.clickBoardNumGlobal,true)
-           let i2cBuffer = this.I2CreadNoMem(this.getNT3H2111Addr(this.clickBoardNumGlobal) ,numBytes,this.clickBoardNumGlobal);
+            this.i2cWriteNumber(this.getNT3H2111Addr(),register,NumberFormat.UInt8LE,true)
+            let i2cBuffer = this.I2CreadNoMem(this.getNT3H2111Addr() ,numBytes);
 
             let dataArray:number[] = []; //Create an array to hold our read values
             for(let i=0; i<numBytes;i++)
@@ -298,13 +288,13 @@ readUID(clickBoardNum:clickBoardID):number[] { //Extracts the first 7 bytes of t
         }
         
         
-        setNT3H2111Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+        setNT3H2111Addr(deviceAddr:number)
         {
-            this.deviceAddress[clickBoardNum] = deviceAddr;
+            this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
         }
-        getNT3H2111Addr(clickBoardNum:clickBoardID):number
+        getNT3H2111Addr():number
         {
-            return this.deviceAddress[clickBoardNum];
+            return this.deviceAddress[this.clickBoardNumGlobal];
         }
     }
 }

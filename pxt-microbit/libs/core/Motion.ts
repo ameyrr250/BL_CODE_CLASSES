@@ -39,18 +39,18 @@ namespace Motion{
 //     }
     
     
-       //%blockId=Motion_isDetected
+        //%blockId=Motion_isDetected
         //%block="Has motion been detected on click%clickBoardNum ?"
         //% blockGap=7
         //% advanced=false
-    isDetected(clickBoardNum:clickBoardID):boolean
+    isDetected(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot):boolean
     {
-        let PINs = new bBoard.PinSettings();
-       if(PINs.digitalReadPin(clickIOPin.INT,clickBoardNum) == motion.detected)
-       {
-        return true
-       }
-       return false;
+        let PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
+        if(PINs.digitalReadPin(clickIOPin.INT) == motion.detected)
+        {
+            return true
+        }
+        return false;
     
     }
 

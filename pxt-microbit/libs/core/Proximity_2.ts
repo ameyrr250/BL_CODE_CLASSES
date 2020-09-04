@@ -6,21 +6,21 @@
 //% advanced=true
 namespace Proximity_2{
     enum Proximity2_Interrupts {ALS_INT, PROX_INT, NO_INT};
-    let i2csettingsobj= new bBoard.I2CSettings();
+    
 
     /**
      * Sets Proximity2 Click object.
      * @param clickBoardNum the clickBoardNum
      *  @param Proximity2 the Proximity2 Object
     */
-    //% block="create Proximity2 settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Proximity2"
     //% weight=110
-    export function createProximity2Settings(clickBoardNum: clickBoardID): Proximity2 {
-        return new Proximity2(clickBoardNum);
+    export function createProximity2Settings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Proximity2 {
+        return new Proximity2(clickBoardNum, clickSlot);
    }
 
-    export class Proximity2{
+    export class Proximity2 extends bBoard.I2CSettings{
      readonly INTERRUPT_STATUS : number
      readonly MAIN_CONFIGURATION : number
      readonly RECEIVE_CONFIGURATION : number
@@ -41,9 +41,11 @@ namespace Proximity_2{
      readonly ADDRESS  : number;
     isInitialized : Array<number>;
     
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number 
     
-    constructor(clickBoardNum: clickBoardID){
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    super(clickBoardNum, clickSlot)
     this.INTERRUPT_STATUS= 0x00
     this.MAIN_CONFIGURATION = 0x01
     this.RECEIVE_CONFIGURATION=   0x02
@@ -63,8 +65,9 @@ namespace Proximity_2{
     
     this.ADDRESS = 0b1001010;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    this.clickBoardNumGlobal=clickBoardNum
-    
+    this.clickBoardNumGlobal=clickBoardNum;
+    this.clickSlotNumGlobal=clickSlot;
+
     }
 
         //%blockId=Proximity2_ReadProximity
@@ -79,10 +82,10 @@ namespace Proximity_2{
         {
             if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.Proximity2_Initialize(this.clickBoardNumGlobal)
+                this.Proximity2_Initialize()
                 
             }
-            let val = this.Read_Proximity2_Register(this.ADC_BYTE_PROX,this.clickBoardNumGlobal);
+            let val = this.Read_Proximity2_Register(this.ADC_BYTE_PROX);
             return val;
         }
         
@@ -99,29 +102,29 @@ namespace Proximity_2{
         {
             if(this.isInitialized[this.clickBoardNumGlobal] == 0)
             {
-                this.Proximity2_Initialize(this.clickBoardNumGlobal)
+                this.Proximity2_Initialize()
                 
             }
-            let val = (this.Read_Proximity2_Register(this.ADC_HIGH_ALS,this.clickBoardNumGlobal) << 8) | this.Read_Proximity2_Register(this.ADC_LOW_ALS,this.clickBoardNumGlobal);
+            let val = (this.Read_Proximity2_Register(this.ADC_HIGH_ALS) << 8) | this.Read_Proximity2_Register(this.ADC_LOW_ALS);
             return val;
         }
     
     
     // Read a byte from register 'reg'
-    Read_Proximity2_Register( reg:number,clickBoardNum:clickBoardID):number
+    Read_Proximity2_Register( reg:number):number
     {
         let i2cBuffer = pins.createBuffer(2);
     
-        i2csettingsobj.i2cWriteNumber(this.ADDRESS,reg,NumberFormat.Int8LE,clickBoardNum,true)
+        super.i2cWriteNumber(this.ADDRESS,reg,NumberFormat.Int8LE,true)
        
-        i2cBuffer = i2csettingsobj.I2CreadNoMem(this.ADDRESS,1,clickBoardNum);
+        i2cBuffer = super.I2CreadNoMem(this.ADDRESS,1);
        
        
         return i2cBuffer.getUint8(0)
     }
     
     // Write byte 'byte' to register 'reg'
-    Write_Proximity2_Register(reg:number,  byte:number,clickBoardNum:clickBoardID) 
+    Write_Proximity2_Register(reg:number,  byte:number) 
     {
         let i2cBuffer = pins.createBuffer(2)
     
@@ -129,14 +132,14 @@ namespace Proximity_2{
         i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, byte) 
        
     
-        i2csettingsobj.i2cWriteBuffer(this.ADDRESS,i2cBuffer,clickBoardNum);
+        super.i2cWriteBuffer(this.ADDRESS,i2cBuffer);
     
        
     }
     
-    Proximity2_Read_Interrupt(clickBoardNum:clickBoardID):number
+    Proximity2_Read_Interrupt():number
     {
-        let val = this.Read_Proximity2_Register(this.INTERRUPT_STATUS,clickBoardNum);
+        let val = this.Read_Proximity2_Register(this.INTERRUPT_STATUS);
         if (val & 0b1) 
         {
             return Proximity2_Interrupts.ALS_INT;
@@ -151,31 +154,31 @@ namespace Proximity_2{
         }
     }
     
-    Proximity2_Set_Threshold(  thresh:number,clickBoardNum:clickBoardID)
+    Proximity2_Set_Threshold(thresh:number)
     {
-        this.Write_Proximity2_Register(this.PROX_THRESHOLD, thresh,clickBoardNum);
+        this.Write_Proximity2_Register(this.PROX_THRESHOLD, thresh);
     }
     
     // Setup the chip for proximity sensing
-    Proximity2_Initialize(clickBoardNum:clickBoardID)
+    Proximity2_Initialize()
     {
-        this.isInitialized[clickBoardNum] = 1;
-        this.Write_Proximity2_Register(this.MAIN_CONFIGURATION, 0b110000,clickBoardNum);
-        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000,clickBoardNum);
-        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000,clickBoardNum);
-        this.Write_Proximity2_Register(this.TRANSMIT_CONFIGURATION, 0b00001111,clickBoardNum);
+        this.isInitialized[this.clickBoardNumGlobal] = 1;
+        this.Write_Proximity2_Register(this.MAIN_CONFIGURATION, 0b110000);
+        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000);
+        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000);
+        this.Write_Proximity2_Register(this.TRANSMIT_CONFIGURATION, 0b00001111);
     }
     
-    Proximity2_Set_Als_Upper_Threshold(thresh:number,clickBoardNum:clickBoardID)
+    Proximity2_Set_Als_Upper_Threshold(thresh:number)
     {
-        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_HIGH, thresh >> 8,clickBoardNum);;
-        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_LOW, thresh & 0xFF,clickBoardNum);
+        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_HIGH, thresh >> 8);;
+        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_LOW, thresh & 0xFF);
     }
     
-    Proximity2_Set_Als_Lower_Threshold(thresh:number,clickBoardNum:clickBoardID)
+    Proximity2_Set_Als_Lower_Threshold(thresh:number)
     {
-        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_HIGH, thresh >> 8,clickBoardNum);
-        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_LOW, thresh & 0xFF,clickBoardNum);
+        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_HIGH, thresh >> 8);
+        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_LOW, thresh & 0xFF);
     }
 
 

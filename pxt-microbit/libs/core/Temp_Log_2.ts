@@ -10,11 +10,11 @@ namespace Temp_Log_2{
      * @param clickBoardNum the clickBoardNum
      *  @param Temp_Log the Temp_Log Object
      */
-    //% block="create Temp_Log settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Temp_Log"
     //% weight=110
-    export function createTemp_Log(clickBoardNum: clickBoardID): Temp_Log {
-        return new Temp_Log(clickBoardNum);
+    export function createTemp_Log(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Temp_Log {
+        return new Temp_Log(clickBoardNum, clickSlot);
     }
 
 
@@ -31,43 +31,44 @@ namespace Temp_Log_2{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID){
-    super();
-
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    super(clickBoardNum, clickSlot);
+    this.clickBoardNumGlobal=clickBoardNum;
+    this.clickSlotNumGlobal=clickSlot;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    this.clickBoardNumGlobal=clickBoardNum
     }
 
-    initialize(deviceAddr:number,clickBoardNum:clickBoardID)
+    initialize(deviceAddr:number)
     {
         //setTMP116Addr(deviceAddr,clickBoardNum)
-        this.isInitialized[clickBoardNum]  = 1
-        this.setTMP116Addr(deviceAddr,clickBoardNum)
-        this.writeTMP116(this.TMP116_REG_CONFIG,0x0220,clickBoardNum) //Initialize the Config register
+        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.setTMP116Addr(deviceAddr)
+        this.writeTMP116(this.TMP116_REG_CONFIG,0x0220) //Initialize the Config register
     
     }
-    setTMP116Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+    setTMP116Addr(deviceAddr:number)
     {
-        this.deviceAddress[clickBoardNum] = deviceAddr;
+        this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
     }
-    getTMP116Addr(clickBoardNum:clickBoardID):number
+    getTMP116Addr():number
     {
-        return this.deviceAddress[clickBoardNum];
+        return this.deviceAddress[this.clickBoardNumGlobal];
     }
-    readTMP116Reg(register:number,clickBoardNum:clickBoardID):number{
-        return this.readTMP116(this.TMP116_REG_CONFIG,clickBoardNum)
+    readTMP116Reg(register:number):number{
+        return this.readTMP116(this.TMP116_REG_CONFIG)
     }
     
-    readT(clickBoardNum:clickBoardID):number
+    readT():number
     {
         return this.readTemperatureC();
     }
     
     
-    writeTMP116(register:number,value:number,clickBoardNum:clickBoardID)
+    writeTMP116(register:number,value:number)
     {
     
     
@@ -77,18 +78,18 @@ namespace Temp_Log_2{
         i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value >> 8) 
         i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, value & 0xFF)
     
-        this.i2cWriteBuffer(this.getTMP116Addr(clickBoardNum),i2cBuffer,clickBoardNum);
+        this.i2cWriteBuffer(this.getTMP116Addr(),i2cBuffer);
      
     }
     //Reads two consecutive bytes from a given location
     //Stores the result at the provided outputPointer
-    readTMP116( register:number, clickBoardNum:clickBoardID):number
+    readTMP116( register:number):number
     {
         let i2cBuffer = pins.createBuffer(2);
     
-        this.i2cWriteNumber(this.getTMP116Addr(clickBoardNum),register,NumberFormat.Int8LE,clickBoardNum,true)
+        this.i2cWriteNumber(this.getTMP116Addr(),register,NumberFormat.Int8LE,true)
     
-     i2cBuffer = this.I2CreadNoMem(this.getTMP116Addr(clickBoardNum),2,clickBoardNum);
+     i2cBuffer = this.I2CreadNoMem(this.getTMP116Addr(),2);
     let sReturn =  Math.roundWithPrecision(i2cBuffer.getNumber(NumberFormat.Int16BE,0),1)
     
     
@@ -113,10 +114,10 @@ namespace Temp_Log_2{
     
         if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
-            this.initialize(this.TMP116_DEVICE_ADDRESS,this.clickBoardNumGlobal)
+            this.initialize(this.TMP116_DEVICE_ADDRESS)
             
         }
-        return (this.readTMP116(this.TMP116_REG_TEMP,this.clickBoardNumGlobal) * 0.0078125)
+        return (this.readTMP116(this.TMP116_REG_TEMP) * 0.0078125)
     }
     //%blockId=Temp_Log_readTemperatureF
     //%block="$this Get temperature in Fahrenheit"
@@ -131,27 +132,27 @@ namespace Temp_Log_2{
         return ((this.readTemperatureC())* 9.0/5.0 + 32.0)
     }
     
-    readHighLimit(clickBoardNum:clickBoardID):number
+    readHighLimit():number
     {
-        return  (this.readTMP116(this.TMP116_REG_HIGH_LIMIT,clickBoardNum) * 0.0078125)
+        return  (this.readTMP116(this.TMP116_REG_HIGH_LIMIT) * 0.0078125)
     }
     
-    readLowLimit(clickBoardNum:clickBoardID): number
+    readLowLimit(): number
     {
     
-        return  (this.readTMP116(this.TMP116_REG_LOW_LIMIT,clickBoardNum) * 0.0078125)
+        return  (this.readTMP116(this.TMP116_REG_LOW_LIMIT) * 0.0078125)
     }
     
-    writeHighLimit( limit:number,clickBoardNum:clickBoardID)
+    writeHighLimit(limit:number)
     {
-        this.writeTMP116(this.TMP116_REG_HIGH_LIMIT,(limit/0.0078125),clickBoardNum)
+        this.writeTMP116(this.TMP116_REG_HIGH_LIMIT,(limit/0.0078125))
         
     }
     
     
     writeLowLimit(limit:number,clickBoardNum:clickBoardID)
     {
-        this.writeTMP116(this.TMP116_REG_LOW_LIMIT,(limit/0.0078125),clickBoardNum)
+        this.writeTMP116(this.TMP116_REG_LOW_LIMIT,(limit/0.0078125))
         
     
     }
@@ -159,7 +160,7 @@ namespace Temp_Log_2{
     readDeviceId(clickBoardNum:clickBoardID):number
     {
       
-        return   (this.readTMP116(this.TMP116_REG_DEVICE_ID,clickBoardNum))
+        return   (this.readTMP116(this.TMP116_REG_DEVICE_ID))
     }
     
     }

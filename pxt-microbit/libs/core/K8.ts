@@ -59,21 +59,25 @@ namespace k8 {
     export let M1_PWR: number = DigitalPin.P15
     export let M1_DIR: number = DigitalPin.P16
 
-    //% block="create K8 settings"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="K8"
     //% weight=110
-    export function createK8(): K8 {
-        return new K8();
+    export function createK8(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): K8 {
+        return new K8(clickBoardNum, clickSlot);
    }
 
 
     export class K8{
 
-        private MAX_PULSE : number;
-        private motorState: MotorPower 
+        private MAX_PULSE : number
+        private motorState: MotorPower
+        private clickBoardNumGlobal:number
+        private clickSlotNumGlobal:number 
 
-    constructor(){
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
         this.MAX_PULSE = 7800;
+        this.clickBoardNumGlobal=clickBoardNum;
+        this.clickSlotNumGlobal=clickSlot;
         this.motorState = MotorPower.ON;
     }
 
@@ -233,8 +237,8 @@ namespace k8 {
 
 
 
-/**
- *Drives the robot straight at a specified speed
+    /**
+    *Drives the robot straight at a specified speed
     */
     //% block
     //% group="Motion"
@@ -244,13 +248,13 @@ namespace k8 {
     //% blockNamespace=k8
     //% this.shadow=variables_get
     //% this.defl="K8"
-driveStraight(speed: number): void {
+    driveStraight(speed: number): void {
     this.motorControl(Motor.LEFT, speed)
     this.motorControl(Motor.RIGHT, speed)
-}
+    }
 
-/**
- *Turns the robot to the left at a specified speed
+    /**
+    *Turns the robot to the left at a specified speed
     */
     //% block
     //% group="Motion"
@@ -260,29 +264,29 @@ driveStraight(speed: number): void {
     //% blockNamespace=k8
     //% this.shadow=variables_get
     //% this.defl="K8"
-turnLeft(speed: number): void {
+    turnLeft(speed: number): void {
     this.motorControl(Motor.LEFT, 0)
     this.motorControl(Motor.RIGHT, speed)
-}
+    }
 
-/**
- *Turns the robot to the right at a specified speed
+    /**
+    *Turns the robot to the right at a specified speed
     */
     //% block
     //% group="Motion"
     //% blockId=motion_turn_right block="$this turn right |speed: $speed"
-//% speed.min=0 speed.max=100
-//% weight=50
-//% blockNamespace=k8
+    //% speed.min=0 speed.max=100
+    //% weight=50
+    //% blockNamespace=k8
     //% this.shadow=variables_get
     //% this.defl="K8"
-turnRight(speed: number): void {
+    turnRight(speed: number): void {
     this.motorControl(Motor.LEFT, speed)
     this.motorControl(Motor.RIGHT, 0)
-}
+    }
 
-/**
- *Stop the motors
+    /**
+    *Stop the motors
     */
     //% block
     //% group="Motion"
@@ -291,30 +295,30 @@ turnRight(speed: number): void {
     //% blockNamespace=k8
     //% this.shadow=variables_get
     //% this.defl="K8"
-stop(): void {
+    stop(): void {
     this.motorControl(Motor.LEFT, 0)
     this.motorControl(Motor.RIGHT, 0)
-}
+    }
 
-/**
-* Control both wheels in one function.
-* Speeds range from -100 to 100.
-* Negative speeds go backwards, positive go forwards.
-*/
-//% block
-//% group="Motion"
-//% blockId=motion_drive block="$this drive |left: $leftWheelSpeed|right: $rightWheelSpeed"
-//% leftWheelSpeed.min=-100 leftWheelSpeed.max=100
-//% rightWheelSpeed.min=-100 rightWheelSpeed.max=100
-//% weight=40
-//% advanced=false
-//% blockNamespace=k8
+    /**
+    * Control both wheels in one function.
+    * Speeds range from -100 to 100.
+    * Negative speeds go backwards, positive go forwards.
+    */
+    //% block
+    //% group="Motion"
+    //% blockId=motion_drive block="$this drive |left: $leftWheelSpeed|right: $rightWheelSpeed"
+    //% leftWheelSpeed.min=-100 leftWheelSpeed.max=100
+    //% rightWheelSpeed.min=-100 rightWheelSpeed.max=100
+    //% weight=40
+    //% advanced=false
+    //% blockNamespace=k8
     //% this.shadow=variables_get
     //% this.defl="K8"
-drive(leftWheelSpeed: number, rightWheelSpeed: number): void {
+    drive(leftWheelSpeed: number, rightWheelSpeed: number): void {
     this.motorControl(Motor.LEFT, leftWheelSpeed)
     this.motorControl(Motor.RIGHT, rightWheelSpeed)
-}
+    }
 
 /**
 * Control the speed and direction of a single wheel
@@ -326,8 +330,8 @@ drive(leftWheelSpeed: number, rightWheelSpeed: number): void {
 //% weight=30
 //% advanced=false
 //% blockNamespace=k8
-    //% this.shadow=variables_get
-    //% this.defl="K8"
+//% this.shadow=variables_get
+//% this.defl="K8"
 driveWheel(wheel: Motor, speed: number): void {
     this.motorControl(wheel, speed)
 }

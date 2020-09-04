@@ -11,11 +11,11 @@ namespace Thermo_6{
      * @param clickBoardNum the clickBoardNum
      *  @param Thermo the Thermo Object
     */
-    //% block="create Thermo settings on clickBoard $clickBoardNum"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Thermo"
     //% weight=110
-    export function createThermo(clickBoardNum: clickBoardID): Thermo {
-        return new Thermo(clickBoardNum);
+    export function createThermo(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Thermo {
+        return new Thermo(clickBoardNum, clickSlot);
    }
 
     export class Thermo extends bBoard.I2CSettings{
@@ -30,13 +30,15 @@ namespace Thermo_6{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID){
-    super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    super(clickBoardNum, clickSlot);
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.clickBoardNumGlobal=clickBoardNum
+    this.clickSlotNumGlobal=clickSlot;
     }
    
     //%blockId=Thermo6_getTempC
@@ -93,9 +95,9 @@ namespace Thermo_6{
    initialize(deviceAddr:number)
    {
       
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
-       this.setMAX31875Addr(deviceAddr,this.clickBoardNumGlobal)
-       this.writeMAX31875(0x0066,this.CONFIG_REG) //Set PEC to off, 12 bit resolution and 8 samples/second
+    this.isInitialized[this.clickBoardNumGlobal]  = 1
+    this.setMAX31875Addr(deviceAddr)
+    this.writeMAX31875(0x0066,this.CONFIG_REG) //Set PEC to off, 12 bit resolution and 8 samples/second
    
    
    }
@@ -119,7 +121,7 @@ namespace Thermo_6{
        i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, value & 0xFF)
 
    
-       this.i2cWriteBuffer(this.getMAX31875Addr(this.clickBoardNumGlobal),i2cBuffer,this.clickBoardNumGlobal);
+       this.i2cWriteBuffer(this.getMAX31875Addr(),i2cBuffer);
     
    }
    
@@ -134,9 +136,9 @@ namespace Thermo_6{
    {
        let i2cBuffer = pins.createBuffer(2);
 
-       this.i2cWriteNumber(this.getMAX31875Addr(this.clickBoardNumGlobal),register,NumberFormat.UInt8LE,this.clickBoardNumGlobal,true)
+       this.i2cWriteNumber(this.getMAX31875Addr(),register,NumberFormat.UInt8LE,true)
 
-       i2cBuffer = this.I2CreadNoMem(this.getMAX31875Addr(this.clickBoardNumGlobal),2,this.clickBoardNumGlobal);
+       i2cBuffer = this.I2CreadNoMem(this.getMAX31875Addr(),2);
 
  
        let sReturn = Math.roundWithPrecision(i2cBuffer.getNumber(NumberFormat.Int16BE,0),1)
@@ -147,13 +149,13 @@ namespace Thermo_6{
    }
    
    
-   setMAX31875Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+   setMAX31875Addr(deviceAddr:number)
    {
-    this.deviceAddress[clickBoardNum] = deviceAddr;
+    this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
    }
-   getMAX31875Addr(clickBoardNum:clickBoardID):number
+   getMAX31875Addr():number
    {
-       return this.deviceAddress[clickBoardNum];
+       return this.deviceAddress[this.clickBoardNumGlobal];
    }
 
 

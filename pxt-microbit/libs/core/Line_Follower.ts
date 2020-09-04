@@ -21,8 +21,6 @@ namespace Line_Follower{
     {
         reflected = 0,
         not_reflected =1
-       
-
 
     }
 
@@ -40,34 +38,37 @@ namespace Line_Follower{
     /**
      * Sets LineFollower Click object.
      * @param clickBoardNum the clickBoardNum
+     * @param clickClot the bus number
      *  @param LineFollower the LineFollower Object
      */
-    //% block="create Line Follower settings"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="LineFollower"
     //% weight=110
-    export function createLineFollower(clickBoardNum: clickBoardID): LineFollower {
-        return new LineFollower(clickBoardNum);
+    export function createLineFollower(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): LineFollower {
+        return new LineFollower(clickBoardNum, clickSlot);
     }
 
     export class LineFollower extends bBoard.PinSettings{
    
    
     isInitialized : Array<number>;
-    private clickBoardNumGlobal:number 
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID){
-        super();
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+        super(clickBoardNum, clickSlot);
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum
+        this.clickBoardNumGlobal=clickBoardNum;
+        this.clickSlotNumGlobal=clickSlot;
     }
  
 
 
      
-        initialize(deviceAddr:number,clickBoardNum:clickBoardID)
+        initialize(deviceAddr:number)
         {
            
-            this.isInitialized[clickBoardNum]  = 1
+            this.isInitialized[this.clickBoardNumGlobal]  = 1
 
         
         }
@@ -93,11 +94,11 @@ namespace Line_Follower{
     //% this.defl="LineFollower"
     getWhiteDirection() {
 
-    let u1_now = this.getU1(this.clickBoardNumGlobal);
-    let u2_now = this.getU2(this.clickBoardNumGlobal);
-    let u3_now = this.getU3(this.clickBoardNumGlobal);
-    let u4_now = this.getU4(this.clickBoardNumGlobal);
-    let u5_now = this.getU5(this.clickBoardNumGlobal);
+    let u1_now = this.getU1();
+    let u2_now = this.getU2();
+    let u3_now = this.getU3();
+    let u4_now = this.getU4();
+    let u5_now = this.getU5();
     
     if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){
        
@@ -148,11 +149,11 @@ namespace Line_Follower{
     //% this.defl="LineFollower"
     getBlackDirection() {
 
-        let u1_now = this.getU1(this.clickBoardNumGlobal);
-        let u2_now = this.getU2(this.clickBoardNumGlobal);
-        let u3_now = this.getU3(this.clickBoardNumGlobal);
-        let u4_now = this.getU4(this.clickBoardNumGlobal);
-        let u5_now = this.getU5(this.clickBoardNumGlobal);
+        let u1_now = this.getU1();
+        let u2_now = this.getU2();
+        let u3_now = this.getU3();
+        let u4_now = this.getU4();
+        let u5_now = this.getU5();
 
 
         if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){
@@ -196,36 +197,36 @@ namespace Line_Follower{
 
 
 
-getU1(clickBoardNum:clickBoardID):number{
+getU1():number{
     
-    let reflectedValue =  this.digitalReadPin(clickIOPin.RST,clickBoardNum)
+    let reflectedValue =  this.digitalReadPin(clickIOPin.RST)
 
     return reflectedValue
 }
 
-getU2(clickBoardNum:clickBoardID):number{
+getU2():number{
     
-    let reflectedValue =  this.digitalReadPin(clickIOPin.AN,clickBoardNum)
+    let reflectedValue =  this.digitalReadPin(clickIOPin.AN)
 
     return reflectedValue
 }
-getU3(clickBoardNum:clickBoardID):number{
+getU3():number{
     
-    let reflectedValue =  this.digitalReadPin(clickIOPin.TX,clickBoardNum)
+    let reflectedValue =  this.digitalReadPin(clickIOPin.TX)
 
     return reflectedValue
 }
-getU4(clickBoardNum:clickBoardID):number{
+getU4():number{
     
-    let reflectedValue =  this.digitalReadPin(clickIOPin.RX,clickBoardNum)
+    let reflectedValue =  this.digitalReadPin(clickIOPin.RX)
 
     return reflectedValue
 }
 
  
-getU5(clickBoardNum:clickBoardID):number{
+getU5():number{
     
-    let reflectedValue =  this.digitalReadPin(clickIOPin.PWM,clickBoardNum)
+    let reflectedValue =  this.digitalReadPin(clickIOPin.PWM)
 
     return reflectedValue
 }
@@ -244,23 +245,23 @@ getU5(clickBoardNum:clickBoardID):number{
         switch (sensorNum)
         {
             case IRsensor.U1:
-                reflectedValue = this.getU1(this.clickBoardNumGlobal);
+                reflectedValue = this.getU1();
             break;
         
             case IRsensor.U2:
-                 reflectedValue = this.getU2(this.clickBoardNumGlobal);
+                 reflectedValue = this.getU2();
             break;
         
             case IRsensor.U3:
-                 reflectedValue = this.getU3(this.clickBoardNumGlobal);
+                 reflectedValue = this.getU3();
             break;
         
             case IRsensor.U4:
-                 reflectedValue = this.getU4(this.clickBoardNumGlobal);
+                 reflectedValue = this.getU4();
             break;
         
             case IRsensor.U5:
-                 reflectedValue = this.getU5(this.clickBoardNumGlobal);
+                 reflectedValue = this.getU5();
             break;                                
         }
         

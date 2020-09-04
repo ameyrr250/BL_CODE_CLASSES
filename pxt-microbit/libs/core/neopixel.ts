@@ -24,6 +24,43 @@ enum NeoPixelColors {
     Black = 0x000000
 }
 
+declare const enum neoPin {
+none = 0x0,
+AN = 0x0001,
+RST = 0x0002,
+CS = 0x0004,
+SCK = 0x0008,
+MISO = 0x0010,
+MOSI = 0x0020,
+SDA = 0x0400,
+SCL = 0x0800,
+TX = 0x1000,
+RX = 0x2000,
+INT = 0x4000,
+PWM = 0x8000,
+    P0 = 100,  // MICROBIT_ID_IO_P0
+    P1 = 101,  // MICROBIT_ID_IO_P1
+    P2 = 102,  // MICROBIT_ID_IO_P2
+    P3 = 103,  // MICROBIT_ID_IO_P3
+    P4 = 104,  // MICROBIT_ID_IO_P4
+    P5 = 105,  // MICROBIT_ID_IO_P5
+    P6 = 106,  // MICROBIT_ID_IO_P6
+    P7 = 107,  // MICROBIT_ID_IO_P7
+    P8 = 108,  // MICROBIT_ID_IO_P8
+    P9 = 109,  // MICROBIT_ID_IO_P9
+    P10 = 110,  // MICROBIT_ID_IO_P10
+    P11 = 111,  // MICROBIT_ID_IO_P11
+    P12 = 112,  // MICROBIT_ID_IO_P12
+    P13 = 113,  // MICROBIT_ID_IO_P13
+    P14 = 114,  // MICROBIT_ID_IO_P14
+    P15 = 115,  // MICROBIT_ID_IO_P15
+    P16 = 116,  // MICROBIT_ID_IO_P16
+    //% blockHidden=1
+    P19 = 119,  // MICROBIT_ID_IO_P19
+    //% blockHidden=1
+    P20 = 120,  // MICROBIT_ID_IO_P20
+    }
+
 /**
  * Different modes for RGB or RGB+W NeoPixel strips
  */
@@ -45,15 +82,58 @@ namespace neopixel {
     /**
      * A NeoPixel strip
      */
-    export class Strip {
-        buf: Buffer;
-        pin: DigitalPin;
+
+    /**
+     * Sets neopixel object.
+     * @param clickBoardNum the clickBoardNum
+     *  @param Strip the neopixel Object
+     */
+    //% block=" $clickBoardNum $clickSlot"
+    //% blockSetVariable="Strip"
+    //% weight=110
+    export function createButton_G(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Strip {
+        return new Strip(clickBoardNum, clickSlot);
+   }
+
+
+     //Neopixel Function IDs
+
+let NEOPIXEL_ADD     =          0x01
+let NEOPIXEL_REMOVE    =        0x02
+let NEOPIXEL_SHOW   =           0x03
+let NEOPIXEL_HIDE    =          0x04
+let NEOPIXEL_CLEAR      =       0x05
+let NEOPIXEL_STRIP_WRITE_SINGLE_DATA =0x06
+let NEOPIXEL_STRIP_WRITE_BUFFER_DATA =0x07
+let NEOPIXEL_STRIP_READ_SINGLE_DATA  =0x08
+let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
+
+    export class Strip extends bBoard.peripheralSettings{
+        
+       private buf: Buffer;
+       private pin: DigitalPin;
+
+        //b.Board specific
+        private board: clickBoardID;
+        private clickPort: clickBoardSlot;
+        private bBoard: boolean;
+        //b.Board specific
+
         // TODO: encode as bytes instead of 32bit
-        brightness: number;
-        start: number; // start offset in LED strip
-        _length: number; // number of LEDs
-        _mode: NeoPixelMode;
-        _matrixWidth: number; // number of leds in a matrix - if any
+        private brightness: number;
+        private start: number; // start offset in LED strip
+        private _length: number; // number of LEDs
+        private _mode: NeoPixelMode;
+        private _matrixWidth: number; // number of leds in a matrix - if any
+
+        private clickBoardNumGlobal:number
+        private clickSlotNumGlobal:number
+    
+        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+            super(clickBoardNum, clickSlot)
+            this.clickBoardNumGlobal=clickBoardNum;
+            this.clickSlotNumGlobal=clickSlot;
+        }
 
         /**
          * Shows all LEDs to a given color (range 0-255 for r, g, b).
@@ -240,7 +320,20 @@ namespace neopixel {
         //% weight=79
         //% parts="neopixel"
         show() {
-            ws2812b.sendBuffer(this.buf, this.pin);
+            if(this.bBoard == true)
+            {
+                
+                super.sendBuffer(parseInt(this.pin.toString()), moduleIDs.NEOPIXEL_module_id,NEOPIXEL_STRIP_WRITE_BUFFER_DATA,this.buf )
+                
+                super.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id, NEOPIXEL_SHOW,[] )
+                
+            }
+            else
+            {
+                
+                ws2812b.sendBuffer(this.buf, this.pin);
+            }
+            
         }
 
         /**
@@ -472,13 +565,39 @@ namespace neopixel {
      * @param pin the pin where the neopixel is connected.
      * @param numleds number of leds in the strip, eg: 24,30,60,64
      */
-    //% blockId="neopixel_create" block="NeoPixel at pin %pin|with %numleds|leds as %mode"
+    //% blockId="neopixel_create" block="My Neopixels are at %board %slot %pin|with %numleds|leds as %mode| on "
     //% weight=90 blockGap=8
     //% parts="neopixel"
     //% trackArgs=0,2
     //% blockSetVariable=strip
-    export function create(pin: DigitalPin, numleds: number, mode: NeoPixelMode): Strip {
+    export function create(board:boardID,  clickPort:clickPortID, pin: neoPin, numleds: number, mode: NeoPixelMode, ): Strip {
         let strip = new Strip();
+
+        if(pin >=100 && pin <=120)
+        {
+            strip.bBoard = false;
+            strip.pin = parseInt(pin.toString());
+        }
+        else
+        {
+            strip.bBoard = true;
+            strip.pin = parseInt(pin.toString());
+          
+            if(clickPort == clickPortID.none) //If the on-board neopixels are selected
+            {
+               
+                strip.pin = parseInt(clickIOPin.PWM.toString()); //Set the pin to the PWM on click zero (Click Z reserves PWM pin for built in neopixels)
+               
+            }
+            
+            strip.board = board;
+            strip.clickPort = clickPort;
+            
+            bBoard.sendData(parseInt(strip.pin.toString()),clickPort,moduleIDs.NEOPIXEL_module_id,NEOPIXEL_ADD,board,[mode,numleds])
+          
+            
+        }
+        
         let stride = mode === NeoPixelMode.RGBW ? 4 : 3;
         strip.buf = pins.createBuffer(numleds * stride);
         strip.start = 0;
@@ -486,7 +605,8 @@ namespace neopixel {
         strip._mode = mode;
         strip._matrixWidth = 0;
         strip.setBrightness(255)
-        strip.setPin(pin)
+        
+   
         return strip;
     }
 

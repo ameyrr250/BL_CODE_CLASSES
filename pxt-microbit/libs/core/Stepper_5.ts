@@ -19,15 +19,24 @@ namespace Stepper_5 {
     }
 
 
-    //% block="create Stepper settings"
+    //% block=" $clickBoardNum $clickSlot" 
     //% blockSetVariable="Stepper"
     //% weight=110
-    export function createStepper(): Stepper {
-        return new Stepper();
+    export function createStepper(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Stepper {
+        return new Stepper(clickBoardNum, clickSlot);
    }
 
 
     export class Stepper extends bBoard.PinSettings{
+
+        private clickBoardNumGlobal:number
+        private clickSlotNumGlobal:number
+    
+        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+            super(clickBoardNum, clickSlot);
+            this.clickBoardNumGlobal=clickBoardNum;
+            this.clickSlotNumGlobal=clickSlot;
+        }
 
     //% blockId=step
     //% block="$this Single step motor $direction on click$clickBoardNum"
@@ -36,10 +45,10 @@ namespace Stepper_5 {
     //% blockNamespace=Stepper_5
     //% this.shadow=variables_get
     //% this.defl="Stepper"
-    step(direction:Stepper_5.Rotation,clickBoardNum: clickBoardID): void {
-        this.setPin(clickIOPin.PWM,clickBoardNum)
+    step(direction:Stepper_5.Rotation): void {
+        this.setPin(clickIOPin.PWM)
         basic.pause(1)
-        this.clearPin(clickIOPin.PWM,clickBoardNum)
+        this.clearPin(clickIOPin.PWM)
     }
 
     //% blockId=stepNum
@@ -49,13 +58,13 @@ namespace Stepper_5 {
     //% blockNamespace=Stepper_5
     //% this.shadow=variables_get
     //% this.defl="Stepper"
-    stepNumber(numSteps: number, direction:Stepper_5.Rotation,clickBoardNum: clickBoardID): void {
-        this.writePin(direction,clickIOPin.RST,clickBoardNum)
+    stepNumber(numSteps: number, direction:Stepper_5.Rotation): void {
+        this.writePin(direction,clickIOPin.RST)
         for(let i=0;i<numSteps;i++)
         {
-            this.setPin(clickIOPin.PWM,clickBoardNum)
+            this.setPin(clickIOPin.PWM)
             control.waitMicros(500);
-            this.clearPin(clickIOPin.PWM,clickBoardNum)
+            this.clearPin(clickIOPin.PWM)
             control.waitMicros(500);
 
         }

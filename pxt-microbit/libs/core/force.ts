@@ -12,7 +12,7 @@ namespace Force_Click{
      * @param clickBoardNum the clickBoardNum
      *  @param Force the Force Object
      */
-    //% block="create force settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Force"
     export function createForceSettings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Force {
         return new Force(clickBoardNum, clickSlot);

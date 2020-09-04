@@ -21885,6 +21885,27 @@
                         "Number"
                     ]
                 },
+                "clickBoardSlot.default": {
+                    "retType": "clickBoardSlot.default",
+                    "attributes": {
+                        "block": "Peripheral",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Peripheral",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "clickBoardSlot.default",
+                        "Number"
+                    ],
+                    "pyQName": "clickBoardSlot.DEFAULT"
+                },
                 "clickBoardSlot.A": {
                     "retType": "clickBoardSlot.A",
                     "attributes": {
@@ -22267,6 +22288,110 @@
                     ],
                     "pyQName": "clickIODirection.OUTPUT"
                 },
+                "moduleIDs": {
+                    "kind": 6,
+                    "retType": "moduleIDs",
+                    "extendsTypes": [
+                        "moduleIDs",
+                        "Number"
+                    ]
+                },
+                "moduleIDs.GPIO_module_id": {
+                    "retType": "moduleIDs.GPIO_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.GPIO_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.GPIO_MODULE_ID"
+                },
+                "moduleIDs.UART_module_id": {
+                    "retType": "moduleIDs.UART_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.UART_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.UART_MODULE_ID"
+                },
+                "moduleIDs.I2C_module_id": {
+                    "retType": "moduleIDs.I2C_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.I2C_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.I2C_MODULE_ID"
+                },
+                "moduleIDs.SPI_module_id": {
+                    "retType": "moduleIDs.SPI_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.SPI_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.SPI_MODULE_ID"
+                },
+                "moduleIDs.MOTOR_module_id": {
+                    "retType": "moduleIDs.MOTOR_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.MOTOR_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.MOTOR_MODULE_ID"
+                },
+                "moduleIDs.MIC_module_id": {
+                    "retType": "moduleIDs.MIC_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.MIC_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.MIC_MODULE_ID"
+                },
+                "moduleIDs.PWM_module_id": {
+                    "retType": "moduleIDs.PWM_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.PWM_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.PWM_MODULE_ID"
+                },
+                "moduleIDs.ADC_module_id": {
+                    "retType": "moduleIDs.ADC_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.ADC_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.ADC_MODULE_ID"
+                },
+                "moduleIDs.MUSIC_module_id": {
+                    "retType": "moduleIDs.MUSIC_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.MUSIC_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.MUSIC_MODULE_ID"
+                },
+                "moduleIDs.EEPROM_module_id": {
+                    "retType": "moduleIDs.EEPROM_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.EEPROM_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.EEPROM_MODULE_ID"
+                },
+                "moduleIDs.NEOPIXEL_module_id": {
+                    "retType": "moduleIDs.NEOPIXEL_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.NEOPIXEL_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.NEOPIXEL_MODULE_ID"
+                },
+                "moduleIDs.STATUS_module_id": {
+                    "retType": "moduleIDs.STATUS_module_id",
+                    "extendsTypes": [
+                        "moduleIDs.STATUS_module_id",
+                        "Number"
+                    ],
+                    "pyQName": "moduleIDs.STATUS_MODULE_ID"
+                },
                 "bBoard": {
                     "kind": 5,
                     "retType": "",
@@ -22287,7 +22412,8 @@
                     "kind": -3,
                     "retType": "bBoard.IOSettings",
                     "attributes": {
-                        "block": "create IO settingsat $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
+                        "inlineInputMode": "inline",
                         "blockSetVariable": "IOSettings",
                         "group": "IO",
                         "weight": 110,
@@ -22295,7 +22421,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create IO settingsat ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22305,7 +22431,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22346,7 +22472,7 @@
                     "kind": -3,
                     "retType": "bBoard.PWMSettings",
                     "attributes": {
-                        "block": "create PWM settings at $clickBoardNum on slot $clickSlot ",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "PWMSettings",
                         "group": "PWM",
                         "weight": 110,
@@ -22354,7 +22480,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create PWM settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22364,18 +22490,13 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
                                     "kind": "param",
                                     "name": "clickSlot",
                                     "ref": true
-                                },
-                                {
-                                    "kind": "label",
-                                    "text": " ",
-                                    "style": []
                                 }
                             ],
                             "parameters": [
@@ -22410,7 +22531,7 @@
                     "kind": -3,
                     "retType": "bBoard.UARTSettings",
                     "attributes": {
-                        "block": "create UART settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "UARTSettings",
                         "group": "UART",
                         "weight": 110,
@@ -22418,7 +22539,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create UART settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22428,7 +22549,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22469,7 +22590,7 @@
                     "kind": -3,
                     "retType": "bBoard.I2CSettings",
                     "attributes": {
-                        "block": "create I2C settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "I2CSettings",
                         "group": "I2C",
                         "weight": 110,
@@ -22477,7 +22598,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create I2C settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22487,7 +22608,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22528,7 +22649,7 @@
                     "kind": -3,
                     "retType": "bBoard.SPIsetting",
                     "attributes": {
-                        "block": "create SPI settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "SPISettings",
                         "group": "SPI",
                         "weight": 110,
@@ -22536,7 +22657,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create SPI settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22546,7 +22667,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22587,7 +22708,7 @@
                     "kind": -3,
                     "retType": "bBoard.PinSettings",
                     "attributes": {
-                        "block": "create Pin settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "PinSettings",
                         "group": "PINs",
                         "weight": 110,
@@ -22595,7 +22716,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Pin settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22605,7 +22726,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -22641,6 +22762,112 @@
                         }
                     ],
                     "pyQName": "bBoard.create_pin_settings"
+                },
+                "bBoard.peripheralSettings": {
+                    "kind": 8,
+                    "retType": "bBoard.peripheralSettings",
+                    "extendsTypes": []
+                },
+                "bBoard.peripheralSettings.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "bBoard.peripheralSettings.sendCommand": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickPin",
+                            "type": "clickIOPin",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "moduleID"
+                        },
+                        {
+                            "name": "functionID"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard.peripheralSettings.send_command"
+                },
+                "bBoard.peripheralSettings.sendData": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickPin",
+                            "type": "clickIOPin",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "moduleID"
+                        },
+                        {
+                            "name": "functionID"
+                        },
+                        {
+                            "name": "data",
+                            "type": "number[]"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard.peripheralSettings.send_data"
+                },
+                "bBoard.peripheralSettings.readData16": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "clickPin",
+                            "type": "clickIOPin",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "moduleID"
+                        },
+                        {
+                            "name": "functionID"
+                        },
+                        {
+                            "name": "data",
+                            "type": "number[]"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard.peripheralSettings.read_data16"
+                },
+                "bBoard.peripheralSettings.sendBuffer": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "clickPin",
+                            "type": "clickIOPin",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "moduleID"
+                        },
+                        {
+                            "name": "functionID"
+                        },
+                        {
+                            "name": "buff",
+                            "type": "Buffer"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard.peripheralSettings.send_buffer"
                 },
                 "bBoard.IOSettings": {
                     "kind": 8,
@@ -25078,7 +25305,7 @@
                     "kind": -3,
                     "retType": "LCD_Mini.LCDSettings",
                     "attributes": {
-                        "block": "create lcd settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "LCDSettings",
                         "blockId": "LCDSettings",
                         "weight": 110,
@@ -25091,7 +25318,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create lcd settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -25101,7 +25328,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -25405,8 +25632,7 @@
                         "icon": "",
                         "paramHelp": {
                             "LCDstring": "the string",
-                            "lineNum": "the lineNum",
-                            "clickBoardNum": "the clickBoardNum"
+                            "lineNum": "the lineNum"
                         },
                         "jsDoc": "Writes string value.",
                         "_def": {
@@ -25537,7 +25763,7 @@
                     "kind": -3,
                     "retType": "Force_Click.Force",
                     "attributes": {
-                        "block": "create force settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "Force",
                         "paramHelp": {
                             "clickBoardNum": "the clickBoardNum",
@@ -25548,7 +25774,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create force settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -25558,7 +25784,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -25819,7 +26045,7 @@
                     "kind": -3,
                     "retType": "Relay.Relay",
                     "attributes": {
-                        "block": "create Relay settings at $clickBoardNum on slot $clickSlot",
+                        "block": " $clickBoardNum $clickSlot",
                         "blockSetVariable": "Relay",
                         "weight": 110,
                         "paramHelp": {
@@ -25831,7 +26057,7 @@
                             "parts": [
                                 {
                                     "kind": "label",
-                                    "text": "create Relay settings at ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -25841,7 +26067,7 @@
                                 },
                                 {
                                     "kind": "label",
-                                    "text": " on slot ",
+                                    "text": " ",
                                     "style": []
                                 },
                                 {
@@ -26107,6 +26333,1405 @@
                     "isInstance": true,
                     "pyQName": "Relay.Relay.relay_on_off"
                 },
+                "AirQuality2": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#33BEBB",
+                        "icon": "",
+                        "advanced": true,
+                        "jsDoc": "Custom blocks"
+                    }
+                },
+                "AirQuality2.createAirQuality": {
+                    "kind": -3,
+                    "retType": "AirQuality2.AirQuality",
+                    "attributes": {
+                        "block": " $clickBoardNum $clickSlot",
+                        "blockSetVariable": "AirQuality",
+                        "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "AirQuality": "the LCDSettings"
+                        },
+                        "jsDoc": "Sets LCD object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "AirQuality2.create_air_quality"
+                },
+                "AirQuality2.humidity": {
+                    "kind": 6,
+                    "retType": "AirQuality2.humidity",
+                    "extendsTypes": [
+                        "AirQuality2.humidity",
+                        "Number"
+                    ]
+                },
+                "AirQuality2.humidity.five": {
+                    "retType": "AirQuality2.humidity.five",
+                    "attributes": {
+                        "block": "5",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "5",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.five",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.FIVE"
+                },
+                "AirQuality2.humidity.ten": {
+                    "retType": "AirQuality2.humidity.ten",
+                    "attributes": {
+                        "block": "10",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "10",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.ten",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.TEN"
+                },
+                "AirQuality2.humidity.fifteen": {
+                    "retType": "AirQuality2.humidity.fifteen",
+                    "attributes": {
+                        "block": "15",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "15",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.fifteen",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.FIFTEEN"
+                },
+                "AirQuality2.humidity.twenty": {
+                    "retType": "AirQuality2.humidity.twenty",
+                    "attributes": {
+                        "block": "20",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "20",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.twenty",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.TWENTY"
+                },
+                "AirQuality2.humidity.twentyfive": {
+                    "retType": "AirQuality2.humidity.twentyfive",
+                    "attributes": {
+                        "block": "25",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "25",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.twentyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.TWENTYFIVE"
+                },
+                "AirQuality2.humidity.thirty": {
+                    "retType": "AirQuality2.humidity.thirty",
+                    "attributes": {
+                        "block": "30",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "30",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.thirty",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.THIRTY"
+                },
+                "AirQuality2.humidity.thirtyfive": {
+                    "retType": "AirQuality2.humidity.thirtyfive",
+                    "attributes": {
+                        "block": "35",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "35",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.thirtyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.THIRTYFIVE"
+                },
+                "AirQuality2.humidity.fourty": {
+                    "retType": "AirQuality2.humidity.fourty",
+                    "attributes": {
+                        "block": "40",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "40",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.fourty",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.FOURTY"
+                },
+                "AirQuality2.humidity.fourtyfive": {
+                    "retType": "AirQuality2.humidity.fourtyfive",
+                    "attributes": {
+                        "block": "45",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "45",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.fourtyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.FOURTYFIVE"
+                },
+                "AirQuality2.humidity.fifty": {
+                    "retType": "AirQuality2.humidity.fifty",
+                    "attributes": {
+                        "block": "50",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "50",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.fifty",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.FIFTY"
+                },
+                "AirQuality2.humidity.fiftyfive": {
+                    "retType": "AirQuality2.humidity.fiftyfive",
+                    "attributes": {
+                        "block": "55",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "55",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.fiftyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.FIFTYFIVE"
+                },
+                "AirQuality2.humidity.sixety": {
+                    "retType": "AirQuality2.humidity.sixety",
+                    "attributes": {
+                        "block": "60",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "60",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.sixety",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.SIXETY"
+                },
+                "AirQuality2.humidity.sixtyfive": {
+                    "retType": "AirQuality2.humidity.sixtyfive",
+                    "attributes": {
+                        "block": "65",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "65",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.sixtyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.SIXTYFIVE"
+                },
+                "AirQuality2.humidity.seventy": {
+                    "retType": "AirQuality2.humidity.seventy",
+                    "attributes": {
+                        "block": "70",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "70",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.seventy",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.SEVENTY"
+                },
+                "AirQuality2.humidity.seventyfive": {
+                    "retType": "AirQuality2.humidity.seventyfive",
+                    "attributes": {
+                        "block": "75",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "75",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.seventyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.SEVENTYFIVE"
+                },
+                "AirQuality2.humidity.eighty": {
+                    "retType": "AirQuality2.humidity.eighty",
+                    "attributes": {
+                        "block": "80",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "80",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.eighty",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.EIGHTY"
+                },
+                "AirQuality2.humidity.eightyfive": {
+                    "retType": "AirQuality2.humidity.eightyfive",
+                    "attributes": {
+                        "block": "85",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "85",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.eightyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.EIGHTYFIVE"
+                },
+                "AirQuality2.humidity.ninety": {
+                    "retType": "AirQuality2.humidity.ninety",
+                    "attributes": {
+                        "block": "90",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "90",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.ninety",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.NINETY"
+                },
+                "AirQuality2.humidity.ninetyfive": {
+                    "retType": "AirQuality2.humidity.ninetyfive",
+                    "attributes": {
+                        "block": "95",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "95",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.ninetyfive",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.NINETYFIVE"
+                },
+                "AirQuality2.humidity.hundred": {
+                    "retType": "AirQuality2.humidity.hundred",
+                    "attributes": {
+                        "block": "100",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "100",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "AirQuality2.humidity.hundred",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.humidity.HUNDRED"
+                },
+                "AirQuality2.airQualityValue": {
+                    "kind": 6,
+                    "retType": "AirQuality2.airQualityValue",
+                    "extendsTypes": [
+                        "AirQuality2.airQualityValue",
+                        "Number"
+                    ]
+                },
+                "AirQuality2.airQualityValue.eCO2": {
+                    "retType": "AirQuality2.airQualityValue.eCO2",
+                    "extendsTypes": [
+                        "AirQuality2.airQualityValue.eCO2",
+                        "Number"
+                    ],
+                    "pyQName": "AirQuality2.airQualityValue.E_CO2"
+                },
+                "AirQuality2.airQualityValue.TVOC": {
+                    "retType": "AirQuality2.airQualityValue.TVOC",
+                    "extendsTypes": [
+                        "AirQuality2.airQualityValue.TVOC",
+                        "Number"
+                    ]
+                },
+                "AirQuality2.AirQuality": {
+                    "kind": 8,
+                    "retType": "AirQuality2.AirQuality",
+                    "extendsTypes": []
+                },
+                "AirQuality2.AirQuality.STATUS": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.MEAS_MODE": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.ALG_RESULT_DATA": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.RAW_DATA": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.ENV_DATA": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.THRESHOLDS": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.BASELINE": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.HW_ID": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.HW": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.FW_Boot_Version": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.FW_App_Version": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.Internal_State": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.ERROR_ID": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.APP_ERASE": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.APP_DATA": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.APP_VERIFY": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.APP_START": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.SW_RESET": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.CCS811_DEVICE_ADDRESS": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "AirQuality2.AirQuality.isInitialized": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.is_initialized"
+                },
+                "AirQuality2.AirQuality.deviceAddress": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.device_address"
+                },
+                "AirQuality2.AirQuality.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "AirQuality2.AirQuality.initialize": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "deviceAddr"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "AirQuality2.AirQuality.dataReady": {
+                    "kind": -1,
+                    "retType": "boolean",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "AirQuality"
+                        },
+                        "blockNamespace": "AirQuality2",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockId": "CCS811DataReady",
+                        "block": "Is $this data ready",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Is ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " data ready",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.data_ready"
+                },
+                "AirQuality2.AirQuality.ccs811Init": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_init"
+                },
+                "AirQuality2.AirQuality.CCS811AppStart": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_app_start"
+                },
+                "AirQuality2.AirQuality.ccs811Shutdown": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_shutdown"
+                },
+                "AirQuality2.AirQuality.ccs811Status": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_status"
+                },
+                "AirQuality2.AirQuality.ccs811Reset": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_reset"
+                },
+                "AirQuality2.AirQuality.ccs811SetCalibration": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "AirQuality"
+                        },
+                        "blockId": "CCS811Calibration",
+                        "block": "Calibrate $this sensor to temperature $fTemp F and humidity $fHumid",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "AirQuality2",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Calibrate ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " sensor to temperature ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "fTemp",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " F and humidity ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "fHumid",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "fTemp",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "fHumid",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "fTemp"
+                        },
+                        {
+                            "name": "fHumid",
+                            "type": "AirQuality2.humidity",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_set_calibration"
+                },
+                "AirQuality2.AirQuality.ccs811AirQuality": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "AirQuality"
+                        },
+                        "blockId": "CCS811AirQuality",
+                        "block": "Read $this $valueToRetrieve value",
+                        "blockGap": "7",
+                        "advanced": false,
+                        "blockNamespace": "AirQuality2",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Read ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "valueToRetrieve",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " value",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "valueToRetrieve",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "valueToRetrieve",
+                            "type": "AirQuality2.airQualityValue",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.ccs811_air_quality"
+                },
+                "AirQuality2.AirQuality.writeCCS811": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "AirQuality"
+                        },
+                        "blockId": "CCS811_write",
+                        "block": "Write $this array $values to CCS811 register$register",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "AirQuality2",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Write ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " array ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "values",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to CCS811 register",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "values",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "values",
+                            "type": "number[]"
+                        },
+                        {
+                            "name": "register"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.write_ccs811"
+                },
+                "AirQuality2.AirQuality.readCCS811": {
+                    "kind": -1,
+                    "retType": "number[]",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "AirQuality"
+                        },
+                        "blockId": "CCS811_read",
+                        "block": "$this Read $numBytes bytes from register$register",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "AirQuality2",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Read ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "numBytes",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " bytes from register",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "numBytes",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "numBytes"
+                        },
+                        {
+                            "name": "register"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.read_ccs811"
+                },
+                "AirQuality2.AirQuality.setCCS811Addr": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "deviceAddr"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.set_ccs811_addr"
+                },
+                "AirQuality2.AirQuality.getCCS811Addr": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "AirQuality2.AirQuality.get_ccs811_addr"
+                },
+                "Button_G": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#F4B820",
+                        "icon": "",
+                        "advanced": true
+                    }
+                },
+                "Button_G.Light": {
+                    "kind": 6,
+                    "retType": "Button_G.Light",
+                    "extendsTypes": [
+                        "Button_G.Light",
+                        "Number"
+                    ]
+                },
+                "Button_G.Light.Off": {
+                    "retType": "Button_G.Light.Off",
+                    "extendsTypes": [
+                        "Button_G.Light.Off",
+                        "Number"
+                    ],
+                    "pyQName": "Button_G.Light.OFF"
+                },
+                "Button_G.Light.On": {
+                    "retType": "Button_G.Light.On",
+                    "extendsTypes": [
+                        "Button_G.Light.On",
+                        "Number"
+                    ],
+                    "pyQName": "Button_G.Light.ON"
+                },
+                "Button_G.createButton_G": {
+                    "kind": -3,
+                    "retType": "Button_G.Button_G",
+                    "attributes": {
+                        "block": " $clickBoardNum $clickSlot",
+                        "blockSetVariable": "Button_G",
+                        "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Button_G": "the Button_G Object"
+                        },
+                        "jsDoc": "Sets Button G object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ]
+                },
+                "Button_G.Button_G": {
+                    "kind": 8,
+                    "retType": "Button_G.Button_G",
+                    "extendsTypes": [
+                        "Button_G.Button_G",
+                        "bBoard.PinSettings",
+                        "bBoard.IOSettings"
+                    ]
+                },
+                "Button_G.Button_G.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "Button_G.Button_G.setLight": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Button_G"
+                        },
+                        "blockId": "ButtonG_SetLight",
+                        "block": "$this Turn button light $onOff",
+                        "blockNamespace": "Button_G",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Turn button light ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "onOff",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "onOff",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "onOff",
+                            "type": "Button_G.Light",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Button_G.Button_G.set_light"
+                },
+                "Button_G.Button_G.setLightPWM": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Button_G"
+                        },
+                        "blockId": "ButtonG_SetLight_PWM",
+                        "block": "$this Set button light to $PWMValue brightness",
+                        "paramMin": {
+                            "PWMValue": "0"
+                        },
+                        "paramMax": {
+                            "PWMValue": "100"
+                        },
+                        "blockNamespace": "Button_G",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Set button light to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "PWMValue",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " brightness",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "PWMValue",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "PWMValue",
+                            "options": {
+                                "min": {
+                                    "value": "0"
+                                },
+                                "max": {
+                                    "value": "100"
+                                }
+                            }
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Button_G.Button_G.set_light_pwm"
+                },
+                "Button_G.Button_G.getSwitch": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Button_G"
+                        },
+                        "blockId": "ButtonG_getSwitch",
+                        "block": "$this Read button state",
+                        "blockNamespace": "Button_G",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Read button state",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Button_G.Button_G.get_switch"
+                },
                 "i": {
                     "kind": 4,
                     "retType": "number"
@@ -26142,7 +27767,7 @@
                 }
             }
         },
-        "sha": "12145b650317ae0ead67c986c8ab54fab845e795df457311fb4ce2b5f519accb"
+        "sha": "cb9ae851e0a27ac29188ac4fb8f29a723ac3bf6fe6eda21bc4bd00c0a7b035f3"
     },
     "libs/radio": {
         "apis": {
@@ -27558,7 +29183,7 @@
                 }
             }
         },
-        "sha": "e29bd66cad0dae90c2fe7ae9bedc7f881db672b4cf15cd4108f4f13cdea86f96"
+        "sha": "3be803112466ce4387b7d3a35e0bb544926e45d19da6aef394010974e712bc60"
     },
     "libs/devices": {
         "apis": {
@@ -29595,7 +31220,7 @@
                 }
             }
         },
-        "sha": "5f40d5cfd4089e6184c8f04f078cc2fab723aff8875e8a7935f9e8921350ae68"
+        "sha": "656ada2817e0034c41ac785e6a6572b840201f5c809a73a6fec14aca90a67f19"
     },
     "libs/bluetooth": {
         "apis": {
@@ -30546,7 +32171,7 @@
                 }
             }
         },
-        "sha": "809c4c6568eb678ecf6a1c36ce138f052aa2c71572fc99eb13a4491d20318a5f"
+        "sha": "f19f5b4982ac5211928ac7e5f608cf84d2624d6857ab00ef60bda6fa7da2e121"
     },
     "libs/servo": {
         "apis": {
@@ -31188,7 +32813,7 @@
                 }
             }
         },
-        "sha": "e401da42cf6cab4f0b7c953d19cf467bd50a8912695f159ffd64691e86a9ebfd"
+        "sha": "116d7b0f1ca8d71ce29394f3bbbe3ffbc828ae4bbd43a88e3d4a1336d59cf612"
     },
     "libs/radio-broadcast": {
         "apis": {
@@ -32747,7 +34372,7 @@
                 }
             }
         },
-        "sha": "138a29f02bf8ab3c2fbbeb714951f2f7a83a376146c07c379d704950b25b5ba5"
+        "sha": "f8bc55f26944d3c4f211cda0cc2f7090f1adb4e8ff5c7ee396fea9a4c989107a"
     },
     "libs/microphone": {
         "apis": {
@@ -32913,7 +34538,7 @@
                 }
             }
         },
-        "sha": "94107eb3cf571d75ae202f1ee819b584ec970a46960cd47f26091b9a42b4db4f"
+        "sha": "3b8eaaac58da517881982d5e70e29548cb58d38eb8db427656d2a8859ded21e5"
     },
     "libs\\blocksprj": {
         "apis": {
@@ -34329,7 +35954,7 @@
                 }
             }
         },
-        "sha": "af3ec4cb10970111db0ab929af7bb4dd070b7bf6917e4b646daad4be5eedcc76"
+        "sha": "19f80f6d810752097df8c09a9f60458363361b517e9e846999c831f5ff1f0812"
     },
     "libs\\bluetoothprj": {
         "apis": {
@@ -35280,7 +36905,7 @@
                 }
             }
         },
-        "sha": "f7b23df3baef604c5cc2e9e8ac186c9dc96672499521d65d42d9a2e3e837f262"
+        "sha": "bc468e025f056e3e92f727346afa0eab888b34a2a4dc6a0af7df665c375b0656"
     },
     "libs\\tsprj": {
         "apis": {
@@ -36696,6 +38321,6 @@
                 }
             }
         },
-        "sha": "f079589f33d2df62513f50e9899191725d50dfa98ff360cc5b6ff991c2ba6c27"
+        "sha": "9cf4a1c060b6d5b3929325b0a0c7abf2c571209f11b143598709378a8f094b28"
     }
 }

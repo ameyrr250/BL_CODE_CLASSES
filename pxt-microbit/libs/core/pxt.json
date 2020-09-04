@@ -55,7 +55,9 @@
         "bBoard.ts",
         "LCD_Mini.ts",
         "force.ts",
-        "Relay.ts"
+        "Relay.ts",
+        "airquality2.ts",
+        "Button_G.ts"
 
     ],
     "public": true,

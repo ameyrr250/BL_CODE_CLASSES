@@ -23,7 +23,7 @@ namespace Relay {
      * @param clickBoardNum the clickBoardNum
      *  @param Relay the Relay Object
      */
-    //% block="create Relay settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Relay"
     //% weight=110
     export function createRelay(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Relay {

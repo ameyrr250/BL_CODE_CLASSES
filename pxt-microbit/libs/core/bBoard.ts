@@ -25,8 +25,8 @@ const enum clickBoardID{
     seven,
     //% block="Expansion 8"
     eight,
-        //% block="Expansion 9"
-        nine, 
+    //% block="Expansion 9"
+    nine, 
         //% block="Expansion 10"
         ten,
         //% block="Expansion 11"
@@ -42,9 +42,9 @@ const enum clickBoardID{
         //% block="Expansion 16"
         sixteen,
         //% block="Expansion 17"
-    seventeen,
-    //% block="Expansion 18"
-    eighteen,
+        seventeen,
+        //% block="Expansion 18"
+        eighteen,
         //% block="Expansion 19"
         nineteen, 
         //% block="Expansion 20"
@@ -54,6 +54,8 @@ const enum clickBoardID{
 
 
 const enum clickBoardSlot{
+    //% block="Peripheral"
+    default=0,
 
     //% block="A"
     A = 100,
@@ -144,6 +146,24 @@ output = 2
 
 }
 
+enum moduleIDs
+{
+
+    // Module Ids
+GPIO_module_id = 1,
+ UART_module_id = 2,
+ I2C_module_id = 4,
+ SPI_module_id = 5,
+ MOTOR_module_id = 6,
+ MIC_module_id = 7,
+ PWM_module_id = 8,
+ ADC_module_id = 9,
+ MUSIC_module_id = 10,
+ EEPROM_module_id = 0xD,
+ NEOPIXEL_module_id = 0xE,
+ STATUS_module_id = 0x10
+}
+
 /**
  * Custom clickBoard
  */
@@ -159,7 +179,8 @@ namespace bBoard {
 
  //   export let arrayClickList: clickBoardID[]=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-    //% block="create IO settingsat $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
+    //% inlineInputMode=inline
     //% blockSetVariable="IOSettings"
     //% group="IO"
     //% weight=110
@@ -167,7 +188,7 @@ namespace bBoard {
         return new IOSettings(clickBoardNum, clickSlot);
    }
 
-    //% block="create PWM settings at $clickBoardNum on slot $clickSlot "
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="PWMSettings"
     //% group="PWM"
     //% weight=110
@@ -175,7 +196,7 @@ namespace bBoard {
         return new PWMSettings(clickBoardNum, clickSlot);
    }
 
-    //% block="create UART settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="UARTSettings"
     //% group="UART"
     //% weight=110
@@ -183,7 +204,7 @@ namespace bBoard {
         return new UARTSettings(clickBoardNum, clickSlot);
    }
 
-    //% block="create I2C settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="I2CSettings"
     //% group="I2C"
     //% weight=110
@@ -192,7 +213,7 @@ namespace bBoard {
    }
 
 
-    //% block="create SPI settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="SPISettings"
     //% group="SPI"
     //% weight=110
@@ -200,7 +221,7 @@ namespace bBoard {
         return new SPIsetting(clickBoardNum, clickSlot);
    }
 
-    //% block="create Pin settings at $clickBoardNum on slot $clickSlot"
+    //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="PinSettings"
     //% group="PINs"
     //% weight=110
@@ -274,12 +295,155 @@ let PWM_PR_id = 2
 let PWM_channel_id
 let PWM_dutyCycle
 
+//Neopixel Function IDs
 
+let NEOPIXEL_ADD     =          0x01
+let NEOPIXEL_REMOVE    =        0x02
+let NEOPIXEL_SHOW   =           0x03
+let NEOPIXEL_HIDE    =          0x04
+let NEOPIXEL_CLEAR      =       0x05
+let NEOPIXEL_STRIP_WRITE_SINGLE_DATA =0x06
+let NEOPIXEL_STRIP_WRITE_BUFFER_DATA =0x07
+let NEOPIXEL_STRIP_READ_SINGLE_DATA  =0x08
+let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
 
 // ADC Function Ids
 let ADC_READ_id = 16
 
 
+export class peripheralSettings
+{
+    private clickBoardNumGlobalPeripheral:number
+    private clickSlotNumGlobalPeripheral:number
+    private clickAddress : number
+
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+        this.clickBoardNumGlobalPeripheral=clickBoardNum;
+        this.clickSlotNumGlobalPeripheral=clickSlot;
+        this.clickAddress = this.clickBoardNumGlobalPeripheral*3 + this.clickSlotNumGlobalPeripheral 
+    }
+
+    sendCommand(clickPin: clickIOPin,moduleID:number,functionID:number)
+    {
+ 
+        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)
+       
+        let dataBuff = pins.createBuffer(6);
+
+
+        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)
+
+
+        
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)
+    }
+
+
+    sendData(clickPin: clickIOPin,moduleID:number,functionID:number, data: number[] )
+    {
+ 
+        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)
+       
+ 
+        let dataBuff = pins.createBuffer(6+data.length);
+        let dataBuffLength = dataBuff.length
+
+        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)
+
+        for(let i=0; i<dataBuffLength-6;i++)
+        {
+   
+            dataBuff.setNumber(NumberFormat.UInt8LE, i+6, data[i]);
+            
+        
+        }
+        
+            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)
+            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)
+            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)
+    }
+    readData16(clickPin: clickIOPin,moduleID:number,functionID:number, data: number[] ):number
+    {
+ 
+        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)
+        let dataBuff = pins.createBuffer(6+data.length);
+        let dataBuffLength = dataBuff.length
+
+
+
+  
+        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)
+
+        for(let i=0; i<dataBuffLength-6;i++)
+        {
+   
+            dataBuff.setNumber(NumberFormat.UInt8LE, i+6, data[i]);
+            
+        
+        }
+
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)
+        control.waitMicros(500)
+        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)
+        let TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 2, false)
+        return (TX_BUFFER_DATAbuf.getUint8(0) + TX_BUFFER_DATAbuf.getUint8(1) * 256)
+
+
+      
+    }
+
+    sendBuffer(clickPin: clickIOPin,moduleID:number,functionID:number, buff: Buffer )
+    {
+ 
+        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)
+        let dataBuffLength = buff.length
+
+        let dataBuff = pins.createBuffer(6+dataBuffLength);
+
+
+        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)
+        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)
+
+           
+
+   
+             dataBuff.write(6,buff)
+           
+        
+            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)
+            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)
+            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)
+    }
+  
+
+
+    
+
+}
     
     export class IOSettings{
             
