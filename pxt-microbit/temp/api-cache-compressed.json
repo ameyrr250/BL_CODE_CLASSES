@@ -22766,7 +22766,9 @@
                 "bBoard.peripheralSettings": {
                     "kind": 8,
                     "retType": "bBoard.peripheralSettings",
-                    "extendsTypes": []
+                    "extendsTypes": [
+                        "bBoard.peripheralSettings"
+                    ]
                 },
                 "bBoard.peripheralSettings.__constructor": {
                     "kind": -3,
@@ -23170,7 +23172,9 @@
                 "bBoard.PWMSettings": {
                     "kind": 8,
                     "retType": "bBoard.PWMSettings",
-                    "extendsTypes": []
+                    "extendsTypes": [
+                        "bBoard.PWMSettings"
+                    ]
                 },
                 "bBoard.PWMSettings.pitchPin": {
                     "kind": 2,
@@ -27732,6 +27736,1693 @@
                     "isInstance": true,
                     "pyQName": "Button_G.Button_G.get_switch"
                 },
+                "Servo": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#EF697B",
+                        "icon": "",
+                        "advanced": true,
+                        "jsDoc": "Custom blocks"
+                    }
+                },
+                "Servo.createLCDSettings": {
+                    "kind": -3,
+                    "retType": "Servo.Servo",
+                    "attributes": {
+                        "block": " $clickBoardNum $clickSlot",
+                        "blockSetVariable": "Servo",
+                        "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Servo": "the Servo Object"
+                        },
+                        "jsDoc": "Sets Servo Click object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "Servo.create_lcd_settings"
+                },
+                "Servo.Servo": {
+                    "kind": 8,
+                    "retType": "Servo.Servo",
+                    "extendsTypes": []
+                },
+                "Servo.Servo.PCA9685_DEFAULT_I2C_ADDRESS": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.LTC2497_DEFAULT_I2C_ADDRESS": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.PCA9685_SUBADR1": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.PCA9685_SUBADR2": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.PCA9685_SUBADR3": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.PCA9685_MODE1": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.PCA9685_MODE2": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.PCA9685_PRESCALE": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.LED0_ON_L": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.LED0_ON_H": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.LED0_OFF_L": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.LED0_OFF_H": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.ALLLED_ON_L": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.ALLLED_ON_H": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.ALLLED_OFF_L": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.ALLLED_OFF_H": {
+                    "kind": 2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true
+                },
+                "Servo.Servo.isInitialized": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.is_initialized"
+                },
+                "Servo.Servo.deviceAddress": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.device_address"
+                },
+                "Servo.Servo.servoPulseMin": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.servo_pulse_min"
+                },
+                "Servo.Servo.servoPulseMax": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.servo_pulse_max"
+                },
+                "Servo.Servo.servoAngleMin": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.servo_angle_min"
+                },
+                "Servo.Servo.servoAngleMax": {
+                    "kind": 2,
+                    "retType": "number[]",
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.servo_angle_max"
+                },
+                "Servo.Servo.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "Servo.Servo.setServoPulse": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "servoNumber"
+                        },
+                        {
+                            "name": "pulse"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_servo_pulse"
+                },
+                "Servo.Servo.getServoAngleMin": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.get_servo_angle_min"
+                },
+                "Servo.Servo.getServoAngleMax": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.get_servo_angle_max"
+                },
+                "Servo.Servo.getServoPulseMin": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.get_servo_pulse_min"
+                },
+                "Servo.Servo.getServoPulseMax": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.get_servo_pulse_max"
+                },
+                "Servo.Servo.reset": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "Servo.Servo.sleep": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "Servo.Servo.wakeup": {
+                    "kind": -1,
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "Servo.Servo.setExtClk": {
+                    "kind": -1,
+                    "attributes": {
+                        "jsDoc": "**********************************************************************************************************************************************"
+                    },
+                    "parameters": [
+                        {
+                            "name": "prescale"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_ext_clk"
+                },
+                "Servo.Servo.setPWMFreq": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "freq"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_pwm_freq"
+                },
+                "Servo.Servo.setOutputMode": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "totempole",
+                            "type": "boolean"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_output_mode"
+                },
+                "Servo.Servo.setPWM": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "servoNumber"
+                        },
+                        {
+                            "name": "on"
+                        },
+                        {
+                            "name": "off"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_pwm"
+                },
+                "Servo.Servo.setPin": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "servoNumber"
+                        },
+                        {
+                            "name": "val"
+                        },
+                        {
+                            "name": "invert",
+                            "type": "boolean"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_pin"
+                },
+                "Servo.Servo.setPCA9685Addr": {
+                    "kind": -1,
+                    "parameters": [
+                        {
+                            "name": "deviceAddr"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_pca9685_addr"
+                },
+                "Servo.Servo.getPCA9685Addr": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.get_pca9685_addr"
+                },
+                "Servo.Servo.initialize": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Servo"
+                        },
+                        "blockId": "Servo_initialize",
+                        "block": "Initalize $this PCA9685 to i2c address $PCA9685Addr and LTC2497 to i2c address $LTC2497Addr",
+                        "blockGap": "7",
+                        "weight": 90,
+                        "color": "#9E4894",
+                        "icon": "",
+                        "blockNamespace": "Servo",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "advanced": true,
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Initalize ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " PCA9685 to i2c address ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "PCA9685Addr",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " and LTC2497 to i2c address ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "LTC2497Addr",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "PCA9685Addr",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "LTC2497Addr",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "PCA9685Addr"
+                        },
+                        {
+                            "name": "LTC2497Addr"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "Servo.Servo.setServoAngle": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Servo"
+                        },
+                        "blockId": "Servo_Angle",
+                        "block": "Set $this servo $n to $angle",
+                        "blockGap": "7",
+                        "weight": 90,
+                        "color": "#9E4894",
+                        "icon": "",
+                        "advanced": false,
+                        "blockNamespace": "Servo",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Set ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " servo ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "n",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "angle",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "n",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "angle",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "servoNumber"
+                        },
+                        {
+                            "name": "angle"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_servo_angle"
+                },
+                "Servo.Servo.setServoAngleAdjusted": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "servoNumber": "1",
+                            "this": "Servo"
+                        },
+                        "blockId": "Servo_AngleAdjusted",
+                        "block": "Set $this Servo Number $servoNumber to $angle with pulse range min $pulseMin and max $pulseMax",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "paramMin": {
+                            "servoNumber": "1"
+                        },
+                        "paramMax": {
+                            "servoNumber": "16"
+                        },
+                        "explicitDefaults": [
+                            "servoNumber",
+                            "this"
+                        ],
+                        "blockNamespace": "Servo",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Set ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Servo Number ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "servoNumber",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "angle",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " with pulse range min ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pulseMin",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " and max ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pulseMax",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "servoNumber",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "angle",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pulseMin",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pulseMax",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "servoNumber",
+                            "initializer": "1",
+                            "default": "1",
+                            "options": {
+                                "min": {
+                                    "value": "1"
+                                },
+                                "max": {
+                                    "value": "16"
+                                }
+                            }
+                        },
+                        {
+                            "name": "angle"
+                        },
+                        {
+                            "name": "pulseMin"
+                        },
+                        {
+                            "name": "pulseMax"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.set_servo_angle_adjusted"
+                },
+                "Servo.Servo.userSetPWM": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "servoNumber": "1",
+                            "this": "Servo"
+                        },
+                        "blockId": "Servo_setPWM",
+                        "block": "Set $this servo $servoNumber to be on $on and off $off",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "paramMin": {
+                            "servoNumber": "1"
+                        },
+                        "paramMax": {
+                            "servoNumber": "16"
+                        },
+                        "explicitDefaults": [
+                            "servoNumber",
+                            "this"
+                        ],
+                        "blockNamespace": "Servo",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Set ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " servo ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "servoNumber",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to be on ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "on",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " and off ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "off",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "servoNumber",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "on",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "off",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "servoNumber",
+                            "initializer": "1",
+                            "default": "1",
+                            "options": {
+                                "min": {
+                                    "value": "1"
+                                },
+                                "max": {
+                                    "value": "16"
+                                }
+                            }
+                        },
+                        {
+                            "name": "on"
+                        },
+                        {
+                            "name": "off"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.user_set_pwm"
+                },
+                "Servo.Servo.writePCA9685Array": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Servo"
+                        },
+                        "blockId": "PCA9685_write",
+                        "block": "$this Write array $values to PCA9685 register$register",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "Servo",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Write array ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "values",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to PCA9685 register",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "values",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "values",
+                            "type": "number[]"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.write_pca9685_array"
+                },
+                "Servo.Servo.readPCA9685": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Servo"
+                        },
+                        "blockId": "PCA9685_read",
+                        "block": "$this Read from register$register",
+                        "blockGap": "7",
+                        "advanced": true,
+                        "blockNamespace": "Servo",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Read from register",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "register",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "register"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "Servo.Servo.read_pca9685"
+                },
+                "bBoard_Motor": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#EF697B",
+                        "icon": "",
+                        "advanced": true
+                    }
+                },
+                "bBoard_Motor.motorState": {
+                    "kind": 6,
+                    "retType": "bBoard_Motor.motorState",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorState",
+                        "Number"
+                    ]
+                },
+                "bBoard_Motor.motorState.disabled": {
+                    "retType": "bBoard_Motor.motorState.disabled",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorState.disabled",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorState.DISABLED"
+                },
+                "bBoard_Motor.motorState.enabled": {
+                    "retType": "bBoard_Motor.motorState.enabled",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorState.enabled",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorState.ENABLED"
+                },
+                "bBoard_Motor.motorDirection": {
+                    "kind": 6,
+                    "retType": "bBoard_Motor.motorDirection",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDirection",
+                        "Number"
+                    ]
+                },
+                "bBoard_Motor.motorDirection.forward": {
+                    "retType": "bBoard_Motor.motorDirection.forward",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDirection.forward",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorDirection.FORWARD"
+                },
+                "bBoard_Motor.motorDirection.brake": {
+                    "retType": "bBoard_Motor.motorDirection.brake",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDirection.brake",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorDirection.BRAKE"
+                },
+                "bBoard_Motor.motorDirection.backward": {
+                    "retType": "bBoard_Motor.motorDirection.backward",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDirection.backward",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorDirection.BACKWARD"
+                },
+                "bBoard_Motor.motorDriver": {
+                    "kind": 6,
+                    "retType": "bBoard_Motor.motorDriver",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDriver",
+                        "Number"
+                    ]
+                },
+                "bBoard_Motor.motorDriver.left": {
+                    "retType": "bBoard_Motor.motorDriver.left",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDriver.left",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorDriver.LEFT"
+                },
+                "bBoard_Motor.motorDriver.right": {
+                    "retType": "bBoard_Motor.motorDriver.right",
+                    "extendsTypes": [
+                        "bBoard_Motor.motorDriver.right",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Motor.motorDriver.RIGHT"
+                },
+                "bBoard_Motor.createLCDSettings": {
+                    "kind": -3,
+                    "retType": "bBoard_Motor.BBOARD_MOTOR",
+                    "attributes": {
+                        "block": " $clickBoardNum $clickSlot| Motor Driver $motor_DriverS",
+                        "blockSetVariable": "motor",
+                        "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the board",
+                            "clickSlot": "the bus",
+                            "motor": "the motor Object"
+                        },
+                        "jsDoc": "Sets Motor object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Motor Driver ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "motor_DriverS",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "motor_DriverS",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the board",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "description": "the bus",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "motor_DriverS",
+                            "type": "bBoard_Motor.motorDriver",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "bBoard_Motor.create_lcd_settings"
+                },
+                "bBoard_Motor.BBOARD_MOTOR": {
+                    "kind": 8,
+                    "retType": "bBoard_Motor.BBOARD_MOTOR",
+                    "extendsTypes": [
+                        "bBoard_Motor.BBOARD_MOTOR",
+                        "bBoard.PWMSettings"
+                    ]
+                },
+                "bBoard_Motor.BBOARD_MOTOR.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "motor_DriverLocal",
+                            "type": "bBoard_Motor.motorDriver",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "bBoard_Motor.BBOARD_MOTOR.dutyVal": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "bBoard_Motor.BBOARD_MOTOR.duty_val"
+                },
+                "bBoard_Motor.BBOARD_MOTOR.dutyVal@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "bBoard_Motor.BBOARD_MOTOR.duty_val@set"
+                },
+                "bBoard_Motor.BBOARD_MOTOR.directionVal": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "isReadOnly": true,
+                    "pyQName": "bBoard_Motor.BBOARD_MOTOR.direction_val"
+                },
+                "bBoard_Motor.BBOARD_MOTOR.directionVal@set": {
+                    "kind": -2,
+                    "retType": "number",
+                    "isInstance": true,
+                    "pyQName": "bBoard_Motor.BBOARD_MOTOR.direction_val@set"
+                },
+                "bBoard_Motor.BBOARD_MOTOR.motorEnable": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "motor"
+                        },
+                        "blockId": "Motor_enable",
+                        "block": "Set $this to %enabled",
+                        "advanced": false,
+                        "blockNamespace": "bBoard_Motor",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "parts": "bBoardMotor",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Set ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "enabled",
+                                    "ref": false
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "enabled",
+                                    "ref": false
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "type": "bBoard_Motor.motorState",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard_Motor.BBOARD_MOTOR.motor_enable"
+                },
+                "bBoard_Motor.BBOARD_MOTOR.motorDutyDirection": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "motor"
+                        },
+                        "blockId": "Motor_dutyDirection",
+                        "block": "Set $this duty to %duty with direction%direction",
+                        "advanced": false,
+                        "paramMin": {
+                            "duty": "0"
+                        },
+                        "paramMax": {
+                            "duty": "100"
+                        },
+                        "blockNamespace": "bBoard_Motor",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "parts": "bBoardMotor",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Set ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " duty to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "duty",
+                                    "ref": false
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " with direction",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "direction",
+                                    "ref": false
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "duty",
+                                    "ref": false
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "direction",
+                                    "ref": false
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "duty",
+                            "options": {
+                                "min": {
+                                    "value": "0"
+                                },
+                                "max": {
+                                    "value": "100"
+                                }
+                            }
+                        },
+                        {
+                            "name": "direction",
+                            "type": "bBoard_Motor.motorDirection",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard_Motor.BBOARD_MOTOR.motor_duty_direction"
+                },
+                "bBoard_Music": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#EF697B",
+                        "icon": "",
+                        "advanced": true
+                    }
+                },
+                "bBoard_Music.createMic": {
+                    "kind": -3,
+                    "retType": "bBoard_Music.bBoardSpeaker",
+                    "attributes": {
+                        "block": "$clickBoardNum $clickSlot",
+                        "blockSetVariable": "speaker",
+                        "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the click",
+                            "clickSlot": "the bus",
+                            "speaker": "the neopixel Object"
+                        },
+                        "jsDoc": "Sets mic object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the click",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "description": "the bus",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "bBoard_Music.create_mic"
+                },
+                "bBoard_Music.speakerEnable": {
+                    "kind": 6,
+                    "retType": "bBoard_Music.speakerEnable",
+                    "extendsTypes": [
+                        "bBoard_Music.speakerEnable",
+                        "Number"
+                    ]
+                },
+                "bBoard_Music.speakerEnable.disabled": {
+                    "retType": "bBoard_Music.speakerEnable.disabled",
+                    "extendsTypes": [
+                        "bBoard_Music.speakerEnable.disabled",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Music.speakerEnable.DISABLED"
+                },
+                "bBoard_Music.speakerEnable.enabled": {
+                    "retType": "bBoard_Music.speakerEnable.enabled",
+                    "extendsTypes": [
+                        "bBoard_Music.speakerEnable.enabled",
+                        "Number"
+                    ],
+                    "pyQName": "bBoard_Music.speakerEnable.ENABLED"
+                },
+                "bBoard_Music.bBoardSpeaker": {
+                    "kind": 8,
+                    "retType": "bBoard_Music.bBoardSpeaker",
+                    "extendsTypes": [
+                        "bBoard_Music.bBoardSpeaker",
+                        "bBoard.peripheralSettings"
+                    ]
+                },
+                "bBoard_Music.bBoardSpeaker.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "bBoard_Music.bBoardSpeaker.speakerEnable": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "speaker"
+                        },
+                        "blockId": "Speaker_Enable",
+                        "block": "$this $enable",
+                        "advanced": false,
+                        "blockNamespace": "bBoard_Music",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "parts": "bBoardMusic",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "enable",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "enable",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "enable",
+                            "type": "bBoard_Music.speakerEnable",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard_Music.bBoardSpeaker.speaker_enable"
+                },
+                "bBoard_Music.bBoardSpeaker.startSong": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "speaker"
+                        },
+                        "blockId": "Start_Song",
+                        "block": "$this Start song",
+                        "advanced": false,
+                        "blockNamespace": "bBoard_Music",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "parts": "bBoardMusic",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " Start song",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "bBoard_Music.bBoardSpeaker.start_song"
+                },
+                "bBoard_Music.bBoardSpeaker.setBPM": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "BPM": "30",
+                            "this": "speaker"
+                        },
+                        "blockId": "Music_Set_Tempo",
+                        "block": "Set $this BPM to %BPM",
+                        "advanced": false,
+                        "explicitDefaults": [
+                            "BPM",
+                            "this"
+                        ],
+                        "blockNamespace": "bBoard_Music",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "parts": "bBoardMusic",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Set ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " BPM to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "BPM",
+                                    "ref": false
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "BPM",
+                                    "ref": false
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "BPM",
+                            "initializer": "30",
+                            "default": "30"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard_Music.bBoardSpeaker.set_bpm"
+                },
+                "bBoard_Music.bBoardSpeaker.sendSong": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "speaker"
+                        },
+                        "blockId": "Send_Song",
+                        "block": "Send $this $song to play",
+                        "advanced": false,
+                        "blockNamespace": "bBoard_Music",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "parts": "bBoardMusic",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "Send ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "song",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " to play",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "song",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "song",
+                            "type": "number[]"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "bBoard_Music.bBoardSpeaker.send_song"
+                },
                 "i": {
                     "kind": 4,
                     "retType": "number"
@@ -27767,7 +29458,7 @@
                 }
             }
         },
-        "sha": "cb9ae851e0a27ac29188ac4fb8f29a723ac3bf6fe6eda21bc4bd00c0a7b035f3"
+        "sha": "49573065985ba6e19fa35b9445eec3c1c8f983c0286d78c804c47a76bf16a03a"
     },
     "libs/radio": {
         "apis": {
@@ -29183,7 +30874,7 @@
                 }
             }
         },
-        "sha": "3be803112466ce4387b7d3a35e0bb544926e45d19da6aef394010974e712bc60"
+        "sha": "2a89bfc4696b233c30709670ca33c35f1eda018730e0b0762332ce47acec6fce"
     },
     "libs/devices": {
         "apis": {
@@ -31220,7 +32911,7 @@
                 }
             }
         },
-        "sha": "656ada2817e0034c41ac785e6a6572b840201f5c809a73a6fec14aca90a67f19"
+        "sha": "278c4cba2ea4ff7aeebba7e1c0497062f814a20ad559c716bd00915f65d6216a"
     },
     "libs/bluetooth": {
         "apis": {
@@ -32171,7 +33862,7 @@
                 }
             }
         },
-        "sha": "f19f5b4982ac5211928ac7e5f608cf84d2624d6857ab00ef60bda6fa7da2e121"
+        "sha": "2a0494892ec2b1f888475dc3991f5fba7c33ab66909a69ba96f47dd1d5e967b1"
     },
     "libs/servo": {
         "apis": {
@@ -32813,7 +34504,7 @@
                 }
             }
         },
-        "sha": "116d7b0f1ca8d71ce29394f3bbbe3ffbc828ae4bbd43a88e3d4a1336d59cf612"
+        "sha": "6ec86bdf1a574194f584b21cfc0073a9175192b8d0a1a786c0c526be0f11020b"
     },
     "libs/radio-broadcast": {
         "apis": {
@@ -34372,7 +36063,7 @@
                 }
             }
         },
-        "sha": "f8bc55f26944d3c4f211cda0cc2f7090f1adb4e8ff5c7ee396fea9a4c989107a"
+        "sha": "aedc055bcd2d3fce9d0494c9395198b119576de7d8e02bba996be4c9ffdf4070"
     },
     "libs/microphone": {
         "apis": {
@@ -34538,7 +36229,7 @@
                 }
             }
         },
-        "sha": "3b8eaaac58da517881982d5e70e29548cb58d38eb8db427656d2a8859ded21e5"
+        "sha": "0d29f329adb54335e4aac8679615af1f281c72d62c567804e723375bde6ef19b"
     },
     "libs\\blocksprj": {
         "apis": {
@@ -35954,7 +37645,7 @@
                 }
             }
         },
-        "sha": "19f80f6d810752097df8c09a9f60458363361b517e9e846999c831f5ff1f0812"
+        "sha": "9ef3e02f220cbf8a0d455f8d80cb9ef4b9c9c3ad36c1d60ccefcfbd5b67c9f72"
     },
     "libs\\bluetoothprj": {
         "apis": {
@@ -36905,7 +38596,7 @@
                 }
             }
         },
-        "sha": "bc468e025f056e3e92f727346afa0eab888b34a2a4dc6a0af7df665c375b0656"
+        "sha": "9df2d57b173dd1a724a4d869fbbe9318a31e4b9afff1255c62ed3dc713193f00"
     },
     "libs\\tsprj": {
         "apis": {
@@ -38321,6 +40012,6 @@
                 }
             }
         },
-        "sha": "9cf4a1c060b6d5b3929325b0a0c7abf2c571209f11b143598709378a8f094b28"
+        "sha": "b5592a3785f69737da4e1c3691171c291473519dd59061c091f23c82d4a64c29"
     }
 }

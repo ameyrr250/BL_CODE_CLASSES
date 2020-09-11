@@ -467,7 +467,7 @@ export class peripheralSettings
         this.TOGGLE_id = 7
         this.GPIOPULLENSET_id = 0x0B
         this.ODC_id = 0x0D
-        this.clickBoardNumGlobalIO=clickBoardNum+clickSlot;
+        this.clickBoardNumGlobalIO=clickBoardNum*3 + clickSlot;
         }
 
 
@@ -596,7 +596,7 @@ export class peripheralSettings
         constructor(clickBoardNum: clickBoardID, clickSlot: clickBoardSlot){
         this.pitchPin = clickPWMPin.PWM; 
         this.pitchClick = clickBoardID.one;
-        this.clickBoardNumGlobalPWM=clickBoardNum+clickSlot;
+        this.clickBoardNumGlobalPWM=clickBoardNum*3+clickSlot;
         }
 
         analogPitch(frequency:number,ms:number)
@@ -635,7 +635,7 @@ export class peripheralSettings
             this.PWMOut(clickPin,dutyCycle*100);
         }
 
-            //%blockId=PWM_out
+        //%blockId=PWM_out
         //%block="Set $this PWM on pin $clickPin to $PWMValue"
         //% blockGap=7
         //% weight=90   color=#9E4894 icon=""
@@ -743,7 +743,7 @@ export class peripheralSettings
         this.UART_READ_RX_DATA = 6
         this.UART_READ_RX_DATA_BYTES = 7
         this.UART_CLEAR_RX_DATA = 8
-        this.clickBoardNumGlobalUART=clickBoardNum+clickSlot;
+        this.clickBoardNumGlobalUART=clickBoardNum*3+clickSlot;
 
         }
 
@@ -993,7 +993,7 @@ export class peripheralSettings
         private clickBoardNumGlobalPin: number;
         constructor(clickBoardNum:clickBoardID,clickSlot:clickBoardSlot){
             super(clickBoardNum,clickSlot);
-            this.clickBoardNumGlobalPin=clickBoardNum+clickSlot;
+            this.clickBoardNumGlobalPin=clickBoardNum*3+clickSlot;
         }
 
         //%blockId=digital_Read_Pin
@@ -1151,7 +1151,7 @@ export class peripheralSettings
     
 
     export function getFirmwareVersion(clickBoardNum: clickBoardID, clickSlotNum : clickBoardSlot): number{
-        let clickNumSlot=clickBoardNum+clickSlotNum
+        let clickNumSlot=clickBoardNum*3+clickSlotNum
         let analogValue = 0;
 
 
@@ -1189,7 +1189,7 @@ export class peripheralSettings
     //% group="_____________"
 
     export function analogRead(clickPin: clickADCPin, clickBoardNum: clickBoardID, clickSlotNum : clickBoardSlot): number{
-        let clickNumSlot=clickBoardNum+clickSlotNum
+        let clickNumSlot=clickBoardNum*3+clickSlotNum
         let analogValue = 0;
 
 
@@ -1238,7 +1238,7 @@ export class peripheralSettings
         this. SPI_READBULK_CS_id = 6
         this.SPI_BAUD_id = 7
         this.SPI_CONFIG_CS_id = 8
-        this.clickBoardGlobalNumSPI=clickBoardNum+clickSlot;
+        this.clickBoardGlobalNumSPI=clickBoardNum*3+clickSlot;
 
         }
  
@@ -1506,7 +1506,7 @@ export class peripheralSettings
 
 
 
-        //End of SPIsetting functions
+    //End of SPIsetting functions
 
 
     ///START of I2CSettings
@@ -1524,7 +1524,7 @@ export class peripheralSettings
                 this.I2C_READ_id = 2
                 this.I2C_WRITE_NO_MEM_id = 3
                 this.I2C_READ_NO_MEM_id = 4
-                this.clickBoardGlobalNumI2C=clickBoardNum+clickSlot;
+                this.clickBoardGlobalNumI2C=clickBoardNum*3+clickSlot;
 
             }
 

@@ -1,6 +1,9 @@
 namespace WiFiSetResponses{
-    let UARTs = new bBoard.UARTSettings();
-    export class SetResponse{
+
+
+
+
+    export class SetResponse extends bBoard.UARTSettings{
     
     readonly defaultWiFiTimeoutmS :number ; 
     response : number;
@@ -8,13 +11,21 @@ namespace WiFiSetResponses{
     MQTTMessageRetrieveState : number ;
     
     MQTTMessage : String;
-    
-    constructor(){
+
+    private clickBoardNumGlobal:number
+    private clickSlotNumGlobal:number
+    private clickBoardNumGlobalSetResponse:number
+
+    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    super(clickBoardNum, clickSlot)
     this.defaultWiFiTimeoutmS = 10000; //default time alloted for timeout on WiFi communication
     this.response = 2;
     this.receivedData = ""; //A place to store the response from the WiFi clickwhen requestting HTTP data
     this.MQTTMessageRetrieveState = 0; //Track MQTT message retrieval state.
-    this.MQTTMessage = ""; //Used to store the retrieved message   
+    this.MQTTMessage = ""; //Used to store the retrieved message
+    this.clickBoardNumGlobal=clickBoardNum;
+    this.clickSlotNumGlobal=clickSlot;
+    this.clickBoardNumGlobalSetResponse=clickBoardNum*3+clickSlot;   
     }
     
     clearSerialBuffer() {
@@ -24,8 +35,7 @@ namespace WiFiSetResponses{
     WiFiResponse(
         expectedResponse: string,
         IPDResponseTrue: boolean,
-        timeoutmS: number,
-        clickBoardNum: clickBoardID
+        timeoutmS: number
     ) {
         
         let IPDLengthIndexStart = 0; 
@@ -45,10 +55,10 @@ namespace WiFiSetResponses{
           
     
     
-            if(UARTs.isUARTDataAvailable(clickBoardNum))
+            if(this.isUARTDataAvailable())
             {
                
-                receivedStr = receivedStr + UARTs.getUARTData(clickBoardNum); //Read the serial port for any received responses
+                receivedStr = receivedStr + this.getUARTData(); //Read the serial port for any received responses
               
             }
              
@@ -219,26 +229,45 @@ namespace WiFiSetResponses{
 
 
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-      /**
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
  * Custom blocks
  */
 //% weight=100 color=#FF2F92 icon=""
 //% advanced=true
 namespace WiFi_BLE {
-    let UARTs = new bBoard.UARTSettings();
 
-    let SetResponseObj= new WiFiSetResponses.SetResponse();
+    /**
+     * Sets WiFi_BLE object.
+     * @param clickBoardNum the click
+     * @param clickSlot the bus
+     *  @param WiFi_BLE the WiFi_BLE Object
+     */
+    //% block="$clickBoardNum $clickSlot"
+    //% blockSetVariable="WiFi_BLE"
+    //% weight=110
+    export function createWiFiBLE(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): WiFi_BLE {
+        return new this.WiFi_BLE(clickBoardNum, clickSlot);
+    }
 
+    let MQTTMessageObject ={
+        topic:"", //Topic
+   
+        key:"", //API Key
+ 
+        cmd:"", //Command Name
+  
+        varName:"", //Variable name
+ 
+        value:"" //Value received 
+        
+     }
 
+    let mqttMessageList = [MQTTMessageObject]; //Create a blank array of MQTTMessageObject objects
+    mqttMessageList.pop(); 
 
     //% groups=" 'Connect' weight=100, 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' "
-let MQTTMessage = ""
-let UARTRawData  = ""
 
-    let flag = true;
-
-    let BLMQTTMessage = ""
     export enum Command
     {
           
@@ -257,13 +286,51 @@ let UARTRawData  = ""
     
     }
 
+
+    export class WiFi_BLE extends WiFiSetResponses.SetResponse{
+        MQTTMessage : string
+        private UARTRawData  :  string
+        private flag : boolean;
+        private BLMQTTMessage : string
+        private clickBoardNumGlobalWiFi:number
+        private clickSlotNumGlobalWiFi:number
+        private clickBoardNumGlobalW:number
+        private BLpingActive : boolean;
+        private prevTime :number;
+
+        private pingActive : boolean;
+        private lastPing : number;
+        private pingActiveAdafruit : boolean;
+        private lastPingAdafruit : number; 
+
+        //% groups=" 'Connect' weight=100, 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' "
+
+        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+            super(clickBoardNum, clickSlot)
+            this.MQTTMessage = ""
+            this.UARTRawData  = ""
+            this.flag = true;
+            this.BLMQTTMessage = ""
+            this.clickBoardNumGlobalWiFi=clickBoardNum;
+            this.clickSlotNumGlobalWiFi=clickSlot;
+            this.clickBoardNumGlobalW=clickBoardNum*3+clickSlot; 
+            this.BLpingActive = false;
+            this.prevTime = 0;
+            this.pingActive = false;
+            this.lastPing = 0;
+            this.pingActiveAdafruit = false;
+            this.lastPingAdafruit = 0; 
+      
+        }
+
     // -------------- 3. Cloud ----------------
     //% blockId=publishBLMQTT
-    //% block="BL MQTT publish command %command|variable name %varName|data %data|API key %topic|on click%clickBoardNum"
+    //% block="$this BL MQTT publish command $command|variable name $varName|data $data|API key $topic|on click$clickBoardNum"
     //% group="Brilliant Labs Cloud"
     //% weight=70   
-    //% blockGap=7  
-    export function publishBLMQTT(command:Command,varName: string, data: number,topic: string, clickBoardNum: clickBoardID): void {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"  
+    publishBLMQTT(command:Command,varName: string, data: number,topic: string): void {
         let publishPacketSize = 0
         let controlPacket = pins.createBuffer(1);
         controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x30); //Publish Control Packet header
@@ -329,18 +396,18 @@ let UARTRawData  = ""
 
 
 
-        UARTs.sendString("AT+CIPSEND=0," + publishPacketSize.toString() + "\r\n", clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPSEND=0," + publishPacketSize.toString() + "\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendBuffer(controlPacket, clickBoardNum)
-        UARTs.sendBuffer(remainingLength, clickBoardNum)
-        UARTs.sendBuffer(topicLength, clickBoardNum)
-        UARTs.sendString(topic, clickBoardNum)
-        UARTs.sendString(mqttBody, clickBoardNum)
+        this.sendBuffer(controlPacket)
+        this.sendBuffer(remainingLength)
+        this.sendBuffer(topicLength)
+        this.sendString(topic)
+        this.sendString(mqttBody)
         // UARTs.sendString("\r\n",clickBoardNum)
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
 
 
@@ -354,11 +421,12 @@ let UARTRawData  = ""
 
     // -------------- 3. Cloud ----------------
     //% blockId=connectBLMQTT
-    //% block="Connect to BL MQTT broker on click%clickBoardNum"
+    //% block="$this| Connect to BL MQTT broker on click$clickBoardNum"
     //% group="Brilliant Labs Cloud"
     //% weight=70   
-    //% blockGap=7  
-    export function connectBLMQTT(clickBoardNum: clickBoardID): void {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"  
+    connectBLMQTT(): void {
 
         let connectPacketSize = 0
         let controlPacket = pins.createBuffer(1);
@@ -423,36 +491,36 @@ let UARTRawData  = ""
         connectPacketSize = controlPacket.length + remainingLength.length + connectPacketSize; //The total size of the packet to send
 
 
-        SetResponseObj.clearSerialBuffer()
+        this.clearSerialBuffer()
 
-        UARTs.sendString("AT+CIPMUX=1\r\n", clickBoardNum)
+        this.sendString("AT+CIPMUX=1\r\n")
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
-        SetResponseObj.clearSerialBuffer()
-        UARTs.sendString("AT+CIPSTART=0,\"TCP\",\"cloud.brilliantlabs.ca\",1883,30\r\n", clickBoardNum)
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
+        this.clearSerialBuffer()
+        this.sendString("AT+CIPSTART=0,\"TCP\",\"cloud.brilliantlabs.ca\",1883,30\r\n")
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
-        SetResponseObj.clearSerialBuffer()
-        UARTs.sendString("AT+CIPSEND=0," + connectPacketSize.toString() + "\r\n", clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
+        this.clearSerialBuffer()
+        this.sendString("AT+CIPSEND=0," + connectPacketSize.toString() + "\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendBuffer(controlPacket, clickBoardNum)
-        UARTs.sendBuffer(remainingLength, clickBoardNum)
-        UARTs.sendBuffer(protocolNameLength, clickBoardNum)
-        UARTs.sendString(protocolName, clickBoardNum)
-        UARTs.sendBuffer(protocolLevel, clickBoardNum)
-        UARTs.sendBuffer(protocolFlags, clickBoardNum)
-        UARTs.sendBuffer(keepAlive, clickBoardNum)
-        UARTs.sendBuffer(clientIDLength, clickBoardNum)
-        UARTs.sendString(clientID, clickBoardNum)
+        this.sendBuffer(controlPacket)
+        this.sendBuffer(remainingLength)
+        this.sendBuffer(protocolNameLength)
+        this.sendString(protocolName)
+        this.sendBuffer(protocolLevel)
+        this.sendBuffer(protocolFlags)
+        this.sendBuffer(keepAlive)
+        this.sendBuffer(clientIDLength)
+        this.sendString(clientID)
  
         // basic.pause(1)
         //UARTs.sendString("\r\n", clickBoardNum)
 
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
 
 
@@ -466,11 +534,12 @@ let UARTRawData  = ""
 
     // -------------- 3. Cloud ----------------
     //% blockId=subscribeBLMQTT
-    //% block="Subscribe to BL MQTT with API Key %topic on click%clickBoardNum"
+    //% block="$this| Subscribe to BL MQTT with API Key $topic on click$clickBoardNum"
     //% group="Brilliant Labs Cloud"
     //% weight=70   
-    //% blockGap=7  
-    export function subscribeBLMQTT(topic: string, clickBoardNum: clickBoardID): void {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"   
+    subscribeBLMQTT(topic: string): void {
         if (topic.indexOf("-rsp") == 0)
         {
             topic = topic + "-rsp"; //append -rsp to the API key as this is the proper subscription topic name
@@ -525,28 +594,28 @@ let UARTRawData  = ""
 
 
 
-        UARTs.sendString("AT+CIPSEND=0," + subscribePacketSize.toString() + "\r\n", clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPSEND=0," + subscribePacketSize.toString() + "\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendBuffer(controlPacket, clickBoardNum)
-        UARTs.sendBuffer(remainingLength, clickBoardNum)
-        UARTs.sendBuffer(packetID, clickBoardNum)
-        UARTs.sendBuffer(topicLength, clickBoardNum)
-        UARTs.sendString(topic, clickBoardNum)
-        UARTs.sendBuffer(QS, clickBoardNum) //Quality of service
-
-
+        this.sendBuffer(controlPacket)
+        this.sendBuffer(remainingLength)
+        this.sendBuffer(packetID)
+        this.sendBuffer(topicLength)
+        this.sendString(topic)
+        this.sendBuffer(QS) //Quality of service
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+
+
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
-        UARTs.clearUARTRxBuffer(clickBoardNum);
+        this.clearUARTRxBuffer();
      
 
         control.inBackground(function () {
             while(1){
                 basic.pause(10000);
-                pingBLMQTT(50, clickBoardNum);
+                this.pingBLMQTT(50);
 
             }
 
@@ -560,11 +629,12 @@ let UARTRawData  = ""
    
     // -------------- 3. Cloud ----------------
     //% blockId=getBLMQTTMessage
-    //% block="Get BL MQTT Message with variable name %varName on click%clickBoardNum"
+    //% block="$this| Get BL MQTT Message with variable name $varName on click$clickBoardNum"
     //% group="Brilliant Labs Cloud"
     //% weight=70   
-    //% blockGap=7  
-    export function getBLMQTTMessage(varName: string, clickBoardNum: clickBoardID): number {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE" 
+    getBLMQTTMessage(varName: string): number {
         let returnValue = 0
         for(let i=0; i < mqttMessageList.length; i++)
         {
@@ -584,99 +654,85 @@ let UARTRawData  = ""
 
  
    
-    let MQTTMessageObject ={
-        topic:"", //Topic
-   
-        key:"", //API Key
- 
-        cmd:"", //Command Name
-  
-        varName:"", //Variable name
- 
-        value:"" //Value received 
-   
-        
-     }
 
-let mqttMessageList = [MQTTMessageObject]; //Create a blank array of MQTTMessageObject objects
-mqttMessageList.pop(); 
 
     // -------------- 3. Cloud ----------------
     //% blockId=isBLMQTTMessage
-    //% block="Is MQTT Message Available for variable %varName on click%clickBoardNum ?"
+    //% block="$this| Is MQTT Message Available for variable $varName on click$clickBoardNum ?"
     //% group="Brilliant Labs Cloud"
     //% weight=70   
-    //% blockGap=7  
-    export function isBLMQTTMessage(varName: string, clickBoardNum: clickBoardID): boolean {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"   
+    isBLMQTTMessage(varName: string): boolean {
         let startIndex = 0;
         let endIndex = 0;
         let remainingLength = 0;
         let topicLength = 0;
      
 
-        if (UARTRawData.length > 500) {
-            UARTRawData = ""
+        if (this.UARTRawData.length > 500) {
+            this.UARTRawData = ""
         }
        
-        if (UARTs.isUARTDataAvailable(clickBoardNum) || UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?
+        if (this.isUARTDataAvailable() || this.UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?
         {
           
-            UARTRawData = UARTRawData + UARTs.getUARTData(clickBoardNum); // Retrieve the new data and append it
+            this.UARTRawData = this.UARTRawData + this.getUARTData(); // Retrieve the new data and append it
 
-            let IPDIndex = UARTRawData.indexOf("+IPD,0,") //Look for the ESP WiFi response +IPD which indicates data was received
+            let IPDIndex = this.UARTRawData.indexOf("+IPD,0,") //Look for the ESP WiFi response +IPD which indicates data was received
             if (IPDIndex != -1) //If +IPD, was found 
             {
 
      
-                startIndex = UARTRawData.indexOf(":") //Look for beginning of MQTT message (which comes after the :)
+                startIndex = this.UARTRawData.indexOf(":") //Look for beginning of MQTT message (which comes after the :)
 
                 if (startIndex != -1) //If a : was found
                 {
-                    let IPDSizeStr = UARTRawData.substr(IPDIndex + 7, startIndex - IPDIndex - 7) //The length of the IPD message is between the , and the :
+                    let IPDSizeStr = this.UARTRawData.substr(IPDIndex + 7, startIndex - IPDIndex - 7) //The length of the IPD message is between the , and the :
 
 
                     let IPDSize = parseInt(IPDSizeStr)
-                    if (UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?
+                    if (this.UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?
                     {
 
                         startIndex += 1; // Add 1 to the start index to get the first character after the ":"
 
-                        if (UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet
+                        if (this.UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet
                         {
                             
-                            UARTRawData = UARTRawData.substr(startIndex, startIndex); //Remove all data other than the last character (in case there is no more data)
+                            this.UARTRawData = this.UARTRawData.substr(startIndex, startIndex); //Remove all data other than the last character (in case there is no more data)
                             return false; //Not a publish packet
 
                         }
                        
                         
 
-                        remainingLength = UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127) *Need to address this for RL >127
+                        remainingLength = this.UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127) *Need to address this for RL >127
 
-                        topicLength = UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)
-                        MQTTMessageObject.topic = UARTRawData.substr(startIndex + 4,topicLength) //Extract the topic 
+                        topicLength = this.UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)
+                        MQTTMessageObject.topic = this.UARTRawData.substr(startIndex + 4,topicLength) //Extract the topic 
                       
-                        MQTTMessage = UARTRawData.substr(startIndex + 4 + topicLength, remainingLength - topicLength - 2)
+                        this.MQTTMessage = this.UARTRawData.substr(startIndex + 4 + topicLength, remainingLength - topicLength - 2)
 
-                        startIndex = MQTTMessage.indexOf("\"key\":")+8; //Retrieve the start of the word "key" and then add 8 to bring it to the first character of the key
-                        endIndex = MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the key by looking for the ' " ' and then subtracting 1 to get the last character of the key
+                        startIndex = this.MQTTMessage.indexOf("\"key\":")+8; //Retrieve the start of the word "key" and then add 8 to bring it to the first character of the key
+                        endIndex = this.MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the key by looking for the ' " ' and then subtracting 1 to get the last character of the key
 
-                        MQTTMessageObject.key = MQTTMessage.substr(startIndex,endIndex-startIndex+1)  //Extract the key 
+                        MQTTMessageObject.key = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1)  //Extract the key 
                      
-                        startIndex = MQTTMessage.indexOf("\"cmd\":")+8; //Retrieve the start of the word "cmd" and then add 8 to bring it to the first character of the command
-                        endIndex = MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the command name by looking for the ' " ' and then subtracting 1 to get the last character of the command
+                        startIndex = this.MQTTMessage.indexOf("\"cmd\":")+8; //Retrieve the start of the word "cmd" and then add 8 to bring it to the first character of the command
+                        endIndex = this.MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the command name by looking for the ' " ' and then subtracting 1 to get the last character of the command
 
-                        MQTTMessageObject.cmd = MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the command name 
+                        MQTTMessageObject.cmd = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the command name 
                     
-                        startIndex = MQTTMessage.indexOf("\"name\":")+9; //Retrieve the start of the word "name" and then add 9 to bring it to the first character of variable name
-                        endIndex = MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the variable name by looking for the ' " ' and then subtracting 1 to get the last character of the name
+                        startIndex = this.MQTTMessage.indexOf("\"name\":")+9; //Retrieve the start of the word "name" and then add 9 to bring it to the first character of variable name
+                        endIndex = this.MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the variable name by looking for the ' " ' and then subtracting 1 to get the last character of the name
 
-                        MQTTMessageObject.varName = MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable name 
+                        MQTTMessageObject.varName = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable name 
                     
-                        startIndex = MQTTMessage.indexOf("\"value\":")+9; //Retrieve the start of the word "value" and then add 9 to bring it to the first character of variable value
-                        endIndex = MQTTMessage.indexOf("}",startIndex)-2; //Retrieve the end of the variable value by looking for the ' " ' and then subtracting 2 to get the last character of the value
+                        startIndex = this.MQTTMessage.indexOf("\"value\":")+9; //Retrieve the start of the word "value" and then add 9 to bring it to the first character of variable value
+                        endIndex = this.MQTTMessage.indexOf("}",startIndex)-2; //Retrieve the end of the variable value by looking for the ' " ' and then subtracting 2 to get the last character of the value
 
-                        MQTTMessageObject.value = MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable value
+                        MQTTMessageObject.value = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable value
                 
                         if(MQTTMessageObject.cmd  == "SET_VARIABLE") //We are only concerned with the case where an existing variable had a new value added to it (for now)
                         {
@@ -685,7 +741,7 @@ mqttMessageList.pop();
                         }
                         
 
-                        UARTRawData = UARTRawData.substr(IPDSize + startIndex, UARTRawData.length - 1) //Remove all data other than the last character (in case there is no more data)
+                        this.UARTRawData = this.UARTRawData.substr(IPDSize + startIndex, this.UARTRawData.length - 1) //Remove all data other than the last character (in case there is no more data)
 
                         
 
@@ -696,7 +752,7 @@ mqttMessageList.pop();
             }
             else
             {
-                UARTRawData = ""
+                this.UARTRawData = ""
             }
 
 
@@ -712,36 +768,37 @@ mqttMessageList.pop();
     }
 
 
- let BLpingActive = false; 
- let PINs = new bBoard.PinSettings();
+
     // -------------- 3. Cloud ----------------
     //% blockId=pingBLMQTT
-    //// block="Ping BL MQTT every %pingInterval seconds on click%clickBoardNum"
+    //// block="$this| Ping BL MQTT every $pingInterval seconds on click$clickBoardNum"
     //% group="Brilliant Labs Cloud"
     //% weight=70   
     //% blockGap=7  
     //% pingInterval.min=1 pingInterval.max=59
     //% advanced=false
-    export function pingBLMQTT(pingInterval: number, clickBoardNum: clickBoardID) {
-        if (BLpingActive == false) {
-            lastPing = input.runningTime();
+    //% this.defl="WiFi_BLE" 
+    pingBLMQTT(pingInterval: number) {
+        let PINs = new bBoard.PinSettings(this.clickBoardNumGlobalWiFi, this.clickSlotNumGlobalWiFi);
+        if (this.BLpingActive == false) {
+            this.lastPing = input.runningTime();
             let controlPacket = pins.createBuffer(1);
             controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0xC0); //Subscribe Control Packet header
             let remainingLength = pins.createBuffer(1) //size of remaining Length packet
             remainingLength.setNumber(NumberFormat.UInt8LE, 0, 0x00); //Remaining Length = 0 
 
-            UARTs.sendString("AT+CIPSEND=0,2\r\n", clickBoardNum)
-            SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
-            UARTs.sendBuffer(controlPacket, clickBoardNum);
-            UARTs.sendBuffer(remainingLength, clickBoardNum);
-            SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS, clickBoardNum); //Wait for the response "OK"
+            this.sendString("AT+CIPSEND=0,2\r\n")
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
+            this.sendBuffer(controlPacket);
+            this.sendBuffer(remainingLength);
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-            BLpingActive = true;
+            this.BLpingActive = true;
         }
         else //If a ping has been sent
         {
-            if ((input.runningTime() - lastPing) > pingInterval * 1000) {
-                BLpingActive = false;
+            if ((input.runningTime() - this.lastPing) > pingInterval * 1000) {
+                this.BLpingActive = false;
             }
         }
 
@@ -751,51 +808,53 @@ mqttMessageList.pop();
     }
     // -------------- 2. WiFi ----------------
     //% blockId=WiFi_BLE_WiFiConnect
-    //% block="Connect to ssid %ssid| with password %pwd on click%clickBoardNum"
+    //% block="$this| Connect to ssid %ssid| with password %pwd on click%clickBoardNum"
     //% weight=100
     //% group="Connect"
     //% blockGap=7
-    export function WifiConnect(ssid: string, pwd: string,clickBoardNum: clickBoardID): void {
-        PINs.clearPin(clickIOPin.RST,clickBoardNum)
-        PINs.setPin(clickIOPin.RST,clickBoardNum)
+    //% this.defl="WiFi_BLE" 
+    WifiConnect(ssid: string, pwd: string): void {
+        let PINs = new bBoard.PinSettings(this.clickBoardNumGlobalWiFi, this.clickSlotNumGlobalWiFi);
+        PINs.clearPin(clickIOPin.RST)
+        PINs.setPin(clickIOPin.RST)
         basic.pause(300)
-        UARTs.clearUARTRxBuffer(clickBoardNum);
+        this.clearUARTRxBuffer();
  
 
 
-        UARTs.sendString("AT+CWMODE=1\r\n", clickBoardNum); //Put the clickinto station (client) mode
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CWMODE=1\r\n"); //Put the clickinto station (client) mode
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-       SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
-       UARTs.sendString("AT+CIPMUX=1\r\n", clickBoardNum);  //Enable multiple connections
-       SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
+        this.sendString("AT+CIPMUX=1\r\n");  //Enable multiple connections
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-      SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
-      UARTs.sendString("AT+CWJAP=\"" + ssid + "\",\"" + pwd + "\"\r\n", clickBoardNum);  //Connect to WiFi Network
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
+        this.sendString("AT+CWJAP=\"" + ssid + "\",\"" + pwd + "\"\r\n");  //Connect to WiFi Network
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-       SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
-       UARTs.sendString("AT+CIPSTATUS\r\n", clickBoardNum);  //Get information about the connection status
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
+        this.sendString("AT+CIPSTATUS\r\n");  //Get information about the connection status
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-       SetResponseObj.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
-       UARTs.sendString("AT+CIFSR\r\n", clickBoardNum);  //Get local IP Address
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response
+        this.sendString("AT+CIFSR\r\n");  //Get local IP Address
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
     }
 
 
     // --------------  Dual Auth----------------
     //% blockId=WiFi_BLE_dualAuth
-    //% block="PNB-Internet Captive Portal username %username and password %password on click%clickBoardNum"
+    //% block="$this PNB-Internet Captive Portal username $username and password $password on click$clickBoardNum"
     //% weight=90
     //% group="Connect"
     //% blockGap=7
+    //% this.defl="WiFi_BLE" 
     
-export function dualAuth(
+    dualAuth(
     username: string,
-    password: string,
-    clickBoardNum: clickBoardID
-): void {
+    password: string
+    ): void {
     let body =  "username="+username+"&password="+password+"&buttonClicked=4"
     let getData =
         "POST /login.html? HTTP/1.1\r\n" +
@@ -806,33 +865,33 @@ export function dualAuth(
         "Content-Length: "+body.length.toString()+"\r\n\r\n" +
         body
 
-        UARTs.sendString("AT+CIPSTART=0,\"SSL\",\"auth.gnb.ca\",443\r\n",clickBoardNum) //Make a SSL connection to the auth.gnb.ca
-    SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+        this.sendString("AT+CIPSTART=0,\"SSL\",\"auth.gnb.ca\",443\r\n") //Make a SSL connection to the auth.gnb.ca
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-    UARTs.sendString(
-        "AT+CIPSEND=0," + getData.length.toString() + "\r\n",clickBoardNum); //Get ready to send a packet and specifiy the size
+        this.sendString(
+        "AT+CIPSEND=0," + getData.length.toString() + "\r\n"); //Get ready to send a packet and specifiy the size
 
-    SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-    UARTs.sendString(getData,clickBoardNum); //Send the contents of the packet
-    SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+        this.sendString(getData); //Send the contents of the packet
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-    UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum); //Close your TCP connection
-    SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+        this.sendString("AT+CIPCLOSE=0\r\n"); //Close your TCP connection
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
 }
 
     // -------------- 3. Cloud ----------------
     //% blockId=BLTest_set_thingspeak
-    //% block="Send ThingSpeak key %key| fieldNum %fieldNum| data %data on click%clickBoardNum"
+    //% block="$this| Send ThingSpeak key %key| fieldNum %fieldNum| data %data on click%clickBoardNum"
     //% weight=90
     //% group="Thingspeak"
     //% blockGap=7
-    export function sendThingspeak(
+    //% this.defl="WiFi_BLE" 
+    sendThingspeak(
         key: string,
         fieldNum: number,
-        data: string,
-        clickBoardNum: clickBoardID
+        data: string
     ): void {
         let getData =
             "GET /update?api_key=" +
@@ -843,18 +902,18 @@ export function dualAuth(
             data +
             "\r\n";
 
-        UARTs.sendString("AT+CIPMUX=1\r\n", clickBoardNum); 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.sendString("AT+CIPMUX=1\r\n"); 
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-        UARTs.sendString("AT+CIPSTART=0,\"TCP\",\"api.thingspeak.com\",80\r\n", clickBoardNum); 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.sendString("AT+CIPSTART=0,\"TCP\",\"api.thingspeak.com\",80\r\n"); 
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-        UARTs.sendString(
-            "AT+CIPSEND=0," + getData.length.toString() + "\r\n", clickBoardNum);
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.sendString(
+            "AT+CIPSEND=0," + getData.length.toString() + "\r\n");
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-        UARTs.sendString(getData, clickBoardNum);
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.sendString(getData);
+            this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS);
         //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */
         // UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum)
         //response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
@@ -862,16 +921,16 @@ export function dualAuth(
 
     // -------------- 3. Cloud ----------------
     //% blockId=WiFi_BLE_HTTPSsendCommand
-    //% block="BL HTTPS command %command|variable name %varName|data %data|API key %topic|on click%clickBoardNum"
+    //% block="$this| BL HTTPS command %command|variable name %varName|data %data|API key %topic|on click%clickBoardNum"
     //% weight=90
     //% group="Brilliant Labs Cloud"
     //% blockGap=7
-    export function HTTPSsendCommand(
+    //% this.defl="WiFi_BLE" 
+    HTTPSsendCommand(
         command:Command,
         varName: string,
         data: number,
-        topic: string,
-        clickBoardNum: clickBoardID
+        topic: string
     ): void {
         let cmd = ''
         switch(command)
@@ -916,32 +975,32 @@ export function dualAuth(
             "Content-Length: "+bodyString.length.toString()+"\r\n\r\n" + bodyString;
             
         
-        if( isConnected(clickBoardNum) == 0){
+        if( this.isConnected() == 0){
 
-            UARTs.sendString("AT+CIPSTART=0,\"SSL\",\"cloud.brilliantlabs.ca\",443\r\n", clickBoardNum); 
-            SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.sendString("AT+CIPSTART=0,\"SSL\",\"cloud.brilliantlabs.ca\",443\r\n"); 
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
         }
      
 
-        UARTs.sendString(
-            "AT+CIPSEND=0," + getData.length.toString() + "\r\n", clickBoardNum);
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+        this.sendString(
+            "AT+CIPSEND=0," + getData.length.toString() + "\r\n");
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-        UARTs.sendString(getData, clickBoardNum);
+            this.sendString(getData);
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
 
 
     }
 
-     function isConnected(clickBoardNum: clickBoardID):number{
-        UARTs.sendString("AT+CIPSTATUS\r\n", clickBoardNum); 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+        isConnected():number{
+            this.sendString("AT+CIPSTATUS\r\n"); 
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
         
-        let statusStartIndex = SetResponseObj.receivedData.indexOf("STATUS:")
+        let statusStartIndex = this.receivedData.indexOf("STATUS:")
        
-        let connected = parseInt(SetResponseObj.receivedData.substr(statusStartIndex+7,1)); //Convert the characters we received representing the length of the IPD response to an integer
+        let connected = parseInt(this.receivedData.substr(statusStartIndex+7,1)); //Convert the characters we received representing the length of the IPD response to an integer
       
         if (connected == 3)
         {
@@ -956,14 +1015,14 @@ export function dualAuth(
        
   
     //% blockId=WiFi_BLE_getVariable
-    //% block="BL HTTPS get variable %varName with API key %key on click%clickBoardNum"
+    //% block="$this| BL HTTPS get variable $varName with API key $key on click$clickBoardNum"
     //% weight=90
     //% group="Brilliant Labs Cloud"
     //% blockGap=7
-    export function BLgetVariable(
+    //% this.defl="WiFi_BLE" 
+    BLgetVariable(
         varName: string,
-        key: string,
-        clickBoardNum: clickBoardID
+        key: string
     ): number {
         let bodyString = "{\n    \"key\": \""+key+ "\",\n   \"cmd\": \"GET_VARIABLE\",\n    \"name\": \""+varName+"\"\n}";
 
@@ -973,26 +1032,26 @@ export function dualAuth(
             "cache-control: no-cache\r\n" +
             "Content-Length: "+bodyString.length.toString()+"\r\n\r\n" + bodyString;
 
-            if( isConnected(clickBoardNum) == 0){
+            if( this.isConnected() == 0){
 
-                UARTs.sendString("AT+CIPSTART=0,\"SSL\",\"cloud.brilliantlabs.ca\",443\r\n", clickBoardNum); 
-                SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+                this.sendString("AT+CIPSTART=0,\"SSL\",\"cloud.brilliantlabs.ca\",443\r\n"); 
+                this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
             }
 
-        UARTs.sendString(
-            "AT+CIPSEND=0," + getData.length.toString() + "\r\n", clickBoardNum);
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.sendString(
+            "AT+CIPSEND=0," + getData.length.toString() + "\r\n");
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
 
-        UARTs.sendString(getData, clickBoardNum);
+            this.sendString(getData);
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum);
+            this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS);
 
-        let startIndex = SetResponseObj.receivedData.indexOf("\""+varName+"\":")+varName.length+3; 
+        let startIndex = this.receivedData.indexOf("\""+varName+"\":")+varName.length+3; 
 
-        let endIndex = SetResponseObj.receivedData.indexOf("}",startIndex)-1;
+        let endIndex = this.receivedData.indexOf("}",startIndex)-1;
       
 
-        return parseInt(SetResponseObj.receivedData.substr(startIndex,endIndex-startIndex+1))
+        return parseInt(this.receivedData.substr(startIndex,endIndex-startIndex+1))
 
 
 
@@ -1001,11 +1060,12 @@ export function dualAuth(
 
     // -------------- 3. Cloud ----------------
     //% blockId=BLTest_get_thingspeak
-    //% block="Get ThingSpeak ChannelID %ChannelID| fieldNum %fieldNum on click%clickBoardNum"
+    //% block="$this| Get ThingSpeak ChannelID %ChannelID| fieldNum %fieldNum on click%clickBoardNum"
     //% weight=90
     //% group="Thingspeak"
     //% blockGap=7
-    export function getThingspeak(ChannelID: number, fieldNum: number, clickBoardNum: clickBoardID): string {
+    //% this.defl="WiFi_BLE" 
+    getThingspeak(ChannelID: number, fieldNum: number): string {
         let getData =
             "GET /channels/" +
             ChannelID.toString() +
@@ -1014,21 +1074,21 @@ export function dualAuth(
             ".json?results=1\r\n";
         let data = "";
 
-        UARTs.sendString("AT+CIPMUX=1\r\n", clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPMUX=1\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString("AT+CIPSTART=0,\"TCP\",\"api.thingspeak.com\",80\r\n", clickBoardNum); 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPSTART=0,\"TCP\",\"api.thingspeak.com\",80\r\n"); 
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString(
-            "AT+CIPSEND=0," + getData.length.toString() + "\r\n", clickBoardNum
+        this.sendString(
+            "AT+CIPSEND=0," + getData.length.toString() + "\r\n"
         );
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString(getData,clickBoardNum);
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString(getData);
+        this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        data = SetResponseObj.ThingSpeakResponse();
+        data = this.ThingSpeakResponse();
 
         //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */
         // UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum)
@@ -1038,13 +1098,14 @@ export function dualAuth(
     }
 
     //% blockId=BL_set_ifttt
-    //% block="Send IFTTT key %key|event_name %event|value1 %value1 on click%clickBoardNum"
+    //% block="$this| Send IFTTT key %key|event_name %event|value1 %value1 on click%clickBoardNum"
     //% group="IFTTT"
     //% weight=90
-    export function sendIFTTT(
+    //% this.defl="WiFi_BLE" 
+    sendIFTTT(
         key: string,
         eventname: string,
-        value1: number,clickBoardNum: clickBoardID
+        value1: number
     ): void {
         let getData =
             "GET /trigger/" +
@@ -1055,31 +1116,32 @@ export function dualAuth(
             value1.toString() +
             " HTTP/1.1\r\nHost: maker.ifttt.com\r\n\r\n";
 
-        UARTs.sendString("AT+CIPMUX=1\r\n", clickBoardNum);  //Multiple connections enabled
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+            this.sendString("AT+CIPMUX=1\r\n");  //Multiple connections enabled
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString("AT+CIPSTART=0,\"TCP\",\"maker.ifttt.com\",80\r\n", clickBoardNum);  //Make a TCP connection to the host
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+            this.sendString("AT+CIPSTART=0,\"TCP\",\"maker.ifttt.com\",80\r\n");  //Make a TCP connection to the host
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString(
-            "AT+CIPSEND=0," + getData.length.toString() + "\r\n",clickBoardNum
+            this.sendString(
+            "AT+CIPSEND=0," + getData.length.toString() + "\r\n"
         ); //Get ready to send a packet and specifiy the size
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString(getData,clickBoardNum); //Send the contents of the packet
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString(getData); //Send the contents of the packet
+        this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendString("AT+CIPCLOSE=0\r\n", clickBoardNum);  //Close your TCP connection
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPCLOSE=0\r\n");  //Close your TCP connection
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
     }
 
     // -------------- 3. Cloud ----------------
     //% blockId=publishAdafruitMQTT
-    //% block="Publish to Adafruit MQTT topic %string| data %data on click%clickBoardNum"
+    //% block="$this| Publish to Adafruit MQTT topic %string| data %data on click%clickBoardNum"
     //% group="MQTT Adafruit"
     //% weight=70   
-    //% blockGap=7  
-    export function publishAdafruitMQTT(topic: string, data: number,clickBoardNum: clickBoardID): void {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"   
+    publishAdafruitMQTT(topic: string, data: number): void {
         let publishPacketSize = 0
         let controlPacket = pins.createBuffer(1);
         controlPacket.setNumber(NumberFormat.UInt8LE,0,0x30); //Publish Control Packet header
@@ -1121,18 +1183,18 @@ export function dualAuth(
 
 
   
-        UARTs.sendString("AT+CIPSEND=0," + publishPacketSize.toString() + "\r\n",clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPSEND=0," + publishPacketSize.toString() + "\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendBuffer(controlPacket,clickBoardNum)
-        UARTs.sendBuffer(remainingLength,clickBoardNum)
-        UARTs.sendBuffer(topicLength,clickBoardNum)
-        UARTs.sendString(topic,clickBoardNum)
-        UARTs.sendString(data.toString(),clickBoardNum)
+        this.sendBuffer(controlPacket)
+        this.sendBuffer(remainingLength)
+        this.sendBuffer(topicLength)
+        this.sendString(topic)
+        this.sendString(data.toString())
        // UARTs.sendString("\r\n",clickBoardNum)
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+       this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
 
 
@@ -1146,11 +1208,12 @@ export function dualAuth(
 
     // -------------- 3. Cloud ----------------
     //% blockId=connectMQTT
-    //% block="Connect to Adafruit MQTT broker with username %userName| and AIO Key %password on click%clickBoardNum"
+    //% block="$this| Connect to Adafruit MQTT broker with username %userName| and AIO Key %password on click%clickBoardNum"
     //% group="MQTT Adafruit"
     //% weight=70   
-    //% blockGap=7  
-    export function connectMQTT(userName: string, password: string,clickBoardNum: clickBoardID): void {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"  
+    connectMQTT(userName: string, password: string): void {
 
         let connectPacketSize = 0
         let controlPacket = pins.createBuffer(1);
@@ -1226,40 +1289,40 @@ export function dualAuth(
         connectPacketSize = connectPacketSize + 1 + remainingLength.length //The total size of the packet to send
 
 
-        SetResponseObj.clearSerialBuffer()
+        this.clearSerialBuffer()
 
-        UARTs.sendString("AT+CIPMUX=1\r\n",clickBoardNum)
+        this.sendString("AT+CIPMUX=1\r\n")
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
-        SetResponseObj.clearSerialBuffer()
-        UARTs.sendString("AT+CIPSTART=0,\"TCP\",\"io.adafruit.com\",1883,30\r\n",clickBoardNum)
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
+        this.clearSerialBuffer()
+        this.sendString("AT+CIPSTART=0,\"TCP\",\"io.adafruit.com\",1883,30\r\n")
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
-        SetResponseObj.clearSerialBuffer()
-        UARTs.sendString("AT+CIPSEND=0," + connectPacketSize.toString() + "\r\n",clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
+        this.clearSerialBuffer()
+        this.sendString("AT+CIPSEND=0," + connectPacketSize.toString() + "\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
        
-        UARTs.sendBuffer(controlPacket,clickBoardNum)
-        UARTs.sendBuffer(remainingLength,clickBoardNum)
-        UARTs.sendBuffer(protocolNameLength,clickBoardNum)
-        UARTs.sendString(protocolName,clickBoardNum)
-        UARTs.sendBuffer(protocolLevel,clickBoardNum)
-        UARTs.sendBuffer(protocolFlags,clickBoardNum)
-        UARTs.sendBuffer(keepAlive,clickBoardNum)
-        UARTs.sendBuffer(clientIDLength,clickBoardNum)
-        UARTs.sendString(clientID,clickBoardNum)
-        UARTs.sendBuffer(userNameLength,clickBoardNum)
-        UARTs.sendString(userName,clickBoardNum)
-        UARTs.sendBuffer(passwordLength,clickBoardNum)
+        this.sendBuffer(controlPacket)
+        this.sendBuffer(remainingLength)
+        this.sendBuffer(protocolNameLength)
+        this.sendString(protocolName)
+        this.sendBuffer(protocolLevel)
+        this.sendBuffer(protocolFlags)
+        this.sendBuffer(keepAlive)
+        this.sendBuffer(clientIDLength)
+        this.sendString(clientID)
+        this.sendBuffer(userNameLength)
+        this.sendString(userName)
+        this.sendBuffer(passwordLength)
         
-        UARTs.sendString(password,clickBoardNum)
-       // basic.pause(1)
-        UARTs.sendString("\r\n",clickBoardNum)
+        this.sendString(password)
+        
+        this.sendString("\r\n")
 
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
 
 
@@ -1269,11 +1332,12 @@ export function dualAuth(
 
     // -------------- 3. Cloud ----------------
     //% blockId=subscribeAdafruitMQTT
-    //% block="Subscribe to Adafruit MQTT topic %string on click%clickBoardNum"
+    //% block="$this| Subscribe to Adafruit MQTT topic $string on click$clickBoardNum"
     //% group="MQTT Adafruit"
     //% weight=70   
-    //% blockGap=7  
-    export function subscribeAdafruitMQTT(topic: string,clickBoardNum: clickBoardID): void {
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"  
+    subscribeAdafruitMQTT(topic: string): void {
 
         let subscribePacketSize = 0
         let controlPacket = pins.createBuffer(1);
@@ -1324,28 +1388,28 @@ export function dualAuth(
 
 
   
-        UARTs.sendString("AT+CIPSEND=0," + subscribePacketSize.toString() + "\r\n",clickBoardNum)
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.sendString("AT+CIPSEND=0," + subscribePacketSize.toString() + "\r\n")
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-        UARTs.sendBuffer(controlPacket,clickBoardNum)
-        UARTs.sendBuffer(remainingLength,clickBoardNum)
-        UARTs.sendBuffer(packetID,clickBoardNum)
-        UARTs.sendBuffer(topicLength,clickBoardNum)
-        UARTs.sendString(topic,clickBoardNum)
-        UARTs.sendBuffer(QS,clickBoardNum) //Quality of service
+        this.sendBuffer(controlPacket)
+        this.sendBuffer(remainingLength)
+        this.sendBuffer(packetID)
+        this.sendBuffer(topicLength)
+        this.sendString(topic)
+        this.sendBuffer(QS) //Quality of service
 
      
 
 
-        SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
-        UARTs.clearUARTRxBuffer(clickBoardNum);
+        this.clearUARTRxBuffer();
 
         control.inBackground(function () {
             while(1){
                 basic.pause(10000);
                 
-                pingAdafruitMQTT(50, clickBoardNum);
+                this.pingAdafruitMQTT(50);
 
             }
 
@@ -1353,89 +1417,91 @@ export function dualAuth(
         })
         
     }
-    let prevTime = 0;
+    
     // -------------- 3. Cloud ----------------
     //% blockId=getMQTTMessage
-    //% block="Get MQTT Message on click%clickBoardNum"
+    //% block="$this| Get MQTT Message on click$clickBoardNum"
     //% group="MQTT Adafruit"
     //% weight=70   
-    //% blockGap=7  
-    export function getMQTTMessage(clickBoardNum: clickBoardID): string {
-        return MQTTMessage
+    //% blockGap=7
+    //% this.defl="WiFi_BLE"  
+    getMQTTMessage(): string {
+        return this.MQTTMessage
     }
   
-       //% blockId=createVariable
-        //% block="Create Variable -> Api Key:%Key Name %Name on click%clickBoardNum"
-        export function CreateVariable(Key: string, Name: string, clickBoardNum: clickBoardID): void {
+        //% blockId=createVariable
+        //% block="$this| Create Variable -> Api Key:%Key Name %Name on click%clickBoardNum"
+        CreateVariable(Key: string, Name: string): void {
             // Add code here
             let getData ="\{\r\n\"key\": \"9qvfccbdk0jrgfeh\",\r\n\"cmd\": \"CREATE_VARIABLE\",\r\n\"name\": \"msdsdfsfd\",\r\n\"value\": \"Hello my name is Josiah\"\r\n}\";"
     
-                UARTs.sendString("AT+CIPMUX=1\r\n", clickBoardNum); 
-                SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+            this.sendString("AT+CIPMUX=1\r\n"); 
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         
-                UARTs.sendString("AT+CIPSTART=0,\"TCP\",\"https://cloud.brilliantlabs.ca\",80\r\n", clickBoardNum); 
-                SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+            this.sendString("AT+CIPSTART=0,\"TCP\",\"https://cloud.brilliantlabs.ca\",80\r\n"); 
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         
-                UARTs.sendString(
-                    "AT+CIPSEND=0," + getData.length.toString() + "\r\n", clickBoardNum);
-                    SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+            this.sendString(
+                    "AT+CIPSEND=0," + getData.length.toString() + "\r\n");
+                    this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         
-                UARTs.sendString(getData, clickBoardNum);
-                SetResponseObj.response = SetResponseObj.WiFiResponse("OK", true, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+                    this.sendString(getData);
+                    this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
         }
 
 
    // -------------- 3. Cloud ----------------
     //% blockId=isMQTTMessage
-    //% block="Is MQTT Message Available on click%clickBoardNum ?"
+    //% block="$this| Is MQTT Message Available on click%clickBoardNum ?"
     //% group="MQTT Adafruit"
     //% weight=70   
-    //% blockGap=7  
-    export function isMQTTMessage(clickBoardNum: clickBoardID): boolean{
+    //% blockGap=7
+    //% this.defl="WiFi_BLE" 
+    isMQTTMessage(): boolean{
         let startIndex = 0;
         let remainingLength = 0;
         let topicLength = 0;
-       if(UARTRawData.length > 300){
-           UARTRawData = ""
+       if(this.UARTRawData.length > 300){
+        this.UARTRawData = ""
        }
-      if(UARTs.isUARTDataAvailable(clickBoardNum) || UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?
+      if(this.isUARTDataAvailable() || this.UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?
       {
     
-            UARTRawData = UARTRawData + UARTs.getUARTData(clickBoardNum); // Retrieve the new data and append it
+            this.UARTRawData = this.UARTRawData + this.getUARTData(); // Retrieve the new data and append it
    
-            let IPDIndex = UARTRawData.indexOf("+IPD,0,") //Look for the ESP WiFi response +IPD which indicates data was received
+            let IPDIndex = this.UARTRawData.indexOf("+IPD,0,") //Look for the ESP WiFi response +IPD which indicates data was received
             if(IPDIndex !== -1) //If +IPD, was found 
             {
             
                 
-                startIndex = UARTRawData.indexOf(":") //Look for beginning of MQTT message (which comes after the :)
+                startIndex = this.UARTRawData.indexOf(":") //Look for beginning of MQTT message (which comes after the :)
                
                 if(startIndex != -1) //If a : was found
                 {
-                    let IPDSizeStr = UARTRawData.substr(IPDIndex+7,startIndex-IPDIndex-7) //The length of the IPD message is between the , and the :
+                    let IPDSizeStr = this.UARTRawData.substr(IPDIndex+7,startIndex-IPDIndex-7) //The length of the IPD message is between the , and the :
                    
                     
                     let IPDSize = parseInt(IPDSizeStr)
-                    if(UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?
+                    if(this.UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?
                     {
 
                         startIndex += 1; // Add 1 to the start index to get the first character after the ":"
 
-                        if(UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet
+                        if(this.UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet
                         {
 
                             return false; //Not a publish packet
 
                         }
                         
-                        remainingLength = UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127)
+                        remainingLength = this.UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127)
         
-                        topicLength = UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)
+                        topicLength = this.UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)
                     
-                        MQTTMessage  = UARTRawData.substr(startIndex + 4+topicLength,remainingLength-topicLength-2)
+                        this.MQTTMessage  = this.UARTRawData.substr(startIndex + 4+topicLength,remainingLength-topicLength-2)
                     
-                        UARTRawData = UARTRawData.substr(IPDSize + startIndex,UARTRawData.length-1) //Remove all data other than the last character (in case there is no more data)
+                        this.UARTRawData = this.UARTRawData.substr(IPDSize + startIndex,this.UARTRawData.length-1) //Remove all data other than the last character (in case there is no more data)
                  
                         return true; //Message retrieved
                       
@@ -1451,41 +1517,39 @@ export function dualAuth(
             
     }
 
-let pingActive = false;
-let lastPing = 0;
-let pingActiveAdafruit = false;
-let lastPingAdafruit = 0;
+
     // -------------- 3. Cloud ----------------
     //% blockId=pingAdafruitMQTT
-    // block="Ping Adafruit MQTT every %pingInterval seconds on click%clickBoardNum"
+    // block="$this Ping Adafruit MQTT every $pingInterval seconds on click$clickBoardNum"
     //% group="MQTT Adafruit"
     //% weight=70   
     //% blockGap=7  
     //% pingInterval.min=1 pingInterval.max=59
     //% advanced=false
-    export function pingAdafruitMQTT(pingInterval: number, clickBoardNum: clickBoardID) 
+    //% this.defl="WiFi_BLE" 
+    pingAdafruitMQTT(pingInterval: number) 
     {
-        if(pingActiveAdafruit == false)
+        if(this.pingActiveAdafruit == false)
         {
-            lastPingAdafruit = input.runningTime();
+            this.lastPingAdafruit = input.runningTime();
             let controlPacket = pins.createBuffer(1);
             controlPacket.setNumber(NumberFormat.UInt8LE,0,0xC0); //Subscribe Control Packet header
             let remainingLength = pins.createBuffer(1) //size of remaining Length packet
             remainingLength.setNumber(NumberFormat.UInt8LE,0,0x00); //Remaining Length = 0 
     
-            UARTs.sendString("AT+CIPSEND=0,2\r\n",clickBoardNum)
-            SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
-            UARTs.sendBuffer(controlPacket,clickBoardNum);
-            UARTs.sendBuffer(remainingLength,clickBoardNum);
-            SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+            this.sendString("AT+CIPSEND=0,2\r\n")
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
+            this.sendBuffer(controlPacket);
+            this.sendBuffer(remainingLength);
+            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
 
-            pingActiveAdafruit = true;
+            this.pingActiveAdafruit = true;
         }
         else //If a ping has been sent
         {
-            if ((input.runningTime() - lastPingAdafruit) > pingInterval*1000) 
+            if ((input.runningTime() - this.lastPingAdafruit) > pingInterval*1000) 
             {
-                pingActiveAdafruit = false;
+                this.pingActiveAdafruit = false;
             }
         }
         
@@ -1493,4 +1557,5 @@ let lastPingAdafruit = 0;
             
         
     }
+}
 }

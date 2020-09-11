@@ -477,7 +477,7 @@ namespace neopixel {
     //% parts="neopixel"
     //% trackArgs=0,2
     //% blockSetVariable=strip
-    export function create(pin: DigitalPin, numleds: number, mode: NeoPixelMode): Strip {
+    export function create_old(pin: DigitalPin, numleds: number, mode: NeoPixelMode): Strip {
         let strip = new Strip();
         let stride = mode === NeoPixelMode.RGBW ? 4 : 3;
         strip.buf = pins.createBuffer(numleds * stride);
@@ -499,7 +499,7 @@ namespace neopixel {
     //% weight=1
     //% blockId="neopixel_rgb" block="red %red|green %green|blue %blue"
     //% advanced=true
-    export function rgb(red: number, green: number, blue: number): number {
+    export function rgb_old(red: number, green: number, blue: number): number {
         return packRGB(red, green, blue);
     }
 
@@ -509,7 +509,7 @@ namespace neopixel {
     //% weight=2 blockGap=8
     //% blockId="neopixel_colors" block="%color"
     //% advanced=true
-    export function colors(color: NeoPixelColors): number {
+    export function colors_old(color: NeoPixelColors): number {
         return color;
     }
 
@@ -536,7 +536,7 @@ namespace neopixel {
      * @param l luminosity from 0 to 99
      */
     //% blockId=neopixelHSL block="hue %h|saturation %s|luminosity %l"
-    export function hsl(h: number, s: number, l: number): number {
+    export function hsl_old(h: number, s: number, l: number): number {
         h = Math.round(h);
         s = Math.round(s);
         l = Math.round(l);

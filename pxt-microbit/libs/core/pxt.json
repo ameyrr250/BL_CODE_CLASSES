@@ -57,7 +57,9 @@
         "force.ts",
         "Relay.ts",
         "airquality2.ts",
-        "Button_G.ts"
+        "Button_G.ts",
+        "Servo.ts",
+        "WiFi_BLE.ts"
 
     ],
     "public": true,

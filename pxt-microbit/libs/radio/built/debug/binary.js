@@ -1,4 +1,4 @@
-// total=3737 new=43.48% cached=0.00% other=56.52%
+// total=4790 new=55.89% cached=0.00% other=44.11%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -56,7 +56,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P5107049(s) {
+function _main___P14516102(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -66,34 +66,63 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___5107352 = (undefined);
+    globals._intervals___14516405 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___5107598 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___5107598, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___14516651 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___14516651, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___5107610 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___5107610, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___14516663 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___14516663, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___5107620 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___5107620, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___14516673 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___14516673, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___5107630 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___5107630, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___14516683 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___14516683, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___5107640 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___5107640, 2, 0, 2);
+    globals.READ_BBOARD_TX_BUFFER___14516693 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___14516693, 2, 0, 2);
+    r0 = pxsim_pxtrt.mkMap();
+    s.tmp_0 = r0;
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_1 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "topic", s.tmp_1);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_2 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "key", s.tmp_2);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_3 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "cmd", s.tmp_3);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_4 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "varName", s.tmp_4);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_5 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "value", s.tmp_5);
+    globals.MQTTMessageObject___14516897 = (s.tmp_0);
+    r0 = pxsim_Array__mk();
+    s.tmp_0 = r0;
+    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___14516897);
+    globals.mqttMessageList___14516899 = (s.tmp_0);
+    r0 = pxsim_Array_.pop(globals.mqttMessageList___14516899);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P5107049.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"targetoverrides.ts","functionName":"<main>","argumentNames":[]}
-_main___P5107049.continuations = [  ]
+_main___P14516102.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"targetoverrides.ts","functionName":"<main>","argumentNames":[]}
+_main___P14516102.continuations = [  ]
 
-function _main___P5107049_mk(s) {
+function _main___P14516102_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P5107049, depth: s.depth + 1,
+        parent: s, fn: _main___P14516102, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  tmp_0: undefined,
+  tmp_1: undefined,
+  tmp_2: undefined,
+  tmp_3: undefined,
+  tmp_4: undefined,
+  tmp_5: undefined,
 } }
 
 
@@ -102,5 +131,5 @@ function _main___P5107049_mk(s) {
 
 const breakpoints = setupDebugger(1, [])
 
-return _main___P5107049
+return _main___P14516102
 })

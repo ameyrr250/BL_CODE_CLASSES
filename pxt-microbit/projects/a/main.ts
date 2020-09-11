@@ -1,3 +1,12 @@
+led.enable(true)
+basic.showIcon(IconNames.Yes)
+let motor = bBoard_Motor.createLCDSettings(clickBoardID.zero, clickBoardSlot.A, bBoard_Motor.motorDriver.left)
 basic.forever(function () {
-	
+    motor.motorEnable(bBoard_Motor.motorState.enabled)
+    basic.pause(100000)
+    motor.motorDutyDirection(50, bBoard_Motor.motorDirection.forward)
+    basic.pause(100)
+    basic.pause(100)
+    basic.pause(2000)
+    motor.motorEnable(bBoard_Motor.motorState.enabled)
 })

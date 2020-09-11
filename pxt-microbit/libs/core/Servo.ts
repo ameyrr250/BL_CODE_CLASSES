@@ -374,15 +374,15 @@ namespace Servo{
       }
     
          //%blockId=Servo_AngleAdjusted
-        //%block="Set $this servo $n to $angle with pulse range min $pulseMin and max $pulseMax"
+        //%block="Set $this Servo Number $servoNumber to $angle with pulse range min $pulseMin and max $pulseMax"
         //% blockGap=7
         //% advanced=true
-            //% servoNumber.min=1 servoNumber.max=16
+        //% servoNumber.min=1 servoNumber.max=16
         //% servoNumber.defl=1
         //% blockNamespace=Servo
-            //% this.shadow=variables_get
-            //% this.defl="Servo"
-        setServoAngleAdjusted( servoNumber:number,  angle:number,pulseMin:number,pulseMax:number) {
+        //% this.shadow=variables_get
+        //% this.defl="Servo"
+        setServoAngleAdjusted( servoNumber:number=1,  angle:number,pulseMin:number,pulseMax:number) {
         
         if(this.isInitialized[this.clickBoardNumGlobal] == 0)
         {
@@ -405,7 +405,7 @@ namespace Servo{
     
     
          //%blockId=Servo_setPWM
-        //%block="Set $this servo $num to be on $on and off $off"
+        //%block="Set $this servo $servoNumber to be on $on and off $off"
         //% blockGap=7
         //% advanced=true
         //% servoNumber.min=1 servoNumber.max=16
