@@ -270,7 +270,7 @@ export class LCDSettings{
          * @param LCDstring the string
          * @param lineNum the lineNum
          */
-        //% block="$this Write 2 a $LCDstring to line $lineNum"
+        //% block="$this Write a $LCDstring to line $lineNum"
         //% blockId=LCDWriteString
         //% blockNamespace=LCD_Mini
         //% this.shadow=variables_get

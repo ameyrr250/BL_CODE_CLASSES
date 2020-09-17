@@ -53,14 +53,10 @@
         "parts/speaker.svg",
         "parts/headphone.svg",
         "bBoard.ts",
-        "LCD_Mini.ts",
-        "force.ts",
-        "Relay.ts",
-        "airquality2.ts",
-        "Button_G.ts",
-        "Servo.ts",
-        "WiFi_BLE.ts"
-
+        "bBoardMusic.ts",
+        "bBoardMotor.ts",
+        "bBoardMic.ts",
+        "LCD_Mini.ts"
     ],
     "public": true,
     "dependencies": {},

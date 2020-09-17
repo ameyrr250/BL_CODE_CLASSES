@@ -14,7 +14,7 @@ namespace Water_Detect {
     //% block=" $clickBoardNum $clickSlot"
     //% blockSetVariable="Water_Detect"
     //% weight=110
-    export function createStepper(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Water_Detect {
+    export function createWaterDetect(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Water_Detect {
         return new Water_Detect(clickBoardNum, clickSlot);
    }
 
