@@ -9,8 +9,6 @@ namespace WiFiSetResponses{
     response : number;
     receivedData : String
     MQTTMessageRetrieveState : number ;
-    
-    MQTTMessage : String;
 
     private clickBoardNumGlobal:number
     private clickSlotNumGlobal:number
@@ -22,7 +20,7 @@ namespace WiFiSetResponses{
     this.response = 2;
     this.receivedData = ""; //A place to store the response from the WiFi clickwhen requestting HTTP data
     this.MQTTMessageRetrieveState = 0; //Track MQTT message retrieval state.
-    this.MQTTMessage = ""; //Used to store the retrieved message
+
     this.clickBoardNumGlobal=clickBoardNum;
     this.clickSlotNumGlobal=clickSlot;
     this.clickBoardNumGlobalSetResponse=clickBoardNum*3+clickSlot;   
