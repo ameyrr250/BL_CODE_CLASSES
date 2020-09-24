@@ -88,11 +88,11 @@ namespace neopixel {
      * @param clickBoardNum the clickBoardNum
      *  @param Strip the neopixel Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode "
     //% blockSetVariable="Strip"
     //% weight=110
-    export function createButton_G(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Strip {
-        return new Strip(clickBoardNum, clickSlot);
+    export function createButton_G(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
+        return new Strip(clickBoardNum, clickSlot, pin, numleds, mode);
     }
 
 
@@ -128,11 +128,19 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
 
         private clickBoardNumGlobal:number
         private clickSlotNumGlobal:number
+        private pinGlobal:neoPin
+        private numledsGlobal:number
+        private modeGlobal:NeoPixelMode
     
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode){
             super(clickBoardNum, clickSlot)
             this.clickBoardNumGlobal=clickBoardNum;
             this.clickSlotNumGlobal=clickSlot;
+            this.pinGlobal=pin
+            this.numledsGlobal=numleds
+            this.modeGlobal=mode
+            this.createNeopixel(pin, numleds, mode)
+
         }
 
         /**
@@ -422,7 +430,7 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         range(start: number, length: number): Strip {
             start = start >> 0;
             length = length >> 0;
-            let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal);
+            let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal,  this.pinGlobal, this.numledsGlobal, this.modeGlobal);
             strip.buf = this.buf;
             strip.pin = this.pin;
             strip.brightness = this.brightness;
@@ -575,18 +583,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
             buf.setNumber(NumberFormat.UInt8LE,pixeloffset + 3, white);
         }
 
-    /**
-     * Create a new NeoPixel driver for `numleds` LEDs.
-     * @param pin the pin where the neopixel is connected.
-     * @param numleds number of leds in the strip, eg: 24,30,60,64
-     */
-    //% blockId="neopixel_create" block="$this| $pin|with $numleds|leds as $mode| on "
-    //% weight=90 blockGap=8
-    //% parts="neopixel"
-    //% trackArgs=0,2
-    //% blockSetVariable=Strip
+
     createNeopixel(pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
-        let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal);
+        let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal,  this.pinGlobal, this.numledsGlobal, this.modeGlobal);
 
         if(pin >=100 && pin <=120)
         {
