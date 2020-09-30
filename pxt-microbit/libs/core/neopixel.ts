@@ -83,32 +83,40 @@ namespace neopixel {
      * A NeoPixel strip
      */
 
+    export enum HueInterpolationDirection {
+        Clockwise,
+        CounterClockwise,
+        Shortest
+    }
+
     /**
-     * Sets neopixel object.
+     * Sets NeoPixel object.
      * @param clickBoardNum the clickBoardNum
-     *  @param Strip the neopixel Object
+     *  @param Strip the Strip Object
      */
-    //% block=" $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode "
+    //% block=" $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode"
     //% blockSetVariable="Strip"
+    //% blockId=Strip
     //% weight=110
-    export function createButton_G(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
+    export function createStrip(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
         return new Strip(clickBoardNum, clickSlot, pin, numleds, mode);
     }
 
-
      //Neopixel Function IDs
 
-let NEOPIXEL_ADD     =          0x01
-let NEOPIXEL_REMOVE    =        0x02
-let NEOPIXEL_SHOW   =           0x03
-let NEOPIXEL_HIDE    =          0x04
-let NEOPIXEL_CLEAR      =       0x05
-let NEOPIXEL_STRIP_WRITE_SINGLE_DATA =0x06
-let NEOPIXEL_STRIP_WRITE_BUFFER_DATA =0x07
-let NEOPIXEL_STRIP_READ_SINGLE_DATA  =0x08
-let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
+
 
     export class Strip extends bBoard.peripheralSettings{
+
+        private NEOPIXEL_ADD  : number
+        private NEOPIXEL_REMOVE : number
+        private NEOPIXEL_SHOW : number
+        private NEOPIXEL_HIDE : number
+        private NEOPIXEL_CLEAR  : number
+        private NEOPIXEL_STRIP_WRITE_SINGLE_DATA : number
+        private NEOPIXEL_STRIP_WRITE_BUFFER_DATA : number
+        private NEOPIXEL_STRIP_READ_SINGLE_DATA  : number
+        private NEOPIXEL_STRIP_READ_BUFFER_DATA  : number
         
        private buf: Buffer;
        private pin: DigitalPin;
@@ -139,18 +147,64 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
             this.pinGlobal=pin
             this.numledsGlobal=numleds
             this.modeGlobal=mode
-            this.createNeopixel(pin, numleds, mode)
+            this.NEOPIXEL_ADD     =          0x01
+            this.NEOPIXEL_REMOVE    =        0x02
+            this.NEOPIXEL_SHOW   =           0x03
+            this.NEOPIXEL_HIDE    =          0x04
+            this.NEOPIXEL_CLEAR      =       0x05
+            this.NEOPIXEL_STRIP_WRITE_SINGLE_DATA =0x06
+            this.NEOPIXEL_STRIP_WRITE_BUFFER_DATA =0x07
+            this.NEOPIXEL_STRIP_READ_SINGLE_DATA  =0x08
+            this.NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
+
+            if(pin >=100 && pin <=120)
+        {
+            this.bBoard = false;
+            this.pin = parseInt(pin.toString());
+        }
+        else
+        {
+            this.bBoard = true;
+            this.pin = parseInt(pin.toString());
+          
+            if(this.clickSlotNumGlobal == clickBoardSlot.default) //If the on-board neopixels are selected
+            {
+               
+                this.pin = parseInt(clickIOPin.PWM.toString()); //Set the pin to the PWM on click zero (Click Z reserves PWM pin for built in neopixels)
+               
+            }
+            
+            this.board = this.clickBoardNumGlobal;
+            this.clickPort = this.clickSlotNumGlobal;
+            
+            this.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id,this.NEOPIXEL_ADD,[mode,numleds])
+          
+            
+        }
+        
+        let stride = mode === NeoPixelMode.RGBW ? 4 : 3;
+        this.buf = pins.createBuffer(numleds * stride);
+        this.start = 0;
+        this._length = numleds;
+        this._mode = mode;
+        this._matrixWidth = 0;
+        this.setBrightness(255)
 
         }
+
 
         /**
          * Shows all LEDs to a given color (range 0-255 for r, g, b).
          * @param rgb RGB color of the LED
          */
-        //% blockId="neopixel_set_strip_color" block="$this|show color $rgb=neopixel_colors"
+        //% blockId="neopixel_set_strip_color" block="$this|show color aaa $rgb=neopixel_colors"
         //% weight=85 blockGap=8
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
+        
+
         showColor(rgb: number) {
             rgb = rgb >> 0;
             this.setAllRGB(rgb);
@@ -165,7 +219,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_set_strip_rainbow" block="$this|show rainbow from $startHue|to $endHue"
         //% weight=85 blockGap=8
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         showRainbow(startHue: number = 1, endHue: number = 360) {
             if (this._length <= 0) return;
 
@@ -209,16 +265,16 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
 
             //interpolate
             if (steps === 1) {
-                this.setPixelColor(0, hsl(h1 + hStep, s1 + sStep, l1 + lStep))
+                this.setPixelColor(0, this.hsl(h1 + hStep, s1 + sStep, l1 + lStep))
             } else {
-                this.setPixelColor(0, hsl(startHue, saturation, luminance));
+                this.setPixelColor(0, this.hsl(startHue, saturation, luminance));
                 for (let i = 1; i < steps - 1; i++) {
                     const h = Math.idiv((h1_100 + i * hStep), 100) + 360;
                     const s = Math.idiv((s1_100 + i * sStep), 100);
                     const l = Math.idiv((l1_100 + i * lStep), 100);
-                    this.setPixelColor(i, hsl(h, s, l));
+                    this.setPixelColor(i, this.hsl(h, s, l));
                 }
-                this.setPixelColor(steps - 1, hsl(endHue, saturation, luminance));
+                this.setPixelColor(steps - 1, this.hsl(endHue, saturation, luminance));
             }
             this.show();
         }
@@ -233,7 +289,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId=neopixel_show_bar_graph block="$this|show bar graph of $value|up to $high"
         //% icon="\uf080"
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         showBarGraph(value: number, high: number): void {
             if (high <= 0) {
                 this.clear();
@@ -254,7 +312,7 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
                 for (let i = 0; i < n; ++i) {
                     if (i <= v) {
                         const b = Math.idiv(i * 255, n1);
-                        this.setPixelColor(i, neopixel.rgb(b, 0, 255 - b));
+                        this.setPixelColor(i, this.rgb(b, 0, 255 - b));
                     }
                     else this.setPixelColor(i, 0);
                 }
@@ -272,7 +330,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockGap=8
         //% weight=80
         //% parts="neopixel" advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         setPixelColor(pixeloffset: number, rgb: number): void {
             this.setPixelRGB(pixeloffset >> 0, rgb >> 0);
         }
@@ -285,7 +345,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockGap=8
         //% weight=5
         //% parts="neopixel" advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         setMatrixWidth(width: number) {
             this._matrixWidth = Math.min(this._length, width >> 0);
         }
@@ -300,7 +362,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_set_matrix_color" block="$this|set matrix color at x $x|y $y|to $rgb=neopixel_colors"
         //% weight=4
         //% parts="neopixel" advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         setMatrixColor(x: number, y: number, rgb: number) {
             if (this._matrixWidth <= 0) return; // not a matrix, ignore
             x = x >> 0;
@@ -321,7 +385,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockGap=8
         //% weight=80
         //% parts="neopixel" advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         setPixelWhiteLED(pixeloffset: number, white: number): void {
             if (this._mode === NeoPixelMode.RGBW) {
                 this.setPixelW(pixeloffset >> 0, white >> 0);
@@ -334,14 +400,16 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_show" block="$this|show" blockGap=8
         //% weight=79
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         show() {
             if(this.bBoard == true)
             {
                 
-                super.sendBuffer(parseInt(this.pin.toString()), moduleIDs.NEOPIXEL_module_id,NEOPIXEL_STRIP_WRITE_BUFFER_DATA,this.buf )
+                this.sendBuffer(parseInt(this.pin.toString()), moduleIDs.NEOPIXEL_module_id,this.NEOPIXEL_STRIP_WRITE_BUFFER_DATA,this.buf )
                 
-                super.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id, NEOPIXEL_SHOW,[] )
+                this.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id, this.NEOPIXEL_SHOW,[] )
                 
             }
             else
@@ -359,7 +427,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_clear" block="$this|clear"
         //% weight=76
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         clear(): void {
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
             this.buf.fill(0, this.start * stride, this._length * stride);
@@ -370,7 +440,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
          */
         //% blockId="neopixel_length" block="$this|length" blockGap=8
         //% weight=60 advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         length() {
             return this._length;
         }
@@ -382,7 +454,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_set_brightness" block="$this|set brightness $brightness" blockGap=8
         //% weight=59
         //% parts="neopixel" advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         setBrightness(brightness: number): void {
             this.brightness = brightness & 0xff;
         }
@@ -393,7 +467,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_each_brightness" block="$this|ease brightness" blockGap=8
         //% weight=58
         //% parts="neopixel" advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         easeBrightness(): void {
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
             const br = this.brightness;
@@ -426,7 +502,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_range" block="$this|range from $start|with $length|leds"
         //% parts="neopixel"
         //% blockSetVariable=range
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         range(start: number, length: number): Strip {
             start = start >> 0;
             length = length >> 0;
@@ -449,7 +527,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_shift" block="$this|shift pixels by $offset" blockGap=8
         //% weight=40
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         shift(offset: number = 1): void {
             offset = offset >> 0;
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
@@ -464,7 +544,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         //% blockId="neopixel_rotate" block="$this|rotate pixels by $offset" blockGap=8
         //% weight=39
         //% parts="neopixel"
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         rotate(offset: number = 1): void {
             offset = offset >> 0;
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
@@ -487,7 +569,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
          */
         //% weight=9 blockId=neopixel_power block="$this|power (mA)"
         //% advanced=true
+        //% this.shadow=variables_get
         //% this.defl="Strip"
+        //% blockNamespace=neopixel
         power(): number {
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
             const end = this.start + this._length;
@@ -514,9 +598,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         }
 
         private setAllRGB(rgb: number) {
-            let red = unpackR(rgb);
-            let green = unpackG(rgb);
-            let blue = unpackB(rgb);
+            let red = this.unpackR(rgb);
+            let green = this.unpackG(rgb);
+            let blue = this.unpackB(rgb);
 
             const br = this.brightness;
             if (br < 255) {
@@ -553,9 +637,9 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
             let stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
             pixeloffset = (pixeloffset + this.start) * stride;
 
-            let red = unpackR(rgb);
-            let green = unpackG(rgb);
-            let blue = unpackB(rgb);
+            let red = this.unpackR(rgb);
+            let green = this.unpackG(rgb);
+            let blue = this.unpackB(rgb);
 
             let br = this.brightness;
             if (br < 255) {
@@ -584,51 +668,8 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         }
 
 
-    createNeopixel(pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
-        let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal,  this.pinGlobal, this.numledsGlobal, this.modeGlobal);
 
-        if(pin >=100 && pin <=120)
-        {
-            strip.bBoard = false;
-            strip.pin = parseInt(pin.toString());
-        }
-        else
-        {
-            strip.bBoard = true;
-            strip.pin = parseInt(pin.toString());
-          
-            if(this.clickSlotNumGlobal == clickBoardSlot.default) //If the on-board neopixels are selected
-            {
-               
-                strip.pin = parseInt(clickIOPin.PWM.toString()); //Set the pin to the PWM on click zero (Click Z reserves PWM pin for built in neopixels)
-               
-            }
-            
-            strip.board = this.clickBoardNumGlobal;
-            strip.clickPort = this.clickSlotNumGlobal;
-            
-            this.sendData(parseInt(strip.pin.toString()),moduleIDs.NEOPIXEL_module_id,NEOPIXEL_ADD,[mode,numleds])
-          
-            
-        }
         
-        let stride = mode === NeoPixelMode.RGBW ? 4 : 3;
-        strip.buf = pins.createBuffer(numleds * stride);
-        strip.start = 0;
-        strip._length = numleds;
-        strip._mode = mode;
-        strip._matrixWidth = 0;
-        strip.setBrightness(255)
-        
-   
-        return strip;
-    }
-
-
-    }
-
-   
-
     /**
      * Converts red, green, blue channels into a RGB color
      * @param red value of the red channel between 0 and 255. eg: 255
@@ -638,9 +679,11 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
     //% weight=1
     //% blockId="neopixel_rgb" block="$this |red $red|green $green|blue $blue"
     //% advanced=true
+    //% this.shadow=variables_get
     //% this.defl="Strip"
-    export function rgb(red: number, green: number, blue: number): number {
-        return packRGB(red, green, blue);
+    //% blockNamespace=neopixel
+    rgb(red: number, green: number, blue: number): number {
+        return this.packRGB(red, green, blue);
     }
 
     /**
@@ -649,23 +692,25 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
     //% weight=2 blockGap=8
     //% blockId="neopixel_colors" block="$this |$color"
     //% advanced=true
+    //% this.shadow=variables_get
     //% this.defl="Strip"
-    export function colors(color: NeoPixelColors): number {
+    //% blockNamespace=neopixel
+    colors(color: NeoPixelColors): number {
         return color;
     }
 
-    function packRGB(a: number, b: number, c: number): number {
+    packRGB(a: number, b: number, c: number): number {
         return ((a & 0xFF) << 16) | ((b & 0xFF) << 8) | (c & 0xFF);
     }
-    function unpackR(rgb: number): number {
+    unpackR(rgb: number): number {
         let r = (rgb >> 16) & 0xFF;
         return r;
     }
-    function unpackG(rgb: number): number {
+    unpackG(rgb: number): number {
         let g = (rgb >> 8) & 0xFF;
         return g;
     }
-    function unpackB(rgb: number): number {
+    unpackB(rgb: number): number {
         let b = (rgb) & 0xFF;
         return b;
     }
@@ -678,7 +723,10 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
      */
     //% blockId=neopixelHSL block="$this| hue $h|saturation $s|luminosity $l"
     //% this.defl="Strip"
-    export function hsl(h: number, s: number, l: number): number {
+    //% this.shadow=variables_get
+    //% this.defl="Strip"
+    //% blockNamespace=neopixel
+    hsl(h: number, s: number, l: number): number {
         h = Math.round(h);
         s = Math.round(s);
         l = Math.round(l);
@@ -711,12 +759,13 @@ let NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09
         let r = r$ + m;
         let g = g$ + m;
         let b = b$ + m;
-        return packRGB(r, g, b);
+        return this.packRGB(r, g, b);
     }
 
-    export enum HueInterpolationDirection {
-        Clockwise,
-        CounterClockwise,
-        Shortest
     }
+
+   
+
+
+
 }

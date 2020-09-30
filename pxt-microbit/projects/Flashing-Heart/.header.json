@@ -1,0 +1,60 @@
+{
+    "name": "Flashing Heart",
+    "meta": {},
+    "editor": "blocksprj",
+    "pubId": "",
+    "pubCurrent": false,
+    "target": "microbit",
+    "targetVersion": "2.3.52",
+    "cloudSync": false,
+    "temporary": false,
+    "tutorial": {
+        "tutorial": "/projects/flashing-heart",
+        "tutorialName": "Flashing Heart",
+        "tutorialStep": 0,
+        "tutorialReady": true,
+        "tutorialHintCounter": 0,
+        "tutorialStepInfo": [
+            {
+                "contentMd": "Learn how to use the LEDs and make a flashing heart! \n(Want to learn how lights work? [Watch this video](https://youtu.be/qqBmvHD5bCw)).\n\n\n![Heart shape in the LEDs](/static/mb/projects/flashing-heart/sim.gif)",
+                "headerContentMd": "Learn how to use the LEDs and make a flashing heart! \n(Want to learn how lights work? [Watch this video](https://youtu.be/qqBmvHD5bCw)).",
+                "fullscreen": true,
+                "unplugged": true,
+                "hintContentMd": "![Heart shape in the LEDs](/static/mb/projects/flashing-heart/sim.gif)"
+            },
+            {
+                "contentMd": "Place the ``||basic:show leds||`` block in the ``||basic:forever||`` block and draw a heart.\n\n![An animation that shows how to drag a block and paint a heart](/static/mb/projects/flashing-heart/showleds.gif)",
+                "headerContentMd": "Place the ``||basic:show leds||`` block in the ``||basic:forever||`` block and draw a heart.",
+                "fullscreen": true,
+                "hintContentMd": "![An animation that shows how to drag a block and paint a heart](/static/mb/projects/flashing-heart/showleds.gif)"
+            },
+            {
+                "contentMd": "Place another ``||basic:show leds||`` block. You can leave it blank and draw what you want.\n\n```blocks\nbasic.forever(function() {\n    basic.showLeds(`\n        . # . # .\n        # # # # #\n        # # # # #\n        . # # # .\n        . . # . .`);\n    basic.showLeds(`\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .`);\n})\n```",
+                "headerContentMd": "Place another ``||basic:show leds||`` block. You can leave it blank and draw what you want.",
+                "hintContentMd": "```blocks\nbasic.forever(function() {\n    basic.showLeds(`\n        . # . # .\n        # # # # #\n        # # # # #\n        . # # # .\n        . . # . .`);\n    basic.showLeds(`\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .`);\n})\n```"
+            },
+            {
+                "contentMd": "Look at the virtual @boardname@, you should see the heart and your drawing blink on the screen.\n\n![Heart shape in the LEDs](/static/mb/projects/flashing-heart/show-leds.gif)",
+                "headerContentMd": "Look at the virtual @boardname@, you should see the heart and your drawing blink on the screen.",
+                "hintContentMd": "![Heart shape in the LEDs](/static/mb/projects/flashing-heart/show-leds.gif)"
+            },
+            {
+                "contentMd": "If you have a @boardname@ connected, click ``|Download|`` to transfer your code and watch the hearts flash!",
+                "headerContentMd": "If you have a @boardname@ connected, click ``|Download|`` to transfer your code and watch the hearts flash!"
+            }
+        ],
+        "tutorialActivityInfo": null,
+        "tutorialMd": "# Flashing Heart\n\n## Introduction @unplugged\n\nLearn how to use the LEDs and make a flashing heart! \n(Want to learn how lights work? [Watch this video](https://youtu.be/qqBmvHD5bCw)).\n\n\n![Heart shape in the LEDs](/static/mb/projects/flashing-heart/sim.gif)\n\n## Step 1 @fullscreen\n\nPlace the ``||basic:show leds||`` block in the ``||basic:forever||`` block and draw a heart.\n\n![An animation that shows how to drag a block and paint a heart](/static/mb/projects/flashing-heart/showleds.gif)\n\n## Step 2\n\nPlace another ``||basic:show leds||`` block. You can leave it blank and draw what you want.\n\n```blocks\nbasic.forever(function() {\n    basic.showLeds(`\n        . # . # .\n        # # # # #\n        # # # # #\n        . # # # .\n        . . # . .`);\n    basic.showLeds(`\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .`);\n})\n```\n\n## Step 3\n\nLook at the virtual @boardname@, you should see the heart and your drawing blink on the screen.\n\n![Heart shape in the LEDs](/static/mb/projects/flashing-heart/show-leds.gif)\n\n## Step 4\n\nIf you have a @boardname@ connected, click ``|Download|`` to transfer your code and watch the hearts flash!\n",
+        "tutorialCode": "\n{\nbasic.forever(function() {\n    basic.showLeds(`\n        . # . # .\n        # # # # #\n        # # # # #\n        . # # # .\n        . . # . .`);\n    basic.showLeds(`\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .\n        . . . . .`);\n})\n}\n",
+        "tutorialRecipe": false,
+        "autoexpandStep": true,
+        "metadata": {}
+    },
+    "id": "947478f5-63e0-46fa-2996-411246acb3ba",
+    "recentUse": 1600968569,
+    "modificationTime": 1600968569,
+    "path": "Flashing-Heart",
+    "blobCurrent": false,
+    "saveId": null,
+    "githubCurrent": false
+}

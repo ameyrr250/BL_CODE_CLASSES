@@ -1,4 +1,4 @@
-// total=3697 new=42.79% cached=0.00% other=57.21%
+// total=3731 new=43.26% cached=0.00% other=56.74%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -56,7 +56,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P17946(s) {
+function _main___P8105243(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -66,33 +66,33 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___18249 = (undefined);
+    globals._intervals___8105546 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___18495 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___18495, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___8105792 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___8105792, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___18507 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___18507, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___8105804 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___8105804, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___18517 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___18517, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___8105814 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___8105814, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___18527 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___18527, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___8105824 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___8105824, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___18537 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___18537, 2, 0, 2);
+    globals.READ_BBOARD_TX_BUFFER___8105834 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___8105834, 2, 0, 2);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P17946.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
-_main___P17946.continuations = [  ]
+_main___P8105243.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
+_main___P8105243.continuations = [  ]
 
-function _main___P17946_mk(s) {
+function _main___P8105243_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P17946, depth: s.depth + 1,
+        parent: s, fn: _main___P8105243, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
 } }
 
@@ -102,5 +102,5 @@ function _main___P17946_mk(s) {
 
 const breakpoints = setupDebugger(1, [])
 
-return _main___P17946
+return _main___P8105243
 })

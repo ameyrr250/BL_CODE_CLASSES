@@ -1,4 +1,4 @@
-// total=47691 new=94.26% cached=0.00% other=5.74%
+// total=48911 new=94.29% cached=0.00% other=5.71%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -56,7 +56,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P1(s) {
+function _main___P8086770(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -66,39 +66,39 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___304 = (undefined);
-    globals.listeners___315 = (undefined);
+    globals._intervals___8087073 = (undefined);
+    globals.listeners___8087084 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___550 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___550, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___8087319 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___8087319, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___562 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___562, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___8087331 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___8087331, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___572 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___572, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___8087341 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___8087341, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___582 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___582, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___8087351 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___8087351, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___592 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___592, 2, 0, 2);
-    globals.i___760 = (1);
-    globals.f___762 = (0.5);
-    r0 = (globals.i___760 + globals.f___762);
-    globals.plus___765 = (r0);
-    r0 = (globals.i___760 - globals.f___762);
-    globals.minus___769 = (r0);
+    globals.READ_BBOARD_TX_BUFFER___8087361 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___8087361, 2, 0, 2);
+    globals.i___8087563 = (1);
+    globals.f___8087565 = (0.5);
+    r0 = (globals.i___8087563 + globals.f___8087565);
+    globals.plus___8087568 = (r0);
+    r0 = (globals.i___8087563 - globals.f___8087565);
+    globals.minus___8087572 = (r0);
     r0 = pxsim.Math_.random();
-    globals.r___772 = (r0);
+    globals.r___8087575 = (r0);
     r0 = pxsim.Math_.randomRange(5, 10);
-    globals.ri___775 = (r0);
+    globals.ri___8087578 = (r0);
     r0 = pxsim_Array__mk();
     s.tmp_0 = r0;
     r0 = pxsim_Array__push(s.tmp_0, 13330);
     r0 = pxsim_Array__push(s.tmp_0, 30806);
-    s.tmp_1 = check__P777_mk(s);
-    s.tmp_4 = Buffer_pack__P488_mk(s);
+    s.tmp_1 = check__P8087580_mk(s);
+    s.tmp_4 = Buffer_pack__P8087257_mk(s);
     s.tmp_4.arg0 = "<2h";
     s.tmp_4.arg1 = s.tmp_0;
     s.pc = 2; return s.tmp_4;
@@ -116,8 +116,8 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_Array__push(s.tmp_0, 13330);
     r0 = pxsim_Array__push(s.tmp_0, 30806);
-    s.tmp_1 = check__P777_mk(s);
-    s.tmp_4 = Buffer_pack__P488_mk(s);
+    s.tmp_1 = check__P8087580_mk(s);
+    s.tmp_4 = Buffer_pack__P8087257_mk(s);
     s.tmp_4.arg0 = ">hh";
     s.tmp_4.arg1 = s.tmp_0;
     s.pc = 4; return s.tmp_4;
@@ -131,8 +131,8 @@ switch (step) {
     s.pc = 3; return s.tmp_1;
   case 3:
     r0 = s.retval;
-    s.tmp_0 = check__P777_mk(s);
-    s.tmp_3 = Buffer_fromHex__P481_mk(s);
+    s.tmp_0 = check__P8087580_mk(s);
+    s.tmp_3 = Buffer_fromHex__P8087250_mk(s);
     s.tmp_3.arg0 = "F00d";
     s.pc = 6; return s.tmp_3;
   case 6:
@@ -149,13 +149,13 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-_main___P1.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
-_main___P1.continuations = [  ]
+_main___P8086770.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
+_main___P8086770.continuations = [  ]
 
-function _main___P1_mk(s) {
+function _main___P8086770_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P1, depth: s.depth + 1,
+        parent: s, fn: _main___P8086770, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -168,7 +168,7 @@ function _main___P1_mk(s) {
 
 
 
-function Buffer_fromHex__P481(s) {
+function Buffer_fromHex__P8087250(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -178,58 +178,58 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.hexStr___797 = undefined;
-    s.res___799 = undefined;
-    s.i___810 = undefined;
-    s.p0___816 = undefined;
-    s.p1___827 = undefined;
+    s.hexStr___8087600 = undefined;
+    s.res___8087602 = undefined;
+    s.i___8087613 = undefined;
+    s.p0___8087619 = undefined;
+    s.p1___8087630 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.hexStr___797 = ("0123456789abcdef");
+    s.hexStr___8087600 = ("0123456789abcdef");
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_1 = r0;
     r0 = (s.tmp_1 >> 1);
     s.tmp_0 = r0;
     r0 = pxsim.control.createBuffer(s.tmp_0);
-    s.res___799 = (r0);
-    s.tmp_0 = helpers_stringToLowerCase__P188_mk(s);
+    s.res___8087602 = (r0);
+    s.tmp_0 = helpers_stringToLowerCase__P8086957_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.pc = 7; return s.tmp_0;
   case 7:
     r0 = s.retval;
     s.arg0 = (r0);
-    s.i___810 = (0);
+    s.i___8087613 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___810;
+    s.tmp_1 = r0 = s.i___8087613;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 6; continue; }
-    s.tmp_3 = r0 = s.hexStr___797;
-    r0 = pxsim_String_.charAt(s.arg0, s.i___810);
+    s.tmp_3 = r0 = s.hexStr___8087600;
+    r0 = pxsim_String_.charAt(s.arg0, s.i___8087613);
     s.tmp_4 = r0;
     r0 = pxsim_String_.indexOf(s.tmp_3, s.tmp_4, undefined);
-    s.p0___816 = (r0);
-    s.tmp_0 = r0 = s.hexStr___797;
+    s.p0___8087619 = (r0);
+    s.tmp_0 = r0 = s.hexStr___8087600;
     s.tmp_2 = r0 = s.arg0;
-    r0 = (s.i___810 + 1);
+    r0 = (s.i___8087613 + 1);
     s.tmp_3 = r0;
     r0 = pxsim_String_.charAt(s.tmp_2, s.tmp_3);
     s.tmp_1 = r0;
     r0 = pxsim_String_.indexOf(s.tmp_0, s.tmp_1, undefined);
-    s.p1___827 = (r0);
-    r0 = (s.p0___816 < 0);
+    s.p1___8087630 = (r0);
+    r0 = (s.p0___8087619 < 0);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (!r0) { step = 2; continue; }
     r0 = s.tmp_0;
     { step = 3; continue; }
   case 2:
-    r0 = (s.p1___827 < 0);
+    r0 = (s.p1___8087630 < 0);
   case 3:
     // jmp value (already in r0)
     s.tmp_1 = r0;
@@ -238,28 +238,28 @@ switch (step) {
     r0 = pxsim_pxtcore.throwValue("Invalid hex");
   case 4:
   case 5:
-    s.tmp_2 = r0 = s.res___799;
-    r0 = (s.i___810 >> 1);
+    s.tmp_2 = r0 = s.res___8087602;
+    r0 = (s.i___8087613 >> 1);
     s.tmp_3 = r0;
-    r0 = (s.p0___816 << 4);
+    r0 = (s.p0___8087619 << 4);
     s.tmp_5 = r0;
-    r0 = (s.tmp_5 | s.p1___827);
+    r0 = (s.tmp_5 | s.p1___8087630);
     s.tmp_4 = r0;
     r0 = pxsim.BufferMethods.setByte(s.tmp_2, s.tmp_3, s.tmp_4);
-    r0 = (s.i___810 + 2);
-    s.i___810 = (r0);
+    r0 = (s.i___8087613 + 2);
+    s.i___8087613 = (r0);
     { step = 1; continue; }
   case 6:
-    r0 = s.res___799;
+    r0 = s.res___8087602;
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_fromHex__P481.info = {"start":6683,"length":469,"line":240,"column":4,"endLine":252,"endColumn":5,"fileName":"buffer.ts","functionName":"fromHex","argumentNames":["hex"]}
+Buffer_fromHex__P8087250.info = {"start":6683,"length":469,"line":240,"column":4,"endLine":252,"endColumn":5,"fileName":"buffer.ts","functionName":"fromHex","argumentNames":["hex"]}
 
-function Buffer_fromHex__P481_mk(s) {
+function Buffer_fromHex__P8087250_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_fromHex__P481, depth: s.depth + 1,
+        parent: s, fn: Buffer_fromHex__P8087250, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -267,11 +267,11 @@ function Buffer_fromHex__P481_mk(s) {
   tmp_3: undefined,
   tmp_4: undefined,
   tmp_5: undefined,
-  hexStr___797: undefined,
-  res___799: undefined,
-  i___810: undefined,
-  p0___816: undefined,
-  p1___827: undefined,
+  hexStr___8087600: undefined,
+  res___8087602: undefined,
+  i___8087613: undefined,
+  p0___8087619: undefined,
+  p1___8087630: undefined,
   arg0: undefined,
 } }
 
@@ -279,7 +279,7 @@ function Buffer_fromHex__P481_mk(s) {
 
 
 
-function helpers_stringToLowerCase__P188(s) {
+function helpers_stringToLowerCase__P8086957(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -289,54 +289,54 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.r___858 = undefined;
-    s.prev___859 = undefined;
-    s.i___860 = undefined;
-    s.c___866 = undefined;
+    s.r___8087661 = undefined;
+    s.prev___8087662 = undefined;
+    s.i___8087663 = undefined;
+    s.c___8087669 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
     r0 = pxsim_String_.mkEmpty();
-    s.r___858 = (r0);
-    s.prev___859 = (0);
-    s.i___860 = (0);
+    s.r___8087661 = (r0);
+    s.prev___8087662 = (0);
+    s.i___8087663 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___860;
+    s.tmp_1 = r0 = s.i___8087663;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 6; continue; }
-    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___860);
-    s.c___866 = (r0);
-    r0 = (65 <= s.c___866);
+    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___8087663);
+    s.c___8087669 = (r0);
+    r0 = (65 <= s.c___8087669);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 2; continue; }
     r0 = s.tmp_0;
     { step = 3; continue; }
   case 2:
-    r0 = (s.c___866 <= 90);
+    r0 = (s.c___8087669 <= 90);
   case 3:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 4; continue; }
-    if ((s.r___858) && (s.r___858).vtable) {
+    if ((s.r___8087661) && (s.r___8087661).vtable) {
     setupResume(s, 7);
-    pxsim_String__stringConv(s.r___858);
+    pxsim_String__stringConv(s.r___8087661);
     checkResumeConsumed();
     return;
-    } else { s.retval = (s.r___858) + ""; }
+    } else { s.retval = (s.r___8087661) + ""; }
   case 7:
     r0 = s.retval;
     s.tmp_2 = r0;
-    s.tmp_7 = helpers_stringSlice__P187_mk(s);
+    s.tmp_7 = helpers_stringSlice__P8086956_mk(s);
     s.tmp_7.arg0 = s.arg0;
-    s.tmp_7.arg1 = s.prev___859;
-    s.tmp_7.arg2 = s.i___860;
+    s.tmp_7.arg1 = s.prev___8087662;
+    s.tmp_7.arg2 = s.i___8087663;
     s.pc = 8; return s.tmp_7;
   case 8:
     r0 = s.retval;
@@ -350,7 +350,7 @@ switch (step) {
   case 9:
     r0 = s.retval;
     s.tmp_5 = r0;
-    r0 = (s.c___866 + 32);
+    r0 = (s.c___8087669 + 32);
     s.tmp_10 = r0;
     r0 = pxsim_String_.fromCharCode(s.tmp_10);
     s.tmp_9 = r0;
@@ -375,27 +375,27 @@ switch (step) {
     r0 = s.retval;
     s.tmp_3 = r0;
     r0 = pxsim_String__concat(s.tmp_2, s.tmp_3);
-    s.r___858 = (r0);
-    r0 = (s.i___860 + 1);
-    s.prev___859 = (r0);
+    s.r___8087661 = (r0);
+    r0 = (s.i___8087663 + 1);
+    s.prev___8087662 = (r0);
   case 4:
   case 5:
-    r0 = (s.i___860 + 1);
-    s.i___860 = (r0);
+    r0 = (s.i___8087663 + 1);
+    s.i___8087663 = (r0);
     { step = 1; continue; }
   case 6:
-    if ((s.r___858) && (s.r___858).vtable) {
+    if ((s.r___8087661) && (s.r___8087661).vtable) {
     setupResume(s, 12);
-    pxsim_String__stringConv(s.r___858);
+    pxsim_String__stringConv(s.r___8087661);
     checkResumeConsumed();
     return;
-    } else { s.retval = (s.r___858) + ""; }
+    } else { s.retval = (s.r___8087661) + ""; }
   case 12:
     r0 = s.retval;
     s.tmp_0 = r0;
-    s.tmp_3 = helpers_stringSlice__P187_mk(s);
+    s.tmp_3 = helpers_stringSlice__P8086956_mk(s);
     s.tmp_3.arg0 = s.arg0;
-    s.tmp_3.arg1 = s.prev___859;
+    s.tmp_3.arg1 = s.prev___8087662;
     s.tmp_3.arg2 = undefined;
     s.pc = 13; return s.tmp_3;
   case 13:
@@ -411,17 +411,17 @@ switch (step) {
     r0 = s.retval;
     s.tmp_1 = r0;
     r0 = pxsim_String__concat(s.tmp_0, s.tmp_1);
-    s.r___858 = (r0);
-    r0 = s.r___858;
+    s.r___8087661 = (r0);
+    r0 = s.r___8087661;
     return leave(s, r0)
   default: oops()
 } } }
-helpers_stringToLowerCase__P188.info = {"start":11538,"length":386,"line":393,"column":4,"endLine":405,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringToLowerCase","argumentNames":["s"]}
+helpers_stringToLowerCase__P8086957.info = {"start":11538,"length":386,"line":393,"column":4,"endLine":405,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringToLowerCase","argumentNames":["s"]}
 
-function helpers_stringToLowerCase__P188_mk(s) {
+function helpers_stringToLowerCase__P8086957_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: helpers_stringToLowerCase__P188, depth: s.depth + 1,
+        parent: s, fn: helpers_stringToLowerCase__P8086957, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -434,10 +434,10 @@ function helpers_stringToLowerCase__P188_mk(s) {
   tmp_8: undefined,
   tmp_9: undefined,
   tmp_10: undefined,
-  r___858: undefined,
-  prev___859: undefined,
-  i___860: undefined,
-  c___866: undefined,
+  r___8087661: undefined,
+  prev___8087662: undefined,
+  i___8087663: undefined,
+  c___8087669: undefined,
   arg0: undefined,
 } }
 
@@ -445,7 +445,7 @@ function helpers_stringToLowerCase__P188_mk(s) {
 
 
 
-function helpers_stringSlice__P187(s) {
+function helpers_stringSlice__P8086956(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -455,7 +455,7 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.len___917 = undefined;
+    s.len___8087720 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
@@ -463,13 +463,13 @@ switch (step) {
       s.lambdaArgs = null;
     }
     r0 = pxsim_String_.length(s.arg0);
-    s.len___917 = (r0);
+    s.len___8087720 = (r0);
     r0 = (s.arg1 < 0);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 1; continue; }
-    s.tmp_1 = Math_max__P197_mk(s);
-    r0 = (s.len___917 + s.arg1);
+    s.tmp_1 = Math_max__P8086966_mk(s);
+    r0 = (s.len___8087720 + s.arg1);
     s.tmp_1.arg0 = r0;
     s.tmp_1.arg1 = 0;
     s.pc = 7; return s.tmp_1;
@@ -482,14 +482,14 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 3; continue; }
-    s.arg2 = (s.len___917);
+    s.arg2 = (s.len___8087720);
   case 3:
   case 4:
     r0 = (s.arg2 < 0);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 5; continue; }
-    r0 = (s.len___917 + s.arg2);
+    r0 = (s.len___8087720 + s.arg2);
     s.arg2 = (r0);
   case 5:
   case 6:
@@ -501,17 +501,17 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-helpers_stringSlice__P187.info = {"start":11047,"length":365,"line":373,"column":4,"endLine":389,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringSlice","argumentNames":["s","start","end"]}
+helpers_stringSlice__P8086956.info = {"start":11047,"length":365,"line":373,"column":4,"endLine":389,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"stringSlice","argumentNames":["s","start","end"]}
 
-function helpers_stringSlice__P187_mk(s) {
+function helpers_stringSlice__P8086956_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: helpers_stringSlice__P187, depth: s.depth + 1,
+        parent: s, fn: helpers_stringSlice__P8086956, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
   tmp_2: undefined,
-  len___917: undefined,
+  len___8087720: undefined,
   arg0: undefined,
   arg1: undefined,
   arg2: undefined,
@@ -521,7 +521,7 @@ function helpers_stringSlice__P187_mk(s) {
 
 
 
-function Math_max__P197(s) {
+function Math_max__P8086966(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -549,12 +549,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Math_max__P197.info = {"start":15575,"length":105,"line":529,"column":4,"endLine":532,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"max","argumentNames":["a","b"]}
+Math_max__P8086966.info = {"start":15575,"length":105,"line":529,"column":4,"endLine":532,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"max","argumentNames":["a","b"]}
 
-function Math_max__P197_mk(s) {
+function Math_max__P8086966_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Math_max__P197, depth: s.depth + 1,
+        parent: s, fn: Math_max__P8086966, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -565,7 +565,7 @@ function Math_max__P197_mk(s) {
 
 
 
-function Buffer_pack__P488(s) {
+function Buffer_pack__P8087257(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -575,43 +575,43 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.buf___955 = undefined;
+    s.buf___8087758 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
       s.lambdaArgs = null;
     }
-    s.tmp_1 = Buffer_packedSize__P487_mk(s);
+    s.tmp_1 = Buffer_packedSize__P8087256_mk(s);
     s.tmp_1.arg0 = s.arg0;
     s.pc = 1; return s.tmp_1;
   case 1:
     r0 = s.retval;
     s.tmp_0 = r0;
     r0 = pxsim.control.createBuffer(s.tmp_0);
-    s.buf___955 = (r0);
-    s.tmp_0 = Buffer___packUnpackCore__P491_mk(s);
+    s.buf___8087758 = (r0);
+    s.tmp_0 = Buffer___packUnpackCore__P8087260_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.tmp_0.arg1 = s.arg1;
-    s.tmp_0.arg2 = s.buf___955;
+    s.tmp_0.arg2 = s.buf___8087758;
     s.tmp_0.arg3 = true;
     s.tmp_0.arg4 = 0;
     s.pc = 2; return s.tmp_0;
   case 2:
     r0 = s.retval;
-    r0 = s.buf___955;
+    r0 = s.buf___8087758;
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_pack__P488.info = {"start":9148,"length":181,"line":328,"column":4,"endLine":332,"endColumn":5,"fileName":"buffer.ts","functionName":"pack","argumentNames":["format","nums"]}
+Buffer_pack__P8087257.info = {"start":9148,"length":181,"line":328,"column":4,"endLine":332,"endColumn":5,"fileName":"buffer.ts","functionName":"pack","argumentNames":["format","nums"]}
 
-function Buffer_pack__P488_mk(s) {
+function Buffer_pack__P8087257_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_pack__P488, depth: s.depth + 1,
+        parent: s, fn: Buffer_pack__P8087257, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
-  buf___955: undefined,
+  buf___8087758: undefined,
   arg0: undefined,
   arg1: undefined,
 } }
@@ -620,7 +620,7 @@ function Buffer_pack__P488_mk(s) {
 
 
 
-function Buffer___packUnpackCore__P491(s) {
+function Buffer___packUnpackCore__P8087260(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -630,12 +630,12 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.isBig___970 = undefined;
-    s.idx___971 = undefined;
-    s.i___972 = undefined;
-    s.i0___985 = undefined;
-    s.reps___993 = undefined;
-    s.fmt___1007 = undefined;
+    s.isBig___8087773 = undefined;
+    s.idx___8087774 = undefined;
+    s.i___8087775 = undefined;
+    s.i0___8087788 = undefined;
+    s.reps___8087796 = undefined;
+    s.fmt___8087810 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
@@ -644,18 +644,18 @@ switch (step) {
       s.arg4 = (s.lambdaArgs[4]);
       s.lambdaArgs = null;
     }
-    s.isBig___970 = (false);
-    s.idx___971 = (0);
-    s.i___972 = (0);
+    s.isBig___8087773 = (false);
+    s.idx___8087774 = (0);
+    s.i___8087775 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___972;
+    s.tmp_1 = r0 = s.i___8087775;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 22; continue; }
-    r0 = pxsim_String_.charAt(s.arg0, s.i___972);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___8087775);
     s.tmp_3 = r0;
     r0 = pxsim_pxtcore.switch_eq(" ", s.tmp_3);
     if (r0) { step = 2; continue; }
@@ -674,21 +674,21 @@ switch (step) {
   case 2:
   case 3:
   case 4:
-    s.isBig___970 = (false);
+    s.isBig___8087773 = (false);
     { step = 21; continue; }
   case 5:
   case 6:
-    s.isBig___970 = (true);
+    s.isBig___8087773 = (true);
     { step = 21; continue; }
   case 7:
     r0 = (s.arg4 + 1);
     s.arg4 = (r0);
     { step = 21; continue; }
   case 8:
-    s.i0___985 = (s.i___972);
+    s.i0___8087788 = (s.i___8087775);
   case 9:
-    s.tmp_1 = Buffer_isDigit__P490_mk(s);
-    r0 = pxsim_String_.charAt(s.arg0, s.i___972);
+    s.tmp_1 = Buffer_isDigit__P8087259_mk(s);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___8087775);
     s.tmp_1.arg0 = r0;
     s.pc = 23; return s.tmp_1;
   case 23:
@@ -696,20 +696,20 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 10; continue; }
-    r0 = (s.i___972 + 1);
-    s.i___972 = (r0);
+    r0 = (s.i___8087775 + 1);
+    s.i___8087775 = (r0);
     { step = 9; continue; }
   case 10:
-    s.reps___993 = (1);
-    r0 = (s.i0___985 != s.i___972);
+    s.reps___8087796 = (1);
+    r0 = (s.i0___8087788 != s.i___8087775);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 11; continue; }
-    s.tmp_1 = parseInt__P166_mk(s);
-    s.tmp_2 = helpers_stringSlice__P187_mk(s);
+    s.tmp_1 = parseInt__P8086935_mk(s);
+    s.tmp_2 = helpers_stringSlice__P8086956_mk(s);
     s.tmp_2.arg0 = s.arg0;
-    s.tmp_2.arg1 = s.i0___985;
-    s.tmp_2.arg2 = s.i___972;
+    s.tmp_2.arg1 = s.i0___8087788;
+    s.tmp_2.arg2 = s.i___8087775;
     s.pc = 25; return s.tmp_2;
   case 25:
     r0 = s.retval;
@@ -718,29 +718,29 @@ switch (step) {
     s.pc = 24; return s.tmp_1;
   case 24:
     r0 = s.retval;
-    s.reps___993 = (r0);
+    s.reps___8087796 = (r0);
   case 11:
   case 12:
   case 13:
-    s.tmp_0 = r0 = s.reps___993;
+    s.tmp_0 = r0 = s.reps___8087796;
     r0 = (s.tmp_0 - 1);
-    s.reps___993 = (r0);
+    s.reps___8087796 = (r0);
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 20; continue; }
-    s.tmp_1 = Buffer_getFormat__P489_mk(s);
-    r0 = pxsim_String_.charAt(s.arg0, s.i___972);
+    s.tmp_1 = Buffer_getFormat__P8087258_mk(s);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___8087775);
     s.tmp_1.arg0 = r0;
-    s.tmp_1.arg1 = s.isBig___970;
+    s.tmp_1.arg1 = s.isBig___8087773;
     s.pc = 26; return s.tmp_1;
   case 26:
     r0 = s.retval;
-    s.fmt___1007 = (r0);
-    r0 = (s.fmt___1007 === null);
+    s.fmt___8087810 = (r0);
+    r0 = (s.fmt___8087810 === null);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 14; continue; }
-    s.tmp_1 = control_fail__P300_mk(s);
-    r0 = pxsim_String_.charAt(s.arg0, s.i___972);
+    s.tmp_1 = control_fail__P8087069_mk(s);
+    r0 = pxsim_String_.charAt(s.arg0, s.i___8087775);
     s.tmp_3 = r0;
     if ((s.tmp_3) && (s.tmp_3).vtable) {
     setupResume(s, 28);
@@ -762,11 +762,11 @@ switch (step) {
     if (!r0) { step = 17; continue; }
     r0 = pxsim_numops_toBoolDecr(s.arg3);
     if (!r0) { step = 15; continue; }
-    s.tmp_0 = r0 = s.idx___971;
+    s.tmp_0 = r0 = s.idx___8087774;
     r0 = (s.tmp_0 + 1);
-    s.idx___971 = (r0);
+    s.idx___8087774 = (r0);
     s.tmp_1 = r0 = s.arg2;
-    s.tmp_2 = r0 = s.fmt___1007;
+    s.tmp_2 = r0 = s.fmt___8087810;
     s.tmp_3 = r0 = s.arg4;
     r0 = pxsim_Array__getAt(s.arg1, s.tmp_0);
     s.tmp_4 = r0;
@@ -774,15 +774,15 @@ switch (step) {
     { step = 16; continue; }
   case 15:
     s.tmp_0 = r0 = s.arg1;
-    r0 = pxsim.BufferMethods.getNumber(s.arg2, s.fmt___1007, s.arg4);
+    r0 = pxsim.BufferMethods.getNumber(s.arg2, s.fmt___8087810, s.arg4);
     s.tmp_1 = r0;
     r0 = pxsim_Array__push(s.tmp_0, s.tmp_1);
   case 16:
   case 17:
   case 18:
     s.tmp_0 = r0 = s.arg4;
-    s.tmp_2 = Buffer_sizeOfNumberFormat__P492_mk(s);
-    s.tmp_2.arg0 = s.fmt___1007;
+    s.tmp_2 = Buffer_sizeOfNumberFormat__P8087261_mk(s);
+    s.tmp_2.arg0 = s.fmt___8087810;
     s.pc = 29; return s.tmp_2;
   case 29:
     r0 = s.retval;
@@ -793,32 +793,32 @@ switch (step) {
     { step = 13; continue; }
   case 20:
   case 21:
-    r0 = (s.i___972 + 1);
-    s.i___972 = (r0);
+    r0 = (s.i___8087775 + 1);
+    s.i___8087775 = (r0);
     { step = 1; continue; }
   case 22:
     r0 = s.arg4;
     return leave(s, r0)
   default: oops()
 } } }
-Buffer___packUnpackCore__P491.info = {"start":10393,"length":1537,"line":364,"column":4,"endLine":406,"endColumn":5,"fileName":"buffer.ts","functionName":"__packUnpackCore","argumentNames":["format","nums","buf","isPack","off"]}
+Buffer___packUnpackCore__P8087260.info = {"start":10393,"length":1537,"line":364,"column":4,"endLine":406,"endColumn":5,"fileName":"buffer.ts","functionName":"__packUnpackCore","argumentNames":["format","nums","buf","isPack","off"]}
 
-function Buffer___packUnpackCore__P491_mk(s) {
+function Buffer___packUnpackCore__P8087260_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer___packUnpackCore__P491, depth: s.depth + 1,
+        parent: s, fn: Buffer___packUnpackCore__P8087260, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
   tmp_2: undefined,
   tmp_3: undefined,
   tmp_4: undefined,
-  isBig___970: undefined,
-  idx___971: undefined,
-  i___972: undefined,
-  i0___985: undefined,
-  reps___993: undefined,
-  fmt___1007: undefined,
+  isBig___8087773: undefined,
+  idx___8087774: undefined,
+  i___8087775: undefined,
+  i0___8087788: undefined,
+  reps___8087796: undefined,
+  fmt___8087810: undefined,
   arg0: undefined,
   arg1: undefined,
   arg2: undefined,
@@ -830,7 +830,7 @@ function Buffer___packUnpackCore__P491_mk(s) {
 
 
 
-function Buffer_sizeOfNumberFormat__P492(s) {
+function Buffer_sizeOfNumberFormat__P8087261(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -909,12 +909,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_sizeOfNumberFormat__P492.info = {"start":12009,"length":856,"line":411,"column":4,"endLine":435,"endColumn":5,"fileName":"buffer.ts","functionName":"sizeOfNumberFormat","argumentNames":["format"]}
+Buffer_sizeOfNumberFormat__P8087261.info = {"start":12009,"length":856,"line":411,"column":4,"endLine":435,"endColumn":5,"fileName":"buffer.ts","functionName":"sizeOfNumberFormat","argumentNames":["format"]}
 
-function Buffer_sizeOfNumberFormat__P492_mk(s) {
+function Buffer_sizeOfNumberFormat__P8087261_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_sizeOfNumberFormat__P492, depth: s.depth + 1,
+        parent: s, fn: Buffer_sizeOfNumberFormat__P8087261, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -924,7 +924,7 @@ function Buffer_sizeOfNumberFormat__P492_mk(s) {
 
 
 
-function control_fail__P300(s) {
+function control_fail__P8087069(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -938,12 +938,12 @@ switch (step) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.tmp_0 = console_log__P316_mk(s);
+    s.tmp_0 = console_log__P8087085_mk(s);
     s.tmp_0.arg0 = "Fatal failure: ";
     s.pc = 1; return s.tmp_0;
   case 1:
     r0 = s.retval;
-    s.tmp_0 = console_log__P316_mk(s);
+    s.tmp_0 = console_log__P8087085_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.pc = 2; return s.tmp_0;
   case 2:
@@ -953,12 +953,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-control_fail__P300.info = {"start":1320,"length":132,"line":50,"column":4,"endLine":54,"endColumn":5,"fileName":"control.ts","functionName":"fail","argumentNames":["message"]}
+control_fail__P8087069.info = {"start":1320,"length":132,"line":50,"column":4,"endLine":54,"endColumn":5,"fileName":"control.ts","functionName":"fail","argumentNames":["message"]}
 
-function control_fail__P300_mk(s) {
+function control_fail__P8087069_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: control_fail__P300, depth: s.depth + 1,
+        parent: s, fn: control_fail__P8087069, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -968,7 +968,7 @@ function control_fail__P300_mk(s) {
 
 
 
-function console_log__P316(s) {
+function console_log__P8087085(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -978,7 +978,7 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.i___1105 = undefined;
+    s.i___8087908 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
@@ -995,27 +995,27 @@ switch (step) {
     r0 = pxsim_String__concat(s.tmp_0, "\r\n");
     s.arg0 = (r0);
     r0 = pxsim.control.__log(s.arg0);
-    r0 = pxsim_numops_toBoolDecr(globals.listeners___315);
+    r0 = pxsim_numops_toBoolDecr(globals.listeners___8087084);
     if (!r0) { step = 3; continue; }
-    s.i___1105 = (0);
+    s.i___8087908 = (0);
   case 1:
-    s.tmp_1 = r0 = s.i___1105;
-    r0 = pxsim_Array__length(globals.listeners___315);
+    s.tmp_1 = r0 = s.i___8087908;
+    r0 = pxsim_Array__length(globals.listeners___8087084);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 2; continue; }
     s.tmp_3 = lambda_2_mk(s);
-    r0 = pxsim_Array__getAt(globals.listeners___315, s.i___1105);
+    r0 = pxsim_Array__getAt(globals.listeners___8087084, s.i___8087908);
     s.tmp_3.argL = r0;
     s.tmp_3.arg0 = s.arg0;
     setupLambda(s.tmp_3, s.tmp_3.argL);
     s.pc = 6; return s.tmp_3;
   case 6:
     r0 = s.retval;
-    r0 = (s.i___1105 + 1);
-    s.i___1105 = (r0);
+    r0 = (s.i___8087908 + 1);
+    s.i___8087908 = (r0);
     { step = 1; continue; }
   case 2:
   case 3:
@@ -1024,18 +1024,18 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-console_log__P316.info = {"start":479,"length":285,"line":20,"column":4,"endLine":28,"endColumn":5,"fileName":"console.ts","functionName":"log","argumentNames":["text"]}
+console_log__P8087085.info = {"start":479,"length":285,"line":20,"column":4,"endLine":28,"endColumn":5,"fileName":"console.ts","functionName":"log","argumentNames":["text"]}
 
-function console_log__P316_mk(s) {
+function console_log__P8087085_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: console_log__P316, depth: s.depth + 1,
+        parent: s, fn: console_log__P8087085, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
   tmp_2: undefined,
   tmp_3: undefined,
-  i___1105: undefined,
+  i___8087908: undefined,
   arg0: undefined,
 } }
 
@@ -1043,7 +1043,7 @@ function console_log__P316_mk(s) {
 
 
 
-function Buffer_getFormat__P489(s) {
+function Buffer_getFormat__P8087258(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1169,12 +1169,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_getFormat__P489.info = {"start":9335,"length":928,"line":334,"column":4,"endLine":357,"endColumn":5,"fileName":"buffer.ts","functionName":"getFormat","argumentNames":["pychar","isBig"]}
+Buffer_getFormat__P8087258.info = {"start":9335,"length":928,"line":334,"column":4,"endLine":357,"endColumn":5,"fileName":"buffer.ts","functionName":"getFormat","argumentNames":["pychar","isBig"]}
 
-function Buffer_getFormat__P489_mk(s) {
+function Buffer_getFormat__P8087258_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_getFormat__P489, depth: s.depth + 1,
+        parent: s, fn: Buffer_getFormat__P8087258, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1191,7 +1191,7 @@ function Buffer_getFormat__P489_mk(s) {
 
 
 
-function parseInt__P166(s) {
+function parseInt__P8086935(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1201,13 +1201,13 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.start___1159 = undefined;
-    s.sign___1189 = undefined;
-    s.output___1234 = undefined;
-    s.hasDigit___1235 = undefined;
-    s.i___1236 = undefined;
-    s.code___1243 = undefined;
-    s.val___1250 = undefined;
+    s.start___8087962 = undefined;
+    s.sign___8087992 = undefined;
+    s.output___8088037 = undefined;
+    s.hasDigit___8088038 = undefined;
+    s.i___8088039 = undefined;
+    s.code___8088046 = undefined;
+    s.val___8088053 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.arg1 = (s.lambdaArgs[1]);
@@ -1254,9 +1254,9 @@ switch (step) {
     { step = 46; continue; }
   case 7:
   case 8:
-    s.start___1159 = (0);
+    s.start___8087962 = (0);
   case 9:
-    s.tmp_1 = r0 = s.start___1159;
+    s.tmp_1 = r0 = s.start___8087962;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
@@ -1266,8 +1266,8 @@ switch (step) {
     r0 = s.tmp_0;
     { step = 11; continue; }
   case 10:
-    s.tmp_3 = helpers_isWhitespace__P192_mk(s);
-    r0 = pxsim_String_.charCodeAt(s.arg0, s.start___1159);
+    s.tmp_3 = helpers_isWhitespace__P8086961_mk(s);
+    r0 = pxsim_String_.charCodeAt(s.arg0, s.start___8087962);
     s.tmp_3.arg0 = r0;
     s.pc = 47; return s.tmp_3;
   case 47:
@@ -1277,11 +1277,11 @@ switch (step) {
     s.tmp_4 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_4);
     if (!r0) { step = 12; continue; }
-    r0 = (s.start___1159 + 1);
-    s.start___1159 = (r0);
+    r0 = (s.start___8087962 + 1);
+    s.start___8087962 = (r0);
     { step = 9; continue; }
   case 12:
-    s.tmp_1 = r0 = s.start___1159;
+    s.tmp_1 = r0 = s.start___8087962;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 === s.tmp_2);
@@ -1292,8 +1292,8 @@ switch (step) {
     { step = 46; continue; }
   case 13:
   case 14:
-    s.sign___1189 = (1);
-    r0 = pxsim_String_.charAt(s.arg0, s.start___1159);
+    s.sign___8087992 = (1);
+    r0 = pxsim_String_.charAt(s.arg0, s.start___8087962);
     s.tmp_0 = r0;
     r0 = pxsim_pxtcore.switch_eq("-", s.tmp_0);
     if (r0) { step = 15; continue; }
@@ -1302,10 +1302,10 @@ switch (step) {
     r0 = s.tmp_0;
     { step = 17; continue; }
   case 15:
-    s.sign___1189 = (-1);
+    s.sign___8087992 = (-1);
   case 16:
-    r0 = (s.start___1159 + 1);
-    s.start___1159 = (r0);
+    r0 = (s.start___8087962 + 1);
+    s.start___8087962 = (r0);
   case 17:
     r0 = pxsim_numops_toBoolDecr(s.arg1);
     s.tmp_1 = r0;
@@ -1325,7 +1325,7 @@ switch (step) {
     r0 = s.tmp_2;
     { step = 21; continue; }
   case 20:
-    r0 = pxsim_String_.charAt(s.arg0, s.start___1159);
+    r0 = pxsim_String_.charAt(s.arg0, s.start___8087962);
     s.tmp_3 = r0;
     r0 = ("0" === s.tmp_3);
   case 21:
@@ -1337,7 +1337,7 @@ switch (step) {
     { step = 25; continue; }
   case 22:
     s.tmp_7 = r0 = s.arg0;
-    r0 = (s.start___1159 + 1);
+    r0 = (s.start___8087962 + 1);
     s.tmp_8 = r0;
     r0 = pxsim_String_.charAt(s.tmp_7, s.tmp_8);
     s.tmp_6 = r0;
@@ -1349,7 +1349,7 @@ switch (step) {
     { step = 24; continue; }
   case 23:
     s.tmp_10 = r0 = s.arg0;
-    r0 = (s.start___1159 + 1);
+    r0 = (s.start___8087962 + 1);
     s.tmp_11 = r0;
     r0 = pxsim_String_.charAt(s.tmp_10, s.tmp_11);
     s.tmp_9 = r0;
@@ -1364,8 +1364,8 @@ switch (step) {
     r0 = pxsim_numops_toBoolDecr(s.tmp_13);
     if (!r0) { step = 26; continue; }
     s.arg1 = (16);
-    r0 = (s.start___1159 + 2);
-    s.start___1159 = (r0);
+    r0 = (s.start___8087962 + 2);
+    s.start___8087962 = (r0);
     { step = 29; continue; }
   case 26:
     r0 = pxsim_numops_toBoolDecr(s.arg1);
@@ -1378,73 +1378,73 @@ switch (step) {
   case 27:
   case 28:
   case 29:
-    s.output___1234 = (0);
-    s.hasDigit___1235 = (false);
-    s.i___1236 = (s.start___1159);
+    s.output___8088037 = (0);
+    s.hasDigit___8088038 = (false);
+    s.i___8088039 = (s.start___8087962);
   case 30:
-    s.tmp_1 = r0 = s.i___1236;
+    s.tmp_1 = r0 = s.i___8088039;
     r0 = pxsim_String_.length(s.arg0);
     s.tmp_2 = r0;
     r0 = (s.tmp_1 < s.tmp_2);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 45; continue; }
-    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___1236);
+    r0 = pxsim_String_.charCodeAt(s.arg0, s.i___8088039);
     s.tmp_3 = r0;
     r0 = (s.tmp_3 | 32);
-    s.code___1243 = (r0);
-    s.val___1250 = (undefined);
-    r0 = (s.code___1243 >= 48);
+    s.code___8088046 = (r0);
+    s.val___8088053 = (undefined);
+    r0 = (s.code___8088046 >= 48);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 31; continue; }
     r0 = s.tmp_0;
     { step = 32; continue; }
   case 31:
-    r0 = (s.code___1243 < 58);
+    r0 = (s.code___8088046 < 58);
   case 32:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 33; continue; }
-    r0 = (s.code___1243 - 48);
-    s.val___1250 = (r0);
+    r0 = (s.code___8088046 - 48);
+    s.val___8088053 = (r0);
     { step = 38; continue; }
   case 33:
-    r0 = (s.code___1243 >= 97);
+    r0 = (s.code___8088046 >= 97);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 34; continue; }
     r0 = s.tmp_0;
     { step = 35; continue; }
   case 34:
-    r0 = (s.code___1243 < 123);
+    r0 = (s.code___8088046 < 123);
   case 35:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 36; continue; }
-    r0 = (10 + s.code___1243);
+    r0 = (10 + s.code___8088046);
     s.tmp_2 = r0;
     r0 = (s.tmp_2 - 97);
-    s.val___1250 = (r0);
+    s.val___8088053 = (r0);
   case 36:
   case 37:
   case 38:
-    r0 = (s.val___1250 == undefined);
+    r0 = (s.val___8088053 == undefined);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (!r0) { step = 39; continue; }
     r0 = s.tmp_0;
     { step = 40; continue; }
   case 39:
-    r0 = (s.val___1250 >= s.arg1);
+    r0 = (s.val___8088053 >= s.arg1);
   case 40:
     // jmp value (already in r0)
     s.tmp_1 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_1);
     if (!r0) { step = 43; continue; }
-    r0 = pxsim_numops_toBoolDecr(s.hasDigit___1235);
+    r0 = pxsim_numops_toBoolDecr(s.hasDigit___8088038);
     s.tmp_3 = r0;
     r0 = pxsim_Boolean__bang(s.tmp_3);
     s.tmp_2 = r0;
@@ -1457,26 +1457,26 @@ switch (step) {
     { step = 45; continue; }
   case 43:
   case 44:
-    s.hasDigit___1235 = (true);
-    r0 = (s.output___1234 * s.arg1);
+    s.hasDigit___8088038 = (true);
+    r0 = (s.output___8088037 * s.arg1);
     s.tmp_0 = r0;
-    r0 = (s.tmp_0 + s.val___1250);
-    s.output___1234 = (r0);
-    r0 = (s.i___1236 + 1);
-    s.i___1236 = (r0);
+    r0 = (s.tmp_0 + s.val___8088053);
+    s.output___8088037 = (r0);
+    r0 = (s.i___8088039 + 1);
+    s.i___8088039 = (r0);
     { step = 30; continue; }
   case 45:
-    r0 = (s.sign___1189 * s.output___1234);
+    r0 = (s.sign___8087992 * s.output___8088037);
   case 46:
     return leave(s, r0)
   default: oops()
 } } }
-parseInt__P166.info = {"start":1064,"length":1690,"line":44,"column":0,"endLine":103,"endColumn":1,"fileName":"pxt-helpers.ts","functionName":"parseInt","argumentNames":["text","radix"]}
+parseInt__P8086935.info = {"start":1064,"length":1690,"line":44,"column":0,"endLine":103,"endColumn":1,"fileName":"pxt-helpers.ts","functionName":"parseInt","argumentNames":["text","radix"]}
 
-function parseInt__P166_mk(s) {
+function parseInt__P8086935_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: parseInt__P166, depth: s.depth + 1,
+        parent: s, fn: parseInt__P8086935, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1492,13 +1492,13 @@ function parseInt__P166_mk(s) {
   tmp_11: undefined,
   tmp_12: undefined,
   tmp_13: undefined,
-  start___1159: undefined,
-  sign___1189: undefined,
-  output___1234: undefined,
-  hasDigit___1235: undefined,
-  i___1236: undefined,
-  code___1243: undefined,
-  val___1250: undefined,
+  start___8087962: undefined,
+  sign___8087992: undefined,
+  output___8088037: undefined,
+  hasDigit___8088038: undefined,
+  i___8088039: undefined,
+  code___8088046: undefined,
+  val___8088053: undefined,
   arg0: undefined,
   arg1: undefined,
 } }
@@ -1507,7 +1507,7 @@ function parseInt__P166_mk(s) {
 
 
 
-function helpers_isWhitespace__P192(s) {
+function helpers_isWhitespace__P8086961(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1564,12 +1564,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-helpers_isWhitespace__P192.info = {"start":13875,"length":674,"line":476,"column":4,"endLine":493,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"isWhitespace","argumentNames":["c"]}
+helpers_isWhitespace__P8086961.info = {"start":13875,"length":674,"line":476,"column":4,"endLine":493,"endColumn":5,"fileName":"pxt-helpers.ts","functionName":"isWhitespace","argumentNames":["c"]}
 
-function helpers_isWhitespace__P192_mk(s) {
+function helpers_isWhitespace__P8086961_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: helpers_isWhitespace__P192, depth: s.depth + 1,
+        parent: s, fn: helpers_isWhitespace__P8086961, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1579,7 +1579,7 @@ function helpers_isWhitespace__P192_mk(s) {
 
 
 
-function Buffer_isDigit__P490(s) {
+function Buffer_isDigit__P8087259(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1589,21 +1589,21 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    s.code___1307 = undefined;
+    s.code___8088110 = undefined;
     if (s.lambdaArgs) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
     r0 = pxsim_String_.charCodeAt(s.arg0, 0);
-    s.code___1307 = (r0);
-    r0 = (48 <= s.code___1307);
+    s.code___8088110 = (r0);
+    r0 = (48 <= s.code___8088110);
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBool(s.tmp_0);
     if (r0) { step = 1; continue; }
     r0 = s.tmp_0;
     { step = 2; continue; }
   case 1:
-    r0 = (s.code___1307 <= 57);
+    r0 = (s.code___8088110 <= 57);
   case 2:
     // jmp value (already in r0)
     s.tmp_1 = r0;
@@ -1611,16 +1611,16 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_isDigit__P490.info = {"start":10269,"length":118,"line":359,"column":4,"endLine":362,"endColumn":5,"fileName":"buffer.ts","functionName":"isDigit","argumentNames":["ch"]}
+Buffer_isDigit__P8087259.info = {"start":10269,"length":118,"line":359,"column":4,"endLine":362,"endColumn":5,"fileName":"buffer.ts","functionName":"isDigit","argumentNames":["ch"]}
 
-function Buffer_isDigit__P490_mk(s) {
+function Buffer_isDigit__P8087259_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_isDigit__P490, depth: s.depth + 1,
+        parent: s, fn: Buffer_isDigit__P8087259, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
-  code___1307: undefined,
+  code___8088110: undefined,
   arg0: undefined,
 } }
 
@@ -1628,7 +1628,7 @@ function Buffer_isDigit__P490_mk(s) {
 
 
 
-function Buffer_packedSize__P487(s) {
+function Buffer_packedSize__P8087256(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1642,7 +1642,7 @@ switch (step) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.tmp_0 = Buffer___packUnpackCore__P491_mk(s);
+    s.tmp_0 = Buffer___packUnpackCore__P8087260_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.tmp_0.arg1 = null;
     s.tmp_0.arg2 = null;
@@ -1654,12 +1654,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-Buffer_packedSize__P487.info = {"start":9034,"length":108,"line":324,"column":4,"endLine":326,"endColumn":5,"fileName":"buffer.ts","functionName":"packedSize","argumentNames":["format"]}
+Buffer_packedSize__P8087256.info = {"start":9034,"length":108,"line":324,"column":4,"endLine":326,"endColumn":5,"fileName":"buffer.ts","functionName":"packedSize","argumentNames":["format"]}
 
-function Buffer_packedSize__P487_mk(s) {
+function Buffer_packedSize__P8087256_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: Buffer_packedSize__P487, depth: s.depth + 1,
+        parent: s, fn: Buffer_packedSize__P8087256, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1669,7 +1669,7 @@ function Buffer_packedSize__P487_mk(s) {
 
 
 
-function check__P777(s) {
+function check__P8087580(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1683,7 +1683,7 @@ switch (step) {
       s.arg0 = (s.lambdaArgs[0]);
       s.lambdaArgs = null;
     }
-    s.tmp_0 = control_assert__P299_mk(s);
+    s.tmp_0 = control_assert__P8087068_mk(s);
     s.tmp_0.arg0 = s.arg0;
     s.tmp_0.arg1 = 108;
     s.pc = 1; return s.tmp_0;
@@ -1693,12 +1693,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-check__P777.info = {"start":115,"length":58,"line":9,"column":0,"endLine":9,"endColumn":58,"fileName":"test.ts","functionName":"check","argumentNames":["cond"]}
+check__P8087580.info = {"start":115,"length":58,"line":9,"column":0,"endLine":9,"endColumn":58,"fileName":"test.ts","functionName":"check","argumentNames":["cond"]}
 
-function check__P777_mk(s) {
+function check__P8087580_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: check__P777, depth: s.depth + 1,
+        parent: s, fn: check__P8087580, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   arg0: undefined,
@@ -1708,7 +1708,7 @@ function check__P777_mk(s) {
 
 
 
-function control_assert__P299(s) {
+function control_assert__P8087068(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -1729,7 +1729,7 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 3; continue; }
-    s.tmp_2 = console_log__P316_mk(s);
+    s.tmp_2 = console_log__P8087085_mk(s);
     s.tmp_2.arg0 = "ASSERTION FAILED";
     s.pc = 5; return s.tmp_2;
   case 5:
@@ -1738,7 +1738,7 @@ switch (step) {
     s.tmp_0 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_0);
     if (!r0) { step = 1; continue; }
-    s.tmp_1 = console_log__P316_mk(s);
+    s.tmp_1 = console_log__P8087085_mk(s);
     s.tmp_1.arg0 = s.arg1;
     s.pc = 6; return s.tmp_1;
   case 6:
@@ -1752,12 +1752,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-control_assert__P299.info = {"start":1070,"length":244,"line":40,"column":4,"endLine":48,"endColumn":5,"fileName":"control.ts","functionName":"assert","argumentNames":["condition","msg"]}
+control_assert__P8087068.info = {"start":1070,"length":244,"line":40,"column":4,"endLine":48,"endColumn":5,"fileName":"control.ts","functionName":"assert","argumentNames":["condition","msg"]}
 
-function control_assert__P299_mk(s) {
+function control_assert__P8087068_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: control_assert__P299, depth: s.depth + 1,
+        parent: s, fn: control_assert__P8087068, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -1784,7 +1784,7 @@ function lambda_2_mk(s) {
 } }
 
 
-const breakpoints = setupDebugger(1, ["_intervals___304","CLEAR_BBOARD_TX_BUFFER___550","CLEAR_BBOARD_RX_BUFFER___562","READ_TX_BUFFER_SIZE___572","EXECUTE_BBOARD_COMMAND___582","READ_BBOARD_TX_BUFFER___592","plus___765","i___760","f___762","minus___769","r___772","ri___775","listeners___315"])
+const breakpoints = setupDebugger(1, ["_intervals___8087073","CLEAR_BBOARD_TX_BUFFER___8087319","CLEAR_BBOARD_RX_BUFFER___8087331","READ_TX_BUFFER_SIZE___8087341","EXECUTE_BBOARD_COMMAND___8087351","READ_BBOARD_TX_BUFFER___8087361","plus___8087568","i___8087563","f___8087565","minus___8087572","r___8087575","ri___8087578","listeners___8087084"])
 
-return _main___P1
+return _main___P8086770
 })

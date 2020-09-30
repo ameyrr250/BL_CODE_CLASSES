@@ -2698,6 +2698,8 @@ var pxtTargetBundle = {
             "math.ts": "namespace Math {\n\n    export const E = 2.718281828459045;\n    export const LN2 = 0.6931471805599453;\n    export const LN10 = 2.302585092994046;\n    export const LOG2E = 1.4426950408889634;\n    export const LOG10E = 0.4342944819032518;\n    export const PI = 3.141592653589793;\n    export const SQRT1_2 = 0.7071067811865476;\n    export const SQRT2 = 1.4142135623730951;\n\n    /**\n     * Re-maps a number from one range to another. That is, a value of ``from low`` would get mapped to ``to low``, a value of ``from high`` to ``to high``, values in-between to values in-between, etc.\n     * @param value value to map in ranges\n     * @param fromLow the lower bound of the value's current range\n     * @param fromHigh the upper bound of the value's current range, eg: 1023\n     * @param toLow the lower bound of the value's target range\n     * @param toHigh the upper bound of the value's target range, eg: 4\n     */\n    //% help=math/map weight=10 blockGap=8\n    //% blockId=math_map block=\"map %value|from low %fromLow|high %fromHigh|to low %toLow|high %toHigh\"\n    //% inlineInputMode=inline\n    export function map(value: number, fromLow: number, fromHigh: number, toLow: number, toHigh: number): number {\n        return ((value - fromLow) * (toHigh - toLow)) / (fromHigh - fromLow) + toLow;\n    }    \n\n    /**\n     * Constrains a number to be within a range\n     * @param x the number to constrain, all data types\n     * @param y the lower end of the range, all data types\n     * @param z the upper end of the range, all data types\n     */\n    //% help=math/constrain weight=11 blockGap=8\n    //% blockId=\"math_constrain_value\" block=\"constrain %value|between %low|and %high\"\n    export function constrain(value: number, low: number, high: number): number {\n        return value < low ? low : value > high ? high : value;\n    }\n\n    const b_m16: number[] = [0, 49, 49, 41, 90, 27, 117, 10]\n    /**\n     * Returns the sine of an input angle. This is an 8-bit approximation.\n     * @param theta input angle from 0-255\n     */\n    //% help=math/isin weight=11 advanced=true blockGap=8\n    export function isin(theta: number) {\n        //reference: based on FASTLed's sin approximation method: [https://github.com/FastLED/FastLED](MIT)\n        let offset = theta;\n        if( theta & 0x40 ) {\n            offset = 255 - offset;\n        }\n        offset &= 0x3F; // 0..63\n\n        let secoffset  = offset & 0x0F; // 0..15\n        if( theta & 0x40) secoffset++;\n\n        let section = offset >> 4; // 0..3\n        let s2 = section * 2;\n\n        let b = b_m16[s2];\n        let m16 = b_m16[s2+1];\n        let mx = (m16 * secoffset) >> 4;\n        \n        let y = mx + b;\n        if( theta & 0x80 ) y = -y;\n\n        y += 128;\n\n        return y;\n    }\n\n    /**\n     * Returns the cosine of an input angle. This is an 8-bit approximation. \n     * @param theta input angle from 0-255\n     */\n    //% help=math/icos weight=10 advanced=true blockGap=8\n    export function icos(theta: number) {\n        return isin(theta + 16384);\n    }\n}\n\nnamespace Number {\n    export const EPSILON = 2.220446049250313e-16;\n}",
             "melodies.ts": "/*\nThe MIT License (MIT)\n\nCopyright (c) 2013-2016 The MicroPython-on-micro:bit Developers, as listed\nin the accompanying AUTHORS file\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n*/\n\n// Melodies from file microbitmusictunes.c https://github.com/bbcmicrobit/MicroPython\n\nenum Melodies {\n    //% block=\"dadadum\" blockIdentity=music.builtInMelody\n    Dadadadum = 0,\n    //% block=\"entertainer\" blockIdentity=music.builtInMelody\n    Entertainer,\n    //% block=\"prelude\" blockIdentity=music.builtInMelody\n    Prelude,\n    //% block=\"ode\" blockIdentity=music.builtInMelody\n    Ode,\n    //% block=\"nyan\" blockIdentity=music.builtInMelody\n    Nyan,\n    //% block=\"ringtone\" blockIdentity=music.builtInMelody\n    Ringtone,\n    //% block=\"funk\" blockIdentity=music.builtInMelody\n    Funk,\n    //% block=\"blues\" blockIdentity=music.builtInMelody\n    Blues,\n    //% block=\"birthday\" blockIdentity=music.builtInMelody\n    Birthday,\n    //% block=\"wedding\" blockIdentity=music.builtInMelody\n    Wedding,\n    //% block=\"funeral\" blockIdentity=music.builtInMelody\n    Funeral,\n    //% block=\"punchline\" blockIdentity=music.builtInMelody\n    Punchline,\n    //% block=\"baddy\" blockIdentity=music.builtInMelody\n    Baddy,\n    //% block=\"chase\" blockIdentity=music.builtInMelody\n    Chase,\n    //% block=\"ba ding\" blockIdentity=music.builtInMelody\n    BaDing,\n    //% block=\"wawawawaa\" blockIdentity=music.builtInMelody\n    Wawawawaa,\n    //% block=\"jump up\" blockIdentity=music.builtInMelody\n    JumpUp,\n    //% block=\"jump down\" blockIdentity=music.builtInMelody\n    JumpDown,\n    //% block=\"power up\" blockIdentity=music.builtInMelody\n    PowerUp,\n    //% block=\"power down\" blockIdentity=music.builtInMelody\n    PowerDown,\n}\n\nnamespace music {\n\n    export function getMelody(melody: Melodies): string[] {\n        switch (melody) {\n            case Melodies.Dadadadum:\n                return ['r4:2', 'g', 'g', 'g', 'eb:8', 'r:2', 'f', 'f', 'f', 'd:8'];\n            case Melodies.Entertainer:\n                return ['d4:1', 'd#', 'e', 'c5:2', 'e4:1', 'c5:2', 'e4:1', 'c5:3', 'c:1', 'd', 'd#', 'e', 'c', 'd', 'e:2', 'b4:1', 'd5:2', 'c:4'];\n            case Melodies.Prelude:\n                return ['c4:1', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e', 'c4', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e', 'c4', 'd', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'c4', 'd', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'b3', 'd4', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'b3', 'd4', 'g', 'd5', 'f', 'g4', 'd5', 'f', 'c4', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e', 'c4', 'e', 'g', 'c5', 'e', 'g4', 'c5', 'e'];\n            case Melodies.Ode:\n                return ['e4', 'e', 'f', 'g', 'g', 'f', 'e', 'd', 'c', 'c', 'd', 'e', 'e:6', 'd:2', 'd:8', 'e:4', 'e', 'f', 'g', 'g', 'f', 'e', 'd', 'c', 'c', 'd', 'e', 'd:6', 'c:2', 'c:8'];\n            case Melodies.Nyan:\n                return ['f#5:2', 'g#', 'c#:1', 'd#:2', 'b4:1', 'd5:1', 'c#', 'b4:2', 'b', 'c#5', 'd', 'd:1', 'c#', 'b4:1', 'c#5:1', 'd#', 'f#', 'g#', 'd#', 'f#', 'c#', 'd', 'b4', 'c#5', 'b4', 'd#5:2', 'f#', 'g#:1', 'd#', 'f#', 'c#', 'd#', 'b4', 'd5', 'd#', 'd', 'c#', 'b4', 'c#5', 'd:2', 'b4:1', 'c#5', 'd#', 'f#', 'c#', 'd', 'c#', 'b4', 'c#5:2', 'b4', 'c#5', 'b4', 'f#:1', 'g#', 'b:2', 'f#:1', 'g#', 'b', 'c#5', 'd#', 'b4', 'e5', 'd#', 'e', 'f#', 'b4:2', 'b', 'f#:1', 'g#', 'b', 'f#', 'e5', 'd#', 'c#', 'b4', 'f#', 'd#', 'e', 'f#', 'b:2', 'f#:1', 'g#', 'b:2', 'f#:1', 'g#', 'b', 'b', 'c#5', 'd#', 'b4', 'f#', 'g#', 'f#', 'b:2', 'b:1', 'a#', 'b', 'f#', 'g#', 'b', 'e5', 'd#', 'e', 'f#', 'b4:2', 'c#5'];\n            case Melodies.Ringtone:\n                return ['c4:1', 'd', 'e:2', 'g', 'd:1', 'e', 'f:2', 'a', 'e:1', 'f', 'g:2', 'b', 'c5:4'];\n            case Melodies.Funk:\n                return ['c2:2', 'c', 'd#', 'c:1', 'f:2', 'c:1', 'f:2', 'f#', 'g', 'c', 'c', 'g', 'c:1', 'f#:2', 'c:1', 'f#:2', 'f', 'd#'];\n            case Melodies.Blues:\n                return ['c2:2', 'e', 'g', 'a', 'a#', 'a', 'g', 'e', 'c2:2', 'e', 'g', 'a', 'a#', 'a', 'g', 'e', 'f', 'a', 'c3', 'd', 'd#', 'd', 'c', 'a2', 'c2:2', 'e', 'g', 'a', 'a#', 'a', 'g', 'e', 'g', 'b', 'd3', 'f', 'f2', 'a', 'c3', 'd#', 'c2:2', 'e', 'g', 'e', 'g', 'f', 'e', 'd'];\n            case Melodies.Birthday:\n                return ['c4:3', 'c:1', 'd:4', 'c:4', 'f', 'e:8', 'c:3', 'c:1', 'd:4', 'c:4', 'g', 'f:8', 'c:3', 'c:1', 'c5:4', 'a4', 'f', 'e', 'd', 'a#:3', 'a#:1', 'a:4', 'f', 'g', 'f:8'];\n            case Melodies.Wedding:\n                return ['c4:4', 'f:3', 'f:1', 'f:8', 'c:4', 'g:3', 'e:1', 'f:8', 'c:4', 'f:3', 'a:1', 'c5:4', 'a4:3', 'f:1', 'f:4', 'e:3', 'f:1', 'g:8'];\n            case Melodies.Funeral:\n                return ['c3:4', 'c:3', 'c:1', 'c:4', 'd#:3', 'd:1', 'd:3', 'c:1', 'c:3', 'b2:1', 'c3:4'];\n            case Melodies.Punchline:\n                return ['c4:3', 'g3:1', 'f#', 'g', 'g#:3', 'g', 'r', 'b', 'c4'];\n            case Melodies.Baddy:\n                return ['c3:3', 'r', 'd:2', 'd#', 'r', 'c', 'r', 'f#:8'];\n            case Melodies.Chase:\n                return ['a4:1', 'b', 'c5', 'b4', 'a:2', 'r', 'a:1', 'b', 'c5', 'b4', 'a:2', 'r', 'a:2', 'e5', 'd#', 'e', 'f', 'e', 'd#', 'e', 'b4:1', 'c5', 'd', 'c', 'b4:2', 'r', 'b:1', 'c5', 'd', 'c', 'b4:2', 'r', 'b:2', 'e5', 'd#', 'e', 'f', 'e', 'd#', 'e'];\n            case Melodies.BaDing:\n                return ['b5:1', 'e6:3'];\n            case Melodies.Wawawawaa:\n                return ['e3:3', 'r:1', 'd#:3', 'r:1', 'd:4', 'r:1', 'c#:8'];\n            case Melodies.JumpUp:\n                return ['c5:1', 'd', 'e', 'f', 'g'];\n            case Melodies.JumpDown:\n                return ['g5:1', 'f', 'e', 'd', 'c'];\n            case Melodies.PowerUp:\n                return ['g4:1', 'c5', 'e', 'g:2', 'e:1', 'g:3'];\n            case Melodies.PowerDown:\n                return ['g5:1', 'd#', 'c', 'g4:2', 'b:1', 'c5:3'];\n            default:\n                return [];\n        }\n    }\n}",
             "music.ts": "enum Note {\n    //% blockIdentity=music.noteFrequency enumval=262\n    C = 262,\n    //% block=C#\n    //% blockIdentity=music.noteFrequency enumval=277\n    CSharp = 277,\n    //% blockIdentity=music.noteFrequency enumval=294\n    D = 294,\n    //% blockIdentity=music.noteFrequency enumval=311\n    Eb = 311,\n    //% blockIdentity=music.noteFrequency enumval=330\n    E = 330,\n    //% blockIdentity=music.noteFrequency enumval=349\n    F = 349,\n    //% block=F#\n    //% blockIdentity=music.noteFrequency enumval=370\n    FSharp = 370,\n    //% blockIdentity=music.noteFrequency enumval=392\n    G = 392,\n    //% block=G#\n    //% blockIdentity=music.noteFrequency enumval=415\n    GSharp = 415,\n    //% blockIdentity=music.noteFrequency enumval=440\n    A = 440,\n    //% blockIdentity=music.noteFrequency enumval=466\n    Bb = 466,\n    //% blockIdentity=music.noteFrequency enumval=494\n    B = 494,\n    //% blockIdentity=music.noteFrequency enumval=131\n    C3 = 131,\n    //% block=C#3\n    //% blockIdentity=music.noteFrequency enumval=139\n    CSharp3 = 139,\n    //% blockIdentity=music.noteFrequency enumval=147\n    D3 = 147,\n    //% blockIdentity=music.noteFrequency enumval=156\n    Eb3 = 156,\n    //% blockIdentity=music.noteFrequency enumval=165\n    E3 = 165,\n    //% blockIdentity=music.noteFrequency enumval=175\n    F3 = 175,\n    //% block=F#3\n    //% blockIdentity=music.noteFrequency enumval=185\n    FSharp3 = 185,\n    //% blockIdentity=music.noteFrequency enumval=196\n    G3 = 196,\n    //% block=G#3\n    //% blockIdentity=music.noteFrequency enumval=208\n    GSharp3 = 208,\n    //% blockIdentity=music.noteFrequency enumval=220\n    A3 = 220,\n    //% blockIdentity=music.noteFrequency enumval=233\n    Bb3 = 233,\n    //% blockIdentity=music.noteFrequency enumval=247\n    B3 = 247,\n    //% blockIdentity=music.noteFrequency enumval=262\n    C4 = 262,\n    //% block=C#4\n    //% blockIdentity=music.noteFrequency enumval=277\n    CSharp4 = 277,\n    //% blockIdentity=music.noteFrequency enumval=294\n    D4 = 294,\n    //% blockIdentity=music.noteFrequency enumval=311\n    Eb4 = 311,\n    //% blockIdentity=music.noteFrequency enumval=330\n    E4 = 330,\n    //% blockIdentity=music.noteFrequency enumval=349\n    F4 = 349,\n    //% block=F#4\n    //% blockIdentity=music.noteFrequency enumval=370\n    FSharp4 = 370,\n    //% blockIdentity=music.noteFrequency enumval=392\n    G4 = 392,\n    //% block=G#4\n    //% blockIdentity=music.noteFrequency enumval=415\n    GSharp4 = 415,\n    //% blockIdentity=music.noteFrequency enumval=440\n    A4 = 440,\n    //% blockIdentity=music.noteFrequency enumval=466\n    Bb4 = 466,\n    //% blockIdentity=music.noteFrequency enumval=494\n    B4 = 494,\n    //% blockIdentity=music.noteFrequency enumval=523\n    C5 = 523,\n    //% block=C#5\n    //% blockIdentity=music.noteFrequency enumval=555\n    CSharp5 = 555,\n    //% blockIdentity=music.noteFrequency enumval=587\n    D5 = 587,\n    //% blockIdentity=music.noteFrequency enumval=622\n    Eb5 = 622,\n    //% blockIdentity=music.noteFrequency enumval=659\n    E5 = 659,\n    //% blockIdentity=music.noteFrequency enumval=698\n    F5 = 698,\n    //% block=F#5\n    //% blockIdentity=music.noteFrequency enumval=740\n    FSharp5 = 740,\n    //% blockIdentity=music.noteFrequency enumval=784\n    G5 = 784,\n    //% block=G#5\n    //% blockIdentity=music.noteFrequency enumval=831\n    GSharp5 = 831,\n    //% blockIdentity=music.noteFrequency enumval=880\n    A5 = 880,\n    //% blockIdentity=music.noteFrequency enumval=932\n    Bb5 = 932,\n    //% blockIdentity=music.noteFrequency enumval=988\n    B5 = 988,\n}\n\nenum BeatFraction {\n    //% block=1\n    Whole = 1,\n    //% block=\"1/2\"\n    Half = 2,\n    //% block=\"1/4\"\n    Quarter = 4,\n    //% block=\"1/8\"\n    Eighth = 8,\n    //% block=\"1/16\"\n    Sixteenth = 16,\n    //% block=\"2\"\n    Double = 32,\n    //% block=\"4\",\n    Breve = 64\n}\n\nenum MelodyOptions {\n    //% block=\"once\"\n    Once = 1,\n    //% block=\"forever\"\n    Forever = 2,\n    //% block=\"once in background\"\n    OnceInBackground = 4,\n    //% block=\"forever in background\"\n    ForeverInBackground = 8\n}\n\nenum MelodyStopOptions {\n    //% block=\"all\"\n    All = MelodyOptions.Once | MelodyOptions.OnceInBackground,\n    //% block=\"foreground\"\n    Foreground = MelodyOptions.Once,\n    //% block=\"background\"\n    Background = MelodyOptions.OnceInBackground\n}\n\nenum MusicEvent {\n    //% block=\"melody note played\"\n    MelodyNotePlayed = 1,\n    //% block=\"melody started\"\n    MelodyStarted = 2,\n    //% block=\"melody ended\"\n    MelodyEnded = 3,\n    //% block=\"melody repeated\"\n    MelodyRepeated = 4,\n    //% block=\"background melody note played\"\n    BackgroundMelodyNotePlayed = MelodyNotePlayed | 0xf0,\n    //% block=\"background melody started\"\n    BackgroundMelodyStarted = MelodyStarted | 0xf0,\n    //% block=\"background melody ended\"\n    BackgroundMelodyEnded = MelodyEnded | 0xf0,\n    //% block=\"background melody repeated\"\n    BackgroundMelodyRepeated = MelodyRepeated | 0xf0,\n    //% block=\"background melody paused\"\n    BackgroundMelodyPaused = 5 | 0xf0,\n    //% block=\"background melody resumed\"\n    BackgroundMelodyResumed = 6 | 0xf0\n}\n\n/**\n * Generation of music tones.\n */\n//% color=#E63022 weight=106 icon=\"\\uf025\"\n//% groups='[\"Melody\", \"Tone\", \"Volume\", \"Tempo\", \"Melody Advanced\"]'\nnamespace music {\n    const INTERNAL_MELODY_ENDED = 5;\n\n    let beatsPerMinute: number = 120;\n    //% whenUsed\n    const freqs = hex`\n        1f00210023002500270029002c002e003100340037003a003e004100450049004e00520057005c00620068006e00\n        75007b0083008b0093009c00a500af00b900c400d000dc00e900f70006011501260137014a015d01720188019f01\n        b801d201ee010b022a024b026e029302ba02e40210033f037003a403dc03170455049704dd0427057505c8052006\n        7d06e0064907b8072d08a9082d09b9094d0aea0a900b400cfa0cc00d910e6f0f5a1053115b1272139a14d4152017\n        8018f519801b231dde1e`;\n    let _playTone: (frequency: number, duration: number) => void;\n    const MICROBIT_MELODY_ID = 2000;\n\n    /**\n     * Plays a tone through pin ``P0`` for the given duration.\n     * @param frequency pitch of the tone to play in Hertz (Hz), eg: Note.C\n     * @param ms tone duration in milliseconds (ms)\n     */\n    //% help=music/play-tone weight=90\n    //% blockId=device_play_note block=\"play|tone %note=device_note|for %duration=device_beat\" blockGap=8\n    //% parts=\"headphone\"\n    //% useEnumVal=1\n    //% group=\"Tone\"\n    export function playTone(frequency: number, ms: number): void {\n        if (_playTone) _playTone(frequency, ms);\n        else pins.analogPitch(frequency, ms);\n    }\n\n    /**\n     * Plays a tone through pin ``P0``.\n     * @param frequency pitch of the tone to play in Hertz (Hz), eg: Note.C\n     */\n    //% help=music/ring-tone weight=80\n    //% blockId=device_ring block=\"ring tone (Hz)|%note=device_note\" blockGap=8\n    //% parts=\"headphone\"\n    //% useEnumVal=1\n    //% group=\"Tone\"\n    export function ringTone(frequency: number): void {\n        playTone(frequency, 0);\n    }\n\n    /**\n     * Rests (plays nothing) for a specified time through pin ``P0``.\n     * @param ms rest duration in milliseconds (ms)\n     */\n    //% help=music/rest weight=79\n    //% blockId=device_rest block=\"rest(ms)|%duration=device_beat\"\n    //% parts=\"headphone\"\n    //% group=\"Tone\"\n    export function rest(ms: number): void {\n        playTone(0, ms);\n    }\n\n\n    /**\n     * Gets the frequency of a note.\n     * @param name the note name\n     */\n    //% weight=50 help=music/note-frequency\n    //% blockId=device_note block=\"%name\"\n    //% shim=TD_ID color=\"#FFFFFF\" colorSecondary=\"#FFFFFF\"\n    //% name.fieldEditor=\"note\" name.defl=\"262\"\n    //% name.fieldOptions.decompileLiterals=true\n    //% useEnumVal=1\n    //% group=\"Tone\"\n    //% blockGap=8\n    export function noteFrequency(name: Note): number {\n        return name;\n    }\n\n    function init() {\n        if (beatsPerMinute <= 0) beatsPerMinute = 120;\n    }\n\n    /**\n     * Returns the duration of a beat in milli-seconds\n     */\n    //% help=music/beat weight=49\n    //% blockId=device_beat block=\"%fraction|beat\"\n    //% group=\"Tempo\"\n    //% blockGap=8\n    export function beat(fraction?: BeatFraction): number {\n        init();\n        if (fraction == null) fraction = BeatFraction.Whole;\n        let beat = Math.idiv(60000, beatsPerMinute);\n        switch (fraction) {\n            case BeatFraction.Half: return beat >> 1;\n            case BeatFraction.Quarter: return beat >> 2;\n            case BeatFraction.Eighth: return beat >> 3;\n            case BeatFraction.Sixteenth: return beat >> 4;\n            case BeatFraction.Double: return beat << 1;\n            case BeatFraction.Breve: return beat << 2;\n            default: return beat;\n        }\n    }\n\n    /**\n     * Returns the tempo in beats per minute. Tempo is the speed (bpm = beats per minute) at which notes play. The larger the tempo value, the faster the notes will play.\n     */\n    //% help=music/tempo weight=40\n    //% blockId=device_tempo block=\"tempo (bpm)\" blockGap=8\n    //% group=\"Tempo\"\n    export function tempo(): number {\n        init();\n        return beatsPerMinute;\n    }\n\n    /**\n     * Change the tempo by the specified amount\n     * @param bpm The change in beats per minute to the tempo, eg: 20\n     */\n    //% help=music/change-tempo-by weight=39\n    //% blockId=device_change_tempo block=\"change tempo by (bpm)|%value\" blockGap=8\n    //% group=\"Tempo\"\n    export function changeTempoBy(bpm: number): void {\n        init();\n        setTempo(beatsPerMinute + bpm);\n    }\n\n    /**\n     * Sets the tempo to the specified amount\n     * @param bpm The new tempo in beats per minute, eg: 120\n     */\n    //% help=music/set-tempo weight=38\n    //% blockId=device_set_tempo block=\"set tempo to (bpm)|%value\"\n    //% bpm.min=4 bpm.max=400\n    //% group=\"Tempo\"\n    export function setTempo(bpm: number): void {\n        init();\n        if (bpm > 0) {\n            beatsPerMinute = Math.max(1, bpm);\n        }\n    }\n\n    let currentMelody: Melody;\n    let currentBackgroundMelody: Melody;\n\n    /**\n     * Gets the melody array of a built-in melody.\n     * @param name the note name, eg: Note.C\n     */\n    //% weight=50 help=music/builtin-melody\n    //% blockId=device_builtin_melody block=\"%melody\"\n    //% blockHidden=true\n    //% group=\"Melody Advanced\"\n    export function builtInMelody(melody: Melodies): string[] {\n        return getMelody(melody);\n    }\n\n    /**\n     * Registers code to run on various melody events\n     */\n    //% blockId=melody_on_event block=\"music on %value\"\n    //% help=music/on-event weight=59 blockGap=32\n    //% group=\"Melody Advanced\"\n    export function onEvent(value: MusicEvent, handler: () => void) {\n        control.onEvent(MICROBIT_MELODY_ID, value, handler);\n    }\n\n    /**\n     * Use startMelody instead\n     */\n    //% hidden=1 deprecated=1\n    //% parts=\"headphone\"\n    //% group=\"Melody Advanced\"\n    export function beginMelody(melodyArray: string[], options: MelodyOptions = 1) {\n        return startMelody(melodyArray, options);\n    }\n\n    /**\n     * Starts playing a melody.\n     * Notes are expressed as a string of characters with this format: NOTE[octave][:duration]\n     * @param melodyArray the melody array to play\n     * @param options melody options, once / forever, in the foreground / background\n     */\n    //% help=music/begin-melody weight=60 blockGap=16\n    //% blockId=device_start_melody block=\"start melody %melody=device_builtin_melody| repeating %options\"\n    //% parts=\"headphone\"\n    //% group=\"Melody Advanced\"\n    export function startMelody(melodyArray: string[], options: MelodyOptions = 1) {\n        init();\n        if (currentMelody != undefined) {\n            if (((options & MelodyOptions.OnceInBackground) == 0)\n                && ((options & MelodyOptions.ForeverInBackground) == 0)\n                && currentMelody.background) {\n                currentBackgroundMelody = currentMelody;\n                currentMelody = null;\n                control.raiseEvent(MICROBIT_MELODY_ID, MusicEvent.BackgroundMelodyPaused);\n            }\n            if (currentMelody)\n                control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyEnded : MusicEvent.MelodyEnded);\n            currentMelody = new Melody(melodyArray, options);\n            control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyStarted : MusicEvent.MelodyStarted);\n        } else {\n            currentMelody = new Melody(melodyArray, options);\n            control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyStarted : MusicEvent.MelodyStarted);\n            // Only start the fiber once\n            control.inBackground(() => {\n                while (currentMelody.hasNextNote()) {\n                    playNextNote(currentMelody);\n                    if (!currentMelody.hasNextNote() && currentBackgroundMelody) {\n                        // Swap the background melody back\n                        currentMelody = currentBackgroundMelody;\n                        currentBackgroundMelody = null;\n                        control.raiseEvent(MICROBIT_MELODY_ID, MusicEvent.MelodyEnded);\n                        control.raiseEvent(MICROBIT_MELODY_ID, MusicEvent.BackgroundMelodyResumed);\n                        control.raiseEvent(MICROBIT_MELODY_ID, INTERNAL_MELODY_ENDED);\n                    }\n                }\n                control.raiseEvent(MICROBIT_MELODY_ID, currentMelody.background ? MusicEvent.BackgroundMelodyEnded : MusicEvent.MelodyEnded);\n                if (!currentMelody.background)\n                    control.raiseEvent(MICROBIT_MELODY_ID, INTERNAL_MELODY_ENDED);\n                currentMelody = null;\n            })\n        }\n    }\n\n\n    /**\n     * Play a melody from the melody editor.\n     * @param melody - string of up to eight notes [C D E F G A B C5] or rests [-] separated by spaces, which will be played one at a time, ex: \"E D G F B A C5 B \"\n     * @param tempo - number in beats per minute (bpm), dictating how long each note will play for\n     */\n    //% block=\"play melody $melody at tempo $tempo|(bpm)\" blockId=playMelody\n    //% weight=85 blockGap=8 help=music/play-melody\n    //% melody.shadow=\"melody_editor\"\n    //% tempo.min=40 tempo.max=500\n    //% tempo.defl=120\n    //% parts=headphone\n    //% group=\"Melody\"\n    export function playMelody(melody: string, tempo: number) {\n        melody = melody || \"\";\n        setTempo(tempo);\n        let notes: string[] = melody.split(\" \").filter(n => !!n);\n        let newOctave = false;\n\n        // build melody string, replace '-' with 'R' and add tempo\n        // creates format like \"C5-174 B4 A G F E D C \"\n        for (let i = 0; i < notes.length; i++) {\n            if (notes[i] === \"-\") {\n                notes[i] = \"R\";\n            } else if (notes[i] === \"C5\") {\n                newOctave = true;\n            } else if (newOctave) { // change the octave if necesary\n                notes[i] += \"4\";\n                newOctave = false;\n            }\n        }\n\n        music.startMelody(notes, MelodyOptions.Once)\n        control.waitForEvent(MICROBIT_MELODY_ID, INTERNAL_MELODY_ENDED);\n    }\n\n    /**\n     * Create a melody with the melody editor.\n     * @param melody\n     */\n    //% block=\"$melody\" blockId=melody_editor\n    //% blockHidden = true\n    //% weight=85 blockGap=8\n    //% duplicateShadowOnDrag\n    //% melody.fieldEditor=\"melody\"\n    //% melody.fieldOptions.decompileLiterals=true\n    //% melody.fieldOptions.decompileIndirectFixedInstances=\"true\"\n    //% melody.fieldOptions.onParentBlock=\"true\"\n    //% shim=TD_ID\n    //% group=\"Melody\"\n    export function melodyEditor(melody: string): string {\n        return melody;\n    }\n\n    /**\n     * Stops the melodies\n     * @param options which melody to stop\n     */\n    //% help=music/stop-melody weight=59 blockGap=16\n    //% blockId=device_stop_melody block=\"stop melody $options\"\n    //% parts=\"headphone\"\n    //% group=\"Melody Advanced\"\n    export function stopMelody(options: MelodyStopOptions) {\n        if (options & MelodyStopOptions.Background)\n            startMelody([], MelodyOptions.OnceInBackground);\n        if (options & MelodyStopOptions.Foreground)\n            startMelody([], MelodyOptions.Once);\n    }\n\n    /**\n     * Sets a custom playTone function for playing melodies\n     */\n    //% help=music/set-play-tone\n    //% advanced=true\n    //% group=\"Tone\"\n    export function setPlayTone(f: (frequency: number, duration: number) => void) {\n        _playTone = f;\n    }\n\n    /**\n     * Set the default output volume of the sound synthesizer.\n     * @param volume the volume 0...255\n     */\n    //% blockId=synth_set_volume block=\"set volume %volume\"\n    //% parts=\"speaker\"\n    //% volume.min=0 volume.max=255\n    //% volume.defl=127\n    //% help=music/set-volume\n    //% weight=70\n    //% group=\"Volume\"\n    export function setVolume(volume: number): void {\n        pins.analogSetPitchVolume(volume);\n    }\n\n    /**\n     * Gets the current volume\n     */\n    //% parts=\"speaker\"\n    //% weight=70\n    export function volume(): number {\n        return pins.analogPitchVolume();\n    }\n\n    function playNextNote(melody: Melody): void {\n        // cache elements\n        let currNote = melody.nextNote();\n        let currentPos = melody.currentPos;\n        let currentDuration = melody.currentDuration;\n        let currentOctave = melody.currentOctave;\n\n        let note: number;\n        let isrest: boolean = false;\n        let beatPos: number;\n        let parsingOctave: boolean = true;\n        let prevNote: boolean = false;\n\n        for (let pos = 0; pos < currNote.length; pos++) {\n            let noteChar = currNote.charAt(pos);\n            switch (noteChar) {\n                case 'c': case 'C': note = 1; prevNote = true; break;\n                case 'd': case 'D': note = 3; prevNote = true; break;\n                case 'e': case 'E': note = 5; prevNote = true; break;\n                case 'f': case 'F': note = 6; prevNote = true; break;\n                case 'g': case 'G': note = 8; prevNote = true; break;\n                case 'a': case 'A': note = 10; prevNote = true; break;\n                case 'B': note = 12; prevNote = true; break;\n                case 'r': case 'R': isrest = true; prevNote = false; break;\n                case '#': note++; prevNote = false; break;\n                case 'b': if (prevNote) note--; else { note = 12; prevNote = true; } break;\n                case ':': parsingOctave = false; beatPos = pos; prevNote = false; break;\n                default: prevNote = false; if (parsingOctave) currentOctave = parseInt(noteChar);\n            }\n        }\n        if (!parsingOctave) {\n            currentDuration = parseInt(currNote.substr(beatPos + 1, currNote.length - beatPos));\n        }\n        let beat = Math.idiv(60000, beatsPerMinute) >> 2;\n        if (isrest) {\n            music.rest(currentDuration * beat)\n        } else {\n            let keyNumber = note + (12 * (currentOctave - 1));\n            let frequency = freqs.getNumber(NumberFormat.UInt16LE, keyNumber * 2) || 0;\n            music.playTone(frequency, currentDuration * beat);\n        }\n        melody.currentDuration = currentDuration;\n        melody.currentOctave = currentOctave;\n        const repeating = melody.repeating && currentPos == melody.melodyArray.length - 1;\n        melody.currentPos = repeating ? 0 : currentPos + 1;\n\n        control.raiseEvent(MICROBIT_MELODY_ID, melody.background ? MusicEvent.BackgroundMelodyNotePlayed : MusicEvent.MelodyNotePlayed);\n        if (repeating)\n            control.raiseEvent(MICROBIT_MELODY_ID, melody.background ? MusicEvent.BackgroundMelodyRepeated : MusicEvent.MelodyRepeated);\n    }\n\n    class Melody {\n        public melodyArray: string[];\n        public currentDuration: number;\n        public currentOctave: number;\n        public currentPos: number;\n        public repeating: boolean;\n        public background: boolean;\n\n        constructor(melodyArray: string[], options: MelodyOptions) {\n            this.melodyArray = melodyArray;\n            this.repeating = ((options & MelodyOptions.Forever) != 0);\n            this.repeating = this.repeating ? true : ((options & MelodyOptions.ForeverInBackground) != 0)\n            this.background = ((options & MelodyOptions.OnceInBackground) != 0);\n            this.background = this.background ? true : ((options & MelodyOptions.ForeverInBackground) != 0);\n            this.currentDuration = 4; //Default duration (Crotchet)\n            this.currentOctave = 4; //Middle octave\n            this.currentPos = 0;\n        }\n\n        hasNextNote() {\n            return this.repeating || this.currentPos < this.melodyArray.length;\n        }\n\n        nextNote(): string {\n            const currentNote = this.melodyArray[this.currentPos];\n            return currentNote;\n        }\n    }\n}\n",
+            "neopixel.ts": "/**\r\n * Well known colors for a NeoPixel strip\r\n */\r\nenum NeoPixelColors {\r\n    //% block=red\r\n    Red = 0xFF0000,\r\n    //% block=orange\r\n    Orange = 0xFFA500,\r\n    //% block=yellow\r\n    Yellow = 0xFFFF00,\r\n    //% block=green\r\n    Green = 0x00FF00,\r\n    //% block=blue\r\n    Blue = 0x0000FF,\r\n    //% block=indigo\r\n    Indigo = 0x4b0082,\r\n    //% block=violet\r\n    Violet = 0x8a2be2,\r\n    //% block=purple\r\n    Purple = 0xFF00FF,\r\n    //% block=white\r\n    White = 0xFFFFFF,\r\n    //% block=black\r\n    Black = 0x000000\r\n}\r\n\r\ndeclare const enum neoPin {\r\nnone = 0x0,\r\nAN = 0x0001,\r\nRST = 0x0002,\r\nCS = 0x0004,\r\nSCK = 0x0008,\r\nMISO = 0x0010,\r\nMOSI = 0x0020,\r\nSDA = 0x0400,\r\nSCL = 0x0800,\r\nTX = 0x1000,\r\nRX = 0x2000,\r\nINT = 0x4000,\r\nPWM = 0x8000,\r\n    P0 = 100,  // MICROBIT_ID_IO_P0\r\n    P1 = 101,  // MICROBIT_ID_IO_P1\r\n    P2 = 102,  // MICROBIT_ID_IO_P2\r\n    P3 = 103,  // MICROBIT_ID_IO_P3\r\n    P4 = 104,  // MICROBIT_ID_IO_P4\r\n    P5 = 105,  // MICROBIT_ID_IO_P5\r\n    P6 = 106,  // MICROBIT_ID_IO_P6\r\n    P7 = 107,  // MICROBIT_ID_IO_P7\r\n    P8 = 108,  // MICROBIT_ID_IO_P8\r\n    P9 = 109,  // MICROBIT_ID_IO_P9\r\n    P10 = 110,  // MICROBIT_ID_IO_P10\r\n    P11 = 111,  // MICROBIT_ID_IO_P11\r\n    P12 = 112,  // MICROBIT_ID_IO_P12\r\n    P13 = 113,  // MICROBIT_ID_IO_P13\r\n    P14 = 114,  // MICROBIT_ID_IO_P14\r\n    P15 = 115,  // MICROBIT_ID_IO_P15\r\n    P16 = 116,  // MICROBIT_ID_IO_P16\r\n    //% blockHidden=1\r\n    P19 = 119,  // MICROBIT_ID_IO_P19\r\n    //% blockHidden=1\r\n    P20 = 120,  // MICROBIT_ID_IO_P20\r\n    }\r\n\r\n/**\r\n * Different modes for RGB or RGB+W NeoPixel strips\r\n */\r\nenum NeoPixelMode {\r\n    //% block=\"RGB (GRB format)\"\r\n    RGB = 0,\r\n    //% block=\"RGB+W\"\r\n    RGBW = 1,\r\n    //% block=\"RGB (RGB format)\"\r\n    RGB_RGB = 2\r\n}\r\n\r\n/**\r\n * Functions to operate NeoPixel strips.\r\n */\r\n//% weight=100 color=#2699BF icon=\"\\uf110\"\r\n//% advanced=true\r\nnamespace neopixel {\r\n    /**\r\n     * A NeoPixel strip\r\n     */\r\n\r\n    export enum HueInterpolationDirection {\r\n        Clockwise,\r\n        CounterClockwise,\r\n        Shortest\r\n    }\r\n\r\n    /**\r\n     * Sets NeoPixel object.\r\n     * @param clickBoardNum the clickBoardNum\r\n     *  @param Strip the Strip Object\r\n     */\r\n    //% block=\" $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode\"\r\n    //% blockSetVariable=\"Strip\"\r\n    //% blockId=Strip\r\n    //% weight=110\r\n    export function createStrip(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {\r\n        return new Strip(clickBoardNum, clickSlot, pin, numleds, mode);\r\n    }\r\n\r\n     //Neopixel Function IDs\r\n\r\n\r\n\r\n    export class Strip extends bBoard.peripheralSettings{\r\n\r\n        private NEOPIXEL_ADD  : number\r\n        private NEOPIXEL_REMOVE : number\r\n        private NEOPIXEL_SHOW : number\r\n        private NEOPIXEL_HIDE : number\r\n        private NEOPIXEL_CLEAR  : number\r\n        private NEOPIXEL_STRIP_WRITE_SINGLE_DATA : number\r\n        private NEOPIXEL_STRIP_WRITE_BUFFER_DATA : number\r\n        private NEOPIXEL_STRIP_READ_SINGLE_DATA  : number\r\n        private NEOPIXEL_STRIP_READ_BUFFER_DATA  : number\r\n        \r\n       private buf: Buffer;\r\n       private pin: DigitalPin;\r\n\r\n        //b.Board specific\r\n        private board: clickBoardID;\r\n        private clickPort: clickBoardSlot;\r\n        private bBoard: boolean;\r\n        //b.Board specific\r\n\r\n        // TODO: encode as bytes instead of 32bit\r\n        private brightness: number;\r\n        private start: number; // start offset in LED strip\r\n        private _length: number; // number of LEDs\r\n        private _mode: NeoPixelMode;\r\n        private _matrixWidth: number; // number of leds in a matrix - if any\r\n\r\n        private clickBoardNumGlobal:number\r\n        private clickSlotNumGlobal:number\r\n        private pinGlobal:neoPin\r\n        private numledsGlobal:number\r\n        private modeGlobal:NeoPixelMode\r\n    \r\n        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode){\r\n            super(clickBoardNum, clickSlot)\r\n            this.clickBoardNumGlobal=clickBoardNum;\r\n            this.clickSlotNumGlobal=clickSlot;\r\n            this.pinGlobal=pin\r\n            this.numledsGlobal=numleds\r\n            this.modeGlobal=mode\r\n            this.NEOPIXEL_ADD     =          0x01\r\n            this.NEOPIXEL_REMOVE    =        0x02\r\n            this.NEOPIXEL_SHOW   =           0x03\r\n            this.NEOPIXEL_HIDE    =          0x04\r\n            this.NEOPIXEL_CLEAR      =       0x05\r\n            this.NEOPIXEL_STRIP_WRITE_SINGLE_DATA =0x06\r\n            this.NEOPIXEL_STRIP_WRITE_BUFFER_DATA =0x07\r\n            this.NEOPIXEL_STRIP_READ_SINGLE_DATA  =0x08\r\n            this.NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09\r\n\r\n            if(pin >=100 && pin <=120)\r\n        {\r\n            this.bBoard = false;\r\n            this.pin = parseInt(pin.toString());\r\n        }\r\n        else\r\n        {\r\n            this.bBoard = true;\r\n            this.pin = parseInt(pin.toString());\r\n          \r\n            if(this.clickSlotNumGlobal == clickBoardSlot.default) //If the on-board neopixels are selected\r\n            {\r\n               \r\n                this.pin = parseInt(clickIOPin.PWM.toString()); //Set the pin to the PWM on click zero (Click Z reserves PWM pin for built in neopixels)\r\n               \r\n            }\r\n            \r\n            this.board = this.clickBoardNumGlobal;\r\n            this.clickPort = this.clickSlotNumGlobal;\r\n            \r\n            this.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id,this.NEOPIXEL_ADD,[mode,numleds])\r\n          \r\n            \r\n        }\r\n        \r\n        let stride = mode === NeoPixelMode.RGBW ? 4 : 3;\r\n        this.buf = pins.createBuffer(numleds * stride);\r\n        this.start = 0;\r\n        this._length = numleds;\r\n        this._mode = mode;\r\n        this._matrixWidth = 0;\r\n        this.setBrightness(255)\r\n\r\n        }\r\n\r\n\r\n        /**\r\n         * Shows all LEDs to a given color (range 0-255 for r, g, b).\r\n         * @param rgb RGB color of the LED\r\n         */\r\n        //% blockId=\"neopixel_set_strip_color\" block=\"$this|show color aaa $rgb=neopixel_colors\"\r\n        //% weight=85 blockGap=8\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        \r\n\r\n        showColor(rgb: number) {\r\n            rgb = rgb >> 0;\r\n            this.setAllRGB(rgb);\r\n            this.show();\r\n        }\r\n\r\n        /**\r\n         * Shows a rainbow pattern on all LEDs.\r\n         * @param startHue the start hue value for the rainbow, eg: 1\r\n         * @param endHue the end hue value for the rainbow, eg: 360\r\n         */\r\n        //% blockId=\"neopixel_set_strip_rainbow\" block=\"$this|show rainbow from $startHue|to $endHue\"\r\n        //% weight=85 blockGap=8\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        showRainbow(startHue: number = 1, endHue: number = 360) {\r\n            if (this._length <= 0) return;\r\n\r\n            startHue = startHue >> 0;\r\n            endHue = endHue >> 0;\r\n            const saturation = 100;\r\n            const luminance = 50;\r\n            const steps = this._length;\r\n            const direction = HueInterpolationDirection.Clockwise;\r\n\r\n            //hue\r\n            const h1 = startHue;\r\n            const h2 = endHue;\r\n            const hDistCW = ((h2 + 360) - h1) % 360;\r\n            const hStepCW = Math.idiv((hDistCW * 100), steps);\r\n            const hDistCCW = ((h1 + 360) - h2) % 360;\r\n            const hStepCCW = Math.idiv(-(hDistCCW * 100), steps);\r\n            let hStep: number;\r\n            if (direction === HueInterpolationDirection.Clockwise) {\r\n                hStep = hStepCW;\r\n            } else if (direction === HueInterpolationDirection.CounterClockwise) {\r\n                hStep = hStepCCW;\r\n            } else {\r\n                hStep = hDistCW < hDistCCW ? hStepCW : hStepCCW;\r\n            }\r\n            const h1_100 = h1 * 100; //we multiply by 100 so we keep more accurate results while doing interpolation\r\n\r\n            //sat\r\n            const s1 = saturation;\r\n            const s2 = saturation;\r\n            const sDist = s2 - s1;\r\n            const sStep = Math.idiv(sDist, steps);\r\n            const s1_100 = s1 * 100;\r\n\r\n            //lum\r\n            const l1 = luminance;\r\n            const l2 = luminance;\r\n            const lDist = l2 - l1;\r\n            const lStep = Math.idiv(lDist, steps);\r\n            const l1_100 = l1 * 100\r\n\r\n            //interpolate\r\n            if (steps === 1) {\r\n                this.setPixelColor(0, this.hsl(h1 + hStep, s1 + sStep, l1 + lStep))\r\n            } else {\r\n                this.setPixelColor(0, this.hsl(startHue, saturation, luminance));\r\n                for (let i = 1; i < steps - 1; i++) {\r\n                    const h = Math.idiv((h1_100 + i * hStep), 100) + 360;\r\n                    const s = Math.idiv((s1_100 + i * sStep), 100);\r\n                    const l = Math.idiv((l1_100 + i * lStep), 100);\r\n                    this.setPixelColor(i, this.hsl(h, s, l));\r\n                }\r\n                this.setPixelColor(steps - 1, this.hsl(endHue, saturation, luminance));\r\n            }\r\n            this.show();\r\n        }\r\n\r\n        /**\r\n         * Displays a vertical bar graph based on the `value` and `high` value.\r\n         * If `high` is 0, the chart gets adjusted automatically.\r\n         * @param value current value to plot\r\n         * @param high maximum value, eg: 255\r\n         */\r\n        //% weight=84\r\n        //% blockId=neopixel_show_bar_graph block=\"$this|show bar graph of $value|up to $high\"\r\n        //% icon=\"\\uf080\"\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        showBarGraph(value: number, high: number): void {\r\n            if (high <= 0) {\r\n                this.clear();\r\n                this.setPixelColor(0, NeoPixelColors.Yellow);\r\n                this.show();\r\n                return;\r\n            }\r\n\r\n            value = Math.abs(value);\r\n            const n = this._length;\r\n            const n1 = n - 1;\r\n            let v = Math.idiv((value * n), high);\r\n            if (v == 0) {\r\n                this.setPixelColor(0, 0x666600);\r\n                for (let i = 1; i < n; ++i)\r\n                    this.setPixelColor(i, 0);\r\n            } else {\r\n                for (let i = 0; i < n; ++i) {\r\n                    if (i <= v) {\r\n                        const b = Math.idiv(i * 255, n1);\r\n                        this.setPixelColor(i, this.rgb(b, 0, 255 - b));\r\n                    }\r\n                    else this.setPixelColor(i, 0);\r\n                }\r\n            }\r\n            this.show();\r\n        }\r\n\r\n        /**\r\n         * Set LED to a given color (range 0-255 for r, g, b).\r\n         * You need to call ``show`` to make the changes visible.\r\n         * @param pixeloffset position of the NeoPixel in the strip\r\n         * @param rgb RGB color of the LED\r\n         */\r\n        //% blockId=\"neopixel_set_pixel_color\" block=\"$this|set pixel color at $pixeloffset|to $rgb=neopixel_colors\"\r\n        //% blockGap=8\r\n        //% weight=80\r\n        //% parts=\"neopixel\" advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        setPixelColor(pixeloffset: number, rgb: number): void {\r\n            this.setPixelRGB(pixeloffset >> 0, rgb >> 0);\r\n        }\r\n\r\n        /**\r\n         * Sets the number of pixels in a matrix shaped strip\r\n         * @param width number of pixels in a row\r\n         */\r\n        //% blockId=neopixel_set_matrix_width block=\"$this|set matrix width $width\"\r\n        //% blockGap=8\r\n        //% weight=5\r\n        //% parts=\"neopixel\" advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        setMatrixWidth(width: number) {\r\n            this._matrixWidth = Math.min(this._length, width >> 0);\r\n        }\r\n\r\n        /**\r\n         * Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip\r\n         * You need to call ``show`` to make the changes visible.\r\n         * @param x horizontal position\r\n         * @param y horizontal position\r\n         * @param rgb RGB color of the LED\r\n         */\r\n        //% blockId=\"neopixel_set_matrix_color\" block=\"$this|set matrix color at x $x|y $y|to $rgb=neopixel_colors\"\r\n        //% weight=4\r\n        //% parts=\"neopixel\" advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        setMatrixColor(x: number, y: number, rgb: number) {\r\n            if (this._matrixWidth <= 0) return; // not a matrix, ignore\r\n            x = x >> 0;\r\n            y = y >> 0;\r\n            rgb = rgb >> 0;\r\n            const cols = Math.idiv(this._length, this._matrixWidth);\r\n            if (x < 0 || x >= this._matrixWidth || y < 0 || y >= cols) return;\r\n            let i = x + y * this._matrixWidth;\r\n            this.setPixelColor(i, rgb);\r\n        }\r\n\r\n        /**\r\n         * For NeoPixels with RGB+W LEDs, set the white LED brightness. This only works for RGB+W NeoPixels.\r\n         * @param pixeloffset position of the LED in the strip\r\n         * @param white brightness of the white LED\r\n         */\r\n        //% blockId=\"neopixel_set_pixel_white\" block=\"$this|set pixel white LED at $pixeloffset|to $white\"\r\n        //% blockGap=8\r\n        //% weight=80\r\n        //% parts=\"neopixel\" advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        setPixelWhiteLED(pixeloffset: number, white: number): void {\r\n            if (this._mode === NeoPixelMode.RGBW) {\r\n                this.setPixelW(pixeloffset >> 0, white >> 0);\r\n            }\r\n        }\r\n\r\n        /**\r\n         * Send all the changes to the strip.\r\n         */\r\n        //% blockId=\"neopixel_show\" block=\"$this|show\" blockGap=8\r\n        //% weight=79\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        show() {\r\n            if(this.bBoard == true)\r\n            {\r\n                \r\n                this.sendBuffer(parseInt(this.pin.toString()), moduleIDs.NEOPIXEL_module_id,this.NEOPIXEL_STRIP_WRITE_BUFFER_DATA,this.buf )\r\n                \r\n                this.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id, this.NEOPIXEL_SHOW,[] )\r\n                \r\n            }\r\n            else\r\n            {\r\n                \r\n                ws2812b.sendBuffer(this.buf, this.pin);\r\n            }\r\n            \r\n        }\r\n\r\n        /**\r\n         * Turn off all LEDs.\r\n         * You need to call ``show`` to make the changes visible.\r\n         */\r\n        //% blockId=\"neopixel_clear\" block=\"$this|clear\"\r\n        //% weight=76\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        clear(): void {\r\n            const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            this.buf.fill(0, this.start * stride, this._length * stride);\r\n        }\r\n\r\n        /**\r\n         * Gets the number of pixels declared on the strip\r\n         */\r\n        //% blockId=\"neopixel_length\" block=\"$this|length\" blockGap=8\r\n        //% weight=60 advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        length() {\r\n            return this._length;\r\n        }\r\n\r\n        /**\r\n         * Set the brightness of the strip. This flag only applies to future operation.\r\n         * @param brightness a measure of LED brightness in 0-255. eg: 255\r\n         */\r\n        //% blockId=\"neopixel_set_brightness\" block=\"$this|set brightness $brightness\" blockGap=8\r\n        //% weight=59\r\n        //% parts=\"neopixel\" advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        setBrightness(brightness: number): void {\r\n            this.brightness = brightness & 0xff;\r\n        }\r\n\r\n        /**\r\n         * Apply brightness to current colors using a quadratic easing function.\r\n         **/\r\n        //% blockId=\"neopixel_each_brightness\" block=\"$this|ease brightness\" blockGap=8\r\n        //% weight=58\r\n        //% parts=\"neopixel\" advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        easeBrightness(): void {\r\n            const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            const br = this.brightness;\r\n            const buf = this.buf;\r\n            const end = this.start + this._length;\r\n            const mid = Math.idiv(this._length, 2);\r\n            for (let i = this.start; i < end; ++i) {\r\n                const k = i - this.start;\r\n                const ledoffset = i * stride;\r\n                const br = k > mid\r\n                    ? Math.idiv(255 * (this._length - 1 - k) * (this._length - 1 - k), (mid * mid))\r\n                    : Math.idiv(255 * k * k, (mid * mid));\r\n                serial.writeLine(k + \":\" + br);\r\n                let ledoffset0:number =ledoffset + 0\r\n                const r = (buf.getNumber(NumberFormat.UInt8LE,ledoffset0) * br) >> 8; buf.setNumber(NumberFormat.UInt8LE, (ledoffset + 0), r);\r\n                const g = (buf.getNumber(NumberFormat.UInt8LE,ledoffset + 1) * br) >> 8; buf.setNumber(NumberFormat.UInt8LE,ledoffset + 1, g);\r\n                const b = (buf.getNumber(NumberFormat.UInt8LE,ledoffset + 2) * br) >> 8; buf.setNumber(NumberFormat.UInt8LE,ledoffset + 2, b);\r\n                if (stride == 4) {\r\n                    const w = (buf.getNumber(NumberFormat.UInt8LE,ledoffset + 3) * br) >> 8;  buf.setNumber(NumberFormat.UInt8LE,ledoffset + 3, w);\r\n                }\r\n            }\r\n        }\r\n\r\n        /**\r\n         * Create a range of LEDs.\r\n         * @param start offset in the LED strip to start the range\r\n         * @param length number of LEDs in the range. eg: 4\r\n         */\r\n        //% weight=89\r\n        //% blockId=\"neopixel_range\" block=\"$this|range from $start|with $length|leds\"\r\n        //% parts=\"neopixel\"\r\n        //% blockSetVariable=range\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        range(start: number, length: number): Strip {\r\n            start = start >> 0;\r\n            length = length >> 0;\r\n            let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal,  this.pinGlobal, this.numledsGlobal, this.modeGlobal);\r\n            strip.buf = this.buf;\r\n            strip.pin = this.pin;\r\n            strip.brightness = this.brightness;\r\n            strip.start = this.start + Math.clamp(0, this._length - 1, start);\r\n            strip._length = Math.clamp(0, this._length - (strip.start - this.start), length);\r\n            strip._matrixWidth = 0;\r\n            strip._mode = this._mode;\r\n            return strip;\r\n        }\r\n\r\n        /**\r\n         * Shift LEDs forward and clear with zeros.\r\n         * You need to call ``show`` to make the changes visible.\r\n         * @param offset number of pixels to shift forward, eg: 1\r\n         */\r\n        //% blockId=\"neopixel_shift\" block=\"$this|shift pixels by $offset\" blockGap=8\r\n        //% weight=40\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        shift(offset: number = 1): void {\r\n            offset = offset >> 0;\r\n            const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            this.buf.shift(-offset * stride, this.start * stride, this._length * stride)\r\n        }\r\n\r\n        /**\r\n         * Rotate LEDs forward.\r\n         * You need to call ``show`` to make the changes visible.\r\n         * @param offset number of pixels to rotate forward, eg: 1\r\n         */\r\n        //% blockId=\"neopixel_rotate\" block=\"$this|rotate pixels by $offset\" blockGap=8\r\n        //% weight=39\r\n        //% parts=\"neopixel\"\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        rotate(offset: number = 1): void {\r\n            offset = offset >> 0;\r\n            const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            this.buf.rotate(-offset * stride, this.start * stride, this._length * stride)\r\n        }\r\n\r\n        /**\r\n         * Set the pin where the neopixel is connected, defaults to P0.\r\n         */\r\n        //% weight=10\r\n        //% parts=\"neopixel\" advanced=true\r\n        setPin(pin: DigitalPin): void {\r\n            this.pin = pin;\r\n            pins.digitalWritePin(this.pin, 0);\r\n            // don't yield to avoid races on initialization\r\n        }\r\n\r\n        /**\r\n         * Estimates the electrical current (mA) consumed by the current light configuration.\r\n         */\r\n        //% weight=9 blockId=neopixel_power block=\"$this|power (mA)\"\r\n        //% advanced=true\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Strip\"\r\n        //% blockNamespace=neopixel\r\n        power(): number {\r\n            const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            const end = this.start + this._length;\r\n            let p = 0;\r\n            for (let i = this.start; i < end; ++i) {\r\n                const ledoffset = i * stride;\r\n                for (let j = 0; j < stride; ++j) {\r\n                    p += this.buf.getNumber(NumberFormat.UInt8LE, i + j);\r\n                }\r\n            }\r\n            return Math.idiv(this.length(), 2) /* 0.5mA per neopixel */\r\n                + Math.idiv(p * 433, 10000); /* rought approximation */\r\n        }\r\n\r\n        private setBufferRGB(offset: number, red: number, green: number, blue: number): void {\r\n            if (this._mode === NeoPixelMode.RGB_RGB) {\r\n                this.buf.setNumber(NumberFormat.UInt8LE,offset + 0, red);\r\n                this.buf.setNumber(NumberFormat.UInt8LE,offset + 1, green);\r\n            } else {\r\n                this.buf.setNumber(NumberFormat.UInt8LE,offset + 0, green);\r\n                this.buf.setNumber(NumberFormat.UInt8LE,offset + 1, red);\r\n            }\r\n            this.buf.setNumber(NumberFormat.UInt8LE,offset + 2, blue);\r\n        }\r\n\r\n        private setAllRGB(rgb: number) {\r\n            let red = this.unpackR(rgb);\r\n            let green = this.unpackG(rgb);\r\n            let blue = this.unpackB(rgb);\r\n\r\n            const br = this.brightness;\r\n            if (br < 255) {\r\n                red = (red * br) >> 8;\r\n                green = (green * br) >> 8;\r\n                blue = (blue * br) >> 8;\r\n            }\r\n            const end = this.start + this._length;\r\n            const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            for (let i = this.start; i < end; ++i) {\r\n                this.setBufferRGB(i * stride, red, green, blue)\r\n            }\r\n        }\r\n        private setAllW(white: number) {\r\n            if (this._mode !== NeoPixelMode.RGBW)\r\n                return;\r\n\r\n            let br = this.brightness;\r\n            if (br < 255) {\r\n                white = (white * br) >> 8;\r\n            }\r\n            let buf = this.buf;\r\n            let end = this.start + this._length;\r\n            for (let i = this.start; i < end; ++i) {\r\n                let ledoffset = i * 4;\r\n                buf.setNumber(NumberFormat.UInt8LE,ledoffset + 3, white);\r\n            }\r\n        }\r\n        private setPixelRGB(pixeloffset: number, rgb: number): void {\r\n            if (pixeloffset < 0\r\n                || pixeloffset >= this._length)\r\n                return;\r\n\r\n            let stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;\r\n            pixeloffset = (pixeloffset + this.start) * stride;\r\n\r\n            let red = this.unpackR(rgb);\r\n            let green = this.unpackG(rgb);\r\n            let blue = this.unpackB(rgb);\r\n\r\n            let br = this.brightness;\r\n            if (br < 255) {\r\n                red = (red * br) >> 8;\r\n                green = (green * br) >> 8;\r\n                blue = (blue * br) >> 8;\r\n            }\r\n            this.setBufferRGB(pixeloffset, red, green, blue)\r\n        }\r\n        private setPixelW(pixeloffset: number, white: number): void {\r\n            if (this._mode !== NeoPixelMode.RGBW)\r\n                return;\r\n\r\n            if (pixeloffset < 0\r\n                || pixeloffset >= this._length)\r\n                return;\r\n\r\n            pixeloffset = (pixeloffset + this.start) * 4;\r\n\r\n            let br = this.brightness;\r\n            if (br < 255) {\r\n                white = (white * br) >> 8;\r\n            }\r\n            let buf = this.buf;\r\n            buf.setNumber(NumberFormat.UInt8LE,pixeloffset + 3, white);\r\n        }\r\n\r\n\r\n\r\n        \r\n    /**\r\n     * Converts red, green, blue channels into a RGB color\r\n     * @param red value of the red channel between 0 and 255. eg: 255\r\n     * @param green value of the green channel between 0 and 255. eg: 255\r\n     * @param blue value of the blue channel between 0 and 255. eg: 255\r\n     */\r\n    //% weight=1\r\n    //% blockId=\"neopixel_rgb\" block=\"$this |red $red|green $green|blue $blue\"\r\n    //% advanced=true\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Strip\"\r\n    //% blockNamespace=neopixel\r\n    rgb(red: number, green: number, blue: number): number {\r\n        return this.packRGB(red, green, blue);\r\n    }\r\n\r\n    /**\r\n     * Gets the RGB value of a known color\r\n    */\r\n    //% weight=2 blockGap=8\r\n    //% blockId=\"neopixel_colors\" block=\"$this |$color\"\r\n    //% advanced=true\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Strip\"\r\n    //% blockNamespace=neopixel\r\n    colors(color: NeoPixelColors): number {\r\n        return color;\r\n    }\r\n\r\n    packRGB(a: number, b: number, c: number): number {\r\n        return ((a & 0xFF) << 16) | ((b & 0xFF) << 8) | (c & 0xFF);\r\n    }\r\n    unpackR(rgb: number): number {\r\n        let r = (rgb >> 16) & 0xFF;\r\n        return r;\r\n    }\r\n    unpackG(rgb: number): number {\r\n        let g = (rgb >> 8) & 0xFF;\r\n        return g;\r\n    }\r\n    unpackB(rgb: number): number {\r\n        let b = (rgb) & 0xFF;\r\n        return b;\r\n    }\r\n\r\n    /**\r\n     * Converts a hue saturation luminosity value into a RGB color\r\n     * @param h hue from 0 to 360\r\n     * @param s saturation from 0 to 99\r\n     * @param l luminosity from 0 to 99\r\n     */\r\n    //% blockId=neopixelHSL block=\"$this| hue $h|saturation $s|luminosity $l\"\r\n    //% this.defl=\"Strip\"\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Strip\"\r\n    //% blockNamespace=neopixel\r\n    hsl(h: number, s: number, l: number): number {\r\n        h = Math.round(h);\r\n        s = Math.round(s);\r\n        l = Math.round(l);\r\n\r\n        h = h % 360;\r\n        s = Math.clamp(0, 99, s);\r\n        l = Math.clamp(0, 99, l);\r\n        let c = Math.idiv((((100 - Math.abs(2 * l - 100)) * s) << 8), 10000); //chroma, [0,255]\r\n        let h1 = Math.idiv(h, 60); //[0,6]\r\n        let h2 = Math.idiv((h - h1 * 60) * 256, 60); //[0,255]\r\n        let temp = Math.abs((((h1 % 2) << 8) + h2) - 256);\r\n        let x = (c * (256 - (temp))) >> 8; //[0,255], second largest component of this color\r\n        let r$: number;\r\n        let g$: number;\r\n        let b$: number;\r\n        if (h1 == 0) {\r\n            r$ = c; g$ = x; b$ = 0;\r\n        } else if (h1 == 1) {\r\n            r$ = x; g$ = c; b$ = 0;\r\n        } else if (h1 == 2) {\r\n            r$ = 0; g$ = c; b$ = x;\r\n        } else if (h1 == 3) {\r\n            r$ = 0; g$ = x; b$ = c;\r\n        } else if (h1 == 4) {\r\n            r$ = x; g$ = 0; b$ = c;\r\n        } else if (h1 == 5) {\r\n            r$ = c; g$ = 0; b$ = x;\r\n        }\r\n        let m = Math.idiv((Math.idiv((l * 2 << 8), 100) - c), 2);\r\n        let r = r$ + m;\r\n        let g = g$ + m;\r\n        let b = b$ + m;\r\n        return this.packRGB(r, g, b);\r\n    }\r\n\r\n    }\r\n\r\n   \r\n\r\n\r\n\r\n}",
+            "neopixel.ts.rej": "diff a/libs/core/neopixel.ts b/libs/core/neopixel.ts\t(rejected hunks)\r\n@@ -58 +58 @@ namespace neopixel {\r\n-         * Shows all LEDs to a given color (range 0-255 for r, g, b). \r\n+         * Shows all LEDs to a given color (range 0-255 for r, g, b).\r\n@@ -61 +61 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_strip_color\" block=\"%strip|show color %rgb=neopixel_colors\" \r\n+        //% blockId=\"neopixel_set_strip_color\" block=\"%strip|show color %rgb=neopixel_colors\"\r\n@@ -71 +71 @@ namespace neopixel {\r\n-         * Shows a rainbow pattern on all LEDs. \r\n+         * Shows a rainbow pattern on all LEDs.\r\n@@ -75 +75 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_strip_rainbow\" block=\"%strip|show rainbow from %startHue|to %endHue\" \r\n+        //% blockId=\"neopixel_set_strip_rainbow\" block=\"%strip|show rainbow from %startHue|to %endHue\"\r\n@@ -142 +142 @@ namespace neopixel {\r\n-        //% blockId=neopixel_show_bar_graph block=\"%strip|show bar graph of %value|up to %high\" \r\n+        //% blockId=neopixel_show_bar_graph block=\"%strip|show bar graph of %value|up to %high\"\r\n@@ -174 +174 @@ namespace neopixel {\r\n-         * Set LED to a given color (range 0-255 for r, g, b). \r\n+         * Set LED to a given color (range 0-255 for r, g, b).\r\n@@ -179 +179 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_pixel_color\" block=\"%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors\" \r\n+        //% blockId=\"neopixel_set_pixel_color\" block=\"%strip|set pixel color at %pixeloffset|to %rgb=neopixel_colors\"\r\n@@ -200 +200 @@ namespace neopixel {\r\n-         * Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip \r\n+         * Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip\r\n@@ -206 +206 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_matrix_color\" block=\"%string|set matrix color at x %x|y %y|to %rgb=neopixel_colors\" \r\n+        //% blockId=\"neopixel_set_matrix_color\" block=\"%string|set matrix color at x %x|y %y|to %rgb=neopixel_colors\"\r\n@@ -219 +219 @@ namespace neopixel {\r\n-        \r\n+\r\n@@ -225 +225 @@ namespace neopixel {\r\n-        //% blockId=\"neopixel_set_pixel_white\" block=\"%strip|set pixel white LED at %pixeloffset|to %white\" \r\n+        //% blockId=\"neopixel_set_pixel_white\" block=\"%strip|set pixel white LED at %pixeloffset|to %white\"\r\n@@ -229 +229 @@ namespace neopixel {\r\n-        setPixelWhiteLED(pixeloffset: number, white: number): void {            \r\n+        setPixelWhiteLED(pixeloffset: number, white: number): void {\r\n@@ -235 +235 @@ namespace neopixel {\r\n-        /** \r\n+        /**\r\n@@ -305 +305 @@ namespace neopixel {\r\n-        /** \r\n+        /**\r\n@@ -541 +541 @@ namespace neopixel {\r\n-        \r\n+\r\n@@ -546,2 +546,2 @@ namespace neopixel {\r\n-        let h1 = Math.idiv(h, 60);//[0,6]\r\n-        let h2 = Math.idiv((h - h1 * 60) * 256, 60);//[0,255]\r\n+        let h1 = Math.idiv(h, 60); //[0,6]\r\n+        let h2 = Math.idiv((h - h1 * 60) * 256, 60); //[0,255]\r\n@@ -549 +549 @@ namespace neopixel {\r\n-        let x = (c * (256 - (temp))) >> 8;//[0,255], second largest component of this color\r\n+        let x = (c * (256 - (temp))) >> 8; //[0,255], second largest component of this color\r\n",
             "parts/headphone.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"142\" height=\"180\" viewBox=\"0 0 142 180\"><rect ry=\".3\" rx=\"1\" y=\"58.615\" x=\"-8.878\" height=\"23.571\" width=\"17.143\" transform=\"rotate(-45)\" fill=\"#b3b3b3\"/><rect ry=\".3\" rx=\"1\" y=\"32.043\" x=\"-8.878\" height=\"23.571\" width=\"17.143\" transform=\"rotate(-45)\" fill=\"#b3b3b3\"/><path d=\"M.346 7.296c-.394.39-.31 4.797-.18 4.898l13.404 10.18c.117.12.337 4.76.73 4.368l5.506-5.56.01.01 6.51-6.444c.39-.392-4.25-.614-4.366-.73L11.777.612c-.1-.132-4.51-.215-4.898.18L4.087 3.636l-.01-.01-3.73 3.67z\" fill=\"#b3b3b3\"/><rect ry=\"6.85\" rx=\"4.571\" y=\"84.758\" x=\"-20.128\" height=\"75.571\" width=\"39.643\" transform=\"rotate(-45)\"/><rect ry=\".374\" rx=\"1.038\" y=\"29.442\" x=\"-8.925\" height=\"2.228\" width=\"17.238\" transform=\"rotate(-45)\" fill=\"#fff\"/><rect ry=\".374\" rx=\"1.038\" y=\"55.939\" x=\"-8.925\" height=\"2.228\" width=\"17.238\" transform=\"rotate(-45)\" fill=\"#fff\"/><rect ry=\".374\" rx=\"1.038\" y=\"82.392\" x=\"-8.925\" height=\"2.228\" width=\"17.238\" transform=\"rotate(-45)\" fill=\"#fff\"/><rect ry=\"2.317\" rx=\"2.183\" y=\"158.876\" x=\"-9.774\" height=\"25.568\" width=\"18.935\" transform=\"rotate(-45)\"/><path d=\"M128.588 128.82s14.97 11.165 7.547 26.35c-8.426 17.24-25.57 20.653-25.57 20.653\" fill=\"none\" stroke=\"#000\" stroke-width=\"6.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
             "parts/speaker.svg": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg viewBox=\"0 0 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n  <g transform=\"matrix(1, 0, 0, 1, -0.00023, -58.230297)\">\n    <ellipse style=\"fill: rgb(70, 70, 70);\" cx=\"250.58\" cy=\"308.81\" rx=\"215\" ry=\"215\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 1.000001, -232.069031, 248.780606)\" cx=\"482.069\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -232.067871, 110.041956)\" cx=\"482.067\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"389.12\" cy=\"308.23\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"110.88\" cy=\"308.23\" rx=\"23.028\" ry=\"23.028\"/>\n    <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"169.393\" rx=\"23.028\" ry=\"23.028\"/>\n    <g transform=\"matrix(1, 0, 0, 1, -0.000009, 0.000015)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"238.513\" rx=\"23.028\" ry=\"23.028\" transform=\"matrix(1.000001, 0, 0, 0.999999, 69.996739, 69.71816)\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -302.064453, 110.043115)\" cx=\"482.064\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(0.866026, 0.5, -0.5, 0.866026, 7.386552, -105.261086)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(0.999999, 0, 0, 0.999999, -65.212313, 177.387415)\" cx=\"482.068\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"555.975\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"277.735\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"416.855\" cy=\"97.999\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(0.5, 0.866026, -0.866026, 0.5, 246.635941, -171.170502)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(0.999999, 0, 0, 0.999999, -65.212313, 177.387415)\" cx=\"482.068\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"555.975\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"277.735\" cy=\"236.836\" rx=\"23.028\" ry=\"23.028\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"416.855\" cy=\"97.999\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(-0.5, 0.866026, -0.866026, -0.5, 641.934998, 245.84082)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"238.513\" rx=\"23.028\" ry=\"23.028\" transform=\"matrix(1.000001, 0, 0, 0.999999, 69.996739, 69.71816)\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -302.064453, 110.043115)\" cx=\"482.064\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n    <g transform=\"matrix(-0.500001, -0.866026, 0.866026, -0.500001, 108.063393, 678.85083)\">\n      <ellipse style=\"fill: rgb(0, 0, 0);\" cx=\"250\" cy=\"238.513\" rx=\"23.028\" ry=\"23.028\" transform=\"matrix(1.000001, 0, 0, 0.999999, 69.996739, 69.71816)\"/>\n      <ellipse style=\"fill: rgb(0, 0, 0);\" transform=\"matrix(1, 0, 0, 0.999999, -302.064453, 110.043115)\" cx=\"482.064\" cy=\"198.188\" rx=\"23.028\" ry=\"23.028\"/>\n    </g>\n  </g>\n</svg>",
             "pins.cpp": "#include \"pxt.h\"\r\n\r\nenum class DigitalPin {\r\n    P0 = MICROBIT_ID_IO_P0,\r\n    P1 = MICROBIT_ID_IO_P1,\r\n    P2 = MICROBIT_ID_IO_P2,\r\n    P3 = MICROBIT_ID_IO_P3,\r\n    P4 = MICROBIT_ID_IO_P4,\r\n    P5 = MICROBIT_ID_IO_P5,\r\n    P6 = MICROBIT_ID_IO_P6,\r\n    P7 = MICROBIT_ID_IO_P7,\r\n    P8 = MICROBIT_ID_IO_P8,\r\n    P9 = MICROBIT_ID_IO_P9,\r\n    P10 = MICROBIT_ID_IO_P10,\r\n    P11 = MICROBIT_ID_IO_P11,\r\n    P12 = MICROBIT_ID_IO_P12,\r\n    P13 = MICROBIT_ID_IO_P13,\r\n    P14 = MICROBIT_ID_IO_P14,\r\n    P15 = MICROBIT_ID_IO_P15,\r\n    P16 = MICROBIT_ID_IO_P16,\r\n    //% blockHidden=1\r\n    P19 = MICROBIT_ID_IO_P19,\r\n    //% blockHidden=1\r\n    P20 = MICROBIT_ID_IO_P20,\r\n};\r\n\r\nenum class AnalogPin {\r\n    P0 = MICROBIT_ID_IO_P0,\r\n    P1 = MICROBIT_ID_IO_P1,\r\n    P2 = MICROBIT_ID_IO_P2,\r\n    P3 = MICROBIT_ID_IO_P3,\r\n    P4 = MICROBIT_ID_IO_P4,\r\n    P10 = MICROBIT_ID_IO_P10,\r\n    //% block=\"P5 (write only)\"\r\n    P5 = MICROBIT_ID_IO_P5,\r\n    //% block=\"P6 (write only)\"\r\n    P6 = MICROBIT_ID_IO_P6,\r\n    //% block=\"P7 (write only)\"\r\n    P7 = MICROBIT_ID_IO_P7,\r\n    //% block=\"P8 (write only)\"\r\n    P8 = MICROBIT_ID_IO_P8,\r\n    //% block=\"P9 (write only)\"\r\n    P9 = MICROBIT_ID_IO_P9,\r\n    //% block=\"P11 (write only)\"\r\n    P11 = MICROBIT_ID_IO_P11,\r\n    //% block=\"P12 (write only)\"\r\n    P12 = MICROBIT_ID_IO_P12,\r\n    //% block=\"P13 (write only)\"\r\n    P13 = MICROBIT_ID_IO_P13,\r\n    //% block=\"P14 (write only)\"\r\n    P14 = MICROBIT_ID_IO_P14,\r\n    //% block=\"P15 (write only)\"\r\n    P15 = MICROBIT_ID_IO_P15,\r\n    //% block=\"P16 (write only)\"\r\n    P16 = MICROBIT_ID_IO_P16,\r\n    //% block=\"P19 (write only)\"\r\n    //% blockHidden=1\r\n    P19 = MICROBIT_ID_IO_P19,\r\n    //% block=\"P20 (write only)\"\r\n    //% blockHidden=1\r\n    P20 = MICROBIT_ID_IO_P20\r\n};\r\n\r\nenum class PulseValue {\r\n    //% block=high\r\n    High = MICROBIT_PIN_EVT_PULSE_HI,\r\n    //% block=low\r\n    Low = MICROBIT_PIN_EVT_PULSE_LO\r\n};\r\n\r\nenum class PinPullMode {\r\n    //% block=\"down\"\r\n    PullDown = 0,\r\n    //% block=\"up\"\r\n    PullUp = 1,\r\n    //% block=\"none\"\r\n    PullNone = 2\r\n};\r\n\r\nenum class PinEventType {\r\n    //% block=\"edge\"\r\n    Edge = MICROBIT_PIN_EVENT_ON_EDGE,\r\n    //% block=\"pulse\"\r\n    Pulse = MICROBIT_PIN_EVENT_ON_PULSE,\r\n    //% block=\"touch\"\r\n    Touch = MICROBIT_PIN_EVENT_ON_TOUCH,\r\n    //% block=\"none\"\r\n    None = MICROBIT_PIN_EVENT_NONE\r\n};\r\n\r\n\r\nnamespace pxt\r\n{\r\nMicroBitPin *getPin(int id) {\r\n    switch (id) {\r\n        case MICROBIT_ID_IO_P0: return &uBit.io.P0;\r\n        case MICROBIT_ID_IO_P1: return &uBit.io.P1;\r\n        case MICROBIT_ID_IO_P2: return &uBit.io.P2;\r\n        case MICROBIT_ID_IO_P3: return &uBit.io.P3;\r\n        case MICROBIT_ID_IO_P4: return &uBit.io.P4;\r\n        case MICROBIT_ID_IO_P5: return &uBit.io.P5;\r\n        case MICROBIT_ID_IO_P6: return &uBit.io.P6;\r\n        case MICROBIT_ID_IO_P7: return &uBit.io.P7;\r\n        case MICROBIT_ID_IO_P8: return &uBit.io.P8;\r\n        case MICROBIT_ID_IO_P9: return &uBit.io.P9;\r\n        case MICROBIT_ID_IO_P10: return &uBit.io.P10;\r\n        case MICROBIT_ID_IO_P11: return &uBit.io.P11;\r\n        case MICROBIT_ID_IO_P12: return &uBit.io.P12;\r\n        case MICROBIT_ID_IO_P13: return &uBit.io.P13;\r\n        case MICROBIT_ID_IO_P14: return &uBit.io.P14;\r\n        case MICROBIT_ID_IO_P15: return &uBit.io.P15;\r\n        case MICROBIT_ID_IO_P16: return &uBit.io.P16;\r\n        case MICROBIT_ID_IO_P19: return &uBit.io.P19;\r\n        case MICROBIT_ID_IO_P20: return &uBit.io.P20;\r\n#if MICROBIT_CODAL\r\n        case 1001: return &uBit.io.usbTx;\r\n        case 1002: return &uBit.io.usbRx;\r\n#endif\r\n        default: return NULL;\r\n    }\r\n}\r\n\r\n} // pxt\r\n\r\nnamespace pins {\r\n    #define PINOP(op) \\\r\n      MicroBitPin *pin = getPin((int)name); \\\r\n      if (!pin) return; \\\r\n      pin->op\r\n\r\n    #define PINREAD(op) \\\r\n      MicroBitPin *pin = getPin((int)name); \\\r\n      if (!pin) return 0; \\\r\n      return pin->op\r\n\r\n\r\n    //%\r\n    MicroBitPin *getPinAddress(int id) {\r\n        return getPin(id);\r\n    }\r\n\r\n    /**\r\n     * Read the specified pin or connector as either 0 or 1\r\n     * @param name pin to read from, eg: DigitalPin.P0\r\n     */\r\n    //% help=pins/digital-read-pin weight=30\r\n    //% blockId=device_get_digital_pin block=\"digital read|pin %name\" blockGap=8\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    int digitalReadPin(DigitalPin name) {\r\n        PINREAD(getDigitalValue());\r\n    }\r\n\r\n    /**\r\n      * Set a pin or connector value to either 0 or 1.\r\n      * @param name pin to write to, eg: DigitalPin.P0\r\n      * @param value value to set on the pin, 1 eg,0\r\n      */\r\n    //% help=pins/digital-write-pin weight=29\r\n    //% blockId=device_set_digital_pin block=\"digital write|pin %name|to %value\"\r\n    //% value.min=0 value.max=1\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void digitalWritePin(DigitalPin name, int value) {\r\n        PINOP(setDigitalValue(value));\r\n    }\r\n\r\n    /**\r\n     * Read the connector value as analog, that is, as a value comprised between 0 and 1023.\r\n     * @param name pin to write to, eg: AnalogPin.P0\r\n     */\r\n    //% help=pins/analog-read-pin weight=25\r\n    //% blockId=device_get_analog_pin block=\"analog read|pin %name\" blockGap=\"8\"\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    int analogReadPin(AnalogPin name) {\r\n        PINREAD(getAnalogValue());\r\n    }\r\n\r\n    /**\r\n     * Set the connector value as analog. Value must be comprised between 0 and 1023.\r\n     * @param name pin name to write to, eg: AnalogPin.P0\r\n     * @param value value to write to the pin between ``0`` and ``1023``. eg:1023,0\r\n     */\r\n    //% help=pins/analog-write-pin weight=24\r\n    //% blockId=device_set_analog_pin block=\"analog write|pin %name|to %value\" blockGap=8\r\n    //% value.min=0 value.max=1023\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void analogWritePin(AnalogPin name, int value) {\r\n        PINOP(setAnalogValue(value));\r\n    }\r\n\r\n    /**\r\n     * Configure the pulse-width modulation (PWM) period of the analog output in microseconds.\r\n     * If this pin is not configured as an analog output (using `analog write pin`), the operation has no effect.\r\n     * @param name analog pin to set period to, eg: AnalogPin.P0\r\n     * @param micros period in micro seconds. eg:20000\r\n     */\r\n    //% help=pins/analog-set-period weight=23 blockGap=8\r\n    //% blockId=device_set_analog_period block=\"analog set period|pin %pin|to (µs)%micros\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\"\r\n    void analogSetPeriod(AnalogPin name, int micros) {\r\n        PINOP(setAnalogPeriodUs(micros));\r\n    }\r\n\r\n    /**\r\n    * Configure the pin as a digital input and generate an event when the pin is pulsed either high or low.\r\n    * @param name digital pin to register to, eg: DigitalPin.P0\r\n    * @param pulse the value of the pulse, eg: PulseValue.High\r\n    */\r\n    //% help=pins/on-pulsed weight=22 blockGap=16 advanced=true\r\n    //% blockId=pins_on_pulsed block=\"on|pin %pin|pulsed %pulse\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\"\r\n    void onPulsed(DigitalPin name, PulseValue pulse, Action body) {\r\n        MicroBitPin* pin = getPin((int)name);\r\n        if (!pin) return;\r\n\r\n        pin->eventOn(MICROBIT_PIN_EVENT_ON_PULSE);\r\n        registerWithDal((int)name, (int)pulse, body);\r\n    }\r\n\r\n    /**\r\n    * Get the duration of the last pulse in microseconds. This function should be called from a ``onPulsed`` handler.\r\n    */\r\n    //% help=pins/pulse-duration advanced=true\r\n    //% blockId=pins_pulse_duration block=\"pulse duration (µs)\"\r\n    //% weight=21 blockGap=8\r\n    int pulseDuration() {\r\n        return pxt::lastEvent.timestamp;\r\n    }\r\n\r\n    /**\r\n    * Return the duration of a pulse at a pin in microseconds.\r\n    * @param name the pin which measures the pulse, eg: DigitalPin.P0\r\n    * @param value the value of the pulse, eg: PulseValue.High\r\n    * @param maximum duration in microseconds\r\n    */\r\n    //% blockId=\"pins_pulse_in\" block=\"pulse in (µs)|pin %name|pulsed %value\"\r\n    //% weight=20 advanced=true\r\n    //% help=pins/pulse-in\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    int pulseIn(DigitalPin name, PulseValue value, int maxDuration = 2000000) {\r\n        MicroBitPin* pin = getPin((int)name);\r\n        if (!pin) return 0;\r\n\r\n        int pulse = value == PulseValue::High ? 1 : 0;\r\n        uint64_t tick =  system_timer_current_time_us();\r\n        uint64_t maxd = (uint64_t)maxDuration;\r\n        while(pin->getDigitalValue() != pulse) {\r\n            if(system_timer_current_time_us() - tick > maxd)\r\n                return 0;\r\n        }\r\n\r\n        uint64_t start =  system_timer_current_time_us();\r\n        while(pin->getDigitalValue() == pulse) {\r\n            if(system_timer_current_time_us() - tick > maxd)\r\n                return 0;\r\n        }\r\n        uint64_t end =  system_timer_current_time_us();\r\n        return end - start;\r\n    }\r\n\r\n    /**\r\n     * Write a value to the servo, controlling the shaft accordingly. On a standard servo, this will set the angle of the shaft (in degrees), moving the shaft to that orientation. On a continuous rotation servo, this will set the speed of the servo (with ``0`` being full-speed in one direction, ``180`` being full speed in the other, and a value near ``90`` being no movement).\r\n     * @param name pin to write to, eg: AnalogPin.P0\r\n     * @param value angle or rotation speed, eg:180,90,0\r\n     */\r\n    //% help=pins/servo-write-pin weight=20\r\n    //% blockId=device_set_servo_pin block=\"servo write|pin %name|to %value\" blockGap=8\r\n    //% parts=microservo trackArgs=0\r\n    //% value.min=0 value.max=180\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void servoWritePin(AnalogPin name, int value) {\r\n        PINOP(setServoValue(value));\r\n    }\r\n\r\n    /**\r\n    * Specifies that a continuous servo is connected.\r\n    */\r\n    //%\r\n    void servoSetContinuous(AnalogPin name, bool value) {\r\n        // handled in simulator\r\n    }\r\n\r\n    /**\r\n     * Configure the IO pin as an analog/pwm output and set a pulse width. The period is 20 ms period and the pulse width is set based on the value given in **microseconds** or `1/1000` milliseconds.\r\n     * @param name pin name\r\n     * @param micros pulse duration in micro seconds, eg:1500\r\n     */\r\n    //% help=pins/servo-set-pulse weight=19\r\n    //% blockId=device_set_servo_pulse block=\"servo set pulse|pin %value|to (µs) %micros\"\r\n    //% value.fieldEditor=\"gridpicker\" value.fieldOptions.columns=4\r\n    //% value.fieldOptions.tooltips=\"false\" value.fieldOptions.width=\"250\"\r\n    void servoSetPulse(AnalogPin name, int micros) {\r\n        PINOP(setServoPulseUs(micros));\r\n    }\r\n\r\n\r\n    MicroBitPin* pitchPin = NULL;\r\n    MicroBitPin* pitchPin2 = NULL;\r\n    uint8_t pitchVolume = 64;\r\n\r\n    /**\r\n     * Set the pin used when using analog pitch or music.\r\n     * @param name pin to modulate pitch from\r\n     */\r\n    //% blockId=device_analog_set_pitch_pin block=\"analog set pitch pin %name\"\r\n    //% help=pins/analog-set-pitch-pin weight=3 advanced=true\r\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\r\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\"\r\n    void analogSetPitchPin(AnalogPin name) {\r\n        pitchPin = getPin((int)name);\r\n        pitchPin2 = NULL;\r\n    }\r\n\r\n    void pinAnalogSetPitch(MicroBitPin* pin, int frequency, int ms) {\r\n      if (frequency <= 0 || pitchVolume == 0) {\r\n        pin->setAnalogValue(0);\r\n      } else {\r\n        int v = 1 << (pitchVolume >> 5);\r\n        pin->setAnalogValue(v);\r\n        pin->setAnalogPeriodUs(1000000/frequency);\r\n      }\r\n    }\r\n\r\n    /**\r\n    * Sets the volume on the pitch pin\r\n    * @param volume the intensity of the sound from 0..255\r\n    */\r\n    //% blockId=device_analog_set_pitch_volume block=\"analog set pitch volume $volume\"\r\n    //% help=pins/analog-set-pitch-volume weight=3 advanced=true\r\n    //% volume.min=0 volume.max=255\r\n    void analogSetPitchVolume(int volume) {\r\n        pitchVolume = max(0, min(0xff, volume));\r\n    }\r\n\r\n    /**\r\n    * Gets the volume the pitch pin from 0..255\r\n    */\r\n    //% blockId=device_analog_pitch_volume block=\"analog pitch volume\"\r\n    //% help=pins/analog-pitch-volume weight=3 advanced=true\r\n    int analogPitchVolume() {\r\n        return pitchVolume;\r\n    }\r\n\r\n    /**\r\n     * Emit a plse-width modulation (PWM) signal to the current pitch pin. Use `analog set pitch pin` to define the pitch pin.\r\n     * @param frequency frequency to modulate in Hz.\r\n     * @param ms duration of the pitch in milli seconds.\r\n     */\r\n    //% blockId=device_analog_pitch block=\"analog pitch %frequency|for (ms) %ms\"\r\n    //% help=pins/analog-pitch weight=4 async advanced=true blockGap=8\r\n    void analogPitch(int frequency, int ms) {\r\n        // init pins if needed\r\n        if (NULL == pitchPin) {\r\n            pitchPin = getPin((int)AnalogPin::P0);\r\n#ifdef SOUND_MIRROR_EXTENSION\r\n            pitchPin2 = &SOUND_MIRROR_EXTENSION;\r\n#endif           \r\n        }\r\n        // set pitch\r\n        if (NULL != pitchPin)\r\n            pinAnalogSetPitch(pitchPin, frequency, ms);\r\n        if (NULL != pitchPin2)\r\n            pinAnalogSetPitch(pitchPin2, frequency, ms);\r\n        // clear pitch\r\n        if (ms > 0) {\r\n            fiber_sleep(ms);\r\n            if (NULL != pitchPin)\r\n                pitchPin->setAnalogValue(0);\r\n            if (NULL != pitchPin2)\r\n                pitchPin2->setAnalogValue(0);\r\n            fiber_sleep(5);\r\n        }\r\n    }\r\n\r\n\r\n    /**\r\n    * Configure the pull directiion of of a pin.\r\n    * @param name pin to set the pull mode on, eg: DigitalPin.P0\r\n    * @param pull one of the mbed pull configurations, eg: PinPullMode.PullUp\r\n    */\r\n    //% help=pins/set-pull weight=3 advanced=true\r\n    //% blockId=device_set_pull block=\"set pull|pin %pin|to %pull\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\"\r\n    void setPull(DigitalPin name, PinPullMode pull) {\r\n#if MICROBIT_CODAL        \r\n        codal::PullMode m = pull == PinPullMode::PullDown\r\n            ? codal::PullMode::Down\r\n            : pull == PinPullMode::PullUp ? codal::PullMode::Up\r\n            : codal::PullMode::None;\r\n        PINOP(setPull(m));\r\n#else\r\n        PinMode m = pull == PinPullMode::PullDown\r\n            ? PinMode::PullDown\r\n            : pull == PinPullMode::PullUp ? PinMode::PullUp\r\n            : PinMode::PullNone;\r\n        PINOP(setPull(m));\r\n#endif\r\n    }\r\n\r\n    /**\r\n    * Configure the events emitted by this pin. Events can be subscribed to\r\n    * using ``control.onEvent()``.\r\n    * @param name pin to set the event mode on, eg: DigitalPin.P0\r\n    * @param type the type of events for this pin to emit, eg: PinEventType.Edge\r\n    */\r\n    //% help=pins/set-events weight=4 advanced=true\r\n    //% blockId=device_set_pin_events block=\"set pin %pin|to emit %type|events\"\r\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\r\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\"\r\n    void setEvents(DigitalPin name, PinEventType type) {\r\n        getPin((int)name)->eventOn((int)type);\r\n    }\r\n\r\n    /**\r\n     * Create a new zero-initialized buffer.\r\n     * @param size number of bytes in the buffer\r\n     */\r\n    //%\r\n    Buffer createBuffer(int size)\r\n    {\r\n        return mkBuffer(NULL, size);\r\n    }\r\n\r\n#if MICROBIT_CODAL\r\n#define BUFFER_TYPE uint8_t*\r\n#else\r\n#define BUFFER_TYPE char*\r\n#endif\r\n\r\n    /**\r\n     * Read `size` bytes from a 7-bit I2C `address`.\r\n     */\r\n    //%\r\n    Buffer i2cReadBuffer(int address, int size, bool repeat = false)\r\n    {\r\n      Buffer buf = createBuffer(size);\r\n      uBit.i2c.read(address << 1, (BUFFER_TYPE)buf->data, size, repeat);\r\n      return buf;\r\n    }\r\n\r\n    /**\r\n     * Write bytes to a 7-bit I2C `address`.\r\n     */\r\n    //%\r\n    int i2cWriteBuffer(int address, Buffer buf, bool repeat = false)\r\n    {\r\n      return uBit.i2c.write(address << 1, (BUFFER_TYPE)buf->data, buf->length, repeat);\r\n    }\r\n\r\n    SPI* spi = NULL;\r\n    SPI* allocSPI() {\r\n        if (NULL == spi)\r\n            spi = new SPI(MOSI, MISO, SCK);\r\n        return spi;\r\n    }\r\n\r\n    /**\r\n    * Write to the SPI slave and return the response\r\n    * @param value Data to be sent to the SPI slave\r\n    */\r\n    //% help=pins/spi-write weight=5 advanced=true\r\n    //% blockId=spi_write block=\"spi write %value\"\r\n    int spiWrite(int value) {\r\n        auto p = allocSPI();\r\n        return p->write(value);\r\n    }\r\n\r\n    /**\r\n    * Set the SPI frequency\r\n    * @param frequency the clock frequency, eg: 1000000\r\n    */\r\n    //% help=pins/spi-frequency weight=4 advanced=true\r\n    //% blockId=spi_frequency block=\"spi frequency %frequency\"\r\n    void spiFrequency(int frequency) {\r\n        auto p = allocSPI();\r\n        p->frequency(frequency);\r\n    }\r\n\r\n    /**\r\n    * Set the SPI bits and mode\r\n    * @param bits the number of bits, eg: 8\r\n    * @param mode the mode, eg: 3\r\n    */\r\n    //% help=pins/spi-format weight=3 advanced=true\r\n    //% blockId=spi_format block=\"spi format|bits %bits|mode %mode\"\r\n    void spiFormat(int bits, int mode) {\r\n        auto p = allocSPI();\r\n        p->format(bits, mode);        \r\n    }\r\n\r\n#if MICROBIT_CODAL\r\n#define PIN_ARG(pin) *(getPin((int)(pin)))\r\n#else\r\n#define PIN_ARG(pin) (getPin((int)(pin)))->name\r\n#endif\r\n\r\n    /**\r\n    * Set the MOSI, MISO, SCK pins used by the SPI connection\r\n    *\r\n    */\r\n    //% help=pins/spi-pins weight=2 advanced=true\r\n    //% blockId=spi_pins block=\"spi set pins|MOSI %mosi|MISO %miso|SCK %sck\"\r\n    //% mosi.fieldEditor=\"gridpicker\" mosi.fieldOptions.columns=4\r\n    //% mosi.fieldOptions.tooltips=\"false\" mosi.fieldOptions.width=\"250\"\r\n    //% miso.fieldEditor=\"gridpicker\" miso.fieldOptions.columns=4\r\n    //% miso.fieldOptions.tooltips=\"false\" miso.fieldOptions.width=\"250\"\r\n    //% sck.fieldEditor=\"gridpicker\" sck.fieldOptions.columns=4\r\n    //% sck.fieldOptions.tooltips=\"false\" sck.fieldOptions.width=\"250\"\r\n    void spiPins(DigitalPin mosi, DigitalPin miso, DigitalPin sck) {\r\n        if (NULL != spi) {\r\n            delete spi;\r\n            spi = NULL;\r\n        }\r\n        spi = new SPI(PIN_ARG(mosi), PIN_ARG(miso), PIN_ARG(sck));\r\n    }\r\n\r\n    /**\r\n    * Mounts a push button on the given pin\r\n    */\r\n    //% help=pins/push-button advanced=true\r\n    void pushButton(DigitalPin pin) {\r\n#if MICROBIT_CODAL\r\n        new MicroBitButton(PIN_ARG(pin), (int)pin, DEVICE_BUTTON_ALL_EVENTS, ACTIVE_LOW, codal::PullMode::Up);\r\n#else\r\n        new MicroBitButton(PIN_ARG(pin), PinMode::PullUp);\r\n#endif\r\n    }\r\n}\r\n",
@@ -2708,16 +2710,19 @@ var pxtTargetBundle = {
             "pxt-helpers.ts": "type Action = () => void;\n\n/**\n * Constant representing Not-A-Number.\n */\nconst NaN = 0 / 0\n\n/**\n * Constant representing positive infinity.\n */\nconst Infinity = 1 / 0\n\nfunction isNaN(x: number) {\n    x = +x // convert to number\n    return x !== x\n}\n\nnamespace Number {\n    /**\n     * Check if a given value is of type Number and it is a NaN.\n     */\n    export function isNaN(x: any): boolean {\n        return typeof x == \"number\" && x !== x\n    }\n}\n\n/**\n * A dictionary from string key to string values\n */\ninterface StringMap {\n    [index: string]: string;\n}\n\n/**\n  * Convert a string to an integer.\n  * @param text A string to convert into an integral number. eg: \"123\"\n  * @param radix optional A value between 2 and 36 that specifies the base of the number in text.\n  * If this argument is not supplied, strings with a prefix of '0x' are considered hexadecimal.\n  * All other strings are considered decimal.\n  */\n//% help=text/parse-int\n//% blockId=\"string_parseint\" block=\"parse to integer %text\" blockNamespace=\"text\"\n//% text.defl=\"123\"\n//% blockHidden=1\nfunction parseInt(text: string, radix?: number): number {\n    // roughly based on https://www.ecma-international.org/ecma-262/5.1/#sec-15.1.2.2\n    // with some consideration for avoiding unnecessary slices where easy\n    if (!text || (radix != null && (radix < 2 || radix > 36)))\n        return NaN;\n\n    let start = 0;\n    while (start < text.length && helpers.isWhitespace(text.charCodeAt(start)))\n        ++start;\n\n    if (start === text.length)\n        return NaN;\n\n    const numberOffset = 48; // 0\n    const numCount = 10;\n    const letterOffset = 97; // a\n    const letterCount = 26;\n    const lowerCaseMask = 0x20;\n\n    let sign = 1;\n    switch (text.charAt(start)) {\n        case \"-\":\n            sign = -1;\n            // fallthrough\n        case \"+\":\n            ++start;\n    }\n\n    if ((!radix || radix == 16)\n            && \"0\" === text[start]\n            && (\"x\" === text[start + 1] || \"X\" === text[start + 1])) {\n        radix = 16;\n        start += 2;\n    } else if (!radix) {\n        radix = 10;\n    }\n\n    let output = 0;\n    let hasDigit = false;\n    for (let i = start; i < text.length; ++i) {\n        const code = text.charCodeAt(i) | lowerCaseMask;\n        let val: number = undefined;\n\n        if (code >= numberOffset && code < numberOffset + numCount)\n            val = code - numberOffset;\n        else if (code >= letterOffset && code < letterOffset + letterCount)\n            val = numCount + code - letterOffset;\n\n        if (val == undefined || val >= radix) {\n            if (!hasDigit) {\n                return NaN;\n            }\n            break;\n        }\n        hasDigit = true;\n        output = output * radix + val;\n    }\n\n    return sign * output;\n}\n\nnamespace helpers {\n    export function arrayFill<T>(O: T[], value: T, start?: number, end?: number) {\n        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill\n        // Steps 3-5.\n        const len = O.length >>> 0;\n\n        // Steps 6-7.\n        const relativeStart = start === undefined ? 0 : start >> 0;\n\n        // Step 8.\n        let k = relativeStart < 0 ?\n            Math.max(len + relativeStart, 0) :\n            Math.min(relativeStart, len);\n\n        // Steps 9-10.\n        const relativeEnd = end === undefined ? len : end >> 0;\n\n        // Step 11.\n        const final = relativeEnd < 0 ?\n            Math.max(len + relativeEnd, 0) :\n            Math.min(relativeEnd, len);\n\n        // Step 12.\n        while (k < final) {\n            O[k] = value;\n            k++;\n        }\n\n        // Step 13.\n        return O;\n    }\n\n    export function arraySplice<T>(arr: T[], start: number, len: number) {\n        if (start < 0) {\n            return;\n        }\n        for (let i = 0; i < len; ++i) {\n            arr.removeAt(start)\n        }\n    }\n\n    export function arrayReverse<T>(arr: T[]): void {\n        let len = arr.length;\n        for (let i = 0; i < len / 2; i++) {\n            swap(arr, i, len - i - 1);\n        }\n    }\n\n    export function arrayShift<T>(arr: T[]): T {\n        return arr.removeAt(0);\n    }\n\n    export function arrayJoin<T>(arr: T[], sep?: string): string {\n        if (sep === undefined || sep === null) {\n            sep = \",\";\n        }\n\n        let r = \"\";\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i) {\n            if (i > 0 && sep)\n                r += sep;\n            r += (arr[i] === undefined || arr[i] === null) ? \"\" : arr[i];\n        }\n        return r;\n    }\n\n    /*TODO: Enable this multiple value unshift, after rest is enabled in our compiler.\n        export function arrayUnshift<T>(arr: T[], ...values: T[]) : number {\n            for(let i = values.length; i > 0; --i) {\n                arr.insertAt(0, values[i - 1]);\n            }\n            return arr.length;\n        }\n    */\n    export function arrayUnshift<T>(arr: T[], value: T): number {\n        arr.insertAt(0, value);\n        return arr.length;\n    }\n\n    function swap<T>(arr: T[], i: number, j: number): void {\n        let temp: T = arr[i];\n        arr[i] = arr[j];\n        arr[j] = temp;\n    }\n\n    function sortHelper<T>(arr: T[], callbackfn?: (value1: T, value2: T) => number): T[] {\n        if (arr.length <= 0 || !callbackfn) {\n            return arr;\n        }\n        let len = arr.length;\n        // simple selection sort.\n        for (let i = 0; i < len - 1; ++i) {\n            for (let j = i + 1; j < len; ++j) {\n                if (callbackfn(arr[i], arr[j]) > 0) {\n                    swap(arr, i, j);\n                }\n            }\n        }\n        return arr;\n    }\n\n    export function arraySort<T>(arr: T[], callbackfn?: (value1: T, value2: T) => number): T[] {\n        if (!callbackfn && arr.length > 1) {\n            callbackfn = (a, b) => {\n                // default is sort as if the element were a string, with null < undefined\n                const aIsUndef = a === undefined;\n                const bIsUndef = b === undefined;\n                if (aIsUndef && bIsUndef) return 0;\n                else if (aIsUndef) return 1;\n                else if (bIsUndef) return -1;\n\n                const aIsNull = a === null;\n                const bIsNull = b === null;\n                if (aIsNull && bIsNull) return 0;\n                else if (aIsNull) return 1;\n                else if (bIsNull) return -1;\n\n                return (a + \"\").compare(b + \"\");\n            }\n        }\n        return sortHelper(arr, callbackfn);\n    }\n\n    export function arrayMap<T, U>(arr: T[], callbackfn: (value: T, index: number) => U): U[] {\n        let res: U[] = []\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i) {\n            res.push(callbackfn(arr[i], i))\n        }\n        return res\n    }\n\n    export function arraySome<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): boolean {\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i)\n            if (callbackfn(arr[i], i))\n                return true;\n        return false;\n    }\n\n    export function arrayEvery<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): boolean {\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i)\n            if (!callbackfn(arr[i], i))\n                return false;\n        return true;\n    }\n\n    export function arrayForEach<T>(arr: T[], callbackfn: (value: T, index: number) => void): void {\n        let len = arr.length // caching this seems to match V8\n        for (let i = 0; i < len; ++i) {\n            callbackfn(arr[i], i);\n        }\n    }\n\n    export function arrayFilter<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): T[] {\n        let res: T[] = []\n        let len = arr.length\n        for (let i = 0; i < len; ++i) {\n            let v = arr[i] // need to cache\n            if (callbackfn(v, i)) res.push(v)\n        }\n        return res\n    }\n\n    export function arrayFind<T>(arr: T[], callbackfn: (value: T, index: number) => boolean): T {\n        let len = arr.length\n        for (let i = 0; i < len; ++i) {\n            let v = arr[i] // need to cache\n            if (callbackfn(v, i)) return v;\n        }\n        return undefined;\n    }\n\n    export function arrayReduce<T, U>(arr: T[], callbackfn: (previousValue: U, currentValue: T, currentIndex: number) => U, initialValue: U): U {\n        let len = arr.length\n        for (let i = 0; i < len; ++i) {\n            initialValue = callbackfn(initialValue, arr[i], i)\n        }\n        return initialValue\n    }\n\n    export function arrayConcat<T>(arr: T[], otherArr: T[]): T[] {\n        let out: T[] = [];\n        for (let value of arr) {\n            out.push(value);\n        }\n        for (let value of otherArr) {\n            out.push(value);\n        }\n        return out;\n    }\n\n    export function arraySlice<T>(arr: T[], start?: number, end?: number): T[] {\n        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice\n        const res: T[] = [];\n        const len = arr.length;\n\n        if (start === undefined)\n            start = 0;\n        else if (start < 0)\n            start = Math.max(len + start, 0);\n\n        if (start > len)\n            return res;\n\n        if (end === undefined)\n            end = len;\n        else if (end < 0)\n            end = len + end;\n\n        if (end > len)\n            end = len;\n\n        for (let i = start; i < end; ++i) {\n            res.push(arr[i]);\n        }\n        return res;\n    }\n\n    export function stringReplace(s: string, toReplace: string, replacer: string | ((sub: string) => string)) {\n        toReplace = toReplace + \"\";\n        const ind = s.indexOf(toReplace);\n        if (ind == -1)\n            return s;\n\n        const begin = s.slice(0, ind);\n        const end = s.slice(ind + toReplace.length);\n\n        if (typeof replacer == \"string\" || !replacer) {\n            return begin + replacer + end;\n        } else {\n            return begin + replacer(toReplace) + end;\n        }\n    }\n\n    export function stringReplaceAll(s: string, toReplace: string, replacer: string | ((sub: string) => string)) {\n        toReplace = toReplace + \"\";\n        const split = s.split(toReplace);\n        const empty = toReplace.isEmpty();\n\n        let output = (empty ? applyReplace(toReplace, replacer) : \"\");\n\n        if (split.length) {\n            output += split[0];\n        }\n\n        for (let i = 1; i < split.length; ++i) {\n            output += applyReplace(toReplace, replacer) + split[i];\n        }\n\n        if (!s.isEmpty() && empty) {\n            output += applyReplace(toReplace, replacer);\n        }\n\n        return output;\n\n        function applyReplace(r: string, replacer: string | ((sub: string) => string)): string {\n            if (typeof replacer == \"string\" || !replacer) {\n                return replacer as string;\n            } else {\n                return replacer(r);\n            }\n        }\n    }\n\n\n    export function stringSlice(s: string, start: number, end?: number): string {\n        const len = s.length;\n\n        if (start < 0) {\n            start = Math.max(len + start, 0);\n        }\n\n        if (end == null) {\n            end = len;\n        }\n\n        if (end < 0) {\n            end = len + end;\n        }\n\n        return s.substr(start, end - start);\n    }\n\n    // TODO move to PXT\n    // also note this doesn't handle unicode, but neither does JS (there's toLocaleLowerCase())\n    export function stringToLowerCase(s: string): string {\n        let r = \"\"\n        let prev = 0\n        for (let i = 0; i < s.length; i++) {\n            const c = s.charCodeAt(i)\n            if (65 <= c && c <= 90) {\n                r += s.slice(prev, i) + String.fromCharCode(c + 32)\n                prev = i + 1\n            }\n        }\n        r += s.slice(prev)\n        return r\n    }\n\n    export function stringSplit(S: string, separator?: string, limit?: number): string[] {\n        // https://www.ecma-international.org/ecma-262/6.0/#sec-string.prototype.split\n        const A: string[] = [];\n        let lim = 0;\n        if (limit === undefined)\n            lim = (1 << 29) - 1; // spec says 1 << 53, leaving it at 29 for constant folding\n        else if (limit < 0)\n            lim = 0;\n        else\n            lim = limit | 0;\n        const s = S.length;\n        let p = 0;\n        const R = separator;\n        if (lim == 0)\n            return A;\n        if (separator === undefined) {\n            A[0] = S;\n            return A;\n        }\n        if (s == 0) {\n            let z = splitMatch(S, 0, R);\n            if (z > -1) return A;\n            A[0] = S;\n            return A;\n        }\n        let T: string;\n        let q = p;\n        while (q != s) {\n            let e = splitMatch(S, q, R);\n            if (e < 0) q++;\n            else {\n                if (e == p) q++;\n                else {\n                    T = stringSlice(S, p, q);\n                    A.push(T);\n                    if (A.length == lim) return A;\n                    p = e;\n                    q = p;\n                }\n            }\n        }\n        T = stringSlice(S, p, q);\n        A.push(T);\n        return A;\n    }\n\n    function splitMatch(S: string, q: number, R: string): number {\n        const r = R.length;\n        const s = S.length;\n        if (q + r > s) return -1;\n        for (let i = 0; i < r; ++i) {\n            if (S[q + i] != R[i])\n                return -1;\n        }\n        return q + r;\n    }\n\n    export function stringTrim(s: string): string {\n        let start = 0;\n        let end = s.length - 1;\n\n        while (start <= end && isWhitespace(s.charCodeAt(start)))\n            ++start;\n\n        while (end > start && isWhitespace(s.charCodeAt(end)))\n            --end;\n        return s.slice(start, end + 1);\n    }\n\n    export function isWhitespace(c: number): boolean {\n        // https://www.ecma-international.org/ecma-262/6.0/#sec-white-space\n        switch (c) {\n            case 0x0009:  // character tab\n            case 0x000B:  // line tab\n            case 0x000C:  // form feed\n            case 0x0020:  // space\n            case 0x00A0:  // no-break space\n            case 0xFEFF:  // zero width no break space\n            case 0x000A:  // line feed\n            case 0x000D:  // carriage return\n            case 0x2028:  // line separator\n            case 0x2029:  // paragraph separator\n                return true;\n            default:\n                return false;\n        }\n    }\n\n    export function stringEmpty(S: string): boolean {\n        return !S;\n    }\n}\n\nnamespace Math {\n    export function clamp(min: number, max: number, value: number): number {\n        return Math.min(max, Math.max(min, value));\n    }\n\n    /**\n      * Returns the absolute value of a number (the value without regard to whether it is positive or negative).\n      * For example, the absolute value of -5 is the same as the absolute value of 5.\n      * @param x A numeric expression for which the absolute value is needed.\n      */\n    //% help=math/abs\n    export function abs(x: number): number {\n        return x < 0 ? -x : x;\n    }\n\n    /**\n      * Returns the sign of the x, indicating whether x is positive, negative or zero.\n      * @param x The numeric expression to test\n      */\n    export function sign(x: number): number {\n        if (x == 0) return 0;\n        if (x > 0) return 1;\n        return -1;\n    }\n\n    /**\n      * Returns the larger of two supplied numeric expressions.\n      */\n    //% help=math/max\n    export function max(a: number, b: number): number {\n        if (a >= b) return a;\n        return b;\n    }\n\n    /**\n      * Returns the smaller of two supplied numeric expressions.\n      */\n    //% help=math/min\n    export function min(a: number, b: number): number {\n        if (a <= b) return a;\n        return b;\n    }\n\n    /**\n     * Rounds ``x`` to a number with the given number of ``digits``\n     * @param x the number to round\n     * @param digits the number of resulting digits\n     */\n    //%\n    export function roundWithPrecision(x: number, digits: number): number {\n        digits = digits | 0;\n        // invalid digits input\n        if (digits <= 0) return Math.round(x);\n        if (x == 0) return 0;\n        let r = 0;\n        do {\n            const d = Math.pow(10, digits);\n            r = Math.round(x * d) / d;\n            digits++;\n        } while (r == 0 && digits < 21);\n        return r;\n    }\n}\n\n\n//% blockHidden=1\nnamespace __internal {\n    /**\n     * A shim to render a boolean as a down/up toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleDownUp block=\"%down\"\n    //% down.fieldEditor=toggledownup\n    //% down.fieldOptions.decompileLiterals=true\n    export function __downUp(down: boolean): boolean {\n        return down;\n    }\n\n    /**\n     * A shim to render a boolean as a up/down toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleUpDown block=\"%up\"\n    //% up.fieldEditor=toggleupdown\n    //% up.fieldOptions.decompileLiterals=true\n    export function __upDown(up: boolean): boolean {\n        return up;\n    }\n\n    /**\n     * A shim to render a boolean as a high/low toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleHighLow block=\"%high\"\n    //% high.fieldEditor=togglehighlow\n    //% high.fieldOptions.decompileLiterals=true\n    export function __highLow(high: boolean): boolean {\n        return high;\n    }\n\n    /**\n     * A shim to render a boolean as a on/off toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleOnOff block=\"%on\"\n    //% on.fieldEditor=toggleonoff\n    //% on.fieldOptions.decompileLiterals=true\n    export function __onOff(on: boolean): boolean {\n        return on;\n    }\n\n    /**\n     * A shim to render a boolean as a yes/no toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleYesNo block=\"%yes\"\n    //% yes.fieldEditor=toggleyesno\n    //% yes.fieldOptions.decompileLiterals=true\n    export function __yesNo(yes: boolean): boolean {\n        return yes;\n    }\n\n    /**\n     * A shim to render a boolean as a win/lose toggle\n     */\n    //% shim=TD_ID blockHidden=1\n    //% blockId=toggleWinLose block=\"%win\"\n    //% win.fieldEditor=togglewinlose\n    //% win.fieldOptions.decompileLiterals=true\n    export function __winLose(win: boolean): boolean {\n        return win;\n    }\n\n    /**\n     * Get the color wheel field editor\n     * @param color color, eg: #ff0000\n     */\n    //% blockId=colorNumberPicker block=\"%value\"\n    //% blockHidden=true\n    //% shim=TD_ID colorSecondary=\"#FFFFFF\"\n    //% value.fieldEditor=\"colornumber\" value.fieldOptions.decompileLiterals=true\n    //% value.defl='#ff0000'\n    //% value.fieldOptions.colours='[\"#ff0000\",\"#ff8000\",\"#ffff00\",\"#ff9da5\",\"#00ff00\",\"#b09eff\",\"#00ffff\",\"#007fff\",\"#65471f\",\"#0000ff\",\"#7f00ff\",\"#ff0080\",\"#ff00ff\",\"#ffffff\",\"#999999\",\"#000000\"]'\n    //% value.fieldOptions.columns=4 value.fieldOptions.className='rgbColorPicker'\n    export function __colorNumberPicker(value: number) {\n        return value;\n    }\n\n    /**\n     * Get the color wheel field editor\n     * @param value value between 0 to 255 to get a color value, eg: 10\n     */\n    //% blockId=colorWheelPicker block=\"%value\"\n    //% blockHidden=true\n    //% shim=TD_ID colorSecondary=\"#FFFFFF\"\n    //% value.fieldEditor=\"colorwheel\" value.fieldOptions.decompileLiterals=true\n    //% value.fieldOptions.sliderWidth='200'\n    //% value.fieldOptions.min=0 value.fieldOptions.max=255\n    export function __colorWheelPicker(value: number) {\n        return value;\n    }\n\n    /**\n    * Get the color wheel field editor using HSV values\n    * @param value value between 0 to 255 to get a color value, eg: 10\n    */\n    //% blockId=colorWheelHsvPicker block=\"%value\"\n    //% blockHidden=true\n    //% shim=TD_ID colorSecondary=\"#FFFFFF\"\n    //% value.fieldEditor=\"colorwheel\" value.fieldOptions.decompileLiterals=true\n    //% value.fieldOptions.sliderWidth='200'\n    //% value.fieldOptions.min=0 value.fieldOptions.max=255\n    //% value.fieldOptions.channel=hsvfast\n    export function __colorWheelHsvPicker(value: number) {\n        return value;\n    }\n\n    /**\n     * A speed picker\n     * @param speed the speed, eg: 50\n     */\n    //% blockId=speedPicker block=\"%speed\" shim=TD_ID\n    //% speed.fieldEditor=\"speed\" colorSecondary=\"#FFFFFF\"\n    //% weight=0 blockHidden=1 speed.fieldOptions.decompileLiterals=1\n    export function __speedPicker(speed: number): number {\n        return speed;\n    }\n\n    /**\n     * A turn ratio picker\n     * @param turnratio the turn ratio, eg: 0\n     */\n    //% blockId=turnRatioPicker block=\"%turnratio\" shim=TD_ID\n    //% turnratio.fieldEditor=\"turnratio\" colorSecondary=\"#FFFFFF\"\n    //% weight=0 blockHidden=1 turnRatio.fieldOptions.decompileLiterals=1\n    export function __turnRatioPicker(turnratio: number): number {\n        return turnratio;\n    }\n\n    /**\n     * A field editor that displays a protractor\n     */\n    //% blockId=protractorPicker block=\"%angle\"\n    //% shim=TD_ID\n    //% angle.fieldEditor=protractor\n    //% angle.fieldOptions.decompileLiterals=1\n    //% colorSecondary=\"#FFFFFF\"\n    //% blockHidden=1\n    export function __protractor(angle: number) {\n        return angle;\n    }\n\n    /**\n      * Get the time field editor\n      * @param ms time duration in milliseconds, eg: 500, 1000\n      */\n    //% blockId=timePicker block=\"%ms\"\n    //% blockHidden=true shim=TD_ID\n    //% colorSecondary=\"#FFFFFF\"\n    //% ms.fieldEditor=\"numberdropdown\" ms.fieldOptions.decompileLiterals=true\n    //% ms.fieldOptions.data='[[\"100 ms\", 100], [\"200 ms\", 200], [\"500 ms\", 500], [\"1 second\", 1000], [\"2 seconds\", 2000], [\"5 seconds\", 5000]]'\n    export function __timePicker(ms: number): number {\n        return ms;\n    }\n}",
             "pxt.cpp": "#include \"pxtbase.h\"\n\nusing namespace std;\n\nnamespace pxt {\n\nAction mkAction(int totallen, RefAction *act) {\n    check(getVTable(act)->classNo == BuiltInType::RefAction, PANIC_INVALID_BINARY_HEADER, 1);\n#ifdef PXT_VM\n    check(act->initialLen == totallen, PANIC_INVALID_BINARY_HEADER, 13);\n#endif\n\n    if (totallen == 0) {\n        return (TValue)act; // no closure needed\n    }\n\n    void *ptr = gcAllocate(sizeof(RefAction) + totallen * sizeof(void *));\n    RefAction *r = new (ptr) RefAction();\n    r->len = totallen;\n#ifdef PXT_VM\n    r->numArgs = act->numArgs;\n    r->initialLen = act->initialLen;\n    r->reserved = act->reserved;\n#endif\n    r->func = act->func;\n    memset(r->fields, 0, r->len * sizeof(void *));\n\n    MEMDBG(\"mkAction: start=%p => %p\", act, r);\n\n    return (Action)r;\n}\n\nRefRecord *mkClassInstance(VTable *vtable) {\n    intcheck(vtable->methods[0] == &RefRecord_destroy, PANIC_SIZE, 3);\n    // intcheck(vtable->methods[1] == &RefRecord_print, PANIC_SIZE, 4);\n\n    void *ptr = gcAllocate(vtable->numbytes);\n    RefRecord *r = new (ptr) RefRecord(vtable);\n    memset(r->fields, 0, vtable->numbytes - sizeof(RefRecord));\n    MEMDBG(\"mkClass: vt=%p => %p\", vtable, r);\n    return r;\n}\n\nTValue RefRecord::ld(int idx) {\n    // intcheck((reflen == 255 ? 0 : reflen) <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 1);\n    return fields[idx];\n}\n\nTValue RefRecord::ldref(int idx) {\n    // DMESG(\"LD %p len=%d reflen=%d idx=%d\", this, len, reflen, idx);\n    // intcheck(0 <= idx && idx < reflen, PANIC_OUT_OF_BOUNDS, 2);\n    return fields[idx];\n}\n\nvoid RefRecord::st(int idx, TValue v) {\n    // intcheck((reflen == 255 ? 0 : reflen) <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 3);\n    fields[idx] = v;\n}\n\nvoid RefRecord::stref(int idx, TValue v) {\n    // DMESG(\"ST %p len=%d reflen=%d idx=%d\", this, len, reflen, idx);\n    // intcheck(0 <= idx && idx < reflen, PANIC_OUT_OF_BOUNDS, 4);\n    fields[idx] = v;\n}\n\nvoid RefObject::destroyVT() {\n    ((RefObjectMethod)getVTable(this)->methods[0])(this);\n}\n\n//%\nvoid deleteRefObject(RefObject *obj) {\n    obj->destroyVT();\n}\n\nvoid RefObject::printVT() {\n    ((RefObjectMethod)getVTable(this)->methods[1])(this);\n}\n\nvoid RefRecord_destroy(RefRecord *) {}\n\nvoid RefRecord_print(RefRecord *r) {\n    DMESG(\"RefRecord %p size=%d bytes\", r, getVTable(r)->numbytes);\n}\n\nvoid Segment::set(unsigned i, TValue value) {\n    if (i < size) {\n        data[i] = value;\n    } else if (i < Segment::MaxSize) {\n        growByMin(i + 1);\n        data[i] = value;\n    } else {\n        return;\n    }\n    if (length <= i) {\n        length = i + 1;\n    }\n\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::set\");\n    this->print();\n#endif\n\n    return;\n}\n\nstatic inline int growthFactor(int size) {\n    if (size == 0) {\n        return 4;\n    }\n    if (size < 64) {\n        return size * 2; // Double\n    }\n    if (size < 512) {\n        return size * 5 / 3; // Grow by 1.66 rate\n    }\n    // Grow by constant rate\n    if ((unsigned)size + 256 < Segment::MaxSize)\n        return size + 256;\n    else\n        return Segment::MaxSize;\n}\n\nvoid LLSegment::setLength(unsigned newLen) {\n    if (newLen > Segment::MaxSize)\n        return;\n\n    if (newLen > size) {\n        int newSize = growthFactor(size);\n        if (newSize < (int)newLen)\n            newSize = newLen;\n\n        // this will throw if unable to allocate\n        TValue *tmp = (TValue *)(xmalloc(newSize * sizeof(TValue)));\n\n        // Copy existing data\n        if (size) {\n            memcpy(tmp, data, size * sizeof(TValue));\n        }\n        // fill the rest with default value\n        memset(tmp + size, 0, (newSize - size) * sizeof(TValue));\n\n        // free older segment;\n        xfree(data);\n\n        data = tmp;\n        size = newSize;\n    } else if (newLen < length) {\n        memset(data + newLen, 0, (length - newLen) * sizeof(TValue));\n    }\n\n    length = newLen;\n}\n\nvoid LLSegment::set(unsigned idx, TValue v) {\n    if (idx >= Segment::MaxSize)\n        return;\n    if (idx >= length)\n        setLength(idx + 1);\n    data[idx] = v;\n}\n\nTValue LLSegment::pop() {\n    if (length > 0) {\n        --length;\n        TValue value = data[length];\n        data[length] = 0;\n        return value;\n    }\n    return 0;\n}\n\nvoid LLSegment::destroy() {\n    length = size = 0;\n    xfree(data);\n    data = nullptr;\n}\n\nvoid Segment::growByMin(ramint_t minSize) {\n    ramint_t newSize = max(minSize, (ramint_t)growthFactor(size));\n\n    if (size < newSize) {\n        // this will throw if unable to allocate\n        TValue *tmp = (TValue *)(gcAllocateArray(newSize * sizeof(TValue)));\n\n        // Copy existing data\n        if (size)\n            memcpy(tmp, data, size * sizeof(TValue));\n        // fill the rest with default value\n        memset(tmp + size, 0, (newSize - size) * sizeof(TValue));\n\n        data = tmp;\n        size = newSize;\n\n#ifdef DEBUG_BUILD\n        DMESG(\"growBy - after reallocation\");\n        this->print();\n#endif\n    }\n    // else { no shrinking yet; }\n    return;\n}\n\nvoid Segment::ensure(ramint_t newSize) {\n    if (newSize < size) {\n        return;\n    }\n    growByMin(newSize);\n}\n\nvoid Segment::setLength(unsigned newLength) {\n    if (newLength > size) {\n        ensure(newLength);\n    }\n    length = newLength;\n    return;\n}\n\nTValue Segment::pop() {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::pop\");\n    this->print();\n#endif\n\n    if (length > 0) {\n        --length;\n        TValue value = data[length];\n        data[length] = Segment::DefaultValue;\n        return value;\n    }\n    return Segment::DefaultValue;\n}\n\n// this function removes an element at index i and shifts the rest of the elements to\n// left to fill the gap\nTValue Segment::remove(unsigned i) {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::remove index:%d\", i);\n    this->print();\n#endif\n    if (i < length) {\n        // value to return\n        TValue ret = data[i];\n        if (i + 1 < length) {\n            // Move the rest of the elements to fill in the gap.\n            memmove(data + i, data + i + 1, (length - i - 1) * sizeof(void *));\n        }\n        length--;\n        data[length] = Segment::DefaultValue;\n#ifdef DEBUG_BUILD\n        DMESG(\"After Segment::remove index:%d\", i);\n        this->print();\n#endif\n        return ret;\n    }\n    return Segment::DefaultValue;\n}\n\n// this function inserts element value at index i by shifting the rest of the elements right.\nvoid Segment::insert(unsigned i, TValue value) {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::insert index:%d value:%d\", i, value);\n    this->print();\n#endif\n\n    if (i < length) {\n        ensure(length + 1);\n\n        // Move the rest of the elements to fill in the gap.\n        memmove(data + i + 1, data + i, (length - i) * sizeof(void *));\n\n        data[i] = value;\n        length++;\n    } else {\n        // This is insert beyond the length, just call set which will adjust the length\n        set(i, value);\n    }\n#ifdef DEBUG_BUILD\n    DMESG(\"After Segment::insert index:%d\", i);\n    this->print();\n#endif\n}\n\nvoid Segment::print() {\n    DMESG(\"Segment: %p, length: %d, size: %d\", data, (unsigned)length, (unsigned)size);\n    for (unsigned i = 0; i < size; i++) {\n        DMESG(\"-> %d\", (unsigned)(uintptr_t)data[i]);\n    }\n}\n\nvoid Segment::destroy() {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::destroy\");\n    this->print();\n#endif\n    length = size = 0;\n    data = nullptr;\n}\n\nPXT_VTABLE_CTOR(RefCollection) {}\n\nvoid RefCollection::destroy(RefCollection *t) {\n    t->head.destroy();\n}\n\nvoid RefCollection::print(RefCollection *t) {\n    DMESG(\"RefCollection %p size=%d\", t, t->head.getLength());\n    t->head.print();\n}\n\nPXT_VTABLE(RefAction, ValType::Function)\nRefAction::RefAction() : PXT_VTABLE_INIT(RefAction) {}\n\n// fields[] contain captured locals\nvoid RefAction::destroy(RefAction *t) {}\n\nvoid RefAction::print(RefAction *t) {\n#ifdef PXT_VM\n    DMESG(\"RefAction %p pc=%X size=%d\", t,\n          (const uint8_t *)t->func - (const uint8_t *)vmImg->dataStart, t->len);\n#else\n    DMESG(\"RefAction %p pc=%X size=%d\", t, (const uint8_t *)t->func - (const uint8_t *)bytecode,\n          t->len);\n#endif\n}\n\nPXT_VTABLE_CTOR(RefRefLocal) {\n    v = 0;\n}\n\nvoid RefRefLocal::print(RefRefLocal *t) {\n    DMESG(\"RefRefLocal %p v=%p\", t, (void *)t->v);\n}\n\nvoid RefRefLocal::destroy(RefRefLocal *t) {\n    decr(t->v);\n}\n\nPXT_VTABLE_CTOR(RefMap) {}\n\nvoid RefMap::destroy(RefMap *t) {\n    t->keys.destroy();\n    t->values.destroy();\n}\n\nint RefMap::findIdx(String key) {\n    auto len = keys.getLength();\n    auto data = (String *)keys.getData();\n\n    // fast path\n    for (unsigned i = 0; i < len; ++i) {\n        if (data[i] == key)\n            return i;\n    }\n\n    // slow path\n    auto keylen = key->getUTF8Size();\n    auto keydata = key->getUTF8Data();\n    for (unsigned i = 0; i < len; ++i) {\n        auto s = data[i];\n        if (s->getUTF8Size() == keylen && memcmp(keydata, s->getUTF8Data(), keylen) == 0)\n            return i;\n    }\n\n    return -1;\n}\n\nvoid RefMap::print(RefMap *t) {\n    DMESG(\"RefMap %p size=%d\", t, t->keys.getLength());\n}\n\nvoid debugMemLeaks() {}\n\nvoid error(PXT_PANIC code, int subcode) {\n    DMESG(\"Error: %d [%d]\", code, subcode);\n    target_panic(code);\n}\n\n#ifndef PXT_VM\nuint16_t *bytecode;\n#endif\nTValue *globals;\n\nvoid checkStr(bool cond, const char *msg) {\n    if (!cond) {\n        while (true) {\n            // uBit.display.scroll(msg, 100);\n            // uBit.sleep(100);\n        }\n    }\n}\n\n#ifdef PXT_VM\nint templateHash() {\n    return (int)vmImg->infoHeader->hexHash;\n}\n\nint programHash() {\n    return (int)vmImg->infoHeader->programHash;\n}\n\nint getNumGlobals() {\n    return (int)vmImg->infoHeader->allocGlobals;\n}\n\nString programName() {\n    return mkString((char *)vmImg->infoHeader->name);\n}\n#else\nint templateHash() {\n    return ((int *)bytecode)[4];\n}\n\nint programHash() {\n    return ((int *)bytecode)[6];\n}\n\nint getNumGlobals() {\n    return bytecode[16];\n}\n\nString programName() {\n    return ((String *)bytecode)[15];\n}\n#endif\n\n#ifndef PXT_VM\nvoid variantNotSupported(const char *v) {\n    DMESG(\"variant not supported: %s\", v);\n    target_panic(PANIC_VARIANT_NOT_SUPPORTED);\n}\n\nvoid exec_binary(unsigned *pc) {\n    // XXX re-enable once the calibration code is fixed and [editor/embedded.ts]\n    // properly prepends a call to [internal_main].\n    // ::touch_develop::internal_main();\n\n    // unique group for radio based on source hash\n    // ::touch_develop::micro_bit::radioDefaultGroup = programHash();\n\n    unsigned ver = *pc++;\n    checkStr(ver == 0x4210, \":( Bad runtime version\");\n\n    bytecode = *((uint16_t **)pc++); // the actual bytecode is here\n\n    if (((uint32_t *)bytecode)[0] == 0x923B8E71) {\n        variantNotSupported((const char *)bytecode + 16);\n        return;\n    }\n\n    globals = (TValue *)app_alloc(sizeof(TValue) * getNumGlobals());\n    memset(globals, 0, sizeof(TValue) * getNumGlobals());\n\n    // can be any valid address, best in RAM for speed\n    globals[0] = (TValue)&globals;\n\n    // just compare the first word\n    // TODO\n    checkStr(((uint32_t *)bytecode)[0] == 0x923B8E70 && (unsigned)templateHash() == *pc,\n             \":( Failed partial flash\");\n\n    uintptr_t startptr = (uintptr_t)bytecode;\n\n    startptr += 64; // header\n\n    initPerfCounters();\n\n    initRuntime();\n\n    runAction0((Action)startptr);\n\n    pxt::releaseFiber();\n}\n\nvoid start() {\n    exec_binary((unsigned *)functionsAndBytecode);\n}\n#endif\n\n} // namespace pxt\n\nnamespace Array_ {\n//%\nbool isArray(TValue arr) {\n    auto vt = getAnyVTable(arr);\n    return vt && vt->classNo == BuiltInType::RefCollection;\n}\n} // namespace Array_\n\nnamespace pxtrt {\n//% expose\nRefCollection *keysOf(TValue v) {\n    auto r = NEW_GC(RefCollection);\n    MEMDBG(\"mkColl[keys]: => %p\", r);\n    if (getAnyVTable(v) != &RefMap_vtable)\n        return r;\n    auto rm = (RefMap *)v;\n    auto len = rm->keys.getLength();\n    if (!len)\n        return r;\n    registerGCObj(r);\n    r->setLength(len);\n    auto dst = r->getData();\n    memcpy(dst, rm->keys.getData(), len * sizeof(TValue));\n    unregisterGCObj(r);\n    return r;\n}\n//% expose\nTValue mapDeleteByString(RefMap *map, String key) {\n    if (getAnyVTable((TValue)map) != &RefMap_vtable)\n        target_panic(PANIC_DELETE_ON_CLASS);\n    int i = map->findIdx(key);\n    if (i >= 0) {\n        map->keys.remove(i);\n        map->values.remove(i);\n    }\n    return TAG_TRUE;\n}\n\n} // namespace pxtrt\n",
             "pxt.h": "#ifndef __PXT_H\r\n#define __PXT_H\r\n\r\n//#define DEBUG_MEMLEAKS 1\r\n\r\n#pragma GCC diagnostic ignored \"-Wunused-parameter\"\r\n\r\n#include \"pxtbase.h\"\r\n\r\nnamespace pxt {\r\n\r\nclass RefMImage : public RefObject {\r\n  public:\r\n    ImageData *img;\r\n\r\n    RefMImage(ImageData *d);\r\n    void makeWritable();\r\n    static void destroy(RefMImage *map);\r\n    static void print(RefMImage *map);\r\n    static void scan(RefMImage *t);\r\n    static unsigned gcsize(RefMImage *t);\r\n};\r\n\r\n#define MSTR(s) ManagedString((s)->getUTF8Data(), (s)->getUTF8Size())\r\n\r\nstatic inline String PSTR(ManagedString s) {\r\n    return mkString(s.toCharArray(), s.length());\r\n}\r\n\r\ntypedef uint32_t ImageLiteral_;\r\n\r\nstatic inline ImageData *imageBytes(ImageLiteral_ lit) {\r\n    return (ImageData *)lit;\r\n}\r\n\r\n#if MICROBIT_CODAL\r\n// avoid clashes with codal-defined classes\r\n#define Image MImage\r\n#define Button MButton\r\n#endif\r\n\r\ntypedef RefMImage *Image;\r\n\r\nextern MicroBit uBit;\r\nextern MicroBitEvent lastEvent;\r\n\r\nMicroBitPin *getPin(int id);\r\n\r\nstatic inline int min_(int a, int b) {\r\n    if (a < b)\r\n        return a;\r\n    else\r\n        return b;\r\n}\r\n\r\nstatic inline int max_(int a, int b) {\r\n    if (a > b)\r\n        return a;\r\n    else\r\n        return b;\r\n}\r\n\r\nvoid initMicrobitGC();\r\n\r\n} // namespace pxt\r\n\r\nusing namespace pxt;\r\n\r\n#define DEVICE_EVT_ANY 0\r\n\r\n#undef PXT_MAIN\r\n#define PXT_MAIN                                                                                   \\\r\n    int main() {                                                                                   \\\r\n        pxt::initMicrobitGC();                                                                     \\\r\n        pxt::start();                                                                              \\\r\n        return 0;                                                                                  \\\r\n    }\r\n\r\n#endif\r\n\r\n// vim: ts=2 sw=2 expandtab\r\n",
-            "pxt.json": "{\n    \"name\": \"core\",\n    \"description\": \"The microbit core library\",\n    \"dependencies\": {},\n    \"files\": [\n        \"README.md\",\n        \"platform.h\",\n        \"pxt.cpp\",\n        \"pxt.h\",\n        \"pxtbase.h\",\n        \"pxtcore.h\",\n        \"math.ts\",\n        \"dal.d.ts\",\n        \"enums.d.ts\",\n        \"shims.d.ts\",\n        \"pxt-core.d.ts\",\n        \"core.cpp\",\n        \"pxt-helpers.ts\",\n        \"helpers.ts\",\n        \"pinscompat.ts\",\n        \"configkeys.h\",\n        \"gc.cpp\",\n        \"codal.cpp\",\n        \"images.cpp\",\n        \"basic.cpp\",\n        \"basic.ts\",\n        \"icons.ts\",\n        \"icons.jres\",\n        \"input.cpp\",\n        \"input.ts\",\n        \"gestures.jres\",\n        \"control.ts\",\n        \"control.cpp\",\n        \"interval.ts\",\n        \"gcstats.ts\",\n        \"console.ts\",\n        \"game.ts\",\n        \"led.cpp\",\n        \"led.ts\",\n        \"music.ts\",\n        \"melodies.ts\",\n        \"pins.cpp\",\n        \"pins.ts\",\n        \"serial.cpp\",\n        \"serial.ts\",\n        \"buffer.cpp\",\n        \"buffer.ts\",\n        \"pxtparts.json\",\n        \"advmath.cpp\",\n        \"trig.cpp\",\n        \"fixed.ts\",\n        \"templates.ts\",\n        \"parts/speaker.svg\",\n        \"parts/headphone.svg\",\n        \"bBoard.ts\",\n        \"bBoardMusic.ts\",\n        \"bBoardMotor.ts\",\n        \"bBoardMic.ts\",\n        \"LCD_Mini.ts\"\n    ],\n    \"testFiles\": [\n        \"test.ts\"\n    ],\n    \"public\": true,\n    \"targetVersions\": {\n        \"target\": \"2.3.52\"\n    },\n    \"dalDTS\": {\n        \"compileServiceVariant\": \"mbcodal\",\n        \"includeDirs\": [\n            \"libraries/codal-core/inc\",\n            \"libraries/codal-microbit/inc\",\n            \"libraries/codal-microbit/model\",\n            \"libraries/codal-microbit/inc/compat\",\n            \"pxtapp\"\n        ],\n        \"excludePrefix\": [\n            \"USB_\",\n            \"REQUEST_\",\n            \"LIS3DH_\",\n            \"FXOS8700_\",\n            \"MMA8\",\n            \"LSM303_\",\n            \"MAG_\",\n            \"MPU6050_\",\n            \"REF_TAG_\",\n            \"HF2_\",\n            \"PXT_REF_TAG_\",\n            \"MS_\",\n            \"SCSI_\"\n        ]\n    },\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"fiber_user_data\": 1\n            }\n        },\n        \"optionalConfig\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"private_addressing\": 0,\n                    \"advertising_timeout\": 0,\n                    \"tx_power\": 6,\n                    \"dfu_service\": 1,\n                    \"event_service\": 1,\n                    \"device_info_service\": 1,\n                    \"eddystone_url\": 1,\n                    \"eddystone_uid\": 1,\n                    \"open\": 0,\n                    \"pairing_mode\": 1,\n                    \"whitelist\": 1,\n                    \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\",\n                    \"partial_flashing\": 1\n                }\n            }\n        },\n        \"userConfigs\": [\n            {\n                \"description\": \"No Pairing Required: Anyone can connect via Bluetooth.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 1,\n                            \"whitelist\": 0,\n                            \"security_level\": null\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"JustWorks pairing (default): Pairing is automatic once the pairing is initiated.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\"\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"Passkey pairing: Pairing requires 6 digit key to pair.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_WITH_MITM\"\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"partial\": true\n}\n",
+            "pxt.json": "{\n    \"name\": \"core\",\n    \"description\": \"The microbit core library\",\n    \"dependencies\": {},\n    \"files\": [\n        \"README.md\",\n        \"platform.h\",\n        \"pxt.cpp\",\n        \"pxt.h\",\n        \"pxtbase.h\",\n        \"pxtcore.h\",\n        \"math.ts\",\n        \"dal.d.ts\",\n        \"enums.d.ts\",\n        \"shims.d.ts\",\n        \"pxt-core.d.ts\",\n        \"core.cpp\",\n        \"pxt-helpers.ts\",\n        \"helpers.ts\",\n        \"pinscompat.ts\",\n        \"configkeys.h\",\n        \"gc.cpp\",\n        \"codal.cpp\",\n        \"images.cpp\",\n        \"basic.cpp\",\n        \"basic.ts\",\n        \"icons.ts\",\n        \"icons.jres\",\n        \"input.cpp\",\n        \"input.ts\",\n        \"gestures.jres\",\n        \"control.ts\",\n        \"control.cpp\",\n        \"interval.ts\",\n        \"gcstats.ts\",\n        \"console.ts\",\n        \"game.ts\",\n        \"led.cpp\",\n        \"led.ts\",\n        \"music.ts\",\n        \"melodies.ts\",\n        \"pins.cpp\",\n        \"pins.ts\",\n        \"serial.cpp\",\n        \"serial.ts\",\n        \"buffer.cpp\",\n        \"buffer.ts\",\n        \"pxtparts.json\",\n        \"advmath.cpp\",\n        \"trig.cpp\",\n        \"fixed.ts\",\n        \"templates.ts\",\n        \"parts/speaker.svg\",\n        \"parts/headphone.svg\",\n        \"bBoard.ts\",\n        \"bBoardMusic.ts\",\n        \"bBoardMotor.ts\",\n        \"bBoardMic.ts\",\n        \"LCD_Mini.ts\",\n        \"neopixel.ts\",\n        \"neopixel.ts.rej\",\n        \"ws2812b.ts\",\n        \"sendBuffer.asm\",\n        \"sendbuffer.s\"\n    ],\n    \"testFiles\": [\n        \"test.ts\"\n    ],\n    \"public\": true,\n    \"targetVersions\": {\n        \"target\": \"2.3.52\"\n    },\n    \"dalDTS\": {\n        \"compileServiceVariant\": \"mbcodal\",\n        \"includeDirs\": [\n            \"libraries/codal-core/inc\",\n            \"libraries/codal-microbit/inc\",\n            \"libraries/codal-microbit/model\",\n            \"libraries/codal-microbit/inc/compat\",\n            \"pxtapp\"\n        ],\n        \"excludePrefix\": [\n            \"USB_\",\n            \"REQUEST_\",\n            \"LIS3DH_\",\n            \"FXOS8700_\",\n            \"MMA8\",\n            \"LSM303_\",\n            \"MAG_\",\n            \"MPU6050_\",\n            \"REF_TAG_\",\n            \"HF2_\",\n            \"PXT_REF_TAG_\",\n            \"MS_\",\n            \"SCSI_\"\n        ]\n    },\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"fiber_user_data\": 1\n            }\n        },\n        \"optionalConfig\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"private_addressing\": 0,\n                    \"advertising_timeout\": 0,\n                    \"tx_power\": 6,\n                    \"dfu_service\": 1,\n                    \"event_service\": 1,\n                    \"device_info_service\": 1,\n                    \"eddystone_url\": 1,\n                    \"eddystone_uid\": 1,\n                    \"open\": 0,\n                    \"pairing_mode\": 1,\n                    \"whitelist\": 1,\n                    \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\",\n                    \"partial_flashing\": 1\n                }\n            }\n        },\n        \"userConfigs\": [\n            {\n                \"description\": \"No Pairing Required: Anyone can connect via Bluetooth.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 1,\n                            \"whitelist\": 0,\n                            \"security_level\": null\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"JustWorks pairing (default): Pairing is automatic once the pairing is initiated.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\"\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"Passkey pairing: Pairing requires 6 digit key to pair.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_WITH_MITM\"\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"partial\": true\n}\n",
             "pxtbase.h": "#ifndef __PXTBASE_H\n#define __PXTBASE_H\n\n#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n#pragma GCC diagnostic ignored \"-Wformat\"\n#pragma GCC diagnostic ignored \"-Warray-bounds\"\n\n// needed for gcc6; not sure why\n#undef min\n#undef max\n\n#define NOLOG(...)                                                                                 \\\n    do {                                                                                           \\\n    } while (0)\n\n#define MEMDBG NOLOG\n//#define MEMDBG DMESG\n#define MEMDBG2 NOLOG\n\n#include \"pxtconfig.h\"\n#include \"configkeys.h\"\n\n#ifndef PXT_UTF8\n#define PXT_UTF8 0\n#endif\n\n#if defined(PXT_VM)\n#include <stdint.h>\n#if UINTPTR_MAX == 0xffffffff\n#define PXT32 1\n#elif UINTPTR_MAX == 0xffffffffffffffff\n#define PXT64 1\n#else\n#error \"UINTPTR_MAX has invalid value\"\n#endif\n#endif\n\n#define intcheck(...) check(__VA_ARGS__)\n//#define intcheck(...) do {} while (0)\n\n#ifdef PXT_USE_FLOAT\n#define NUMBER float\n#else\n#define NUMBER double\n#endif\n\n#include <string.h>\n#include <stdint.h>\n#include <math.h>\n\n#ifdef POKY\nvoid *operator new(size_t size, void *ptr);\nvoid *operator new(size_t size);\n#else\n#include <new>\n#endif\n\n#include \"platform.h\"\n#include \"pxtcore.h\"\n\n#ifndef PXT_REGISTER_RESET\n#define PXT_REGISTER_RESET(fn) ((void)0)\n#endif\n\n#define PXT_REFCNT_FLASH 0xfffe\n\n#define CONCAT_1(a, b) a##b\n#define CONCAT_0(a, b) CONCAT_1(a, b)\n// already provided in some platforms, like mbedos\n#ifndef STATIC_ASSERT\n#define STATIC_ASSERT(e) enum { CONCAT_0(_static_assert_, __LINE__) = 1 / ((e) ? 1 : 0) };\n#endif\n\n#ifndef ramint_t\n// this type limits size of arrays\n#if defined(__linux__) || defined(PXT_VM)\n// TODO fix the inline array accesses to take note of this!\n#define ramint_t uint32_t\n#else\n#define ramint_t uint16_t\n#endif\n#endif\n\n#ifndef PXT_IN_ISR\n#define PXT_IN_ISR() (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk)\n#endif\n\n#ifdef POKY\ninline void *operator new(size_t, void *p) {\n    return p;\n}\ninline void *operator new[](size_t, void *p) {\n    return p;\n}\n#endif\n\nnamespace pxt {\n\ntemplate <typename T> inline const T &max(const T &a, const T &b) {\n    if (a < b)\n        return b;\n    return a;\n}\n\ntemplate <typename T> inline const T &min(const T &a, const T &b) {\n    if (a < b)\n        return a;\n    return b;\n}\n\ntemplate <typename T> inline void swap(T &a, T &b) {\n    T tmp = a;\n    a = b;\n    b = tmp;\n}\n\n//\n// Tagged values (assume 4 bytes for now, Cortex-M0)\n//\nstruct TValueStruct {};\ntypedef TValueStruct *TValue;\n\ntypedef TValue TNumber;\ntypedef TValue Action;\ntypedef TValue ImageLiteral;\n\n// To be implemented by the target\nextern \"C\" void target_panic(int error_code);\nextern \"C\" void target_reset();\nvoid sleep_ms(unsigned ms);\nvoid sleep_us(uint64_t us);\nvoid releaseFiber();\nuint64_t current_time_us();\nint current_time_ms();\nvoid initRuntime();\nvoid initSystemTimer();\nvoid sendSerial(const char *data, int len);\nvoid setSendToUART(void (*f)(const char *, int));\nuint64_t getLongSerialNumber();\nvoid registerWithDal(int id, int event, Action a, int flags = 16); // EVENT_LISTENER_DEFAULT_FLAGS\nvoid runInParallel(Action a);\nvoid runForever(Action a);\nvoid waitForEvent(int id, int event);\n//%\nunsigned afterProgramPage();\n//%\nvoid dumpDmesg();\nuint32_t hash_fnv1(const void *data, unsigned len);\n\n// also defined DMESG macro\n// end\n\n#define TAGGED_SPECIAL(n) (TValue)(void *)((n << 2) | 2)\n#define TAG_FALSE TAGGED_SPECIAL(2) // 10\n#define TAG_TRUE TAGGED_SPECIAL(16) // 66\n#define TAG_UNDEFINED (TValue)0\n#define TAG_NULL TAGGED_SPECIAL(1) // 6\n#define TAG_NAN TAGGED_SPECIAL(3)  // 14\n#define TAG_NUMBER(n) (TNumber)(void *)(((uintptr_t)(uint32_t)(n) << 1) | 1)\n#define TAG_NON_VALUE TAGGED_SPECIAL(4) // 18; doesn't represent any JS value\n\n#ifdef PXT_VM\ninline bool isEncodedDouble(uint64_t v) {\n    return (v >> 48) != 0;\n}\n#endif\n\ninline bool isDouble(TValue v) {\n#ifdef PXT64\n    return ((uintptr_t)v >> 48) != 0;\n#else\n    (void)v;\n    return false;\n#endif\n}\n\ninline bool isPointer(TValue v) {\n    return !isDouble(v) && v != 0 && ((intptr_t)v & 3) == 0;\n}\n\ninline bool isTagged(TValue v) {\n    return (!isDouble(v) && ((intptr_t)v & 3)) || !v;\n}\n\ninline bool isInt(TValue v) {\n    return !isDouble(v) && ((intptr_t)v & 1);\n}\n\ninline bool isSpecial(TValue v) {\n    return !isDouble(v) && ((intptr_t)v & 2);\n}\n\ninline bool bothNumbers(TValue a, TValue b) {\n    return !isDouble(a) && !isDouble(b) && ((intptr_t)a & (intptr_t)b & 1);\n}\n\ninline int numValue(TValue n) {\n    return (int)((intptr_t)n >> 1);\n}\n\ninline bool canBeTagged(int v) {\n    (void)v;\n#ifdef PXT_BOX_DEBUG\n    return false;\n#elif defined(PXT64)\n    return true;\n#else\n    return (v << 1) >> 1 == v;\n#endif\n}\n\n// see https://anniecherkaev.com/the-secret-life-of-nan\n\n#define NanBoxingOffset 0x1000000000000LL\n\ntemplate <typename TO, typename FROM> TO bitwise_cast(FROM in) {\n    STATIC_ASSERT(sizeof(TO) == sizeof(FROM));\n    union {\n        FROM from;\n        TO to;\n    } u;\n    u.from = in;\n    return u.to;\n}\n\ninline double decodeDouble(uint64_t v) {\n    return bitwise_cast<double>(v - NanBoxingOffset);\n}\n\n#ifdef PXT64\nSTATIC_ASSERT(sizeof(void *) == 8);\ninline double doubleVal(TValue v) {\n    return bitwise_cast<double>((uint64_t)v - NanBoxingOffset);\n}\n\ninline TValue tvalueFromDouble(double d) {\n    return (TValue)(bitwise_cast<uint64_t>(d) + NanBoxingOffset);\n}\n#else\nSTATIC_ASSERT(sizeof(void *) == 4);\n#endif\n\n// keep in sym with sim/control.ts\ntypedef enum {\n    PANIC_CODAL_OOM = 20,\n    PANIC_GC_OOM = 21,\n    PANIC_GC_TOO_BIG_ALLOCATION = 22,\n    PANIC_CODAL_HEAP_ERROR = 30,\n    PANIC_CODAL_NULL_DEREFERENCE = 40,\n    PANIC_CODAL_USB_ERROR = 50,\n    PANIC_CODAL_HARDWARE_CONFIGURATION_ERROR = 90,\n\n    PANIC_INVALID_BINARY_HEADER = 901,\n    PANIC_OUT_OF_BOUNDS = 902,\n    PANIC_REF_DELETED = 903,\n    PANIC_SIZE = 904,\n    PANIC_INVALID_VTABLE = 905,\n    PANIC_INTERNAL_ERROR = 906,\n    PANIC_NO_SUCH_CONFIG = 907,\n    PANIC_NO_SUCH_PIN = 908,\n    PANIC_INVALID_ARGUMENT = 909,\n    PANIC_MEMORY_LIMIT_EXCEEDED = 910,\n    PANIC_SCREEN_ERROR = 911,\n    PANIC_MISSING_PROPERTY = 912,\n    PANIC_INVALID_IMAGE = 913,\n    PANIC_CALLED_FROM_ISR = 914,\n    PANIC_HEAP_DUMPED = 915,\n    PANIC_STACK_OVERFLOW = 916,\n    PANIC_BLOCKING_TO_STRING = 917,\n    PANIC_VM_ERROR = 918,\n    PANIC_SETTINGS_CLEARED = 920,\n    PANIC_SETTINGS_OVERLOAD = 921,\n    PANIC_SETTINGS_SECRET_MISSING = 922,\n    PANIC_DELETE_ON_CLASS = 923,\n    PANIC_OUT_OF_TIMERS = 924,\n    PANIC_JACDAC = 925,\n    PANIC_MICROPHONE_MISSING = 926,\n    PANIC_VARIANT_NOT_SUPPORTED = 927,\n\n    PANIC_CAST_FIRST = 980,\n    PANIC_CAST_FROM_UNDEFINED = 980,\n    PANIC_CAST_FROM_BOOLEAN = 981,\n    PANIC_CAST_FROM_NUMBER = 982,\n    PANIC_CAST_FROM_STRING = 983,\n    PANIC_CAST_FROM_OBJECT = 984,\n    PANIC_CAST_FROM_FUNCTION = 985,\n    PANIC_CAST_FROM_NULL = 989,\n\n    PANIC_UNHANDLED_EXCEPTION = 999,\n\n} PXT_PANIC;\n\nextern const uintptr_t functionsAndBytecode[];\nextern TValue *globals;\nextern uint16_t *bytecode;\nclass RefRecord;\n\n// Utility functions\n\ntypedef TValue (*RunActionType)(Action a, TValue arg0, TValue arg1, TValue arg2);\n\n#define asmRunAction3 ((RunActionType)(((uintptr_t *)bytecode)[12]))\n\nstatic inline TValue runAction3(Action a, TValue arg0, TValue arg1, TValue arg2) {\n    return asmRunAction3(a, arg0, arg1, 0);\n}\nstatic inline TValue runAction2(Action a, TValue arg0, TValue arg1) {\n    return asmRunAction3(a, arg0, arg1, 0);\n}\nstatic inline TValue runAction1(Action a, TValue arg0) {\n    return asmRunAction3(a, arg0, 0, 0);\n}\nstatic inline TValue runAction0(Action a) {\n    return asmRunAction3(a, 0, 0, 0);\n}\n\nclass RefAction;\nclass BoxedString;\nstruct VTable;\n\n//%\nAction mkAction(int totallen, RefAction *act);\n//% expose\nint templateHash();\n//% expose\nint programHash();\n//% expose\nBoxedString *programName();\n//% expose\nunsigned programSize();\n//%\nint getNumGlobals();\n//%\nRefRecord *mkClassInstance(VTable *vt);\n//%\nvoid debugMemLeaks();\n//%\nvoid anyPrint(TValue v);\n\n//%\nint getConfig(int key, int defl = -1);\n\n//%\nint toInt(TNumber v);\n//%\nunsigned toUInt(TNumber v);\n//%\nNUMBER toDouble(TNumber v);\n//%\nfloat toFloat(TNumber v);\n//%\nTNumber fromDouble(NUMBER r);\n//%\nTNumber fromFloat(float r);\n\n//%\nTNumber fromInt(int v);\n//%\nTNumber fromUInt(unsigned v);\n//%\nTValue fromBool(bool v);\n//%\nbool eq_bool(TValue a, TValue b);\n//%\nbool eqq_bool(TValue a, TValue b);\n\n//%\nvoid failedCast(TValue v);\n//%\nvoid missingProperty(TValue v);\n\nvoid error(PXT_PANIC code, int subcode = 0);\nvoid exec_binary(unsigned *pc);\nvoid start();\n\nstruct HandlerBinding {\n    HandlerBinding *next;\n    int source;\n    int value;\n    Action action;\n};\nHandlerBinding *findBinding(int source, int value);\nHandlerBinding *nextBinding(HandlerBinding *curr, int source, int value);\nvoid setBinding(int source, int value, Action act);\n\n// Legacy stuff; should no longer be used\n//%\nTValue incr(TValue e);\n//%\nvoid decr(TValue e);\n\ninline TValue incr(TValue e) {\n    return e;\n}\ninline void decr(TValue e) {}\n\nclass RefObject;\n\nstatic inline RefObject *incrRC(RefObject *r) {\n    return r;\n}\nstatic inline void decrRC(RefObject *) {\n}\n\ninline void *ptrOfLiteral(int offset) {\n    return &bytecode[offset];\n}\n\n// Checks if object is ref-counted, and has a custom PXT vtable in front\n// TODO\ninline bool isRefCounted(TValue e) {\n    return isPointer(e);\n}\n\ninline void check(int cond, PXT_PANIC code, int subcode = 0) {\n    if (!cond)\n        error(code, subcode);\n}\n\ninline void oops(int subcode = 0) {\n    target_panic(800 + subcode);\n}\n\nclass RefObject;\n\ntypedef void (*RefObjectMethod)(RefObject *self);\ntypedef unsigned (*RefObjectSizeMethod)(RefObject *self);\ntypedef void *PVoid;\ntypedef void **PPVoid;\n\ntypedef void *Object_;\n\n#define VTABLE_MAGIC 0xF9\n\nenum class ValType : uint8_t {\n    Undefined,\n    Boolean,\n    Number,\n    String,\n    Object,\n    Function,\n};\n\n// keep in sync with pxt-core (search for the type name)\nenum class BuiltInType : uint16_t {\n    BoxedString = 1,\n    BoxedNumber = 2,\n    BoxedBuffer = 3,\n    RefAction = 4,\n    RefImage = 5,\n    RefCollection = 6,\n    RefRefLocal = 7,\n    RefMap = 8,\n    RefMImage = 9,\n    MMap = 10, // linux, mostly ev3\n    User0 = 16,\n};\n\nstruct VTable {\n    uint16_t numbytes;\n    ValType objectType;\n    uint8_t magic;\n#ifdef PXT_VM\n    uint16_t ifaceHashEntries;\n    BuiltInType lastClassNo;\n#else\n    PVoid *ifaceTable;\n#endif\n    BuiltInType classNo;\n    uint16_t reserved;\n    uint32_t ifaceHashMult;\n\n    // we only use the first few methods here; pxt will generate more\n    PVoid methods[8];\n};\n\n//%\nextern const VTable string_inline_ascii_vt;\n#if PXT_UTF8\n//%\nextern const VTable string_inline_utf8_vt;\n//%\nextern const VTable string_cons_vt;\n//%\nextern const VTable string_skiplist16_vt;\n#endif\n//%\nextern const VTable buffer_vt;\n//%\nextern const VTable number_vt;\n//%\nextern const VTable RefAction_vtable;\n\n#define PXT_VTABLE_TO_INT(vt) ((uintptr_t)(vt))\n\n// allocate 1M of heap on iOS\n#define PXT_IOS_HEAP_ALLOC_BITS 20\n\n#ifdef PXT_IOS\nextern uint8_t *gcBase;\n#endif\n\ninline bool isReadOnly(TValue v) {\n#ifdef PXT64\n#ifdef PXT_IOS\n    return !isPointer(v) || (((uintptr_t)v - (uintptr_t)gcBase) >> PXT_IOS_HEAP_ALLOC_BITS) != 0;\n#else\n    return !isPointer(v) || !((uintptr_t)v >> 37);\n#endif\n#else\n    return isTagged(v) || !((uintptr_t)v >> 28);\n#endif\n}\n\n// A base abstract class for ref-counted objects.\nclass RefObject {\n  public:\n    uintptr_t vtable;\n\n    RefObject(const VTable *vt) {\n#if defined(PXT32) && defined(PXT_VM)\n        if ((uint32_t)vt & 0xf0000000)\n            target_panic(PANIC_INVALID_VTABLE);\n#endif\n        vtable = PXT_VTABLE_TO_INT(vt);\n    }\n\n    void destroyVT();\n    void printVT();\n\n    inline void ref() {}\n    inline void unref() {}\n    inline bool isReadOnly() { return pxt::isReadOnly((TValue)this); }\n};\n\nclass Segment {\n  private:\n    TValue *data;\n    ramint_t length;\n    ramint_t size;\n\n    // this just gives max value of ramint_t\n    void growByMin(ramint_t minSize);\n    void ensure(ramint_t newSize);\n\n  public:\n    static constexpr ramint_t MaxSize = (((1U << (8 * sizeof(ramint_t) - 1)) - 1) << 1) + 1;\n    static constexpr TValue DefaultValue = TAG_UNDEFINED; // == NULL\n\n    Segment() : data(nullptr), length(0), size(0) {}\n\n    TValue get(unsigned i) { return i < length ? data[i] : NULL; }\n    void set(unsigned i, TValue value);\n\n    unsigned getLength() { return length; };\n    void setLength(unsigned newLength);\n\n    void push(TValue value) { set(length, value); }\n    TValue pop();\n\n    TValue remove(unsigned i);\n    void insert(unsigned i, TValue value);\n\n    void destroy();\n\n    void print();\n\n    TValue *getData() { return data; }\n};\n\n// Low-Level segment using system malloc\nclass LLSegment {\n  private:\n    TValue *data;\n    ramint_t length;\n    ramint_t size;\n\n  public:\n    LLSegment() : data(nullptr), length(0), size(0) {}\n\n    void set(unsigned idx, TValue v);\n    void push(TValue value) { set(length, value); }\n    TValue pop();\n    void destroy();\n    void setLength(unsigned newLen);\n\n    TValue get(unsigned i) { return i < length ? data[i] : NULL; }\n    unsigned getLength() { return length; };\n    TValue *getData() { return data; }\n};\n\n// A ref-counted collection of either primitive or ref-counted objects (String, Image,\n// user-defined record, another collection)\nclass RefCollection : public RefObject {\n  public:\n    Segment head;\n\n    RefCollection();\n\n    static void destroy(RefCollection *coll);\n    static void scan(RefCollection *coll);\n    static unsigned gcsize(RefCollection *coll);\n    static void print(RefCollection *coll);\n\n    unsigned length() { return head.getLength(); }\n    void setLength(unsigned newLength) { head.setLength(newLength); }\n    TValue getAt(int i) { return head.get(i); }\n    TValue *getData() { return head.getData(); }\n};\n\nclass RefMap : public RefObject {\n  public:\n    Segment keys;\n    Segment values;\n\n    RefMap();\n    static void destroy(RefMap *map);\n    static void scan(RefMap *map);\n    static unsigned gcsize(RefMap *coll);\n    static void print(RefMap *map);\n    int findIdx(BoxedString *key);\n};\n\n// A ref-counted, user-defined JS object.\nclass RefRecord : public RefObject {\n  public:\n    // The object is allocated, so that there is space at the end for the fields.\n    TValue fields[];\n\n    RefRecord(VTable *v) : RefObject(v) {}\n\n    TValue ld(int idx);\n    TValue ldref(int idx);\n    void st(int idx, TValue v);\n    void stref(int idx, TValue v);\n};\n\nstatic inline VTable *getVTable(RefObject *r) {\n    return (VTable *)(r->vtable & ~1);\n}\n\nstatic inline VTable *getAnyVTable(TValue v) {\n    if (!isRefCounted(v))\n        return NULL;\n    auto vt = getVTable((RefObject *)v);\n    if (vt->magic == VTABLE_MAGIC)\n        return vt;\n    return NULL;\n}\n\n// these are needed when constructing vtables for user-defined classes\n//%\nvoid RefRecord_destroy(RefRecord *r);\n//%\nvoid RefRecord_print(RefRecord *r);\n//%\nvoid RefRecord_scan(RefRecord *r);\n//%\nunsigned RefRecord_gcsize(RefRecord *r);\n\ntypedef TValue (*ActionCB)(TValue *captured, TValue arg0, TValue arg1, TValue arg2);\n\n// Ref-counted function pointer.\nclass RefAction : public RefObject {\n  public:\n#if defined(PXT_VM) && defined(PXT32)\n    uint32_t _padding; // match binary format in .pxt64 files\n#endif\n    uint16_t len;\n    uint16_t numArgs;\n#ifdef PXT_VM\n    uint16_t initialLen;\n    uint16_t reserved;\n#endif\n    ActionCB func; // The function pointer\n    // fields[] contain captured locals\n    TValue fields[];\n\n    static void destroy(RefAction *act);\n    static void scan(RefAction *act);\n    static unsigned gcsize(RefAction *coll);\n    static void print(RefAction *act);\n\n    RefAction();\n\n    inline void stCore(int idx, TValue v) {\n        // DMESG(\"ST [%d] = %d \", idx, v); this->print();\n        intcheck(0 <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 10);\n        intcheck(fields[idx] == 0, PANIC_OUT_OF_BOUNDS, 11); // only one assignment permitted\n        fields[idx] = v;\n    }\n};\n\n// These two are used to represent locals written from inside inline functions\nclass RefRefLocal : public RefObject {\n  public:\n    TValue v;\n    static void destroy(RefRefLocal *l);\n    static void scan(RefRefLocal *l);\n    static unsigned gcsize(RefRefLocal *l);\n    static void print(RefRefLocal *l);\n    RefRefLocal();\n};\n\ntypedef int color;\n\n// note: this is hardcoded in PXT (hexfile.ts)\n\nclass BoxedNumber : public RefObject {\n  public:\n    NUMBER num;\n    BoxedNumber() : RefObject(&number_vt) {}\n} __attribute__((packed));\n\nclass BoxedString : public RefObject {\n  public:\n    union {\n        struct {\n            uint16_t length;\n            char data[0];\n        } ascii;\n#if PXT_UTF8\n        struct {\n            uint16_t length;\n            char data[0];\n        } utf8;\n        struct {\n            BoxedString *left;\n            BoxedString *right;\n        } cons;\n        struct {\n            uint16_t size;\n            uint16_t length;\n            uint16_t *list;\n        } skip;\n#endif\n    };\n\n#if PXT_UTF8\n    uintptr_t runMethod(int idx) {\n        return ((uintptr_t(*)(BoxedString *))((VTable *)this->vtable)->methods[idx])(this);\n    }\n    const char *getUTF8Data() { return (const char *)runMethod(4); }\n    uint32_t getUTF8Size() { return (uint32_t)runMethod(5); }\n    // in characters\n    uint32_t getLength() { return (uint32_t)runMethod(6); }\n    const char *getUTF8DataAt(uint32_t pos) {\n        auto meth =\n            ((const char *(*)(BoxedString *, uint32_t))((VTable *)this->vtable)->methods[7]);\n        return meth(this, pos);\n    }\n#else\n    const char *getUTF8Data() { return ascii.data; }\n    uint32_t getUTF8Size() { return ascii.length; }\n    uint32_t getLength() { return ascii.length; }\n    const char *getUTF8DataAt(uint32_t pos) { return pos < ascii.length ? ascii.data + pos : NULL; }\n#endif\n\n    TNumber charCodeAt(int pos);\n\n    BoxedString(const VTable *vt) : RefObject(vt) {}\n};\n\n// cross version compatible way of accessing string data\n#ifndef PXT_STRING_DATA\n#define PXT_STRING_DATA(str) str->getUTF8Data()\n#endif\n\n// cross version compatible way of accessing string length\n#ifndef PXT_STRING_DATA_LENGTH\n#define PXT_STRING_DATA_LENGTH(str) str->getUTF8Size()\n#endif\n\nclass BoxedBuffer : public RefObject {\n  public:\n    // data needs to be word-aligned, so we use 32 bits for length\n    int length;\n#ifdef PXT_VM\n    // VM can be 64 bit and it compiles as such\n    int32_t _padding;\n#endif\n    uint8_t data[0];\n    BoxedBuffer() : RefObject(&buffer_vt) {}\n};\n\n// cross version compatible way of access data field\n#ifndef PXT_BUFFER_DATA\n#define PXT_BUFFER_DATA(buffer) buffer->data\n#endif\n\n// cross version compatible way of access data length\n#ifndef PXT_BUFFER_LENGTH\n#define PXT_BUFFER_LENGTH(buffer) buffer->length\n#endif\n\n#ifndef PXT_CREATE_BUFFER\n#define PXT_CREATE_BUFFER(data, len) pxt::mkBuffer(data, len)\n#endif\n\n// Legacy format:\n// the first byte of data indicates the format - currently 0xE1 or 0xE4 to 1 or 4 bit bitmaps\n// second byte indicates width in pixels\n// third byte indicates the height (which should also match the size of the buffer)\n// just like ordinary buffers, these can be layed out in flash\n\n// Current format:\n// 87 BB WW WW HH HH 00 00 DATA\n// that is: 0x87, 0x01 or 0x04 - bpp, width in little endian, height, 0x00, 0x00 followed by data\n// for 4 bpp images, rows are word-aligned (as in legacy)\n\n#define IMAGE_HEADER_MAGIC 0x87\n\nstruct ImageHeader {\n    uint8_t magic;\n    uint8_t bpp;\n    uint16_t width;\n    uint16_t height;\n    uint16_t padding;\n    uint8_t pixels[0];\n};\n\nclass RefImage : public RefObject {\n  public:\n    BoxedBuffer *buffer;\n\n    RefImage(BoxedBuffer *buf);\n    RefImage(uint32_t sz);\n\n    void setBuffer(BoxedBuffer *b);\n\n    uint8_t *data() { return buffer->data; }\n    int length() { return (int)buffer->length; }\n\n    ImageHeader *header() { return (ImageHeader *)buffer->data; }\n    int pixLength() { return length() - sizeof(ImageHeader); }\n\n    int width() { return header()->width; }\n    int height() { return header()->height; }\n    int wordHeight();\n    int bpp() { return header()->bpp; }\n\n    bool hasPadding() { return (height() & 0x7) != 0; }\n\n    uint8_t *pix() { return header()->pixels; }\n\n    int byteHeight() {\n        if (bpp() == 1)\n            return (height() + 7) >> 3;\n        else if (bpp() == 4)\n            return ((height() * 4 + 31) >> 5) << 2;\n        else {\n            oops(21);\n            return -1;\n        }\n    }\n\n    uint8_t *pix(int x, int y) {\n        uint8_t *d = &pix()[byteHeight() * x];\n        if (y) {\n            if (bpp() == 1)\n                d += y >> 3;\n            else if (bpp() == 4)\n                d += y >> 1;\n        }\n        return d;\n    }\n\n    uint8_t fillMask(color c);\n    bool inRange(int x, int y);\n    void clamp(int *x, int *y);\n    void makeWritable();\n\n    static void destroy(RefImage *t);\n    static void scan(RefImage *t);\n    static unsigned gcsize(RefImage *t);\n    static void print(RefImage *t);\n};\n\nRefImage *mkImage(int w, int h, int bpp);\n\ntypedef BoxedBuffer *Buffer;\ntypedef BoxedString *String;\ntypedef RefImage *Image_;\n\nuint32_t toRealUTF8(String str, uint8_t *dst);\n\n// keep in sync with github/pxt/pxtsim/libgeneric.ts\nenum class NumberFormat {\n    Int8LE = 1,\n    UInt8LE,\n    Int16LE,\n    UInt16LE,\n    Int32LE,\n    Int8BE,\n    UInt8BE,\n    Int16BE,\n    UInt16BE,\n    Int32BE,\n\n    UInt32LE,\n    UInt32BE,\n    Float32LE,\n    Float64LE,\n    Float32BE,\n    Float64BE,\n};\n\n// this will, unlike mkStringCore, UTF8-canonicalize the data\nString mkString(const char *data, int len = -1);\n// data can be NULL in both cases\nBuffer mkBuffer(const void *data, int len);\nString mkStringCore(const char *data, int len = -1);\n\nTNumber getNumberCore(uint8_t *buf, int size, NumberFormat format);\nvoid setNumberCore(uint8_t *buf, int size, NumberFormat format, TNumber value);\n\nvoid seedRandom(unsigned seed);\nvoid seedAddRandom(unsigned seed);\n// max is inclusive\nunsigned getRandom(unsigned max);\n\nValType valType(TValue v);\n\n// this is equivalent to JS `throw v`; it will leave\n// the current function(s), all the way until the nearest try block and\n// ignore all destructors (think longjmp())\nvoid throwValue(TValue v);\n\nvoid registerGC(TValue *root, int numwords = 1);\nvoid unregisterGC(TValue *root, int numwords = 1);\nvoid registerGCPtr(TValue ptr);\nvoid unregisterGCPtr(TValue ptr);\nstatic inline void registerGCObj(RefObject *ptr) {\n    registerGCPtr((TValue)ptr);\n}\nstatic inline void unregisterGCObj(RefObject *ptr) {\n    unregisterGCPtr((TValue)ptr);\n}\nvoid gc(int flags);\n\nstruct StackSegment {\n    void *top;\n    void *bottom;\n    StackSegment *next;\n};\n\n#define NUM_TRY_FRAME_REGS 3\nstruct TryFrame {\n    TryFrame *parent;\n    uintptr_t registers[NUM_TRY_FRAME_REGS];\n};\n\nstruct ThreadContext {\n    TValue *globals;\n    StackSegment stack;\n    TryFrame *tryFrame;\n    TValue thrownValue;\n#ifdef PXT_GC_THREAD_LIST\n    ThreadContext *next;\n    ThreadContext *prev;\n#endif\n};\n\n#ifdef PXT_GC_THREAD_LIST\nextern ThreadContext *threadContexts;\nvoid *threadAddressFor(ThreadContext *, void *sp);\n#endif\n\nvoid releaseThreadContext(ThreadContext *ctx);\nThreadContext *getThreadContext();\nvoid setThreadContext(ThreadContext *ctx);\n\n#ifndef PXT_GC_THREAD_LIST\nvoid gcProcessStacks(int flags);\n#endif\n\nvoid gcProcess(TValue v);\nvoid gcFreeze();\n#ifdef PXT_VM\nvoid gcStartup();\nvoid gcPreStartup();\nvoid *gcPrealloc(int numbytes);\nbool inGCPrealloc();\n#else\nstatic inline bool inGCPrealloc() {\n    return false;\n}\n#endif\n\nvoid coreReset();\nvoid gcReset();\nvoid systemReset();\n\nvoid *gcAllocate(int numbytes);\nvoid *gcAllocateArray(int numbytes);\nextern \"C\" void *app_alloc(int numbytes);\nextern \"C\" void *app_free(void *ptr);\nvoid gcPreAllocateBlock(uint32_t sz);\n\n#ifdef PXT64\n#define TOWORDS(bytes) (((bytes) + 7) >> 3)\n#else\n#define TOWORDS(bytes) (((bytes) + 3) >> 2)\n#endif\n\n#ifndef PXT_VM\n#define soft_panic target_panic\n#endif\n\nextern int debugFlags;\n\nenum class PerfCounters {\n    GC,\n};\n\n#ifdef PXT_PROFILE\n#ifndef PERF_NOW\n#error \"missing platform timer support\"\n#endif\n\nstruct PerfCounter {\n    uint32_t value;\n    uint32_t numstops;\n    uint32_t start;\n};\n\nextern struct PerfCounter *perfCounters;\n\nvoid initPerfCounters();\n//%\nvoid dumpPerfCounters();\n//%\nvoid startPerfCounter(PerfCounters n);\n//%\nvoid stopPerfCounter(PerfCounters n);\n#else\ninline void startPerfCounter(PerfCounters n) {}\ninline void stopPerfCounter(PerfCounters n) {}\ninline void initPerfCounters() {}\ninline void dumpPerfCounters() {}\n#endif\n\n#ifdef PXT_VM\nString mkInternalString(const char *str);\n#define PXT_DEF_STRING(name, val) String name = mkInternalString(val);\n#else\n#define PXT_DEF_STRING(name, val)                                                                  \\\n    static const char name[] __attribute__((aligned(4))) = \"@PXT@:\" val;\n#endif\n\n} // namespace pxt\n\nusing namespace pxt;\n\nnamespace numops {\n//%\nString toString(TValue v);\n//%\nint toBool(TValue v);\n//%\nint toBoolDecr(TValue v);\n} // namespace numops\n\nnamespace pxt {\ninline bool toBoolQuick(TValue v) {\n    if (v == TAG_TRUE)\n        return true;\n    if (v == TAG_FALSE || v == TAG_UNDEFINED || v == TAG_NULL)\n        return false;\n    return numops::toBool(v);\n}\n} // namespace pxt\n\nnamespace pxtrt {\n//%\nRefMap *mkMap();\n//%\nTValue mapGetByString(RefMap *map, String key);\n//%\nint lookupMapKey(String key);\n//%\nTValue mapGet(RefMap *map, unsigned key);\n//%\nvoid mapSetByString(RefMap *map, String key, TValue val);\n//%\nvoid mapSet(RefMap *map, unsigned key, TValue val);\n} // namespace pxtrt\n\nnamespace pins {\nBuffer createBuffer(int size);\n}\n\nnamespace String_ {\n//%\nint compare(String a, String b);\n} // namespace String_\n\nnamespace Array_ {\n//%\nRefCollection *mk();\n//%\nint length(RefCollection *c);\n//%\nvoid setLength(RefCollection *c, int newLength);\n//%\nvoid push(RefCollection *c, TValue x);\n//%\nTValue pop(RefCollection *c);\n//%\nTValue getAt(RefCollection *c, int x);\n//%\nvoid setAt(RefCollection *c, int x, TValue y);\n//%\nTValue removeAt(RefCollection *c, int x);\n//%\nvoid insertAt(RefCollection *c, int x, TValue value);\n//%\nint indexOf(RefCollection *c, TValue x, int start);\n//%\nbool removeElement(RefCollection *c, TValue x);\n} // namespace Array_\n\n#define NEW_GC(T, ...) new (gcAllocate(sizeof(T))) T(__VA_ARGS__)\n\n// The ARM Thumb generator in the JavaScript code is parsing\n// the hex file and looks for the magic numbers as present here.\n//\n// Then it fetches function pointer addresses from there.\n//\n// The vtable pointers are there, so that the ::emptyData for various types\n// can be patched with the right vtable.\n//\n#define PXT_SHIMS_BEGIN                                                                            \\\n    namespace pxt {                                                                                \\\n    const uintptr_t functionsAndBytecode[]                                                         \\\n        __attribute__((aligned(0x20))) = {0x08010801, 0x42424242, 0x08010801, 0x8de9d83e,\n\n#define PXT_SHIMS_END                                                                              \\\n    }                                                                                              \\\n    ;                                                                                              \\\n    }\n\n#if !defined(X86_64) && !defined(PXT_VM)\n#pragma GCC diagnostic ignored \"-Wpmf-conversions\"\n#endif\n\n#ifdef PXT_VM\n#define DEF_VTABLE(name, tp, valtype, ...)                                                         \\\n    const VTable name = {sizeof(tp), valtype, VTABLE_MAGIC, 0, BuiltInType::tp, BuiltInType::tp,   \\\n                         0,          0,       {__VA_ARGS__}};\n#else\n#define DEF_VTABLE(name, tp, valtype, ...)                                                         \\\n    const VTable name = {sizeof(tp), valtype, VTABLE_MAGIC, 0, BuiltInType::tp,                    \\\n                         0,          0,       {__VA_ARGS__}};\n#endif\n\n#define PXT_VTABLE(classname, valtp)                                                               \\\n    DEF_VTABLE(classname##_vtable, classname, valtp, (void *)&classname::destroy,                  \\\n               (void *)&classname::print, (void *)&classname::scan, (void *)&classname::gcsize)\n\n#define PXT_VTABLE_INIT(classname) RefObject(&classname##_vtable)\n\n#define PXT_VTABLE_CTOR(classname)                                                                 \\\n    PXT_VTABLE(classname, ValType::Object)                                                         \\\n    classname::classname() : PXT_VTABLE_INIT(classname)\n\n#define PXT_MAIN                                                                                   \\\n    int main() {                                                                                   \\\n        pxt::start();                                                                              \\\n        return 0;                                                                                  \\\n    }\n\n#define PXT_FNPTR(x) (uintptr_t)(void *)(x)\n\n#define PXT_ABI(...)\n\n#define JOIN(a, b) a##b\n/// Defines getClassName() function to fetch the singleton\n#define SINGLETON(ClassName)                                                                       \\\n    static ClassName *JOIN(inst, ClassName);                                                       \\\n    ClassName *JOIN(get, ClassName)() {                                                            \\\n        if (!JOIN(inst, ClassName))                                                                \\\n            JOIN(inst, ClassName) = new ClassName();                                               \\\n        return JOIN(inst, ClassName);                                                              \\\n    }\n\n/// Defines getClassName() function to fetch the singleton if PIN present\n#define SINGLETON_IF_PIN(ClassName, pin)                                                           \\\n    static ClassName *JOIN(inst, ClassName);                                                       \\\n    ClassName *JOIN(get, ClassName)() {                                                            \\\n        if (!JOIN(inst, ClassName) && LOOKUP_PIN(pin))                                             \\\n            JOIN(inst, ClassName) = new ClassName();                                               \\\n        return JOIN(inst, ClassName);                                                              \\\n    }\n\n#ifdef PXT_VM\n#include \"vm.h\"\n#endif\n\n#endif\n",
             "pxtcore.h": "#ifndef __PXTCORE_H\r\n#define __PXTCORE_H\r\n\r\n#include \"MicroBit.h\"\r\n#include \"MicroBitImage.h\"\r\n#include \"ManagedString.h\"\r\n#include \"ManagedType.h\"\r\n\r\nnamespace pxt {\r\nvoid debuglog(const char *format, ...);\r\n}\r\n\r\n// #define GC_GET_HEAP_SIZE() device_heap_size(0)\r\n#define xmalloc malloc\r\n#define xfree free\r\n\r\n#define GC_MAX_ALLOC_SIZE 9000\r\n\r\n#define GC_BLOCK_SIZE 256\r\n#define NON_GC_HEAP_RESERVATION 1024\r\n\r\n\r\n#ifdef CODAL_CONFIG_H\r\n#define MICROBIT_CODAL 1\r\n#else\r\n#define MICROBIT_CODAL 0\r\n#endif\r\n\r\n#if !MICROBIT_CODAL\r\n#undef DMESG\r\n#define DMESG NOLOG\r\n#endif\r\n\r\n#undef BYTES_TO_WORDS\r\n\r\n#endif\r\n",
             "pxtparts.json": "{\n    \"buttonpair\": {\n        \"simulationBehavior\": \"buttonpair\",\n        \"visual\": {\n            \"builtIn\": \"buttonpair\",\n            \"width\": 75,\n            \"height\": 45,\n            \"pinDistance\": 15,\n            \"pinLocations\": [\n                {\n                    \"x\": 0,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 45\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 75,\n                    \"y\": 45\n                }\n            ]\n        },\n        \"numberOfPins\": 4,\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P14\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"P15\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    2,\n                    3\n                ]\n            }\n        ]\n    },\n    \"microservo\": {\n        \"simulationBehavior\": \"microservo\",\n        \"visual\": {\n            \"builtIn\": \"microservo\",\n            \"width\": 74.85,\n            \"height\": 200,\n            \"pinDistance\": 10,\n            \"pinLocations\": [\n                {\n                    \"x\": 30,\n                    \"y\": 5\n                },\n                {\n                    \"x\": 37,\n                    \"y\": 5\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 5\n                }\n            ]\n        },\n        \"numberOfPins\": 3,\n        \"pinDefinitions\": [\n            {\n                \"target\": {\n                    \"pinInstantiationIdx\": 0\n                },\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"threeVolt\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            }\n        ],\n        \"instantiations\": [\n            {\n                \"kind\": \"function\",\n                \"fullyQualifiedName\": \"pins.servoWritePin,pins.servoSetPulse,PwmOnlyPin.servoWrite,PwmOnlyPin.servoSetPulse,servos.Servo.setAngle,servos.Servo.run,servos.Servo.setPulse\",\n                \"argumentRoles\": [\n                    {\n                        \"pinInstantiationIdx\": 0,\n                        \"partParameter\": \"name\"\n                    }\n                ]\n            }\n        ],\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    2\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            }\n        ]\n    },\n    \"neopixel\": {\n        \"simulationBehavior\": \"neopixel\",\n        \"visual\": {\n            \"builtIn\": \"neopixel\",\n            \"width\": 58,\n            \"height\": 113,\n            \"pinDistance\": 9,\n            \"pinLocations\": [\n                {\n                    \"x\": 10,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 19,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 28,\n                    \"y\": 0\n                }\n            ]\n        },\n        \"numberOfPins\": 3,\n        \"pinDefinitions\": [\n            {\n                \"target\": {\n                    \"pinInstantiationIdx\": 0\n                },\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"threeVolt\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"function\",\n            \"fullyQualifiedName\": \"neopixel.create\",\n            \"argumentRoles\": [\n                {\n                    \"pinInstantiationIdx\": 0,\n                    \"partParameter\": \"pin\"\n                },\n                {\n                    \"partParameter\": \"mode\"\n                }\n            ]\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    2\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            }\n        ]\n    },\n    \"ledmatrix\": {\n        \"visual\": {\n            \"builtIn\": \"ledmatrix\",\n            \"width\": 105,\n            \"height\": 105,\n            \"pinDistance\": 15,\n            \"pinLocations\": [\n                {\n                    \"x\": 0,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 15,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 105,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 0,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 15,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 60,\n                    \"y\": 0\n                }\n            ]\n        },\n        \"simulationBehavior\": \"ledmatrix\",\n        \"numberOfPins\": 10,\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P6\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P7\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P8\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P9\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P10\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P12\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P13\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P16\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P19\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P20\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            }\n        ],\n        \"assembly\": [\n            {\n                \"part\": true\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1,\n                    2,\n                    3,\n                    4\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    5,\n                    6,\n                    7,\n                    8,\n                    9\n                ]\n            }\n        ]\n    },\n    \"headphone\": {\n        \"numberOfPins\": 2,\n        \"visual\": {\n            \"image\": \"parts/headphone.svg\",\n            \"width\": 142,\n            \"height\": 180,\n            \"pinDistance\": 20,\n            \"pinLocations\": [\n                {\n                    \"x\": 17,\n                    \"y\": 11\n                },\n                {\n                    \"x\": 55,\n                    \"y\": 50\n                }\n            ]\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P0\",\n                \"style\": \"croc\",\n                \"orientation\": \"Y\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"Y\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    0\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    1\n                ]\n            }\n        ]\n    },\n    \"speaker\": {\n        \"numberOfPins\": 2,\n        \"visual\": {\n            \"image\": \"parts/speaker.svg\",\n            \"width\": 500,\n            \"height\": 500,\n            \"pinDistance\": 70,\n            \"pinLocations\": [\n                {\n                    \"x\": 180,\n                    \"y\": 135\n                },\n                {\n                    \"x\": 320,\n                    \"y\": 135\n                }\n            ]\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P0\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    0\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    1\n                ]\n            }\n        ]\n    }\n}",
+            "sendBuffer.asm": "sendBufferAsm:\r\n\r\n    push {r4,r5,r6,r7,lr}\r\n    \r\n    mov r4, r0 ; save buff\r\n    mov r6, r1 ; save pin\r\n    \r\n    mov r0, r4\r\n    bl BufferMethods::length\r\n    mov r5, r0\r\n    \r\n    mov r0, r4\r\n    bl BufferMethods::getBytes\r\n    mov r4, r0\r\n    \r\n    ; setup pin as digital\r\n    mov r0, r6\r\n    movs r1, #0\r\n    bl pins::digitalWritePin\r\n    \r\n    ; load pin address\r\n    mov r0, r6\r\n    bl pins::getPinAddress\r\n\r\n    ldr r0, [r0, #8] ; get mbed DigitalOut from MicroBitPin\r\n    ldr r1, [r0, #4] ; r1-mask for this pin\r\n    ldr r2, [r0, #16] ; r2-clraddr\r\n    ldr r3, [r0, #12] ; r3-setaddr\r\n    \r\n    cpsid i ; disable irq\r\n    \r\n    b .start\r\n    \r\n.nextbit:               ;            C0\r\n    str r1, [r3, #0]    ; pin := hi  C2\r\n    tst r6, r0          ;            C3\r\n    bne .islate         ;            C4\r\n    str r1, [r2, #0]    ; pin := lo  C6\r\n.islate:\r\n    lsrs r6, r6, #1     ; r6 >>= 1   C7\r\n    bne .justbit        ;            C8\r\n    \r\n    ; not just a bit - need new byte\r\n    adds r4, #1         ; r4++       C9\r\n    subs r5, #1         ; r5--       C10\r\n    bcc .stop           ; if (r5<0) goto .stop  C11\r\n.start:\r\n    movs r6, #0x80      ; reset mask C12\r\n    nop                 ;            C13\r\n\r\n.common:               ;             C13\r\n    str r1, [r2, #0]   ; pin := lo   C15\r\n    ; always re-load byte - it just fits with the cycles better this way\r\n    ldrb r0, [r4, #0]  ; r0 := *r4   C17\r\n    b .nextbit         ;             C20\r\n\r\n.justbit: ; C10\r\n    ; no nops, branch taken is already 3 cycles\r\n    b .common ; C13\r\n\r\n.stop:    \r\n    str r1, [r2, #0]   ; pin := lo\r\n    cpsie i            ; enable irq\r\n\r\n    pop {r4,r5,r6,r7,pc}\r\n\r\n\r\n",
+            "sendbuffer.s": ".syntax unified\r\n.section .text.neopixel_send_buffer_core\r\n.global neopixel_send_buffer_core\r\n\r\nneopixel_send_buffer_core:\r\n    push {r4,r5,r6,r7,lr}\r\n    \r\n    mov r4, r1 // ptr\r\n    mov r5, r2 // len\r\n    \r\n    ldr r0, [r0, #8] // get mbed DigitalOut from MicroBitPin\r\n    ldr r1, [r0, #4] // r1-mask for this pin\r\n    ldr r2, [r0, #16] // r2-clraddr\r\n    ldr r3, [r0, #12] // r3-setaddr\r\n    \r\n    b .start\r\n    \r\n.nextbit:               //            C0\r\n    str r1, [r3, #0]    // pin := hi  C2\r\n    tst r6, r0          //            C3\r\n    bne .islate         //            C4\r\n    str r1, [r2, #0]    // pin := lo  C6\r\n.islate:\r\n    lsrs r6, r6, #1     // r6 >>= 1   C7\r\n    bne .justbit        //            C8\r\n    \r\n    // not just a bit - need new byte\r\n    adds r4, #1         // r4++       C9\r\n    subs r5, #1         // r5--       C10\r\n    bcc .stop           // if (r5<0) goto .stop  C11\r\n.start:\r\n    movs r6, #0x80      // reset mask C12\r\n    nop                 //            C13\r\n\r\n.common:               //             C13\r\n    str r1, [r2, #0]   // pin := lo   C15\r\n    // always re-load byte - it just fits with the cycles better this way\r\n    ldrb r0, [r4, #0]  // r0 := *r4   C17\r\n    b .nextbit         //             C20\r\n\r\n.justbit: // C10\r\n    // no nops, branch taken is already 3 cycles\r\n    b .common // C13\r\n\r\n.stop:    \r\n    str r1, [r2, #0]   // pin := lo\r\n\r\n    pop {r4,r5,r6,r7,pc}\r\n",
             "serial.cpp": "#include \"pxt.h\"\r\n\r\n#define MICROBIT_SERIAL_READ_BUFFER_LENGTH 64\r\n\r\n// make sure USB_TX and USB_RX don't overlap with other pin ids\r\n// also, 1001,1002 need to be kept in sync with getPin() function\r\nenum SerialPin {\r\n    P0 = MICROBIT_ID_IO_P0,\r\n    P1 = MICROBIT_ID_IO_P1,\r\n    P2 = MICROBIT_ID_IO_P2,\r\n    P8 = MICROBIT_ID_IO_P8,\r\n    P12 = MICROBIT_ID_IO_P12,\r\n    P13 = MICROBIT_ID_IO_P13,\r\n    P14 = MICROBIT_ID_IO_P14,\r\n    P15 = MICROBIT_ID_IO_P15,\r\n    P16 = MICROBIT_ID_IO_P16,\r\n    USB_TX = 1001,\r\n    USB_RX = 1002\r\n};\r\n\r\nenum BaudRate {\r\n  //% block=115200\r\n  BaudRate115200 = 115200,\r\n  //% block=57600\r\n  BaudRate57600 = 57600,\r\n  //% block=38400\r\n  BaudRate38400 = 38400,\r\n  //% block=31250\r\n  BaudRate31250 = 31250,\r\n  //% block=28800\r\n  BaudRate28800 = 28800,\r\n  //% block=19200\r\n  BaudRate19200 = 19200,\r\n  //% block=14400\r\n  BaudRate14400 = 14400,\r\n  //% block=9600\r\n  BaudRate9600 = 9600,\r\n  //% block=4800\r\n  BaudRate4800 = 4800,\r\n  //% block=2400\r\n  BaudRate2400 = 2400,\r\n  //% block=1200\r\n  BaudRate1200 = 1200\r\n};\r\n\r\n//% weight=2 color=#002050 icon=\"\\uf287\"\r\n//% advanced=true\r\nnamespace serial {\r\n    // note that at least one // followed by % is needed per declaration!\r\n\r\n    /**\r\n     * Read a line of text from the serial port and return the buffer when the delimiter is met.\r\n     * @param delimiter text delimiter that separates each text chunk\r\n     */\r\n    //% help=serial/read-until\r\n    //% blockId=serial_read_until block=\"serial|read until %delimiter=serial_delimiter_conv\"\r\n    //% weight=19\r\n    String readUntil(String delimiter) {\r\n      return PSTR(uBit.serial.readUntil(MSTR(delimiter)));\r\n    }\r\n\r\n    /**\r\n    * Read the buffered received data as a string\r\n    */\r\n    //% help=serial/read-string\r\n    //% blockId=serial_read_buffer block=\"serial|read string\"\r\n    //% weight=18\r\n    String readString() {\r\n      int n = uBit.serial.getRxBufferSize();\r\n      if (n == 0) return mkString(\"\", 0);\r\n      return PSTR(uBit.serial.read(n, MicroBitSerialMode::ASYNC));\r\n    }\r\n\r\n    /**\r\n    * Register an event to be fired when one of the delimiter is matched.\r\n    * @param delimiters the characters to match received characters against.\r\n    */\r\n    //% help=serial/on-data-received\r\n    //% weight=18 blockId=serial_on_data_received block=\"serial|on data received %delimiters=serial_delimiter_conv\"\r\n    void onDataReceived(String delimiters, Action body) {\r\n      uBit.serial.eventOn(MSTR(delimiters));\r\n      registerWithDal(MICROBIT_ID_SERIAL, MICROBIT_SERIAL_EVT_DELIM_MATCH, body);\r\n      // lazy initialization of serial buffers\r\n      uBit.serial.read(MicroBitSerialMode::ASYNC);\r\n    }\r\n\r\n    /**\r\n     * Send a piece of text through the serial connection.\r\n     */\r\n    //% help=serial/write-string\r\n    //% weight=87 blockGap=8\r\n    //% blockId=serial_writestring block=\"serial|write string %text\"\r\n    //% text.shadowOptions.toString=true\r\n    void writeString(String text) {\r\n      if (!text) return;\r\n\r\n      uBit.serial.send(MSTR(text));\r\n    }\r\n\r\n    /**\r\n    * Send a buffer through serial connection\r\n    */\r\n    //% blockId=serial_writebuffer block=\"serial|write buffer %buffer=serial_readbuffer\"\r\n    //% help=serial/write-buffer advanced=true weight=6\r\n    void writeBuffer(Buffer buffer) {\r\n      if (!buffer) return;\r\n\r\n      uBit.serial.send(buffer->data, buffer->length);\r\n    }\r\n\r\n    /**\r\n    * Read multiple characters from the receive buffer. Pause until enough characters are present.\r\n    * @param length default buffer length, eg: 64\r\n    */\r\n    //% blockId=serial_readbuffer block=\"serial|read buffer %length\"\r\n    //% help=serial/read-buffer advanced=true weight=5\r\n    Buffer readBuffer(int length) {\r\n      if (length <= 0)\r\n        length = MICROBIT_SERIAL_READ_BUFFER_LENGTH;\r\n\r\n      auto buf = mkBuffer(NULL, length);\r\n      int read = uBit.serial.read(buf->data, buf->length);\r\n      if (read != length) {\r\n        auto prev = buf;\r\n        buf = mkBuffer(buf->data, read);\r\n        decrRC(prev);\r\n      }\r\n\r\n      return buf;\r\n    }\r\n\r\n    bool tryResolvePin(SerialPin p, PinName& name) {\r\n      switch(p) {\r\n#if !MICROBIT_CODAL\r\n        case SerialPin::USB_TX: name = USBTX; return true;\r\n        case SerialPin::USB_RX: name = USBRX; return true;\r\n#endif\r\n        default: \r\n          auto pin = getPin(p); \r\n          if (NULL != pin) {\r\n            name = (PinName)pin->name;\r\n            return true;\r\n          }\r\n      }\r\n      return false;\r\n    }\r\n\r\n    /**\r\n    * Set the serial input and output to use pins instead of the USB connection.\r\n    * @param tx the new transmission pin, eg: SerialPin.P0\r\n    * @param rx the new reception pin, eg: SerialPin.P1\r\n    * @param rate the new baud rate. eg: 115200\r\n    */\r\n    //% weight=10\r\n    //% help=serial/redirect\r\n    //% blockId=serial_redirect block=\"serial|redirect to|TX %tx|RX %rx|at baud rate %rate\"\r\n    //% blockExternalInputs=1\r\n    //% tx.fieldEditor=\"gridpicker\" tx.fieldOptions.columns=3\r\n    //% tx.fieldOptions.tooltips=\"false\"\r\n    //% rx.fieldEditor=\"gridpicker\" rx.fieldOptions.columns=3\r\n    //% rx.fieldOptions.tooltips=\"false\"\r\n    //% blockGap=8\r\n    void redirect(SerialPin tx, SerialPin rx, BaudRate rate) {\r\n#if MICROBIT_CODAL\r\n      if (getPin(tx) && getPin(rx))\r\n        uBit.serial.redirect(*getPin(tx), *getPin(rx));\r\n      uBit.serial.setBaud(rate);\r\n#else\r\n      PinName txn;\r\n      PinName rxn;\r\n      if (tryResolvePin(tx, txn) && tryResolvePin(rx, rxn))\r\n        uBit.serial.redirect(txn, rxn);\r\n      uBit.serial.baud((int)rate);\r\n#endif\r\n    }\r\n\r\n    /**\r\n    * Direct the serial input and output to use the USB connection.\r\n    */\r\n    //% weight=9 help=serial/redirect-to-usb\r\n    //% blockId=serial_redirect_to_usb block=\"serial|redirect to USB\"\r\n    void redirectToUSB() {\r\n#if MICROBIT_CODAL\r\n      uBit.serial.redirect(uBit.io.usbTx, uBit.io.usbRx);\r\n      uBit.serial.setBaud(115200);\r\n#else\r\n      uBit.serial.redirect(USBTX, USBRX);\r\n      uBit.serial.baud(115200);\r\n#endif\r\n    }\r\n\r\n    /**\r\n    * Sets the size of the RX buffer in bytes\r\n    * @param size length of the rx buffer in bytes, eg: 32\r\n    */\r\n    //% help=serial/set-rx-buffer-size\r\n    //% blockId=serialSetRxBufferSize block=\"serial set rx buffer size to $size\"\r\n    //% advanced=true\r\n    void setRxBufferSize(uint8_t size) {\r\n      uBit.serial.setRxBufferSize(size);\r\n    }\r\n\r\n    /**\r\n    * Sets the size of the TX buffer in bytes\r\n    * @param size length of the tx buffer in bytes, eg: 32\r\n    */\r\n    //% help=serial/set-tx-buffer-size\r\n    //% blockId=serialSetTxBufferSize block=\"serial set tx buffer size to $size\"\r\n    //% advanced=true\r\n    void setTxBufferSize(uint8_t size) {\r\n      uBit.serial.setTxBufferSize(size);\r\n    }\r\n}\r\n",
             "serial.ts": "const enum Delimiters {\n    //% block=\"new line (\\n)\"\n    NewLine = 10,\n    //% block=\",\"\n    Comma = 44,\n    //% block=\"$\"\n    Dollar = 36,\n    //% block=\":\"\n    Colon = 58,\n    //% block=\".\"\n    Fullstop = 46,\n    //% block=\"#\"\n    Hash = 35,\n    //% block=\"carriage return (\\r)\"\n    CarriageReturn = 13,\n    //% block=\"|\"\n    Pipe = 124,\n    //% block=\";\"\n    SemiColon = 59,\n}\n\n/**\n * Reading and writing data over a serial connection.\n */\n//% weight=2 color=#002050 icon=\"\\uf287\"\n//% advanced=true\nnamespace serial {\n    /**\n     * The string used to mark a new line, default is \\r\\n\n     */\n    export let NEW_LINE = \"\\r\\n\";\n    export let NEW_LINE_DELIMITER: Delimiters = Delimiters.NewLine;\n    let writeLinePadding = 32;\n\n    /**\n     * Print a line of text to the serial port\n     * @param value to send over serial\n     */\n    //% weight=90\n    //% help=serial/write-line blockGap=8\n    //% blockId=serial_writeline block=\"serial|write line %text\"\n    //% text.shadowOptions.toString=true\n    export function writeLine(text: string): void {\n        if (!text) text = \"\";\n        serial.writeString(text);\n        // pad data to the 32 byte boundary\n        // to ensure apps receive the packet\n        if (writeLinePadding > 0) {\n            let r = (writeLinePadding - (text.length + NEW_LINE.length) % writeLinePadding) % writeLinePadding;\n            for (let i = 0; i < r; ++i)\n                serial.writeString(\" \");\n        }\n        serial.writeString(NEW_LINE);\n    }\n\n    /**\n     * Sets the padding length for lines sent with \"write line\".\n     * @param length the number of bytes alignment, eg: 0\n     *\n     */\n    //% weight=1\n    //% help=serial/set-write-line-padding\n    //% blockId=serialWriteNewLinePadding block=\"serial set write line padding to $length\"\n    //% advanced=true\n    //% length.min=0 length.max=128\n    export function setWriteLinePadding(length: number) {\n        writeLinePadding = length | 0;\n    }\n\n    /**\n     * Print a numeric value to the serial port\n     */\n    //% help=serial/write-number\n    //% weight=89 blockGap=8\n    //% blockId=serial_writenumber block=\"serial|write number %value\"\n    export function writeNumber(value: number): void {\n        writeString(value.toString());\n    }\n\n    /**\n     * Print an array of numeric values as CSV to the serial port\n     */\n    //% help=serial/write-numbers\n    //% weight=86\n    //% blockId=serial_writenumbers block=\"serial|write numbers %values\"\n    export function writeNumbers(values: number[]): void {\n        if (!values) return;\n        for (let i = 0; i < values.length; ++i) {\n            if (i > 0) writeString(\",\");\n            writeNumber(values[i]);\n        }\n        writeLine(\"\")\n    }\n\n    /**\n     * Write a name:value pair as a line to the serial port.\n     * @param name name of the value stream, eg: x\n     * @param value to write\n     */\n    //% weight=88 blockGap=8\n    //% help=serial/write-value\n    //% blockId=serial_writevalue block=\"serial|write value %name|= %value\"\n    export function writeValue(name: string, value: number): void {\n        writeLine((name ? name + \":\" : \"\") + value);\n    }\n\n    /**\n     * Read a line of text from the serial port.\n     */\n    //% help=serial/read-line\n    //% blockId=serial_read_line block=\"serial|read line\"\n    //% weight=20 blockGap=8\n    export function readLine(): string {\n        return serial.readUntil(delimiters(NEW_LINE_DELIMITER));\n    }\n\n    /**\n     * Return the corresponding delimiter string\n     */\n    //% blockId=\"serial_delimiter_conv\" block=\"%del\"\n    //% weight=1 blockHidden=true\n    export function delimiters(del: Delimiters): string {\n        return String.fromCharCode(del as number);\n    }\n}\n",
             "shims.d.ts": "// Auto-generated. Do not edit.\n\n\n    /**\n     * Creation, manipulation and display of LED images.\n     */\n    //% color=#7600A8 weight=31 icon=\"\\uf03e\"\n    //% advanced=true\ndeclare namespace images {\n\n    /**\n     * Creates an image that fits on the LED screen.\n     */\n    //% weight=75 help=images/create-image\n    //% blockId=device_build_image block=\"create image\"\n    //% parts=\"ledmatrix\" imageLiteral=1 shim=images::createImage\n    function createImage(leds: string): Image;\n\n    /**\n     * Creates an image with 2 frames.\n     */\n    //% weight=74 help=images/create-big-image\n    //% blockId=device_build_big_image block=\"create big image\" imageLiteral=2\n    //% parts=\"ledmatrix\" shim=images::createBigImage\n    function createBigImage(leds: string): Image;\n}\n\n\ndeclare interface Image {\n    /**\n     * Plots the image at a given column to the screen\n     */\n    //% help=images/plot-image\n    //% parts=\"ledmatrix\" xOffset.defl=0 shim=ImageMethods::plotImage\n    plotImage(xOffset?: int32): void;\n\n    /**\n     * Shows an frame from the image at offset ``x offset``.\n     * @param xOffset column index to start displaying the image\n     */\n    //% help=images/show-image weight=80 blockNamespace=images\n    //% blockId=device_show_image_offset block=\"show image %sprite(myImage)|at offset %offset\"\n    //% blockGap=8 parts=\"ledmatrix\" async interval.defl=400 shim=ImageMethods::showImage\n    showImage(xOffset: int32, interval?: int32): void;\n\n    /**\n     * Draws the ``index``-th frame of the image on the screen.\n     * @param xOffset column index to start displaying the image\n     */\n    //% help=images/plot-frame weight=80\n    //% parts=\"ledmatrix\" shim=ImageMethods::plotFrame\n    plotFrame(xOffset: int32): void;\n\n    /**\n     * Scrolls an image .\n     * @param frameOffset x offset moved on each animation step, eg: 1, 2, 5\n     * @param interval time between each animation step in milli seconds, eg: 200\n     */\n    //% help=images/scroll-image weight=79 async blockNamespace=images\n    //% blockId=device_scroll_image\n    //% block=\"scroll image %sprite(myImage)|with offset %frameoffset|and interval (ms) %delay\"\n    //% blockGap=8 parts=\"ledmatrix\" shim=ImageMethods::scrollImage\n    scrollImage(frameOffset: int32, interval: int32): void;\n\n    /**\n     * Sets all pixels off.\n     */\n    //% help=images/clear\n    //% parts=\"ledmatrix\" shim=ImageMethods::clear\n    clear(): void;\n\n    /**\n     * Sets a specific pixel brightness at a given position\n     */\n    //%\n    //% parts=\"ledmatrix\" shim=ImageMethods::setPixelBrightness\n    setPixelBrightness(x: int32, y: int32, value: int32): void;\n\n    /**\n     * Gets the pixel brightness ([0..255]) at a given position\n     */\n    //%\n    //% parts=\"ledmatrix\" shim=ImageMethods::pixelBrightness\n    pixelBrightness(x: int32, y: int32): int32;\n\n    /**\n     * Gets the width in columns\n     */\n    //% help=functions/width shim=ImageMethods::width\n    width(): int32;\n\n    /**\n     * Gets the height in rows (always 5)\n     */\n    //% shim=ImageMethods::height\n    height(): int32;\n\n    /**\n     * Set a pixel state at position ``(x,y)``\n     * @param x pixel column\n     * @param y pixel row\n     * @param value pixel state\n     */\n    //% help=images/set-pixel\n    //% parts=\"ledmatrix\" shim=ImageMethods::setPixel\n    setPixel(x: int32, y: int32, value: boolean): void;\n\n    /**\n     * Get the pixel state at position ``(x,y)``\n     * @param x pixel column\n     * @param y pixel row\n     */\n    //% help=images/pixel\n    //% parts=\"ledmatrix\" shim=ImageMethods::pixel\n    pixel(x: int32, y: int32): boolean;\n\n    /**\n     * Show a particular frame of the image strip.\n     * @param frame image frame to show\n     */\n    //% weight=70 help=images/show-frame\n    //% parts=\"ledmatrix\" interval.defl=400 shim=ImageMethods::showFrame\n    showFrame(frame: int32, interval?: int32): void;\n}\n\n\n    /**\n     * Provides access to basic micro:bit functionality.\n     */\n    //% color=#1E90FF weight=116 icon=\"\\uf00a\"\ndeclare namespace basic {\n\n    /**\n     * Draws an image on the LED screen.\n     * @param leds the pattern of LED to turn on/off\n     * @param interval time in milliseconds to pause after drawing\n     */\n    //% help=basic/show-leds\n    //% weight=95 blockGap=8\n    //% imageLiteral=1 async\n    //% blockId=device_show_leds\n    //% block=\"show leds\" icon=\"\\uf00a\"\n    //% parts=\"ledmatrix\" interval.defl=400 shim=basic::showLeds\n    function showLeds(leds: string, interval?: int32): void;\n\n    /**\n     * Display text on the display, one character at a time. If the string fits on the screen (i.e. is one letter), does not scroll.\n     * @param text the text to scroll on the screen, eg: \"Hello!\"\n     * @param interval how fast to shift characters; eg: 150, 100, 200, -100\n     */\n    //% help=basic/show-string\n    //% weight=87 blockGap=16\n    //% block=\"show|string %text\"\n    //% async\n    //% blockId=device_print_message\n    //% parts=\"ledmatrix\"\n    //% text.shadowOptions.toString=true interval.defl=150 shim=basic::showString\n    function showString(text: string, interval?: int32): void;\n\n    /**\n     * Turn off all LEDs\n     */\n    //% help=basic/clear-screen weight=79\n    //% blockId=device_clear_display block=\"clear screen\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=basic::clearScreen\n    function clearScreen(): void;\n\n    /**\n     * Shows a sequence of LED screens as an animation.\n     * @param leds pattern of LEDs to turn on/off\n     * @param interval time in milliseconds between each redraw\n     */\n    //% help=basic/show-animation imageLiteral=1 async\n    //% parts=\"ledmatrix\" interval.defl=400 shim=basic::showAnimation\n    function showAnimation(leds: string, interval?: int32): void;\n\n    /**\n     * Draws an image on the LED screen.\n     * @param leds pattern of LEDs to turn on/off\n     */\n    //% help=basic/plot-leds weight=80\n    //% parts=\"ledmatrix\" imageLiteral=1 shim=basic::plotLeds\n    function plotLeds(leds: string): void;\n\n    /**\n     * Repeats the code forever in the background. On each iteration, allows other codes to run.\n     * @param body code to execute\n     */\n    //% help=basic/forever weight=55 blockGap=16 blockAllowMultiple=1 afterOnStart=true\n    //% blockId=device_forever block=\"forever\" icon=\"\\uf01e\" shim=basic::forever\n    function forever(a: () => void): void;\n\n    /**\n     * Pause for the specified time in milliseconds\n     * @param ms how long to pause for, eg: 100, 200, 500, 1000, 2000\n     */\n    //% help=basic/pause weight=54\n    //% async block=\"pause (ms) %pause\" blockGap=16\n    //% blockId=device_pause icon=\"\\uf110\"\n    //% pause.shadow=timePicker shim=basic::pause\n    function pause(ms: int32): void;\n}\n\n\n\n    //% color=#D400D4 weight=111 icon=\"\\uf192\"\ndeclare namespace input {\n\n    /**\n     * Do something when a button (A, B or both A+B) is pushed down and released again.\n     * @param button the button that needs to be pressed\n     * @param body code to run when event is raised\n     */\n    //% help=input/on-button-pressed weight=85 blockGap=16\n    //% blockId=device_button_event block=\"on button|%NAME|pressed\"\n    //% parts=\"buttonpair\" shim=input::onButtonPressed\n    function onButtonPressed(button: Button, body: () => void): void;\n\n    /**\n     * Do something when when a gesture is done (like shaking the micro:bit).\n     * @param gesture the type of gesture to track, eg: Gesture.Shake\n     * @param body code to run when gesture is raised\n     */\n    //% help=input/on-gesture weight=84 blockGap=16\n    //% blockId=device_gesture_event block=\"on |%NAME\"\n    //% parts=\"accelerometer\"\n    //% NAME.fieldEditor=\"gestures\" NAME.fieldOptions.columns=4 shim=input::onGesture\n    function onGesture(gesture: Gesture, body: () => void): void;\n\n    /**\n     * Tests if a gesture is currently detected.\n     * @param gesture the type of gesture to detect, eg: Gesture.Shake\n     */\n    //% help=input/is-gesture weight=10 blockGap=8\n    //% blockId=deviceisgesture block=\"is %gesture gesture\"\n    //% parts=\"accelerometer\"\n    //% gesture.fieldEditor=\"gestures\" gesture.fieldOptions.columns=4 shim=input::isGesture\n    function isGesture(gesture: Gesture): boolean;\n\n    /**\n     * Do something when a pin is touched and released again (while also touching the GND pin).\n     * @param name the pin that needs to be pressed, eg: TouchPin.P0\n     * @param body the code to run when the pin is pressed\n     */\n    //% help=input/on-pin-pressed weight=83 blockGap=32\n    //% blockId=device_pin_event block=\"on pin %name|pressed\" shim=input::onPinPressed\n    function onPinPressed(name: TouchPin, body: () => void): void;\n\n    /**\n     * Do something when a pin is released.\n     * @param name the pin that needs to be released, eg: TouchPin.P0\n     * @param body the code to run when the pin is released\n     */\n    //% help=input/on-pin-released weight=6 blockGap=16\n    //% blockId=device_pin_released block=\"on pin %NAME|released\"\n    //% advanced=true shim=input::onPinReleased\n    function onPinReleased(name: TouchPin, body: () => void): void;\n\n    /**\n     * Get the button state (pressed or not) for ``A`` and ``B``.\n     * @param button the button to query the request, eg: Button.A\n     */\n    //% help=input/button-is-pressed weight=60\n    //% block=\"button|%NAME|is pressed\"\n    //% blockId=device_get_button2\n    //% icon=\"\\uf192\" blockGap=8\n    //% parts=\"buttonpair\" shim=input::buttonIsPressed\n    function buttonIsPressed(button: Button): boolean;\n\n    /**\n     * Get the pin state (pressed or not). Requires to hold the ground to close the circuit.\n     * @param name pin used to detect the touch, eg: TouchPin.P0\n     */\n    //% help=input/pin-is-pressed weight=58\n    //% blockId=\"device_pin_is_pressed\" block=\"pin %NAME|is pressed\"\n    //% blockGap=8 shim=input::pinIsPressed\n    function pinIsPressed(name: TouchPin): boolean;\n\n    /**\n     * Get the acceleration value in milli-gravitys (when the board is laying flat with the screen up, x=0, y=0 and z=-1024)\n     * @param dimension x, y, or z dimension, eg: Dimension.X\n     */\n    //% help=input/acceleration weight=58\n    //% blockId=device_acceleration block=\"acceleration (mg)|%NAME\" blockGap=8\n    //% parts=\"accelerometer\" shim=input::acceleration\n    function acceleration(dimension: Dimension): int32;\n\n    /**\n     * Reads the light level applied to the LED screen in a range from ``0`` (dark) to ``255`` bright.\n     */\n    //% help=input/light-level weight=57\n    //% blockId=device_get_light_level block=\"light level\" blockGap=8\n    //% parts=\"ledmatrix\" shim=input::lightLevel\n    function lightLevel(): int32;\n\n    /**\n     * Get the current compass heading in degrees.\n     */\n    //% help=input/compass-heading\n    //% weight=56\n    //% blockId=device_heading block=\"compass heading (°)\" blockGap=8\n    //% parts=\"compass\" shim=input::compassHeading\n    function compassHeading(): int32;\n\n    /**\n     * Gets the temperature in Celsius degrees (°C).\n     */\n    //% weight=55\n    //% help=input/temperature\n    //% blockId=device_temperature block=\"temperature (°C)\" blockGap=8\n    //% parts=\"thermometer\" shim=input::temperature\n    function temperature(): int32;\n\n    /**\n     * The pitch or roll of the device, rotation along the ``x-axis`` or ``y-axis``, in degrees.\n     * @param kind pitch or roll\n     */\n    //% help=input/rotation weight=52\n    //% blockId=device_get_rotation block=\"rotation (°)|%NAME\" blockGap=8\n    //% parts=\"accelerometer\" advanced=true shim=input::rotation\n    function rotation(kind: Rotation): int32;\n\n    /**\n     * Get the magnetic force value in ``micro-Teslas`` (``µT``). This function is not supported in the simulator.\n     * @param dimension the x, y, or z dimension, eg: Dimension.X\n     */\n    //% help=input/magnetic-force weight=51\n    //% blockId=device_get_magnetic_force block=\"magnetic force (µT)|%NAME\" blockGap=8\n    //% parts=\"compass\"\n    //% advanced=true shim=input::magneticForce\n    function magneticForce(dimension: Dimension): number;\n\n    /**\n     * Obsolete, compass calibration is automatic.\n     */\n    //% help=input/calibrate-compass advanced=true\n    //% blockId=\"input_compass_calibrate\" block=\"calibrate compass\"\n    //% weight=45 shim=input::calibrateCompass\n    function calibrateCompass(): void;\n\n    /**\n     * Sets the accelerometer sample range in gravities.\n     * @param range a value describe the maximum strengh of acceleration measured\n     */\n    //% help=input/set-accelerometer-range\n    //% blockId=device_set_accelerometer_range block=\"set accelerometer|range %range\"\n    //% weight=5\n    //% parts=\"accelerometer\"\n    //% advanced=true shim=input::setAccelerometerRange\n    function setAccelerometerRange(range: AcceleratorRange): void;\n}\n\n\n\n    //% weight=1 color=\"#333333\"\n    //% advanced=true\ndeclare namespace control {\n\n    /**\n     * Gets the number of milliseconds elapsed since power on.\n     */\n    //% help=control/millis weight=50\n    //% blockId=control_running_time block=\"millis (ms)\" shim=control::millis\n    function millis(): int32;\n\n    /**\n     * Gets current time in microseconds. Overflows every ~18 minutes.\n     */\n    //% shim=control::micros\n    function micros(): int32;\n\n    /**\n     * Schedules code that run in the background.\n     */\n    //% help=control/in-background blockAllowMultiple=1 afterOnStart=true\n    //% blockId=\"control_in_background\" block=\"run in background\" blockGap=8 shim=control::inBackground\n    function inBackground(a: () => void): void;\n\n    /**\n     * Blocks the calling thread until the specified event is raised.\n     */\n    //% help=control/wait-for-event async\n    //% blockId=control_wait_for_event block=\"wait for event|from %src|with value %value\" shim=control::waitForEvent\n    function waitForEvent(src: int32, value: int32): void;\n\n    /**\n     * Resets the BBC micro:bit.\n     */\n    //% weight=30 async help=control/reset blockGap=8\n    //% blockId=\"control_reset\" block=\"reset\" shim=control::reset\n    function reset(): void;\n\n    /**\n     * Blocks the current fiber for the given microseconds\n     * @param micros number of micro-seconds to wait. eg: 4\n     */\n    //% help=control/wait-micros weight=29\n    //% blockId=\"control_wait_us\" block=\"wait (µs)%micros\" shim=control::waitMicros\n    function waitMicros(micros: int32): void;\n\n    /**\n     * Raises an event in the event bus.\n     * @param src ID of the MicroBit Component that generated the event e.g. MICROBIT_ID_BUTTON_A.\n     * @param value Component specific code indicating the cause of the event.\n     * @param mode optional definition of how the event should be processed after construction (default is CREATE_AND_FIRE).\n     */\n    //% weight=21 blockGap=12 blockId=\"control_raise_event\" block=\"raise event|from source %src=control_event_source_id|with value %value=control_event_value_id\" blockExternalInputs=1\n    //% help=control/raise-event\n    //% mode.defl=1 shim=control::raiseEvent\n    function raiseEvent(src: int32, value: int32, mode?: EventCreationMode): void;\n\n    /**\n     * Registers an event handler.\n     */\n    //% weight=20 blockGap=8 blockId=\"control_on_event\" block=\"on event|from %src=control_event_source_id|with value %value=control_event_value_id\"\n    //% help=control/on-event\n    //% blockExternalInputs=1 flags.defl=0 shim=control::onEvent\n    function onEvent(src: int32, value: int32, handler: () => void, flags?: int32): void;\n\n    /**\n     * Gets the value of the last event executed on the bus\n     */\n    //% blockId=control_event_value\" block=\"event value\"\n    //% help=control/event-value\n    //% weight=18 shim=control::eventValue\n    function eventValue(): int32;\n\n    /**\n     * Gets the timestamp of the last event executed on the bus\n     */\n    //% blockId=control_event_timestamp\" block=\"event timestamp\"\n    //% help=control/event-timestamp\n    //% weight=19 blockGap=8 shim=control::eventTimestamp\n    function eventTimestamp(): int32;\n\n    /**\n     * Make a friendly name for the device based on its serial number\n     */\n    //% blockId=\"control_device_name\" block=\"device name\" weight=10 blockGap=8\n    //% advanced=true shim=control::deviceName\n    function deviceName(): string;\n\n    /**\n     * Derive a unique, consistent serial number of this device from internal data.\n     */\n    //% blockId=\"control_device_serial_number\" block=\"device serial number\" weight=9\n    //% advanced=true shim=control::deviceSerialNumber\n    function deviceSerialNumber(): int32;\n\n    /**\n     * Informs simulator/runtime of a MIDI message\n     * Internal function to support the simulator.\n     */\n    //% part=midioutput blockHidden=1 shim=control::__midiSend\n    function __midiSend(buffer: Buffer): void;\n\n    /**\n     *\n     */\n    //% shim=control::__log\n    function __log(text: string): void;\n}\n\n\n\n    //% color=#7600A8 weight=101 icon=\"\\uf205\"\ndeclare namespace led {\n\n    /**\n     * Turn on the specified LED using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED starting at 0\n     * @param y the vertical coordinate of the LED starting at 0\n     */\n    //% help=led/plot weight=78\n    //% blockId=device_plot block=\"plot|x %x|y %y\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1 shim=led::plot\n    function plot(x: int32, y: int32): void;\n\n    /**\n     * Turn on the specified LED with specific brightness using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED starting at 0\n     * @param y the vertical coordinate of the LED starting at 0\n     * @param brightness the brightness from 0 (off) to 255 (bright), eg:255\n     */\n    //% help=led/plot-brightness weight=78\n    //% blockId=device_plot_brightness block=\"plot|x %x|y %y|brightness %brightness\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4 brightness.min=0 brightness.max=255\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1\n    //% advanced=true shim=led::plotBrightness\n    function plotBrightness(x: int32, y: int32, brightness: int32): void;\n\n    /**\n     * Turn off the specified LED using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED\n     * @param y the vertical coordinate of the LED\n     */\n    //% help=led/unplot weight=77\n    //% blockId=device_unplot block=\"unplot|x %x|y %y\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1 shim=led::unplot\n    function unplot(x: int32, y: int32): void;\n\n    /**\n     * Get the brightness state of the specified LED using x, y coordinates. (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED\n     * @param y the vertical coordinate of the LED\n     */\n    //% help=led/point-brightness weight=76\n    //% blockId=device_point_brightness block=\"point|x %x|y %y brightness\"\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1\n    //% advanced=true shim=led::pointBrightness\n    function pointBrightness(x: int32, y: int32): int32;\n\n    /**\n     * Get the screen brightness from 0 (off) to 255 (full bright).\n     */\n    //% help=led/brightness weight=60\n    //% blockId=device_get_brightness block=\"brightness\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=led::brightness\n    function brightness(): int32;\n\n    /**\n     * Set the screen brightness from 0 (off) to 255 (full bright).\n     * @param value the brightness value, eg:255, 127, 0\n     */\n    //% help=led/set-brightness weight=59\n    //% blockId=device_set_brightness block=\"set brightness %value\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true\n    //% value.min=0 value.max=255 shim=led::setBrightness\n    function setBrightness(value: int32): void;\n\n    /**\n     * Cancels the current animation and clears other pending animations.\n     */\n    //% weight=50 help=led/stop-animation\n    //% blockId=device_stop_animation block=\"stop animation\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=led::stopAnimation\n    function stopAnimation(): void;\n\n    /**\n     * Sets the display mode between black and white and greyscale for rendering LEDs.\n     * @param mode mode the display mode in which the screen operates\n     */\n    //% weight=1 help=led/set-display-mode\n    //% parts=\"ledmatrix\" advanced=true weight=1\n    //% blockId=\"led_set_display_mode\" block=\"set display mode $mode\" shim=led::setDisplayMode\n    function setDisplayMode(mode: DisplayMode): void;\n\n    /**\n     * Gets the current display mode\n     */\n    //% weight=1 parts=\"ledmatrix\" advanced=true shim=led::displayMode\n    function displayMode(): DisplayMode;\n\n    /**\n     * Turns on or off the display\n     */\n    //% help=led/enable blockId=device_led_enable block=\"led enable %on\"\n    //% advanced=true parts=\"ledmatrix\" shim=led::enable\n    function enable(on: boolean): void;\n\n    /**\n     * Takes a screenshot of the LED screen and returns an image.\n     */\n    //% help=led/screenshot\n    //% parts=\"ledmatrix\" shim=led::screenshot\n    function screenshot(): Image;\n}\ndeclare namespace pins {\n\n    /**\n     * Read the specified pin or connector as either 0 or 1\n     * @param name pin to read from, eg: DigitalPin.P0\n     */\n    //% help=pins/digital-read-pin weight=30\n    //% blockId=device_get_digital_pin block=\"digital read|pin %name\" blockGap=8\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::digitalReadPin\n    function digitalReadPin(name: DigitalPin): int32;\n\n    /**\n     * Set a pin or connector value to either 0 or 1.\n     * @param name pin to write to, eg: DigitalPin.P0\n     * @param value value to set on the pin, 1 eg,0\n     */\n    //% help=pins/digital-write-pin weight=29\n    //% blockId=device_set_digital_pin block=\"digital write|pin %name|to %value\"\n    //% value.min=0 value.max=1\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::digitalWritePin\n    function digitalWritePin(name: DigitalPin, value: int32): void;\n\n    /**\n     * Read the connector value as analog, that is, as a value comprised between 0 and 1023.\n     * @param name pin to write to, eg: AnalogPin.P0\n     */\n    //% help=pins/analog-read-pin weight=25\n    //% blockId=device_get_analog_pin block=\"analog read|pin %name\" blockGap=\"8\"\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogReadPin\n    function analogReadPin(name: AnalogPin): int32;\n\n    /**\n     * Set the connector value as analog. Value must be comprised between 0 and 1023.\n     * @param name pin name to write to, eg: AnalogPin.P0\n     * @param value value to write to the pin between ``0`` and ``1023``. eg:1023,0\n     */\n    //% help=pins/analog-write-pin weight=24\n    //% blockId=device_set_analog_pin block=\"analog write|pin %name|to %value\" blockGap=8\n    //% value.min=0 value.max=1023\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogWritePin\n    function analogWritePin(name: AnalogPin, value: int32): void;\n\n    /**\n     * Configure the pulse-width modulation (PWM) period of the analog output in microseconds.\n     * If this pin is not configured as an analog output (using `analog write pin`), the operation has no effect.\n     * @param name analog pin to set period to, eg: AnalogPin.P0\n     * @param micros period in micro seconds. eg:20000\n     */\n    //% help=pins/analog-set-period weight=23 blockGap=8\n    //% blockId=device_set_analog_period block=\"analog set period|pin %pin|to (µs)%micros\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" shim=pins::analogSetPeriod\n    function analogSetPeriod(name: AnalogPin, micros: int32): void;\n\n    /**\n     * Configure the pin as a digital input and generate an event when the pin is pulsed either high or low.\n     * @param name digital pin to register to, eg: DigitalPin.P0\n     * @param pulse the value of the pulse, eg: PulseValue.High\n     */\n    //% help=pins/on-pulsed weight=22 blockGap=16 advanced=true\n    //% blockId=pins_on_pulsed block=\"on|pin %pin|pulsed %pulse\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::onPulsed\n    function onPulsed(name: DigitalPin, pulse: PulseValue, body: () => void): void;\n\n    /**\n     * Get the duration of the last pulse in microseconds. This function should be called from a ``onPulsed`` handler.\n     */\n    //% help=pins/pulse-duration advanced=true\n    //% blockId=pins_pulse_duration block=\"pulse duration (µs)\"\n    //% weight=21 blockGap=8 shim=pins::pulseDuration\n    function pulseDuration(): int32;\n\n    /**\n     * Return the duration of a pulse at a pin in microseconds.\n     * @param name the pin which measures the pulse, eg: DigitalPin.P0\n     * @param value the value of the pulse, eg: PulseValue.High\n     * @param maximum duration in microseconds\n     */\n    //% blockId=\"pins_pulse_in\" block=\"pulse in (µs)|pin %name|pulsed %value\"\n    //% weight=20 advanced=true\n    //% help=pins/pulse-in\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" maxDuration.defl=2000000 shim=pins::pulseIn\n    function pulseIn(name: DigitalPin, value: PulseValue, maxDuration?: int32): int32;\n\n    /**\n     * Write a value to the servo, controlling the shaft accordingly. On a standard servo, this will set the angle of the shaft (in degrees), moving the shaft to that orientation. On a continuous rotation servo, this will set the speed of the servo (with ``0`` being full-speed in one direction, ``180`` being full speed in the other, and a value near ``90`` being no movement).\n     * @param name pin to write to, eg: AnalogPin.P0\n     * @param value angle or rotation speed, eg:180,90,0\n     */\n    //% help=pins/servo-write-pin weight=20\n    //% blockId=device_set_servo_pin block=\"servo write|pin %name|to %value\" blockGap=8\n    //% parts=microservo trackArgs=0\n    //% value.min=0 value.max=180\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::servoWritePin\n    function servoWritePin(name: AnalogPin, value: int32): void;\n\n    /**\n     * Specifies that a continuous servo is connected.\n     */\n    //% shim=pins::servoSetContinuous\n    function servoSetContinuous(name: AnalogPin, value: boolean): void;\n\n    /**\n     * Configure the IO pin as an analog/pwm output and set a pulse width. The period is 20 ms period and the pulse width is set based on the value given in **microseconds** or `1/1000` milliseconds.\n     * @param name pin name\n     * @param micros pulse duration in micro seconds, eg:1500\n     */\n    //% help=pins/servo-set-pulse weight=19\n    //% blockId=device_set_servo_pulse block=\"servo set pulse|pin %value|to (µs) %micros\"\n    //% value.fieldEditor=\"gridpicker\" value.fieldOptions.columns=4\n    //% value.fieldOptions.tooltips=\"false\" value.fieldOptions.width=\"250\" shim=pins::servoSetPulse\n    function servoSetPulse(name: AnalogPin, micros: int32): void;\n\n    /**\n     * Set the pin used when using analog pitch or music.\n     * @param name pin to modulate pitch from\n     */\n    //% blockId=device_analog_set_pitch_pin block=\"analog set pitch pin %name\"\n    //% help=pins/analog-set-pitch-pin weight=3 advanced=true\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogSetPitchPin\n    function analogSetPitchPin(name: AnalogPin): void;\n\n    /**\n     * Sets the volume on the pitch pin\n     * @param volume the intensity of the sound from 0..255\n     */\n    //% blockId=device_analog_set_pitch_volume block=\"analog set pitch volume $volume\"\n    //% help=pins/analog-set-pitch-volume weight=3 advanced=true\n    //% volume.min=0 volume.max=255 shim=pins::analogSetPitchVolume\n    function analogSetPitchVolume(volume: int32): void;\n\n    /**\n     * Gets the volume the pitch pin from 0..255\n     */\n    //% blockId=device_analog_pitch_volume block=\"analog pitch volume\"\n    //% help=pins/analog-pitch-volume weight=3 advanced=true shim=pins::analogPitchVolume\n    function analogPitchVolume(): int32;\n\n    /**\n     * Emit a plse-width modulation (PWM) signal to the current pitch pin. Use `analog set pitch pin` to define the pitch pin.\n     * @param frequency frequency to modulate in Hz.\n     * @param ms duration of the pitch in milli seconds.\n     */\n    //% blockId=device_analog_pitch block=\"analog pitch %frequency|for (ms) %ms\"\n    //% help=pins/analog-pitch weight=4 async advanced=true blockGap=8 shim=pins::analogPitch\n    function analogPitch(frequency: int32, ms: int32): void;\n\n    /**\n     * Configure the pull directiion of of a pin.\n     * @param name pin to set the pull mode on, eg: DigitalPin.P0\n     * @param pull one of the mbed pull configurations, eg: PinPullMode.PullUp\n     */\n    //% help=pins/set-pull weight=3 advanced=true\n    //% blockId=device_set_pull block=\"set pull|pin %pin|to %pull\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::setPull\n    function setPull(name: DigitalPin, pull: PinPullMode): void;\n\n    /**\n     * Configure the events emitted by this pin. Events can be subscribed to\n     * using ``control.onEvent()``.\n     * @param name pin to set the event mode on, eg: DigitalPin.P0\n     * @param type the type of events for this pin to emit, eg: PinEventType.Edge\n     */\n    //% help=pins/set-events weight=4 advanced=true\n    //% blockId=device_set_pin_events block=\"set pin %pin|to emit %type|events\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::setEvents\n    function setEvents(name: DigitalPin, type: PinEventType): void;\n\n    /**\n     * Create a new zero-initialized buffer.\n     * @param size number of bytes in the buffer\n     */\n    //% shim=pins::createBuffer\n    function createBuffer(size: int32): Buffer;\n\n    /**\n     * Read `size` bytes from a 7-bit I2C `address`.\n     */\n    //% repeat.defl=0 shim=pins::i2cReadBuffer\n    function i2cReadBuffer(address: int32, size: int32, repeat?: boolean): Buffer;\n\n    /**\n     * Write bytes to a 7-bit I2C `address`.\n     */\n    //% repeat.defl=0 shim=pins::i2cWriteBuffer\n    function i2cWriteBuffer(address: int32, buf: Buffer, repeat?: boolean): int32;\n\n    /**\n     * Write to the SPI slave and return the response\n     * @param value Data to be sent to the SPI slave\n     */\n    //% help=pins/spi-write weight=5 advanced=true\n    //% blockId=spi_write block=\"spi write %value\" shim=pins::spiWrite\n    function spiWrite(value: int32): int32;\n\n    /**\n     * Set the SPI frequency\n     * @param frequency the clock frequency, eg: 1000000\n     */\n    //% help=pins/spi-frequency weight=4 advanced=true\n    //% blockId=spi_frequency block=\"spi frequency %frequency\" shim=pins::spiFrequency\n    function spiFrequency(frequency: int32): void;\n\n    /**\n     * Set the SPI bits and mode\n     * @param bits the number of bits, eg: 8\n     * @param mode the mode, eg: 3\n     */\n    //% help=pins/spi-format weight=3 advanced=true\n    //% blockId=spi_format block=\"spi format|bits %bits|mode %mode\" shim=pins::spiFormat\n    function spiFormat(bits: int32, mode: int32): void;\n\n    /**\n     * Set the MOSI, MISO, SCK pins used by the SPI connection\n     *\n     */\n    //% help=pins/spi-pins weight=2 advanced=true\n    //% blockId=spi_pins block=\"spi set pins|MOSI %mosi|MISO %miso|SCK %sck\"\n    //% mosi.fieldEditor=\"gridpicker\" mosi.fieldOptions.columns=4\n    //% mosi.fieldOptions.tooltips=\"false\" mosi.fieldOptions.width=\"250\"\n    //% miso.fieldEditor=\"gridpicker\" miso.fieldOptions.columns=4\n    //% miso.fieldOptions.tooltips=\"false\" miso.fieldOptions.width=\"250\"\n    //% sck.fieldEditor=\"gridpicker\" sck.fieldOptions.columns=4\n    //% sck.fieldOptions.tooltips=\"false\" sck.fieldOptions.width=\"250\" shim=pins::spiPins\n    function spiPins(mosi: DigitalPin, miso: DigitalPin, sck: DigitalPin): void;\n\n    /**\n    * Mounts a push button on the given pin\n    */\n    //% help=pins/push-button advanced=true shim=pins::pushButton\n    function pushButton(pin: DigitalPin): void;\n}\n\n\n\n    //% weight=2 color=#002050 icon=\"\\uf287\"\n    //% advanced=true\ndeclare namespace serial {\n\n    /**\n     * Read a line of text from the serial port and return the buffer when the delimiter is met.\n     * @param delimiter text delimiter that separates each text chunk\n     */\n    //% help=serial/read-until\n    //% blockId=serial_read_until block=\"serial|read until %delimiter=serial_delimiter_conv\"\n    //% weight=19 shim=serial::readUntil\n    function readUntil(delimiter: string): string;\n\n    /**\n     * Read the buffered received data as a string\n     */\n    //% help=serial/read-string\n    //% blockId=serial_read_buffer block=\"serial|read string\"\n    //% weight=18 shim=serial::readString\n    function readString(): string;\n\n    /**\n     * Register an event to be fired when one of the delimiter is matched.\n     * @param delimiters the characters to match received characters against.\n     */\n    //% help=serial/on-data-received\n    //% weight=18 blockId=serial_on_data_received block=\"serial|on data received %delimiters=serial_delimiter_conv\" shim=serial::onDataReceived\n    function onDataReceived(delimiters: string, body: () => void): void;\n\n    /**\n     * Send a piece of text through the serial connection.\n     */\n    //% help=serial/write-string\n    //% weight=87 blockGap=8\n    //% blockId=serial_writestring block=\"serial|write string %text\"\n    //% text.shadowOptions.toString=true shim=serial::writeString\n    function writeString(text: string): void;\n\n    /**\n     * Send a buffer through serial connection\n     */\n    //% blockId=serial_writebuffer block=\"serial|write buffer %buffer=serial_readbuffer\"\n    //% help=serial/write-buffer advanced=true weight=6 shim=serial::writeBuffer\n    function writeBuffer(buffer: Buffer): void;\n\n    /**\n     * Read multiple characters from the receive buffer. Pause until enough characters are present.\n     * @param length default buffer length, eg: 64\n     */\n    //% blockId=serial_readbuffer block=\"serial|read buffer %length\"\n    //% help=serial/read-buffer advanced=true weight=5 shim=serial::readBuffer\n    function readBuffer(length: int32): Buffer;\n\n    /**\n     * Set the serial input and output to use pins instead of the USB connection.\n     * @param tx the new transmission pin, eg: SerialPin.P0\n     * @param rx the new reception pin, eg: SerialPin.P1\n     * @param rate the new baud rate. eg: 115200\n     */\n    //% weight=10\n    //% help=serial/redirect\n    //% blockId=serial_redirect block=\"serial|redirect to|TX %tx|RX %rx|at baud rate %rate\"\n    //% blockExternalInputs=1\n    //% tx.fieldEditor=\"gridpicker\" tx.fieldOptions.columns=3\n    //% tx.fieldOptions.tooltips=\"false\"\n    //% rx.fieldEditor=\"gridpicker\" rx.fieldOptions.columns=3\n    //% rx.fieldOptions.tooltips=\"false\"\n    //% blockGap=8 shim=serial::redirect\n    function redirect(tx: SerialPin, rx: SerialPin, rate: BaudRate): void;\n\n    /**\n     * Direct the serial input and output to use the USB connection.\n     */\n    //% weight=9 help=serial/redirect-to-usb\n    //% blockId=serial_redirect_to_usb block=\"serial|redirect to USB\" shim=serial::redirectToUSB\n    function redirectToUSB(): void;\n\n    /**\n     * Sets the size of the RX buffer in bytes\n     * @param size length of the rx buffer in bytes, eg: 32\n     */\n    //% help=serial/set-rx-buffer-size\n    //% blockId=serialSetRxBufferSize block=\"serial set rx buffer size to $size\"\n    //% advanced=true shim=serial::setRxBufferSize\n    function setRxBufferSize(size: uint8): void;\n\n    /**\n     * Sets the size of the TX buffer in bytes\n     * @param size length of the tx buffer in bytes, eg: 32\n     */\n    //% help=serial/set-tx-buffer-size\n    //% blockId=serialSetTxBufferSize block=\"serial set tx buffer size to $size\"\n    //% advanced=true shim=serial::setTxBufferSize\n    function setTxBufferSize(size: uint8): void;\n}\n\n\n\n    //% indexerGet=BufferMethods::getByte indexerSet=BufferMethods::setByte\ndeclare interface Buffer {\n    /**\n     * Reads an unsigned byte at a particular location\n     */\n    //% shim=BufferMethods::getUint8\n    getUint8(off: int32): int32;\n\n    /**\n     * Returns false when the buffer can be written to.\n     */\n    //% shim=BufferMethods::isReadOnly\n    isReadOnly(): boolean;\n\n    /**\n     * Writes an unsigned byte at a particular location\n     */\n    //% shim=BufferMethods::setUint8\n    setUint8(off: int32, v: int32): void;\n\n    /**\n     * Write a number in specified format in the buffer.\n     */\n    //% shim=BufferMethods::setNumber\n    setNumber(format: NumberFormat, offset: int32, value: number): void;\n\n    /**\n     * Read a number in specified format from the buffer.\n     */\n    //% shim=BufferMethods::getNumber\n    getNumber(format: NumberFormat, offset: int32): number;\n\n    /** Returns the length of a Buffer object. */\n    //% property shim=BufferMethods::length\n    length: int32;\n\n    /**\n     * Fill (a fragment) of the buffer with given value.\n     */\n    //% offset.defl=0 length.defl=-1 shim=BufferMethods::fill\n    fill(value: int32, offset?: int32, length?: int32): void;\n\n    /**\n     * Return a copy of a fragment of a buffer.\n     */\n    //% offset.defl=0 length.defl=-1 shim=BufferMethods::slice\n    slice(offset?: int32, length?: int32): Buffer;\n\n    /**\n     * Shift buffer left in place, with zero padding.\n     * @param offset number of bytes to shift; use negative value to shift right\n     * @param start start offset in buffer. Default is 0.\n     * @param length number of elements in buffer. If negative, length is set as the buffer length minus\n     * start. eg: -1\n     */\n    //% start.defl=0 length.defl=-1 shim=BufferMethods::shift\n    shift(offset: int32, start?: int32, length?: int32): void;\n\n    /**\n     * Convert a buffer to string assuming UTF8 encoding\n     */\n    //% shim=BufferMethods::toString\n    toString(): string;\n\n    /**\n     * Convert a buffer to its hexadecimal representation.\n     */\n    //% shim=BufferMethods::toHex\n    toHex(): string;\n\n    /**\n     * Rotate buffer left in place.\n     * @param offset number of bytes to shift; use negative value to shift right\n     * @param start start offset in buffer. Default is 0.\n     * @param length number of elements in buffer. If negative, length is set as the buffer length minus\n     * start. eg: -1\n     */\n    //% start.defl=0 length.defl=-1 shim=BufferMethods::rotate\n    rotate(offset: int32, start?: int32, length?: int32): void;\n\n    /**\n     * Write contents of `src` at `dstOffset` in current buffer.\n     */\n    //% shim=BufferMethods::write\n    write(dstOffset: int32, src: Buffer): void;\n\n    /**\n     * Compute k-bit FNV-1 non-cryptographic hash of the buffer.\n     */\n    //% shim=BufferMethods::hash\n    hash(bits: int32): uint32;\n}\ndeclare namespace control {\n\n    /**\n     * Create a new zero-initialized buffer.\n     * @param size number of bytes in the buffer\n     */\n    //% deprecated=1 shim=control::createBuffer\n    function createBuffer(size: int32): Buffer;\n\n    /**\n     * Create a new buffer with UTF8-encoded string\n     * @param str the string to put in the buffer\n     */\n    //% deprecated=1 shim=control::createBufferFromUTF8\n    function createBufferFromUTF8(str: string): Buffer;\n}\n\n// Auto-generated. Do not edit. Really.\n",
             "templates.ts": "/**\n * Tagged hex literal converter\n */\n//% shim=@hex\nfunction hex(lits: any, ...args: any[]): Buffer { return null }\n",
             "test.ts": "let i = 1\nlet f = 0.5\nlet plus = i + f\nlet minus = i - f\n\nlet r = Math.random()\nlet ri = Math.randomRange(5, 10)\n\n\nfunction check(cond:boolean) { control.assert(cond, 108) }\n\ncheck(Buffer.pack(\"<2h\", [0x3412, 0x7856]).toHex() == \"12345678\")\ncheck(Buffer.pack(\">hh\", [0x3412, 0x7856]).toHex() == \"34127856\")\ncheck(Buffer.fromHex(\"F00d\").toHex() == \"f00d\")",
-            "trig.cpp": "#include \"pxtbase.h\"\n#include <limits.h>\n#include <stdlib.h>\n\nusing namespace std;\n\nnamespace Math_ {\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\n//%\nTNumber atan2(TNumber y, TNumber x) {\n    return fromDouble(::atan2(toDouble(y), toDouble(x)));\n}\n\n//%\nTNumber tan(TNumber x){SINGLE(tan)}\n\n//%\nTNumber sin(TNumber x){SINGLE(sin)}\n\n//%\nTNumber cos(TNumber x){SINGLE(cos)}\n\n//%\nTNumber atan(TNumber x){SINGLE(atan)}\n\n//%\nTNumber asin(TNumber x){SINGLE(asin)}\n\n//%\nTNumber acos(TNumber x){SINGLE(acos)}\n\n//%\nTNumber sqrt(TNumber x){SINGLE(sqrt)}\n\n}"
+            "trig.cpp": "#include \"pxtbase.h\"\n#include <limits.h>\n#include <stdlib.h>\n\nusing namespace std;\n\nnamespace Math_ {\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\n//%\nTNumber atan2(TNumber y, TNumber x) {\n    return fromDouble(::atan2(toDouble(y), toDouble(x)));\n}\n\n//%\nTNumber tan(TNumber x){SINGLE(tan)}\n\n//%\nTNumber sin(TNumber x){SINGLE(sin)}\n\n//%\nTNumber cos(TNumber x){SINGLE(cos)}\n\n//%\nTNumber atan(TNumber x){SINGLE(atan)}\n\n//%\nTNumber asin(TNumber x){SINGLE(asin)}\n\n//%\nTNumber acos(TNumber x){SINGLE(acos)}\n\n//%\nTNumber sqrt(TNumber x){SINGLE(sqrt)}\n\n}",
+            "ws2812b.ts": "namespace ws2812b {\r\n    //% shim=sendBufferAsm\r\n    export function sendBuffer(buf: Buffer, pin: DigitalPin) {\r\n    }\r\n}\r\n"
         },
         "radio": {
             "README.md": "# radio\n\nThe radio library.\n\n",
@@ -29741,6 +29746,2330 @@ var pxtTargetBundle = {
                         "parameters": [],
                         "isInstance": true
                     },
+                    "NeoPixelColors": {
+                        "kind": 6,
+                        "retType": "NeoPixelColors",
+                        "attributes": {
+                            "jsDoc": "Well known colors for a NeoPixel strip"
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors",
+                            "Number"
+                        ]
+                    },
+                    "NeoPixelColors.Red": {
+                        "retType": "NeoPixelColors.Red",
+                        "attributes": {
+                            "block": "red",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "red",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Red",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.RED"
+                    },
+                    "NeoPixelColors.Orange": {
+                        "retType": "NeoPixelColors.Orange",
+                        "attributes": {
+                            "block": "orange",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "orange",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Orange",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.ORANGE"
+                    },
+                    "NeoPixelColors.Yellow": {
+                        "retType": "NeoPixelColors.Yellow",
+                        "attributes": {
+                            "block": "yellow",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "yellow",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Yellow",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.YELLOW"
+                    },
+                    "NeoPixelColors.Green": {
+                        "retType": "NeoPixelColors.Green",
+                        "attributes": {
+                            "block": "green",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "green",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Green",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.GREEN"
+                    },
+                    "NeoPixelColors.Blue": {
+                        "retType": "NeoPixelColors.Blue",
+                        "attributes": {
+                            "block": "blue",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "blue",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Blue",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.BLUE"
+                    },
+                    "NeoPixelColors.Indigo": {
+                        "retType": "NeoPixelColors.Indigo",
+                        "attributes": {
+                            "block": "indigo",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "indigo",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Indigo",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.INDIGO"
+                    },
+                    "NeoPixelColors.Violet": {
+                        "retType": "NeoPixelColors.Violet",
+                        "attributes": {
+                            "block": "violet",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "violet",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Violet",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.VIOLET"
+                    },
+                    "NeoPixelColors.Purple": {
+                        "retType": "NeoPixelColors.Purple",
+                        "attributes": {
+                            "block": "purple",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "purple",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Purple",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.PURPLE"
+                    },
+                    "NeoPixelColors.White": {
+                        "retType": "NeoPixelColors.White",
+                        "attributes": {
+                            "block": "white",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "white",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.White",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.WHITE"
+                    },
+                    "NeoPixelColors.Black": {
+                        "retType": "NeoPixelColors.Black",
+                        "attributes": {
+                            "block": "black",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "black",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelColors.Black",
+                            "Number"
+                        ],
+                        "pyQName": "NeoPixelColors.BLACK"
+                    },
+                    "neoPin": {
+                        "kind": 6,
+                        "retType": "neoPin",
+                        "extendsTypes": [
+                            "neoPin",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.none": {
+                        "retType": "neoPin.none",
+                        "extendsTypes": [
+                            "neoPin.none",
+                            "Number"
+                        ],
+                        "pyQName": "neoPin.NONE"
+                    },
+                    "neoPin.AN": {
+                        "retType": "neoPin.AN",
+                        "extendsTypes": [
+                            "neoPin.AN",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.RST": {
+                        "retType": "neoPin.RST",
+                        "extendsTypes": [
+                            "neoPin.RST",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.CS": {
+                        "retType": "neoPin.CS",
+                        "extendsTypes": [
+                            "neoPin.CS",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.SCK": {
+                        "retType": "neoPin.SCK",
+                        "extendsTypes": [
+                            "neoPin.SCK",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.MISO": {
+                        "retType": "neoPin.MISO",
+                        "extendsTypes": [
+                            "neoPin.MISO",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.MOSI": {
+                        "retType": "neoPin.MOSI",
+                        "extendsTypes": [
+                            "neoPin.MOSI",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.SDA": {
+                        "retType": "neoPin.SDA",
+                        "extendsTypes": [
+                            "neoPin.SDA",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.SCL": {
+                        "retType": "neoPin.SCL",
+                        "extendsTypes": [
+                            "neoPin.SCL",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.TX": {
+                        "retType": "neoPin.TX",
+                        "extendsTypes": [
+                            "neoPin.TX",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.RX": {
+                        "retType": "neoPin.RX",
+                        "extendsTypes": [
+                            "neoPin.RX",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.INT": {
+                        "retType": "neoPin.INT",
+                        "extendsTypes": [
+                            "neoPin.INT",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.PWM": {
+                        "retType": "neoPin.PWM",
+                        "extendsTypes": [
+                            "neoPin.PWM",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P0": {
+                        "retType": "neoPin.P0",
+                        "extendsTypes": [
+                            "neoPin.P0",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P1": {
+                        "retType": "neoPin.P1",
+                        "extendsTypes": [
+                            "neoPin.P1",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P2": {
+                        "retType": "neoPin.P2",
+                        "extendsTypes": [
+                            "neoPin.P2",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P3": {
+                        "retType": "neoPin.P3",
+                        "extendsTypes": [
+                            "neoPin.P3",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P4": {
+                        "retType": "neoPin.P4",
+                        "extendsTypes": [
+                            "neoPin.P4",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P5": {
+                        "retType": "neoPin.P5",
+                        "extendsTypes": [
+                            "neoPin.P5",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P6": {
+                        "retType": "neoPin.P6",
+                        "extendsTypes": [
+                            "neoPin.P6",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P7": {
+                        "retType": "neoPin.P7",
+                        "extendsTypes": [
+                            "neoPin.P7",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P8": {
+                        "retType": "neoPin.P8",
+                        "extendsTypes": [
+                            "neoPin.P8",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P9": {
+                        "retType": "neoPin.P9",
+                        "extendsTypes": [
+                            "neoPin.P9",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P10": {
+                        "retType": "neoPin.P10",
+                        "extendsTypes": [
+                            "neoPin.P10",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P11": {
+                        "retType": "neoPin.P11",
+                        "extendsTypes": [
+                            "neoPin.P11",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P12": {
+                        "retType": "neoPin.P12",
+                        "extendsTypes": [
+                            "neoPin.P12",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P13": {
+                        "retType": "neoPin.P13",
+                        "extendsTypes": [
+                            "neoPin.P13",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P14": {
+                        "retType": "neoPin.P14",
+                        "extendsTypes": [
+                            "neoPin.P14",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P15": {
+                        "retType": "neoPin.P15",
+                        "extendsTypes": [
+                            "neoPin.P15",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P16": {
+                        "retType": "neoPin.P16",
+                        "extendsTypes": [
+                            "neoPin.P16",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P19": {
+                        "retType": "neoPin.P19",
+                        "attributes": {
+                            "blockHidden": true
+                        },
+                        "extendsTypes": [
+                            "neoPin.P19",
+                            "Number"
+                        ]
+                    },
+                    "neoPin.P20": {
+                        "retType": "neoPin.P20",
+                        "attributes": {
+                            "blockHidden": true
+                        },
+                        "extendsTypes": [
+                            "neoPin.P20",
+                            "Number"
+                        ]
+                    },
+                    "NeoPixelMode": {
+                        "kind": 6,
+                        "retType": "NeoPixelMode",
+                        "attributes": {
+                            "jsDoc": "Different modes for RGB or RGB+W NeoPixel strips"
+                        },
+                        "extendsTypes": [
+                            "NeoPixelMode",
+                            "Number"
+                        ]
+                    },
+                    "NeoPixelMode.RGB": {
+                        "retType": "NeoPixelMode.RGB",
+                        "attributes": {
+                            "block": "RGB (GRB format)",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "RGB (GRB format)",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelMode.RGB",
+                            "Number"
+                        ]
+                    },
+                    "NeoPixelMode.RGBW": {
+                        "retType": "NeoPixelMode.RGBW",
+                        "attributes": {
+                            "block": "RGB+W",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "RGB+W",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelMode.RGBW",
+                            "Number"
+                        ]
+                    },
+                    "NeoPixelMode.RGB_RGB": {
+                        "retType": "NeoPixelMode.RGB_RGB",
+                        "attributes": {
+                            "block": "RGB (RGB format)",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "RGB (RGB format)",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NeoPixelMode.RGB_RGB",
+                            "Number"
+                        ]
+                    },
+                    "neopixel": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#2699BF",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Functions to operate NeoPixel strips."
+                        }
+                    },
+                    "neopixel.HueInterpolationDirection": {
+                        "kind": 6,
+                        "retType": "neopixel.HueInterpolationDirection",
+                        "attributes": {
+                            "jsDoc": "A NeoPixel strip"
+                        },
+                        "extendsTypes": [
+                            "neopixel.HueInterpolationDirection",
+                            "Number"
+                        ]
+                    },
+                    "neopixel.HueInterpolationDirection.Clockwise": {
+                        "retType": "neopixel.HueInterpolationDirection.Clockwise",
+                        "extendsTypes": [
+                            "neopixel.HueInterpolationDirection.Clockwise",
+                            "Number"
+                        ],
+                        "pyQName": "neopixel.HueInterpolationDirection.CLOCKWISE"
+                    },
+                    "neopixel.HueInterpolationDirection.CounterClockwise": {
+                        "retType": "neopixel.HueInterpolationDirection.CounterClockwise",
+                        "extendsTypes": [
+                            "neopixel.HueInterpolationDirection.CounterClockwise",
+                            "Number"
+                        ],
+                        "pyQName": "neopixel.HueInterpolationDirection.COUNTER_CLOCKWISE"
+                    },
+                    "neopixel.HueInterpolationDirection.Shortest": {
+                        "retType": "neopixel.HueInterpolationDirection.Shortest",
+                        "extendsTypes": [
+                            "neopixel.HueInterpolationDirection.Shortest",
+                            "Number"
+                        ],
+                        "pyQName": "neopixel.HueInterpolationDirection.SHORTEST"
+                    },
+                    "neopixel.createStrip": {
+                        "kind": -3,
+                        "retType": "neopixel.Strip",
+                        "attributes": {
+                            "block": " $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode",
+                            "blockSetVariable": "Strip",
+                            "blockId": "Strip",
+                            "weight": 110,
+                            "paramHelp": {
+                                "clickBoardNum": "the clickBoardNum",
+                                "Strip": "the Strip Object"
+                            },
+                            "jsDoc": "Sets NeoPixel object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickSlot",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on pin ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pin",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " for ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numleds",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " LEDs and ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "mode",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " mode",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "clickBoardNum",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickSlot",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pin",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numleds",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "mode",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "description": "the clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickSlot",
+                                "type": "clickBoardSlot",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "pin",
+                                "type": "neoPin",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "numleds"
+                            },
+                            {
+                                "name": "mode",
+                                "type": "NeoPixelMode",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "neopixel.create_strip"
+                    },
+                    "neopixel.Strip": {
+                        "kind": 8,
+                        "retType": "neopixel.Strip",
+                        "extendsTypes": [
+                            "neopixel.Strip",
+                            "bBoard.peripheralSettings"
+                        ]
+                    },
+                    "neopixel.Strip.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "clickBoardNum",
+                                "type": "clickBoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickSlot",
+                                "type": "clickBoardSlot",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "pin",
+                                "type": "neoPin",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "numleds"
+                            },
+                            {
+                                "name": "mode",
+                                "type": "NeoPixelMode",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.showColor": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_set_strip_color",
+                            "block": "$this|show color aaa $rgb=neopixel_colors",
+                            "weight": 85,
+                            "blockGap": "8",
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "rgb": "RGB color of the LED"
+                            },
+                            "jsDoc": "Shows all LEDs to a given color (range 0-255 for r, g, b).",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "show color aaa ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rgb",
+                                        "shadowBlockId": "neopixel_colors",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rgb",
+                                        "shadowBlockId": "neopixel_colors",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "rgb",
+                                "description": "RGB color of the LED"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.show_color"
+                    },
+                    "neopixel.Strip.showRainbow": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "startHue": "1",
+                                "endHue": "360"
+                            },
+                            "blockId": "neopixel_set_strip_rainbow",
+                            "block": "$this|show rainbow from $startHue|to $endHue",
+                            "weight": 85,
+                            "blockGap": "8",
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "startHue": "the start hue value for the rainbow, eg: 1",
+                                "endHue": "the end hue value for the rainbow, eg: 360"
+                            },
+                            "jsDoc": "Shows a rainbow pattern on all LEDs.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "show rainbow from ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "startHue",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "endHue",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "startHue",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "endHue",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "startHue",
+                                "description": "the start hue value for the rainbow, eg: 1",
+                                "initializer": "1",
+                                "default": "1"
+                            },
+                            {
+                                "name": "endHue",
+                                "description": "the end hue value for the rainbow, eg: 360",
+                                "initializer": "360",
+                                "default": "360"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.show_rainbow"
+                    },
+                    "neopixel.Strip.showBarGraph": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "high": "255"
+                            },
+                            "weight": 84,
+                            "blockId": "neopixel_show_bar_graph",
+                            "block": "$this|show bar graph of $value|up to $high",
+                            "icon": "",
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "value": "current value to plot",
+                                "high": "maximum value, eg: 255"
+                            },
+                            "jsDoc": "Displays a vertical bar graph based on the `value` and `high` value.\r\nIf `high` is 0, the chart gets adjusted automatically.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "show bar graph of ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "up to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "high",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "high",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value",
+                                "description": "current value to plot"
+                            },
+                            {
+                                "name": "high",
+                                "description": "maximum value, eg: 255",
+                                "default": "255"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.show_bar_graph"
+                    },
+                    "neopixel.Strip.setPixelColor": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_set_pixel_color",
+                            "block": "$this|set pixel color at $pixeloffset|to $rgb=neopixel_colors",
+                            "blockGap": "8",
+                            "weight": 80,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "pixeloffset": "position of the NeoPixel in the strip",
+                                "rgb": "RGB color of the LED"
+                            },
+                            "jsDoc": "Set LED to a given color (range 0-255 for r, g, b).\r\nYou need to call ``show`` to make the changes visible.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "set pixel color at ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pixeloffset",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rgb",
+                                        "shadowBlockId": "neopixel_colors",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pixeloffset",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rgb",
+                                        "shadowBlockId": "neopixel_colors",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "pixeloffset",
+                                "description": "position of the NeoPixel in the strip"
+                            },
+                            {
+                                "name": "rgb",
+                                "description": "RGB color of the LED"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.set_pixel_color"
+                    },
+                    "neopixel.Strip.setMatrixWidth": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_set_matrix_width",
+                            "block": "$this|set matrix width $width",
+                            "blockGap": "8",
+                            "weight": 5,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "width": "number of pixels in a row"
+                            },
+                            "jsDoc": "Sets the number of pixels in a matrix shaped strip",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "set matrix width ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "width",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "width",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "width",
+                                "description": "number of pixels in a row"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.set_matrix_width"
+                    },
+                    "neopixel.Strip.setMatrixColor": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_set_matrix_color",
+                            "block": "$this|set matrix color at x $x|y $y|to $rgb=neopixel_colors",
+                            "weight": 4,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "x": "horizontal position",
+                                "y": "horizontal position",
+                                "rgb": "RGB color of the LED"
+                            },
+                            "jsDoc": "Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip\r\nYou need to call ``show`` to make the changes visible.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "set matrix color at x ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "x",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "y ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "y",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rgb",
+                                        "shadowBlockId": "neopixel_colors",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "x",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "y",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rgb",
+                                        "shadowBlockId": "neopixel_colors",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "x",
+                                "description": "horizontal position"
+                            },
+                            {
+                                "name": "y",
+                                "description": "horizontal position"
+                            },
+                            {
+                                "name": "rgb",
+                                "description": "RGB color of the LED"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.set_matrix_color"
+                    },
+                    "neopixel.Strip.setPixelWhiteLED": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_set_pixel_white",
+                            "block": "$this|set pixel white LED at $pixeloffset|to $white",
+                            "blockGap": "8",
+                            "weight": 80,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "pixeloffset": "position of the LED in the strip",
+                                "white": "brightness of the white LED"
+                            },
+                            "jsDoc": "For NeoPixels with RGB+W LEDs, set the white LED brightness. This only works for RGB+W NeoPixels.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "set pixel white LED at ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pixeloffset",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "white",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pixeloffset",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "white",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "pixeloffset",
+                                "description": "position of the LED in the strip"
+                            },
+                            {
+                                "name": "white",
+                                "description": "brightness of the white LED"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.set_pixel_white_led"
+                    },
+                    "neopixel.Strip.show": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_show",
+                            "block": "$this|show",
+                            "blockGap": "8",
+                            "weight": 79,
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "jsDoc": "Send all the changes to the strip.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "show",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.clear": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_clear",
+                            "block": "$this|clear",
+                            "weight": 76,
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "jsDoc": "Turn off all LEDs.\r\nYou need to call ``show`` to make the changes visible.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "clear",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.length": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_length",
+                            "block": "$this|length",
+                            "blockGap": "8",
+                            "weight": 60,
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "jsDoc": "Gets the number of pixels declared on the strip",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "length",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.setBrightness": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "brightness": "255"
+                            },
+                            "blockId": "neopixel_set_brightness",
+                            "block": "$this|set brightness $brightness",
+                            "blockGap": "8",
+                            "weight": 59,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "brightness": "a measure of LED brightness in 0-255. eg: 255"
+                            },
+                            "jsDoc": "Set the brightness of the strip. This flag only applies to future operation.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "set brightness ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "brightness",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "brightness",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "brightness",
+                                "description": "a measure of LED brightness in 0-255. eg: 255",
+                                "default": "255"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.set_brightness"
+                    },
+                    "neopixel.Strip.easeBrightness": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixel_each_brightness",
+                            "block": "$this|ease brightness",
+                            "blockGap": "8",
+                            "weight": 58,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "jsDoc": "Apply brightness to current colors using a quadratic easing function.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "ease brightness",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.ease_brightness"
+                    },
+                    "neopixel.Strip.range": {
+                        "kind": -1,
+                        "retType": "neopixel.Strip",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "length": "4"
+                            },
+                            "weight": 89,
+                            "blockId": "neopixel_range",
+                            "block": "$this|range from $start|with $length|leds",
+                            "parts": "neopixel",
+                            "blockSetVariable": "range",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "start": "offset in the LED strip to start the range",
+                                "length": "number of LEDs in the range. eg: 4"
+                            },
+                            "jsDoc": "Create a range of LEDs.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "range from ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "start",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "with ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "length",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "leds",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "start",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "length",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "start",
+                                "description": "offset in the LED strip to start the range"
+                            },
+                            {
+                                "name": "length",
+                                "description": "number of LEDs in the range. eg: 4",
+                                "default": "4"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.shift": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "offset": "1"
+                            },
+                            "blockId": "neopixel_shift",
+                            "block": "$this|shift pixels by $offset",
+                            "blockGap": "8",
+                            "weight": 40,
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "offset": "number of pixels to shift forward, eg: 1"
+                            },
+                            "jsDoc": "Shift LEDs forward and clear with zeros.\r\nYou need to call ``show`` to make the changes visible.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "shift pixels by ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "offset",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "offset",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "offset",
+                                "description": "number of pixels to shift forward, eg: 1",
+                                "initializer": "1",
+                                "default": "1"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.rotate": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "offset": "1"
+                            },
+                            "blockId": "neopixel_rotate",
+                            "block": "$this|rotate pixels by $offset",
+                            "blockGap": "8",
+                            "weight": 39,
+                            "parts": "neopixel",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "offset": "number of pixels to rotate forward, eg: 1"
+                            },
+                            "jsDoc": "Rotate LEDs forward.\r\nYou need to call ``show`` to make the changes visible.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "rotate pixels by ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "offset",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "offset",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "offset",
+                                "description": "number of pixels to rotate forward, eg: 1",
+                                "initializer": "1",
+                                "default": "1"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.setPin": {
+                        "kind": -1,
+                        "attributes": {
+                            "weight": 10,
+                            "parts": "neopixel",
+                            "advanced": true,
+                            "jsDoc": "Set the pin where the neopixel is connected, defaults to P0."
+                        },
+                        "parameters": [
+                            {
+                                "name": "pin",
+                                "type": "DigitalPin",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.set_pin"
+                    },
+                    "neopixel.Strip.power": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "weight": 9,
+                            "blockId": "neopixel_power",
+                            "block": "$this|power (mA)",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "jsDoc": "Estimates the electrical current (mA) consumed by the current light configuration.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "power (mA)",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.rgb": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip",
+                                "red": "255",
+                                "green": "255",
+                                "blue": "255"
+                            },
+                            "weight": 1,
+                            "blockId": "neopixel_rgb",
+                            "block": "$this |red $red|green $green|blue $blue",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "red": "value of the red channel between 0 and 255. eg: 255",
+                                "green": "value of the green channel between 0 and 255. eg: 255",
+                                "blue": "value of the blue channel between 0 and 255. eg: 255"
+                            },
+                            "jsDoc": "Converts red, green, blue channels into a RGB color",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "red ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "red",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "green ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "green",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "blue ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "blue",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "red",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "green",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "blue",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "red",
+                                "description": "value of the red channel between 0 and 255. eg: 255",
+                                "default": "255"
+                            },
+                            {
+                                "name": "green",
+                                "description": "value of the green channel between 0 and 255. eg: 255",
+                                "default": "255"
+                            },
+                            {
+                                "name": "blue",
+                                "description": "value of the blue channel between 0 and 255. eg: 255",
+                                "default": "255"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.colors": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "weight": 2,
+                            "blockGap": "8",
+                            "blockId": "neopixel_colors",
+                            "block": "$this |$color",
+                            "advanced": true,
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "blockNamespace": "neopixel",
+                            "jsDoc": "Gets the RGB value of a known color",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "color",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "color",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "color",
+                                "type": "NeoPixelColors",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "neopixel.Strip.packRGB": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "a"
+                            },
+                            {
+                                "name": "b"
+                            },
+                            {
+                                "name": "c"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.pack_rgb"
+                    },
+                    "neopixel.Strip.unpackR": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "rgb"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.unpack_r"
+                    },
+                    "neopixel.Strip.unpackG": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "rgb"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.unpack_g"
+                    },
+                    "neopixel.Strip.unpackB": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "rgb"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "neopixel.Strip.unpack_b"
+                    },
+                    "neopixel.Strip.hsl": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Strip"
+                            },
+                            "blockId": "neopixelHSL",
+                            "block": "$this| hue $h|saturation $s|luminosity $l",
+                            "explicitDefaults": [
+                                "this",
+                                "this"
+                            ],
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "blockNamespace": "neopixel",
+                            "paramHelp": {
+                                "h": "hue from 0 to 360",
+                                "s": "saturation from 0 to 99",
+                                "l": "luminosity from 0 to 99"
+                            },
+                            "jsDoc": "Converts a hue saturation luminosity value into a RGB color",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " hue ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "h",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "saturation ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "s",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "luminosity ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "l",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "h",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "s",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "l",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "h",
+                                "description": "hue from 0 to 360"
+                            },
+                            {
+                                "name": "s",
+                                "description": "saturation from 0 to 99"
+                            },
+                            {
+                                "name": "l",
+                                "description": "luminosity from 0 to 99"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "ws2812b": {
+                        "kind": 5,
+                        "retType": ""
+                    },
+                    "ws2812b.sendBuffer": {
+                        "kind": -3,
+                        "attributes": {
+                            "shim": "sendBufferAsm"
+                        },
+                        "parameters": [
+                            {
+                                "name": "buf",
+                                "type": "Buffer"
+                            },
+                            {
+                                "name": "pin",
+                                "type": "DigitalPin",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "ws2812b.send_buffer"
+                    },
                     "i": {
                         "kind": 4,
                         "retType": "number"
@@ -29776,7 +32105,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "4030827b32bce94a8b8677720a54b4660eb09992c4cc28fa52838f04e541c927"
+            "sha": "e94afff99f20208508e848b5c5e74bf2a10cd5f4ce598baea77b15294eaa3587"
         },
         "libs/radio": {
             "apis": {
@@ -31192,7 +33521,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "6d2b670a1f98dbbd3f772a98697db19370cae28608170fd6262329cb8c2d2a78"
+            "sha": "b4eb65bfd80e040f3a446b6dd5cdf9ed8f388c23eb830611f83473970d6e4120"
         },
         "libs/devices": {
             "apis": {
@@ -33229,7 +35558,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "fe680a08771603516ebd451341627bf726f3b004fddf87e30e3081652a8265e7"
+            "sha": "50697d9f585502f386f09f9ab3690df638bef2fa105b4b51001b5bc3e6e28403"
         },
         "libs/bluetooth": {
             "apis": {
@@ -34180,7 +36509,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "e7e916eb4e8dd13f376477d85d15d1d6aa9d7a86d16a81517b8c9fdc670dc1d9"
+            "sha": "722c1fa5e36a2ed3b45870b2cebe76b46a7d3f11cc5be768a42d38d92fc39468"
         },
         "libs/servo": {
             "apis": {
@@ -34822,7 +37151,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "a3b353ab884c8afa1b3149ebb26818f48987a6c953352aa88e9b18e75aecb907"
+            "sha": "91fa1dd02d729eebd96b3ee10e23e2af0e0a26f9cf64a5892a17cdbdf01a6afd"
         },
         "libs/radio-broadcast": {
             "apis": {
@@ -36381,7 +38710,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "21e660944c314e0d7e01ffc6417532282c3465d962a4155054cc04b0d0ce7ba2"
+            "sha": "9cb1cb8733b384849065b4abdac6bc109f1ef9fbd1e63aff314949690ee3d065"
         },
         "libs/microphone": {
             "apis": {
@@ -36547,7 +38876,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "7bfe3fcb3edfe04868c23301f4257c8f0130f6c33b7c15fdffdd325c114cf05f"
+            "sha": "36da566f07165d10726d34d2145556dd30a2a4fdba7ef626b7fecd274c0db02a"
         },
         "libs\\blocksprj": {
             "apis": {
@@ -37963,7 +40292,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "2be493b955abcd2007687edee33f569a894841249cfd735c9f391089204d1eee"
+            "sha": "4dbe2a32bd5aacec8fa65418980235c0f78da089690f667dd18716b42109ef90"
         },
         "libs\\bluetoothprj": {
             "apis": {
@@ -38914,7 +41243,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "cf351ddd9efdc3172d6845cd8801c167352b45e16c1a509041cbe448785e933f"
+            "sha": "d1a1f8f10192758939cb4a4b074bd03ca6bcad3bc0d4fcda625f0c657ee7db1e"
         },
         "libs\\tsprj": {
             "apis": {
@@ -40330,7 +42659,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "eb87b8a49a472a97acc6ad20de6805e3b4a7ef88ca24a163f22677db9933fd51"
+            "sha": "dd357772f9c8b3865c4c4e3900c91ca9c39ec1081faa100f3164797b72f8f198"
         }
     }
 }

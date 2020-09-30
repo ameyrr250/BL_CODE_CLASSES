@@ -26972,6 +26972,2330 @@
                     "parameters": [],
                     "isInstance": true
                 },
+                "NeoPixelColors": {
+                    "kind": 6,
+                    "retType": "NeoPixelColors",
+                    "attributes": {
+                        "jsDoc": "Well known colors for a NeoPixel strip"
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors",
+                        "Number"
+                    ]
+                },
+                "NeoPixelColors.Red": {
+                    "retType": "NeoPixelColors.Red",
+                    "attributes": {
+                        "block": "red",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "red",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Red",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.RED"
+                },
+                "NeoPixelColors.Orange": {
+                    "retType": "NeoPixelColors.Orange",
+                    "attributes": {
+                        "block": "orange",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "orange",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Orange",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.ORANGE"
+                },
+                "NeoPixelColors.Yellow": {
+                    "retType": "NeoPixelColors.Yellow",
+                    "attributes": {
+                        "block": "yellow",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "yellow",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Yellow",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.YELLOW"
+                },
+                "NeoPixelColors.Green": {
+                    "retType": "NeoPixelColors.Green",
+                    "attributes": {
+                        "block": "green",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "green",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Green",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.GREEN"
+                },
+                "NeoPixelColors.Blue": {
+                    "retType": "NeoPixelColors.Blue",
+                    "attributes": {
+                        "block": "blue",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "blue",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Blue",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.BLUE"
+                },
+                "NeoPixelColors.Indigo": {
+                    "retType": "NeoPixelColors.Indigo",
+                    "attributes": {
+                        "block": "indigo",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "indigo",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Indigo",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.INDIGO"
+                },
+                "NeoPixelColors.Violet": {
+                    "retType": "NeoPixelColors.Violet",
+                    "attributes": {
+                        "block": "violet",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "violet",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Violet",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.VIOLET"
+                },
+                "NeoPixelColors.Purple": {
+                    "retType": "NeoPixelColors.Purple",
+                    "attributes": {
+                        "block": "purple",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "purple",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Purple",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.PURPLE"
+                },
+                "NeoPixelColors.White": {
+                    "retType": "NeoPixelColors.White",
+                    "attributes": {
+                        "block": "white",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "white",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.White",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.WHITE"
+                },
+                "NeoPixelColors.Black": {
+                    "retType": "NeoPixelColors.Black",
+                    "attributes": {
+                        "block": "black",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "black",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelColors.Black",
+                        "Number"
+                    ],
+                    "pyQName": "NeoPixelColors.BLACK"
+                },
+                "neoPin": {
+                    "kind": 6,
+                    "retType": "neoPin",
+                    "extendsTypes": [
+                        "neoPin",
+                        "Number"
+                    ]
+                },
+                "neoPin.none": {
+                    "retType": "neoPin.none",
+                    "extendsTypes": [
+                        "neoPin.none",
+                        "Number"
+                    ],
+                    "pyQName": "neoPin.NONE"
+                },
+                "neoPin.AN": {
+                    "retType": "neoPin.AN",
+                    "extendsTypes": [
+                        "neoPin.AN",
+                        "Number"
+                    ]
+                },
+                "neoPin.RST": {
+                    "retType": "neoPin.RST",
+                    "extendsTypes": [
+                        "neoPin.RST",
+                        "Number"
+                    ]
+                },
+                "neoPin.CS": {
+                    "retType": "neoPin.CS",
+                    "extendsTypes": [
+                        "neoPin.CS",
+                        "Number"
+                    ]
+                },
+                "neoPin.SCK": {
+                    "retType": "neoPin.SCK",
+                    "extendsTypes": [
+                        "neoPin.SCK",
+                        "Number"
+                    ]
+                },
+                "neoPin.MISO": {
+                    "retType": "neoPin.MISO",
+                    "extendsTypes": [
+                        "neoPin.MISO",
+                        "Number"
+                    ]
+                },
+                "neoPin.MOSI": {
+                    "retType": "neoPin.MOSI",
+                    "extendsTypes": [
+                        "neoPin.MOSI",
+                        "Number"
+                    ]
+                },
+                "neoPin.SDA": {
+                    "retType": "neoPin.SDA",
+                    "extendsTypes": [
+                        "neoPin.SDA",
+                        "Number"
+                    ]
+                },
+                "neoPin.SCL": {
+                    "retType": "neoPin.SCL",
+                    "extendsTypes": [
+                        "neoPin.SCL",
+                        "Number"
+                    ]
+                },
+                "neoPin.TX": {
+                    "retType": "neoPin.TX",
+                    "extendsTypes": [
+                        "neoPin.TX",
+                        "Number"
+                    ]
+                },
+                "neoPin.RX": {
+                    "retType": "neoPin.RX",
+                    "extendsTypes": [
+                        "neoPin.RX",
+                        "Number"
+                    ]
+                },
+                "neoPin.INT": {
+                    "retType": "neoPin.INT",
+                    "extendsTypes": [
+                        "neoPin.INT",
+                        "Number"
+                    ]
+                },
+                "neoPin.PWM": {
+                    "retType": "neoPin.PWM",
+                    "extendsTypes": [
+                        "neoPin.PWM",
+                        "Number"
+                    ]
+                },
+                "neoPin.P0": {
+                    "retType": "neoPin.P0",
+                    "extendsTypes": [
+                        "neoPin.P0",
+                        "Number"
+                    ]
+                },
+                "neoPin.P1": {
+                    "retType": "neoPin.P1",
+                    "extendsTypes": [
+                        "neoPin.P1",
+                        "Number"
+                    ]
+                },
+                "neoPin.P2": {
+                    "retType": "neoPin.P2",
+                    "extendsTypes": [
+                        "neoPin.P2",
+                        "Number"
+                    ]
+                },
+                "neoPin.P3": {
+                    "retType": "neoPin.P3",
+                    "extendsTypes": [
+                        "neoPin.P3",
+                        "Number"
+                    ]
+                },
+                "neoPin.P4": {
+                    "retType": "neoPin.P4",
+                    "extendsTypes": [
+                        "neoPin.P4",
+                        "Number"
+                    ]
+                },
+                "neoPin.P5": {
+                    "retType": "neoPin.P5",
+                    "extendsTypes": [
+                        "neoPin.P5",
+                        "Number"
+                    ]
+                },
+                "neoPin.P6": {
+                    "retType": "neoPin.P6",
+                    "extendsTypes": [
+                        "neoPin.P6",
+                        "Number"
+                    ]
+                },
+                "neoPin.P7": {
+                    "retType": "neoPin.P7",
+                    "extendsTypes": [
+                        "neoPin.P7",
+                        "Number"
+                    ]
+                },
+                "neoPin.P8": {
+                    "retType": "neoPin.P8",
+                    "extendsTypes": [
+                        "neoPin.P8",
+                        "Number"
+                    ]
+                },
+                "neoPin.P9": {
+                    "retType": "neoPin.P9",
+                    "extendsTypes": [
+                        "neoPin.P9",
+                        "Number"
+                    ]
+                },
+                "neoPin.P10": {
+                    "retType": "neoPin.P10",
+                    "extendsTypes": [
+                        "neoPin.P10",
+                        "Number"
+                    ]
+                },
+                "neoPin.P11": {
+                    "retType": "neoPin.P11",
+                    "extendsTypes": [
+                        "neoPin.P11",
+                        "Number"
+                    ]
+                },
+                "neoPin.P12": {
+                    "retType": "neoPin.P12",
+                    "extendsTypes": [
+                        "neoPin.P12",
+                        "Number"
+                    ]
+                },
+                "neoPin.P13": {
+                    "retType": "neoPin.P13",
+                    "extendsTypes": [
+                        "neoPin.P13",
+                        "Number"
+                    ]
+                },
+                "neoPin.P14": {
+                    "retType": "neoPin.P14",
+                    "extendsTypes": [
+                        "neoPin.P14",
+                        "Number"
+                    ]
+                },
+                "neoPin.P15": {
+                    "retType": "neoPin.P15",
+                    "extendsTypes": [
+                        "neoPin.P15",
+                        "Number"
+                    ]
+                },
+                "neoPin.P16": {
+                    "retType": "neoPin.P16",
+                    "extendsTypes": [
+                        "neoPin.P16",
+                        "Number"
+                    ]
+                },
+                "neoPin.P19": {
+                    "retType": "neoPin.P19",
+                    "attributes": {
+                        "blockHidden": true
+                    },
+                    "extendsTypes": [
+                        "neoPin.P19",
+                        "Number"
+                    ]
+                },
+                "neoPin.P20": {
+                    "retType": "neoPin.P20",
+                    "attributes": {
+                        "blockHidden": true
+                    },
+                    "extendsTypes": [
+                        "neoPin.P20",
+                        "Number"
+                    ]
+                },
+                "NeoPixelMode": {
+                    "kind": 6,
+                    "retType": "NeoPixelMode",
+                    "attributes": {
+                        "jsDoc": "Different modes for RGB or RGB+W NeoPixel strips"
+                    },
+                    "extendsTypes": [
+                        "NeoPixelMode",
+                        "Number"
+                    ]
+                },
+                "NeoPixelMode.RGB": {
+                    "retType": "NeoPixelMode.RGB",
+                    "attributes": {
+                        "block": "RGB (GRB format)",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "RGB (GRB format)",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelMode.RGB",
+                        "Number"
+                    ]
+                },
+                "NeoPixelMode.RGBW": {
+                    "retType": "NeoPixelMode.RGBW",
+                    "attributes": {
+                        "block": "RGB+W",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "RGB+W",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelMode.RGBW",
+                        "Number"
+                    ]
+                },
+                "NeoPixelMode.RGB_RGB": {
+                    "retType": "NeoPixelMode.RGB_RGB",
+                    "attributes": {
+                        "block": "RGB (RGB format)",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": "RGB (RGB format)",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": []
+                        }
+                    },
+                    "extendsTypes": [
+                        "NeoPixelMode.RGB_RGB",
+                        "Number"
+                    ]
+                },
+                "neopixel": {
+                    "kind": 5,
+                    "retType": "",
+                    "attributes": {
+                        "weight": 100,
+                        "color": "#2699BF",
+                        "icon": "",
+                        "advanced": true,
+                        "jsDoc": "Functions to operate NeoPixel strips."
+                    }
+                },
+                "neopixel.HueInterpolationDirection": {
+                    "kind": 6,
+                    "retType": "neopixel.HueInterpolationDirection",
+                    "attributes": {
+                        "jsDoc": "A NeoPixel strip"
+                    },
+                    "extendsTypes": [
+                        "neopixel.HueInterpolationDirection",
+                        "Number"
+                    ]
+                },
+                "neopixel.HueInterpolationDirection.Clockwise": {
+                    "retType": "neopixel.HueInterpolationDirection.Clockwise",
+                    "extendsTypes": [
+                        "neopixel.HueInterpolationDirection.Clockwise",
+                        "Number"
+                    ],
+                    "pyQName": "neopixel.HueInterpolationDirection.CLOCKWISE"
+                },
+                "neopixel.HueInterpolationDirection.CounterClockwise": {
+                    "retType": "neopixel.HueInterpolationDirection.CounterClockwise",
+                    "extendsTypes": [
+                        "neopixel.HueInterpolationDirection.CounterClockwise",
+                        "Number"
+                    ],
+                    "pyQName": "neopixel.HueInterpolationDirection.COUNTER_CLOCKWISE"
+                },
+                "neopixel.HueInterpolationDirection.Shortest": {
+                    "retType": "neopixel.HueInterpolationDirection.Shortest",
+                    "extendsTypes": [
+                        "neopixel.HueInterpolationDirection.Shortest",
+                        "Number"
+                    ],
+                    "pyQName": "neopixel.HueInterpolationDirection.SHORTEST"
+                },
+                "neopixel.createStrip": {
+                    "kind": -3,
+                    "retType": "neopixel.Strip",
+                    "attributes": {
+                        "block": " $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode",
+                        "blockSetVariable": "Strip",
+                        "blockId": "Strip",
+                        "weight": 110,
+                        "paramHelp": {
+                            "clickBoardNum": "the clickBoardNum",
+                            "Strip": "the Strip Object"
+                        },
+                        "jsDoc": "Sets NeoPixel object.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " on pin ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pin",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " for ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "numleds",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " LEDs and ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "mode",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " mode",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "clickBoardNum",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "clickSlot",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pin",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "numleds",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "mode",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "description": "the clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "pin",
+                            "type": "neoPin",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "numleds"
+                        },
+                        {
+                            "name": "mode",
+                            "type": "NeoPixelMode",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "neopixel.create_strip"
+                },
+                "neopixel.Strip": {
+                    "kind": 8,
+                    "retType": "neopixel.Strip",
+                    "extendsTypes": [
+                        "neopixel.Strip",
+                        "bBoard.peripheralSettings"
+                    ]
+                },
+                "neopixel.Strip.__constructor": {
+                    "kind": -3,
+                    "parameters": [
+                        {
+                            "name": "clickBoardNum",
+                            "type": "clickBoardID",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "clickSlot",
+                            "type": "clickBoardSlot",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "pin",
+                            "type": "neoPin",
+                            "isEnum": true
+                        },
+                        {
+                            "name": "numleds"
+                        },
+                        {
+                            "name": "mode",
+                            "type": "NeoPixelMode",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "neopixel.Strip.showColor": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_set_strip_color",
+                        "block": "$this|show color aaa $rgb=neopixel_colors",
+                        "weight": 85,
+                        "blockGap": "8",
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "rgb": "RGB color of the LED"
+                        },
+                        "jsDoc": "Shows all LEDs to a given color (range 0-255 for r, g, b).",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "show color aaa ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "rgb",
+                                    "shadowBlockId": "neopixel_colors",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "rgb",
+                                    "shadowBlockId": "neopixel_colors",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "rgb",
+                            "description": "RGB color of the LED"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.show_color"
+                },
+                "neopixel.Strip.showRainbow": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "startHue": "1",
+                            "endHue": "360"
+                        },
+                        "blockId": "neopixel_set_strip_rainbow",
+                        "block": "$this|show rainbow from $startHue|to $endHue",
+                        "weight": 85,
+                        "blockGap": "8",
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "startHue": "the start hue value for the rainbow, eg: 1",
+                            "endHue": "the end hue value for the rainbow, eg: 360"
+                        },
+                        "jsDoc": "Shows a rainbow pattern on all LEDs.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "show rainbow from ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "startHue",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "endHue",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "startHue",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "endHue",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "startHue",
+                            "description": "the start hue value for the rainbow, eg: 1",
+                            "initializer": "1",
+                            "default": "1"
+                        },
+                        {
+                            "name": "endHue",
+                            "description": "the end hue value for the rainbow, eg: 360",
+                            "initializer": "360",
+                            "default": "360"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.show_rainbow"
+                },
+                "neopixel.Strip.showBarGraph": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "high": "255"
+                        },
+                        "weight": 84,
+                        "blockId": "neopixel_show_bar_graph",
+                        "block": "$this|show bar graph of $value|up to $high",
+                        "icon": "",
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "value": "current value to plot",
+                            "high": "maximum value, eg: 255"
+                        },
+                        "jsDoc": "Displays a vertical bar graph based on the `value` and `high` value.\r\nIf `high` is 0, the chart gets adjusted automatically.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "show bar graph of ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "value",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "up to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "high",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "value",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "high",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "value",
+                            "description": "current value to plot"
+                        },
+                        {
+                            "name": "high",
+                            "description": "maximum value, eg: 255",
+                            "default": "255"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.show_bar_graph"
+                },
+                "neopixel.Strip.setPixelColor": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_set_pixel_color",
+                        "block": "$this|set pixel color at $pixeloffset|to $rgb=neopixel_colors",
+                        "blockGap": "8",
+                        "weight": 80,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "pixeloffset": "position of the NeoPixel in the strip",
+                            "rgb": "RGB color of the LED"
+                        },
+                        "jsDoc": "Set LED to a given color (range 0-255 for r, g, b).\r\nYou need to call ``show`` to make the changes visible.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "set pixel color at ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pixeloffset",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "rgb",
+                                    "shadowBlockId": "neopixel_colors",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pixeloffset",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "rgb",
+                                    "shadowBlockId": "neopixel_colors",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "pixeloffset",
+                            "description": "position of the NeoPixel in the strip"
+                        },
+                        {
+                            "name": "rgb",
+                            "description": "RGB color of the LED"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.set_pixel_color"
+                },
+                "neopixel.Strip.setMatrixWidth": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_set_matrix_width",
+                        "block": "$this|set matrix width $width",
+                        "blockGap": "8",
+                        "weight": 5,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "width": "number of pixels in a row"
+                        },
+                        "jsDoc": "Sets the number of pixels in a matrix shaped strip",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "set matrix width ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "width",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "width",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "width",
+                            "description": "number of pixels in a row"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.set_matrix_width"
+                },
+                "neopixel.Strip.setMatrixColor": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_set_matrix_color",
+                        "block": "$this|set matrix color at x $x|y $y|to $rgb=neopixel_colors",
+                        "weight": 4,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "x": "horizontal position",
+                            "y": "horizontal position",
+                            "rgb": "RGB color of the LED"
+                        },
+                        "jsDoc": "Set LED to a given color (range 0-255 for r, g, b) in a matrix shaped strip\r\nYou need to call ``show`` to make the changes visible.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "set matrix color at x ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "x",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "y ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "y",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "rgb",
+                                    "shadowBlockId": "neopixel_colors",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "x",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "y",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "rgb",
+                                    "shadowBlockId": "neopixel_colors",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "x",
+                            "description": "horizontal position"
+                        },
+                        {
+                            "name": "y",
+                            "description": "horizontal position"
+                        },
+                        {
+                            "name": "rgb",
+                            "description": "RGB color of the LED"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.set_matrix_color"
+                },
+                "neopixel.Strip.setPixelWhiteLED": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_set_pixel_white",
+                        "block": "$this|set pixel white LED at $pixeloffset|to $white",
+                        "blockGap": "8",
+                        "weight": 80,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "pixeloffset": "position of the LED in the strip",
+                            "white": "brightness of the white LED"
+                        },
+                        "jsDoc": "For NeoPixels with RGB+W LEDs, set the white LED brightness. This only works for RGB+W NeoPixels.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "set pixel white LED at ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pixeloffset",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "to ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "white",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "pixeloffset",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "white",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "pixeloffset",
+                            "description": "position of the LED in the strip"
+                        },
+                        {
+                            "name": "white",
+                            "description": "brightness of the white LED"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.set_pixel_white_led"
+                },
+                "neopixel.Strip.show": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_show",
+                        "block": "$this|show",
+                        "blockGap": "8",
+                        "weight": 79,
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "jsDoc": "Send all the changes to the strip.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "show",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "neopixel.Strip.clear": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_clear",
+                        "block": "$this|clear",
+                        "weight": 76,
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "jsDoc": "Turn off all LEDs.\r\nYou need to call ``show`` to make the changes visible.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "clear",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "neopixel.Strip.length": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_length",
+                        "block": "$this|length",
+                        "blockGap": "8",
+                        "weight": 60,
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "jsDoc": "Gets the number of pixels declared on the strip",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "length",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "neopixel.Strip.setBrightness": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "brightness": "255"
+                        },
+                        "blockId": "neopixel_set_brightness",
+                        "block": "$this|set brightness $brightness",
+                        "blockGap": "8",
+                        "weight": 59,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "brightness": "a measure of LED brightness in 0-255. eg: 255"
+                        },
+                        "jsDoc": "Set the brightness of the strip. This flag only applies to future operation.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "set brightness ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "brightness",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "brightness",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "brightness",
+                            "description": "a measure of LED brightness in 0-255. eg: 255",
+                            "default": "255"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.set_brightness"
+                },
+                "neopixel.Strip.easeBrightness": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixel_each_brightness",
+                        "block": "$this|ease brightness",
+                        "blockGap": "8",
+                        "weight": 58,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "jsDoc": "Apply brightness to current colors using a quadratic easing function.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "ease brightness",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.ease_brightness"
+                },
+                "neopixel.Strip.range": {
+                    "kind": -1,
+                    "retType": "neopixel.Strip",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "length": "4"
+                        },
+                        "weight": 89,
+                        "blockId": "neopixel_range",
+                        "block": "$this|range from $start|with $length|leds",
+                        "parts": "neopixel",
+                        "blockSetVariable": "range",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "start": "offset in the LED strip to start the range",
+                            "length": "number of LEDs in the range. eg: 4"
+                        },
+                        "jsDoc": "Create a range of LEDs.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "range from ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "start",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "with ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "length",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "leds",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "start",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "length",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "start",
+                            "description": "offset in the LED strip to start the range"
+                        },
+                        {
+                            "name": "length",
+                            "description": "number of LEDs in the range. eg: 4",
+                            "default": "4"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "neopixel.Strip.shift": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "offset": "1"
+                        },
+                        "blockId": "neopixel_shift",
+                        "block": "$this|shift pixels by $offset",
+                        "blockGap": "8",
+                        "weight": 40,
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "offset": "number of pixels to shift forward, eg: 1"
+                        },
+                        "jsDoc": "Shift LEDs forward and clear with zeros.\r\nYou need to call ``show`` to make the changes visible.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "shift pixels by ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "offset",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "offset",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "offset",
+                            "description": "number of pixels to shift forward, eg: 1",
+                            "initializer": "1",
+                            "default": "1"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "neopixel.Strip.rotate": {
+                    "kind": -1,
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "offset": "1"
+                        },
+                        "blockId": "neopixel_rotate",
+                        "block": "$this|rotate pixels by $offset",
+                        "blockGap": "8",
+                        "weight": 39,
+                        "parts": "neopixel",
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "offset": "number of pixels to rotate forward, eg: 1"
+                        },
+                        "jsDoc": "Rotate LEDs forward.\r\nYou need to call ``show`` to make the changes visible.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "rotate pixels by ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "offset",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "offset",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "offset",
+                            "description": "number of pixels to rotate forward, eg: 1",
+                            "initializer": "1",
+                            "default": "1"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "neopixel.Strip.setPin": {
+                    "kind": -1,
+                    "attributes": {
+                        "weight": 10,
+                        "parts": "neopixel",
+                        "advanced": true,
+                        "jsDoc": "Set the pin where the neopixel is connected, defaults to P0."
+                    },
+                    "parameters": [
+                        {
+                            "name": "pin",
+                            "type": "DigitalPin",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.set_pin"
+                },
+                "neopixel.Strip.power": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "weight": 9,
+                        "blockId": "neopixel_power",
+                        "block": "$this|power (mA)",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "jsDoc": "Estimates the electrical current (mA) consumed by the current light configuration.",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "power (mA)",
+                                    "style": []
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [],
+                    "isInstance": true
+                },
+                "neopixel.Strip.rgb": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip",
+                            "red": "255",
+                            "green": "255",
+                            "blue": "255"
+                        },
+                        "weight": 1,
+                        "blockId": "neopixel_rgb",
+                        "block": "$this |red $red|green $green|blue $blue",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "red": "value of the red channel between 0 and 255. eg: 255",
+                            "green": "value of the green channel between 0 and 255. eg: 255",
+                            "blue": "value of the blue channel between 0 and 255. eg: 255"
+                        },
+                        "jsDoc": "Converts red, green, blue channels into a RGB color",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "red ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "red",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "green ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "green",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "blue ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "blue",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "red",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "green",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "blue",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "red",
+                            "description": "value of the red channel between 0 and 255. eg: 255",
+                            "default": "255"
+                        },
+                        {
+                            "name": "green",
+                            "description": "value of the green channel between 0 and 255. eg: 255",
+                            "default": "255"
+                        },
+                        {
+                            "name": "blue",
+                            "description": "value of the blue channel between 0 and 255. eg: 255",
+                            "default": "255"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "neopixel.Strip.colors": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "weight": 2,
+                        "blockGap": "8",
+                        "blockId": "neopixel_colors",
+                        "block": "$this |$color",
+                        "advanced": true,
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "explicitDefaults": [
+                            "this"
+                        ],
+                        "blockNamespace": "neopixel",
+                        "jsDoc": "Gets the RGB value of a known color",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "color",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "color",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "color",
+                            "type": "NeoPixelColors",
+                            "isEnum": true
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "neopixel.Strip.packRGB": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "a"
+                        },
+                        {
+                            "name": "b"
+                        },
+                        {
+                            "name": "c"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.pack_rgb"
+                },
+                "neopixel.Strip.unpackR": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "rgb"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.unpack_r"
+                },
+                "neopixel.Strip.unpackG": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "rgb"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.unpack_g"
+                },
+                "neopixel.Strip.unpackB": {
+                    "kind": -1,
+                    "retType": "number",
+                    "parameters": [
+                        {
+                            "name": "rgb"
+                        }
+                    ],
+                    "isInstance": true,
+                    "pyQName": "neopixel.Strip.unpack_b"
+                },
+                "neopixel.Strip.hsl": {
+                    "kind": -1,
+                    "retType": "number",
+                    "attributes": {
+                        "paramDefl": {
+                            "this": "Strip"
+                        },
+                        "blockId": "neopixelHSL",
+                        "block": "$this| hue $h|saturation $s|luminosity $l",
+                        "explicitDefaults": [
+                            "this",
+                            "this"
+                        ],
+                        "_shadowOverrides": {
+                            "this": "variables_get"
+                        },
+                        "blockNamespace": "neopixel",
+                        "paramHelp": {
+                            "h": "hue from 0 to 360",
+                            "s": "saturation from 0 to 99",
+                            "l": "luminosity from 0 to 99"
+                        },
+                        "jsDoc": "Converts a hue saturation luminosity value into a RGB color",
+                        "_def": {
+                            "parts": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": " hue ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "h",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "saturation ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "s",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "break"
+                                },
+                                {
+                                    "kind": "label",
+                                    "text": "luminosity ",
+                                    "style": []
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "l",
+                                    "ref": true
+                                }
+                            ],
+                            "parameters": [
+                                {
+                                    "kind": "param",
+                                    "name": "this",
+                                    "shadowBlockId": "variables_get",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "h",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "s",
+                                    "ref": true
+                                },
+                                {
+                                    "kind": "param",
+                                    "name": "l",
+                                    "ref": true
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": [
+                        {
+                            "name": "h",
+                            "description": "hue from 0 to 360"
+                        },
+                        {
+                            "name": "s",
+                            "description": "saturation from 0 to 99"
+                        },
+                        {
+                            "name": "l",
+                            "description": "luminosity from 0 to 99"
+                        }
+                    ],
+                    "isInstance": true
+                },
+                "ws2812b": {
+                    "kind": 5,
+                    "retType": ""
+                },
+                "ws2812b.sendBuffer": {
+                    "kind": -3,
+                    "attributes": {
+                        "shim": "sendBufferAsm"
+                    },
+                    "parameters": [
+                        {
+                            "name": "buf",
+                            "type": "Buffer"
+                        },
+                        {
+                            "name": "pin",
+                            "type": "DigitalPin",
+                            "isEnum": true
+                        }
+                    ],
+                    "pyQName": "ws2812b.send_buffer"
+                },
                 "i": {
                     "kind": 4,
                     "retType": "number"
@@ -27007,7 +29331,7 @@
                 }
             }
         },
-        "sha": "4030827b32bce94a8b8677720a54b4660eb09992c4cc28fa52838f04e541c927"
+        "sha": "e94afff99f20208508e848b5c5e74bf2a10cd5f4ce598baea77b15294eaa3587"
     },
     "libs/radio": {
         "apis": {
@@ -28423,7 +30747,7 @@
                 }
             }
         },
-        "sha": "6d2b670a1f98dbbd3f772a98697db19370cae28608170fd6262329cb8c2d2a78"
+        "sha": "b4eb65bfd80e040f3a446b6dd5cdf9ed8f388c23eb830611f83473970d6e4120"
     },
     "libs/devices": {
         "apis": {
@@ -30460,7 +32784,7 @@
                 }
             }
         },
-        "sha": "fe680a08771603516ebd451341627bf726f3b004fddf87e30e3081652a8265e7"
+        "sha": "50697d9f585502f386f09f9ab3690df638bef2fa105b4b51001b5bc3e6e28403"
     },
     "libs/bluetooth": {
         "apis": {
@@ -31411,7 +33735,7 @@
                 }
             }
         },
-        "sha": "e7e916eb4e8dd13f376477d85d15d1d6aa9d7a86d16a81517b8c9fdc670dc1d9"
+        "sha": "722c1fa5e36a2ed3b45870b2cebe76b46a7d3f11cc5be768a42d38d92fc39468"
     },
     "libs/servo": {
         "apis": {
@@ -32053,7 +34377,7 @@
                 }
             }
         },
-        "sha": "a3b353ab884c8afa1b3149ebb26818f48987a6c953352aa88e9b18e75aecb907"
+        "sha": "91fa1dd02d729eebd96b3ee10e23e2af0e0a26f9cf64a5892a17cdbdf01a6afd"
     },
     "libs/radio-broadcast": {
         "apis": {
@@ -33612,7 +35936,7 @@
                 }
             }
         },
-        "sha": "21e660944c314e0d7e01ffc6417532282c3465d962a4155054cc04b0d0ce7ba2"
+        "sha": "9cb1cb8733b384849065b4abdac6bc109f1ef9fbd1e63aff314949690ee3d065"
     },
     "libs/microphone": {
         "apis": {
@@ -33778,7 +36102,7 @@
                 }
             }
         },
-        "sha": "7bfe3fcb3edfe04868c23301f4257c8f0130f6c33b7c15fdffdd325c114cf05f"
+        "sha": "36da566f07165d10726d34d2145556dd30a2a4fdba7ef626b7fecd274c0db02a"
     },
     "libs\\blocksprj": {
         "apis": {
@@ -35194,7 +37518,7 @@
                 }
             }
         },
-        "sha": "2be493b955abcd2007687edee33f569a894841249cfd735c9f391089204d1eee"
+        "sha": "4dbe2a32bd5aacec8fa65418980235c0f78da089690f667dd18716b42109ef90"
     },
     "libs\\bluetoothprj": {
         "apis": {
@@ -36145,7 +38469,7 @@
                 }
             }
         },
-        "sha": "cf351ddd9efdc3172d6845cd8801c167352b45e16c1a509041cbe448785e933f"
+        "sha": "d1a1f8f10192758939cb4a4b074bd03ca6bcad3bc0d4fcda625f0c657ee7db1e"
     },
     "libs\\tsprj": {
         "apis": {
@@ -37561,6 +39885,6 @@
                 }
             }
         },
-        "sha": "eb87b8a49a472a97acc6ad20de6805e3b4a7ef88ca24a163f22677db9933fd51"
+        "sha": "dd357772f9c8b3865c4c4e3900c91ca9c39ec1081faa100f3164797b72f8f198"
     }
 }
