@@ -1,4 +1,4 @@
-// total=3731 new=43.26% cached=0.00% other=56.74%
+// total=4743 new=55.39% cached=0.00% other=44.61%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -56,7 +56,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P8105243(s) {
+function _main___P182271(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -66,34 +66,63 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___8105546 = (undefined);
+    globals._intervals___182628 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___8105792 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___8105792, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___182875 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___182875, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___8105804 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___8105804, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___182887 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___182887, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___8105814 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___8105814, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___182897 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___182897, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___8105824 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___8105824, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___182907 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___182907, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___8105834 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___8105834, 2, 0, 2);
+    globals.READ_BBOARD_TX_BUFFER___182917 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___182917, 2, 0, 2);
+    r0 = pxsim_pxtrt.mkMap();
+    s.tmp_0 = r0;
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_1 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "topic", s.tmp_1);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_2 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "key", s.tmp_2);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_3 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "cmd", s.tmp_3);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_4 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "feedName", s.tmp_4);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_5 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "value", s.tmp_5);
+    globals.MQTTMessageObject___183091 = (s.tmp_0);
+    r0 = pxsim_Array__mk();
+    s.tmp_0 = r0;
+    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___183091);
+    globals.mqttMessageList___183093 = (s.tmp_0);
+    r0 = pxsim_Array_.pop(globals.mqttMessageList___183093);
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-_main___P8105243.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
-_main___P8105243.continuations = [  ]
+_main___P182271.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"test.ts","functionName":"<main>","argumentNames":[]}
+_main___P182271.continuations = [  ]
 
-function _main___P8105243_mk(s) {
+function _main___P182271_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P8105243, depth: s.depth + 1,
+        parent: s, fn: _main___P182271, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
+  tmp_0: undefined,
+  tmp_1: undefined,
+  tmp_2: undefined,
+  tmp_3: undefined,
+  tmp_4: undefined,
+  tmp_5: undefined,
 } }
 
 
@@ -102,5 +131,5 @@ function _main___P8105243_mk(s) {
 
 const breakpoints = setupDebugger(1, [])
 
-return _main___P8105243
+return _main___P182271
 })

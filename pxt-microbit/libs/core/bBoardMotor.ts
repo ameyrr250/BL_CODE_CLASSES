@@ -26,8 +26,8 @@ namespace bBoard_Motor {
      
          
          forward = 1,
-         brake = 0,
-         backward = 2
+         backward = 2,
+         brake = 0
      
      }
     
@@ -41,15 +41,16 @@ namespace bBoard_Motor {
 
      /**
      * Sets Motor object.
-     * @param clickBoardNum the board
-     * @param clickSlot the bus
+     * @param boardID the board
+     * @param clickID the bus
      *  @param motor the motor Object
      */
-    //% block=" $clickBoardNum $clickSlot| Motor Driver $motor_DriverS"
-    //% blockSetVariable="motor"
+    //% block=" $boardID $clickID motor $motor_DriverS"
+    //% blockSetVariable="leftMotor"
+       //% clickID.defl=ClickID.Zero
     //% weight=110
-    export function createLCDSettings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, motor_DriverS:motorDriver): BBOARD_MOTOR {
-        return new BBOARD_MOTOR(clickBoardNum, clickSlot, motor_DriverS);
+    export function createMotor(boardID: BoardID,clickID:ClickID, motor_DriverS:motorDriver): BBOARD_MOTOR {
+        return new BBOARD_MOTOR(boardID, clickID, motor_DriverS);
    }
        
        export class BBOARD_MOTOR extends bBoard.PWMSettings{
@@ -57,18 +58,18 @@ namespace bBoard_Motor {
         private duty  : number
         private direction  : number 
         private motor_Driver :motorDriver
-        private clickBoardNumGlobal:number
-        private clickSlotNumGlobal:number
+        private boardIDGlobal:number
+        private clickIDGlobal:number
         private PeripheralObject:bBoard.peripheralSettings
     
-       constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, motor_DriverLocal:motorDriver){
-        super(clickBoardNum, clickSlot);
+       constructor(boardID: BoardID,clickID:ClickID, motor_DriverLocal:motorDriver){
+        super(boardID, clickID);
         this.duty = 50
         this.direction = motorDirection.forward
-        this.clickBoardNumGlobal=clickBoardNum;
-        this.clickSlotNumGlobal=clickSlot;
+        this.boardIDGlobal=boardID;
+        this.clickIDGlobal=clickID;
         this.motor_Driver=motor_DriverLocal;
-        this.PeripheralObject=new bBoard.peripheralSettings(clickBoardNum, clickSlot);
+        this.PeripheralObject=new bBoard.peripheralSettings(boardID, clickID);
         this.motorEnable(bBoard_Motor.motorState.enabled);
        }
        
@@ -94,11 +95,11 @@ namespace bBoard_Motor {
     
         
         //% blockId=Motor_enable
-        //% block="Set $this to %enabled"
+        //% block="$this motor %enabled"
         //% advanced=false
         //% blockNamespace=bBoard_Motor
         //% this.shadow=variables_get
-        //% this.defl="motor"
+        //% this.defl="leftMotor"
         //% parts="bBoardMotor"
     
            motorEnable(enabled: bBoard_Motor.motorState): void {
@@ -111,12 +112,12 @@ namespace bBoard_Motor {
       
        
             //% blockId=Motor_dutyDirection
-            //% block="Set $this duty to %duty with direction%direction"
+            //% block="$this set duty to %duty with direction%direction"
             //% advanced=false
             //% duty.min=0 duty.max=100
             //% blockNamespace=bBoard_Motor
             //% this.shadow=variables_get
-            //% this.defl="motor"
+            //% this.defl="leftMotor"
             //% parts="bBoardMotor"
            motorDutyDirection(duty: number,direction: bBoard_Motor.motorDirection): void {
        
@@ -130,10 +131,10 @@ namespace bBoard_Motor {
 /*      //% block="Initialize $this |bBoard motor driver %motorDriver on $boardIDValue"
         //% blockSetVariable="motor"
         //% weight=110
-        //% this.defl="motor"
+        //% this.defl="leftMotor"
         //% parts="bBoardMotor"
-        //initMotor(motorDriverID: bBoard_Motor.motorDriver, clickBoardIDval: clickBoardID, clickSlotIDval: clickBoardSlot): BBOARD_MOTOR {
-        //    let motor = new BBOARD_MOTOR(clickBoardIDval, clickSlotIDval)
+        //initMotor(motorDriverID: bBoard_Motor.motorDriver, clickBoardIDval: BoardID,clickIDIDval: clickBoardSlot): BBOARD_MOTOR {
+        //    let motor = new BBOARD_MOTOR(clickBoardIDval, clickIDIDval)
         //    motor.clickBoardIDval = boardIDValue
         //    motor.motor_Driver = motorDriverID
         //    this.motorEnable(bBoard_Motor.motorState.enabled) //Enable the motor

@@ -91,15 +91,20 @@ namespace neopixel {
 
     /**
      * Sets NeoPixel object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
+     * @param clickID the clickID
      *  @param Strip the Strip Object
      */
-    //% block=" $clickBoardNum $clickSlot on pin $pin for $numleds LEDs and $mode mode"
-    //% blockSetVariable="Strip"
+    //% block="$boardID $clickID| on pin $pin with $numleds LEDs| and mode$mode"
+    //% boardID.defl=0
+    //% clickID.defl=ClickID.Zero
+    //% pin.defl=0
+    //% numleds.defl=5
+    //% blockSetVariable="neoStrip"
     //% blockId=Strip
     //% weight=110
-    export function createStrip(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
-        return new Strip(clickBoardNum, clickSlot, pin, numleds, mode);
+    export function createStrip(boardID: BoardID, clickID:ClickID, pin: neoPin, numleds: number, mode: NeoPixelMode): Strip {
+        return new Strip(boardID, clickID, pin, numleds, mode);
     }
 
      //Neopixel Function IDs
@@ -122,8 +127,8 @@ namespace neopixel {
        private pin: DigitalPin;
 
         //b.Board specific
-        private board: clickBoardID;
-        private clickPort: clickBoardSlot;
+        private board: BoardID;
+        private clickPort: ClickID;
         private bBoard: boolean;
         //b.Board specific
 
@@ -134,16 +139,16 @@ namespace neopixel {
         private _mode: NeoPixelMode;
         private _matrixWidth: number; // number of leds in a matrix - if any
 
-        private clickBoardNumGlobal:number
-        private clickSlotNumGlobal:number
+        private boardIDGlobal:number
+        private clickIDGlobal:number
         private pinGlobal:neoPin
         private numledsGlobal:number
         private modeGlobal:NeoPixelMode
     
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot, pin: neoPin, numleds: number, mode: NeoPixelMode){
-            super(clickBoardNum, clickSlot)
-            this.clickBoardNumGlobal=clickBoardNum;
-            this.clickSlotNumGlobal=clickSlot;
+        constructor(boardID: BoardID, clickID:ClickID, pin: neoPin, numleds: number, mode: NeoPixelMode){
+            super(boardID, clickID)
+            this.boardIDGlobal=boardID;
+            this.clickIDGlobal=clickID;
             this.pinGlobal=pin
             this.numledsGlobal=numleds
             this.modeGlobal=mode
@@ -167,15 +172,15 @@ namespace neopixel {
             this.bBoard = true;
             this.pin = parseInt(pin.toString());
           
-            if(this.clickSlotNumGlobal == clickBoardSlot.default) //If the on-board neopixels are selected
+            if(this.clickIDGlobal == ClickID.Zero) //If the on-board neopixels are selected
             {
                
                 this.pin = parseInt(clickIOPin.PWM.toString()); //Set the pin to the PWM on click zero (Click Z reserves PWM pin for built in neopixels)
                
             }
             
-            this.board = this.clickBoardNumGlobal;
-            this.clickPort = this.clickSlotNumGlobal;
+            this.board = this.boardIDGlobal;
+            this.clickPort = this.clickIDGlobal;
             
             this.sendData(parseInt(this.pin.toString()),moduleIDs.NEOPIXEL_module_id,this.NEOPIXEL_ADD,[mode,numleds])
           
@@ -197,11 +202,11 @@ namespace neopixel {
          * Shows all LEDs to a given color (range 0-255 for r, g, b).
          * @param rgb RGB color of the LED
          */
-        //% blockId="neopixel_set_strip_color" block="$this|show color aaa $rgb=neopixel_colors"
+        //% blockId="neopixel_set_strip_color" block="$this|show color $rgb=neopixel_colors"
         //% weight=85 blockGap=8
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         
 
@@ -220,7 +225,7 @@ namespace neopixel {
         //% weight=85 blockGap=8
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         showRainbow(startHue: number = 1, endHue: number = 360) {
             if (this._length <= 0) return;
@@ -265,16 +270,16 @@ namespace neopixel {
 
             //interpolate
             if (steps === 1) {
-                this.setPixelColor(0, this.hsl(h1 + hStep, s1 + sStep, l1 + lStep))
+                this.setPixelColor(0, hsl(h1 + hStep, s1 + sStep, l1 + lStep))
             } else {
-                this.setPixelColor(0, this.hsl(startHue, saturation, luminance));
+                this.setPixelColor(0, hsl(startHue, saturation, luminance));
                 for (let i = 1; i < steps - 1; i++) {
                     const h = Math.idiv((h1_100 + i * hStep), 100) + 360;
                     const s = Math.idiv((s1_100 + i * sStep), 100);
                     const l = Math.idiv((l1_100 + i * lStep), 100);
-                    this.setPixelColor(i, this.hsl(h, s, l));
+                    this.setPixelColor(i, hsl(h, s, l));
                 }
-                this.setPixelColor(steps - 1, this.hsl(endHue, saturation, luminance));
+                this.setPixelColor(steps - 1, hsl(endHue, saturation, luminance));
             }
             this.show();
         }
@@ -290,7 +295,7 @@ namespace neopixel {
         //% icon="\uf080"
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         showBarGraph(value: number, high: number): void {
             if (high <= 0) {
@@ -312,7 +317,7 @@ namespace neopixel {
                 for (let i = 0; i < n; ++i) {
                     if (i <= v) {
                         const b = Math.idiv(i * 255, n1);
-                        this.setPixelColor(i, this.rgb(b, 0, 255 - b));
+                        this.setPixelColor(i, rgb(b, 0, 255 - b));
                     }
                     else this.setPixelColor(i, 0);
                 }
@@ -331,7 +336,7 @@ namespace neopixel {
         //% weight=80
         //% parts="neopixel" advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         setPixelColor(pixeloffset: number, rgb: number): void {
             this.setPixelRGB(pixeloffset >> 0, rgb >> 0);
@@ -346,7 +351,7 @@ namespace neopixel {
         //% weight=5
         //% parts="neopixel" advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         setMatrixWidth(width: number) {
             this._matrixWidth = Math.min(this._length, width >> 0);
@@ -363,7 +368,7 @@ namespace neopixel {
         //% weight=4
         //% parts="neopixel" advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         setMatrixColor(x: number, y: number, rgb: number) {
             if (this._matrixWidth <= 0) return; // not a matrix, ignore
@@ -386,7 +391,7 @@ namespace neopixel {
         //% weight=80
         //% parts="neopixel" advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         setPixelWhiteLED(pixeloffset: number, white: number): void {
             if (this._mode === NeoPixelMode.RGBW) {
@@ -401,7 +406,7 @@ namespace neopixel {
         //% weight=79
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         show() {
             if(this.bBoard == true)
@@ -428,7 +433,7 @@ namespace neopixel {
         //% weight=76
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         clear(): void {
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
@@ -441,7 +446,7 @@ namespace neopixel {
         //% blockId="neopixel_length" block="$this|length" blockGap=8
         //% weight=60 advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         length() {
             return this._length;
@@ -455,7 +460,7 @@ namespace neopixel {
         //% weight=59
         //% parts="neopixel" advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         setBrightness(brightness: number): void {
             this.brightness = brightness & 0xff;
@@ -468,7 +473,7 @@ namespace neopixel {
         //% weight=58
         //% parts="neopixel" advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         easeBrightness(): void {
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
@@ -503,12 +508,12 @@ namespace neopixel {
         //% parts="neopixel"
         //% blockSetVariable=range
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         range(start: number, length: number): Strip {
             start = start >> 0;
             length = length >> 0;
-            let strip = new Strip(this.clickBoardNumGlobal, this.clickSlotNumGlobal,  this.pinGlobal, this.numledsGlobal, this.modeGlobal);
+            let strip = new Strip(this.boardIDGlobal, this.clickIDGlobal,  this.pinGlobal, this.numledsGlobal, this.modeGlobal);
             strip.buf = this.buf;
             strip.pin = this.pin;
             strip.brightness = this.brightness;
@@ -528,7 +533,7 @@ namespace neopixel {
         //% weight=40
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         shift(offset: number = 1): void {
             offset = offset >> 0;
@@ -545,7 +550,7 @@ namespace neopixel {
         //% weight=39
         //% parts="neopixel"
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         rotate(offset: number = 1): void {
             offset = offset >> 0;
@@ -570,7 +575,7 @@ namespace neopixel {
         //% weight=9 blockId=neopixel_power block="$this|power (mA)"
         //% advanced=true
         //% this.shadow=variables_get
-        //% this.defl="Strip"
+        //% this.defl="neoStrip"
         //% blockNamespace=neopixel
         power(): number {
             const stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
@@ -598,9 +603,9 @@ namespace neopixel {
         }
 
         private setAllRGB(rgb: number) {
-            let red = this.unpackR(rgb);
-            let green = this.unpackG(rgb);
-            let blue = this.unpackB(rgb);
+            let red = unpackR(rgb);
+            let green = unpackG(rgb);
+            let blue = unpackB(rgb);
 
             const br = this.brightness;
             if (br < 255) {
@@ -637,9 +642,9 @@ namespace neopixel {
             let stride = this._mode === NeoPixelMode.RGBW ? 4 : 3;
             pixeloffset = (pixeloffset + this.start) * stride;
 
-            let red = this.unpackR(rgb);
-            let green = this.unpackG(rgb);
-            let blue = this.unpackB(rgb);
+            let red = unpackR(rgb);
+            let green = unpackG(rgb);
+            let blue = unpackB(rgb);
 
             let br = this.brightness;
             if (br < 255) {
@@ -667,50 +672,43 @@ namespace neopixel {
             buf.setNumber(NumberFormat.UInt8LE,pixeloffset + 3, white);
         }
 
+    }
 
-
-        
-    /**
+        /**
      * Converts red, green, blue channels into a RGB color
      * @param red value of the red channel between 0 and 255. eg: 255
      * @param green value of the green channel between 0 and 255. eg: 255
      * @param blue value of the blue channel between 0 and 255. eg: 255
      */
     //% weight=1
-    //% blockId="neopixel_rgb" block="$this |red $red|green $green|blue $blue"
+    //% blockId="neopixel_rgb" block="red %red|green %green|blue %blue"
     //% advanced=true
-    //% this.shadow=variables_get
-    //% this.defl="Strip"
-    //% blockNamespace=neopixel
-    rgb(red: number, green: number, blue: number): number {
-        return this.packRGB(red, green, blue);
+    export function rgb(red: number, green: number, blue: number): number {
+        return packRGB(red, green, blue);
     }
 
     /**
      * Gets the RGB value of a known color
     */
     //% weight=2 blockGap=8
-    //% blockId="neopixel_colors" block="$this |$color"
+    //% blockId="neopixel_colors" block="%color"
     //% advanced=true
-    //% this.shadow=variables_get
-    //% this.defl="Strip"
-    //% blockNamespace=neopixel
-    colors(color: NeoPixelColors): number {
+    export function colors(color: NeoPixelColors): number {
         return color;
     }
 
-    packRGB(a: number, b: number, c: number): number {
+    function packRGB(a: number, b: number, c: number): number {
         return ((a & 0xFF) << 16) | ((b & 0xFF) << 8) | (c & 0xFF);
     }
-    unpackR(rgb: number): number {
+    function unpackR(rgb: number): number {
         let r = (rgb >> 16) & 0xFF;
         return r;
     }
-    unpackG(rgb: number): number {
+    function unpackG(rgb: number): number {
         let g = (rgb >> 8) & 0xFF;
         return g;
     }
-    unpackB(rgb: number): number {
+    function unpackB(rgb: number): number {
         let b = (rgb) & 0xFF;
         return b;
     }
@@ -721,12 +719,8 @@ namespace neopixel {
      * @param s saturation from 0 to 99
      * @param l luminosity from 0 to 99
      */
-    //% blockId=neopixelHSL block="$this| hue $h|saturation $s|luminosity $l"
-    //% this.defl="Strip"
-    //% this.shadow=variables_get
-    //% this.defl="Strip"
-    //% blockNamespace=neopixel
-    hsl(h: number, s: number, l: number): number {
+    //% blockId=neopixelHSL block="hue %h|saturation %s|luminosity %l"
+    export function hsl(h: number, s: number, l: number): number {
         h = Math.round(h);
         s = Math.round(s);
         l = Math.round(l);
@@ -759,13 +753,8 @@ namespace neopixel {
         let r = r$ + m;
         let g = g$ + m;
         let b = b$ + m;
-        return this.packRGB(r, g, b);
+        return packRGB(r, g, b);
     }
-
-    }
-
-   
-
 
 
 }

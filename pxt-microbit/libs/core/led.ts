@@ -1,7 +1,7 @@
 /**
  * Control of the LED screen.
  */
-//% color=#5B2D43 weight=101 icon="\uf207"
+//% color=#5C2D91 weight=101 icon="\uf205"
 namespace led {
     /**
      * Get the on/off state of the specified LED using x, y coordinates. (0,0) is upper left.
@@ -9,7 +9,7 @@ namespace led {
      * @param y the vertical coordinate of the LED
      */
     //% help=led/point weight=76
-    //% blockId=device_point block="a point|x %x|y %y"
+    //% blockId=device_point block="point|x %x|y %y"
     //% parts="ledmatrix"
     //% x.min=0 x.max=4 y.min=0 y.max=4
     //% x.fieldOptions.precision=1 y.fieldOptions.precision=1
@@ -155,6 +155,4 @@ namespace led {
         }
         led.setBrightness(0);
     }
-
-
 }

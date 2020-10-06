@@ -1,5 +1,4 @@
 
-
 //-------------------------Click Board Blocks Begin -----------------------------------
 //% weight=100 color=#EF697B icon=""
 //% advanced=true
@@ -8,15 +7,15 @@ namespace bBoard_Music
 {
     /**
      * Sets mic object.
-     * @param clickBoardNum the click
-     * @param clickSlot the bus
-     *  @param speaker the neopixel Object
+     * @param boardID the click
+     * @param clickID the bus
      */
-    //% block="$clickBoardNum $clickSlot"
+    //% block="$boardID $clickID"
     //% blockSetVariable="speaker"
+       //% clickID.defl=ClickID.Zero
     //% weight=110
-    export function createMic(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): bBoardSpeaker {
-        return new bBoardSpeaker(clickBoardNum, clickSlot);
+    export function createSpeaker(boardID: BoardID, clickID:ClickID): bBoardSpeaker {
+        return new bBoardSpeaker(boardID, clickID);
     }
 
 enum functionID
@@ -32,23 +31,23 @@ enum functionID
  }
  export enum speakerEnable
  {
- 
-     disabled = 0,
-     enabled = 1
+    enabled = 1,
+     disabled = 0
+   
  
  }
    
    export class bBoardSpeaker extends bBoard.peripheralSettings{
   
   
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobal:number
+    private clickIDGlobal:number
   
 
-   constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot)
-    this.clickBoardNumGlobal=clickBoardNum;
-    this.clickSlotNumGlobal=clickSlot;
+   constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID)
+    this.boardIDGlobal=boardID;
+    this.clickIDGlobal=clickID;
    }
    
 
@@ -71,7 +70,7 @@ enum functionID
 
           
         //% blockId=Start_Song
-        //% block="$this Start song"
+        //% block="$this start song"
         //% advanced=false
         //% blockNamespace=bBoard_Music
         //% this.shadow=variables_get
@@ -84,7 +83,7 @@ enum functionID
        }
 
         //% blockId=Music_Set_Tempo
-        //% block="Set $this BPM to %BPM"
+        //% block="$this set BPM to %BPM"
         //% advanced=false
         //% BPM.defl="30"
         //% blockNamespace=bBoard_Music
@@ -100,7 +99,7 @@ enum functionID
       }
 
         //% blockId=Send_Song
-        //% block="Send $this $song to play"
+        //% block="$this send $song to play"
         //% advanced=false
         //% blockNamespace=bBoard_Music
         //% this.shadow=variables_get
@@ -134,4 +133,3 @@ enum functionID
    
      
 }
-   

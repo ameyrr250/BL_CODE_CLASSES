@@ -43,7 +43,7 @@ namespace LCD_Mini{
     //% blockSetVariable="LCDSettings"
     //% blockId=LCDSettings
     //% weight=110
-    export function createLCDSettings(clickBoardNum:clickBoardID, clickSlot:clickBoardSlot): LCDSettings {
+    export function createLCDSettings(clickBoardNum:BoardID, clickSlot:ClickID): LCDSettings {
         return new LCDSettings(clickBoardNum, clickSlot);
     }
 
@@ -64,15 +64,7 @@ export class LCDSettings{
         private PINs:bBoard.PinSettings;
         private SPIs:bBoard.SPIsetting;
 
-        constructor(clickBoardNum:clickBoardID, clickSlot:clickBoardSlot){
-        if(bBoard.arrayClick.indexOf(clickBoardNum) !== -1){
-          console.log("----------------------------------------------------Array "+bBoard.arrayClick[0])
-    
-        } else{
-          bBoard.arrayClick.push(clickBoardNum)
-          console.log("----------------------------------------------------Array Not "+bBoard.arrayClick[0])
-        }
-              
+        constructor(clickBoardNum:BoardID, clickSlot:ClickID){      
         this.LOW = 0; 
         this.HIGH = 1;
         this.LCDInitialize = false;

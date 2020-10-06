@@ -7,23 +7,25 @@ namespace WiFiSetResponses{
     
     readonly defaultWiFiTimeoutmS :number ; 
     response : number;
-    receivedData : String
+    receivedData : string
     MQTTMessageRetrieveState : number ;
+    
+    MQTTMessage : string;
 
     private clickBoardNumGlobal:number
     private clickSlotNumGlobal:number
     private clickBoardNumGlobalSetResponse:number
 
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot)
+    constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID)
     this.defaultWiFiTimeoutmS = 10000; //default time alloted for timeout on WiFi communication
     this.response = 2;
     this.receivedData = ""; //A place to store the response from the WiFi clickwhen requestting HTTP data
     this.MQTTMessageRetrieveState = 0; //Track MQTT message retrieval state.
-
-    this.clickBoardNumGlobal=clickBoardNum;
-    this.clickSlotNumGlobal=clickSlot;
-    this.clickBoardNumGlobalSetResponse=clickBoardNum*3+clickSlot;   
+    this.MQTTMessage = ""; //Used to store the retrieved message
+    this.clickBoardNumGlobal=boardID;
+    this.clickSlotNumGlobal=clickID;
+    this.clickBoardNumGlobalSetResponse=boardID*3+clickID;   
     }
     
     clearSerialBuffer() {
@@ -233,29 +235,33 @@ namespace WiFiSetResponses{
  */
 //% weight=100 color=#FF2F92 icon=""
 //% advanced=true
-namespace WiFi_BLE {
+namespace Wireless {
+
+        //% groups=" 'Initialize and Connect' weight=200 , 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' "
 
     /**
-     * Sets WiFi_BLE object.
-     * @param clickBoardNum the click
-     * @param clickSlot the bus
+     * Initializes WiFi_BLE capabilities
+     * @param boardID the board
+     * @param clickID the click
      *  @param WiFi_BLE the WiFi_BLE Object
      */
-    //% block="$clickBoardNum $clickSlot"
-    //% blockSetVariable="WiFi_BLE"
+    //% block="$boardID $clickID"
+    //% blockSetVariable="wireless"
+    //% clickID.defl=ClickID.Zero
     //% weight=110
-    export function createWiFiBLE(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): WiFi_BLE {
-        return new this.WiFi_BLE(clickBoardNum, clickSlot);
+    //% group="Initialize and Connect"
+    export function createWiFiBLE(boardID: BoardID, clickID:ClickID): WiFi_BLE {
+        return new WiFi_BLE(boardID, clickID);
     }
 
     let MQTTMessageObject ={
         topic:"", //Topic
    
-        key:"", //API Key
+        key:"", //Project Key
  
         cmd:"", //Command Name
   
-        varName:"", //Variable name
+        feedName:"", //Feed name
  
         value:"" //Value received 
         
@@ -264,29 +270,28 @@ namespace WiFi_BLE {
     let mqttMessageList = [MQTTMessageObject]; //Create a blank array of MQTTMessageObject objects
     mqttMessageList.pop(); 
 
-    //% groups=" 'Connect' weight=100, 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' "
 
     export enum Command
     {
           
-            //% block="Set Variable"
-            Set_Variable = 0,
-            //% block="Create Variable"
-            Create_Variable = 1,
-             //% block="Delete Variable"
-             Delete_Variable = 2,
-           //% block="Add_Data_Point"
-           Add_Data_Point = 3,
-           //% block="Delete Data_Point"
-           Delete_Data_Point = 4,
-                  //% block="Create_Data_Point"
-                  Create_Data_Point = 5
+            //% block="Add Feed Data"
+            Add_Data = 0,
+            //% block="Create Feed"
+            Create_Feed = 1,
+             //% block="Delete Feed"
+             Delete_Feed = 2,
+            //% block="Delete Data"
+           Delete_Feed_Data = 3,
+           //% block="Get Feed Data"
+           Get_Feed_Data = 4,
+
+                 
     
     }
 
 
     export class WiFi_BLE extends WiFiSetResponses.SetResponse{
-        MQTTMessage : string
+        
         private UARTRawData  :  string
         private flag : boolean;
         private BLMQTTMessage : string
@@ -301,17 +306,17 @@ namespace WiFi_BLE {
         private pingActiveAdafruit : boolean;
         private lastPingAdafruit : number; 
 
-        //% groups=" 'Connect' weight=100, 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' "
+        //% groups=" 'MQTT' weight=100, 'HTTPS' "
 
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-            super(clickBoardNum, clickSlot)
+        constructor(boardID: BoardID, clickID:ClickID){
+            super(boardID, clickID)
             this.MQTTMessage = ""
             this.UARTRawData  = ""
             this.flag = true;
             this.BLMQTTMessage = ""
-            this.clickBoardNumGlobalWiFi=clickBoardNum;
-            this.clickSlotNumGlobalWiFi=clickSlot;
-            this.clickBoardNumGlobalW=clickBoardNum*3+clickSlot; 
+            this.clickBoardNumGlobalWiFi=boardID;
+            this.clickSlotNumGlobalWiFi=clickID;
+            this.clickBoardNumGlobalW=boardID*3+clickID; 
             this.BLpingActive = false;
             this.prevTime = 0;
             this.pingActive = false;
@@ -323,12 +328,14 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=publishBLMQTT
-    //% block="$this BL MQTT publish command $command|variable name $varName|data $data|API key $topic|on click$clickBoardNum"
-    //% group="Brilliant Labs Cloud"
+    //% block="$this BL MQTT publish$command|feed $feedName data$data|project key $topic"
+    //% subcategory="Brilliant Labs Cloud"
+    //% group="MQTT"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"  
-    publishBLMQTT(command:Command,varName: string, data: number,topic: string): void {
+    //% command.min=0 command.max=2
+    //% this.defl="wireless" 
+    publishBLMQTT(command:Command,feedName: string, data: number,topic: string): void {
         let publishPacketSize = 0
         let controlPacket = pins.createBuffer(1);
         controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x30); //Publish Control Packet header
@@ -340,32 +347,34 @@ namespace WiFi_BLE {
         let cmd = ""
         switch(command)
         {
-            case Command.Set_Variable:
-                cmd = "SET_VARIABLE";
+            case Command.Add_Data:
+                cmd = "ADD_FEED_DATA";
                 break;
 
-            case Command.Create_Variable:
-                cmd = "CREATE_VARIABLE";
+            case Command.Create_Feed:
+                cmd = "CREATE_FEED";
                 break;     
             
-            case Command.Delete_Variable:
-                cmd = "DELETE_VARIABLE";
+            case Command.Delete_Feed:
+                cmd = "DELETE_FEED";
                 break;           
 
+                case Command.Delete_Feed_Data:
+                cmd = "DELETE_FEED_DATA";
+                break;        
 
+       
 
         }
         let i = 0
         let encodedByte = 0
         let X = 0
         let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet
-        let mqttBody = 
-        "{\r\n" +
-        "  \"key\": \""+topic+"\",\r\n" +
-        "  \"cmd\": \""+cmd+"\",\r\n" +
-        "  \"name\": \""+varName+"\",\r\n" +
-        "  \"value\": \""+data.toString()+"\"\r\n"+
-        "}" 
+        let mqttBody = "{\n    \"key\": \""+topic+ "\",\n    \"cmd\": \""+cmd+"\",\n    \"value\": "+data.toString()+",\n    \"name\": \""+feedName+"\"\n}";
+        if(command == Command.Create_Feed)
+        {
+            mqttBody = "{\n    \"key\": \""+topic+ "\",\n    \"cmd\": \""+cmd+"\",\n    \"name\": \""+feedName+"\"\n}";
+        }
 
 
         X = 0x02 + topic.length + mqttBody.length
@@ -402,15 +411,15 @@ namespace WiFi_BLE {
         this.sendBuffer(topicLength)
         this.sendString(topic)
         this.sendString(mqttBody)
-        // UARTs.sendString("\r\n",clickBoardNum)
+        // UARTs.sendString("\r\n",boardID)
 
 
         this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
 
 
-        //  UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum)
-        //  SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        //  UARTs.sendString("AT+CIPCLOSE=0\r\n",boardID)
+        //  SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response "OK"
 
 
 
@@ -419,11 +428,12 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=connectBLMQTT
-    //% block="$this| Connect to BL MQTT broker on click$clickBoardNum"
-    //% group="Brilliant Labs Cloud"
-    //% weight=70   
+    //% block="$this|BL MQTT connect"
+    //% group="MQTT"
+    //% subcategory="Brilliant Labs Cloud"
+    //% weight=200   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"  
+    //% this.defl="wireless" 
     connectBLMQTT(): void {
 
         let connectPacketSize = 0
@@ -514,7 +524,7 @@ namespace WiFi_BLE {
         this.sendString(clientID)
  
         // basic.pause(1)
-        //UARTs.sendString("\r\n", clickBoardNum)
+        //UARTs.sendString("\r\n", boardID)
 
 
 
@@ -532,11 +542,12 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=subscribeBLMQTT
-    //% block="$this| Subscribe to BL MQTT with API Key $topic on click$clickBoardNum"
-    //% group="Brilliant Labs Cloud"
-    //% weight=70   
+    //% block="$this| BL MQTT subscribe to project key $topic"
+    //% group="MQTT"
+    //% subcategory="Brilliant Labs Cloud"
+    //% weight=199   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"   
+    //% this.defl="wireless"  
     subscribeBLMQTT(topic: string): void {
         if (topic.indexOf("-rsp") == 0)
         {
@@ -627,16 +638,17 @@ namespace WiFi_BLE {
    
     // -------------- 3. Cloud ----------------
     //% blockId=getBLMQTTMessage
-    //% block="$this| Get BL MQTT Message with variable name $varName on click$clickBoardNum"
-    //% group="Brilliant Labs Cloud"
+    //% block="$this| BL MQTT get new data from feed $feedName"
+    //% group="MQTT"
+    //% subcategory="Brilliant Labs Cloud"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
-    getBLMQTTMessage(varName: string): number {
+    //% this.defl="wireless"
+    getBLMQTTMessage(feedName: string): number {
         let returnValue = 0
         for(let i=0; i < mqttMessageList.length; i++)
         {
-            if(mqttMessageList[i].varName == varName)
+            if(mqttMessageList[i].feedName == feedName)
             {
                 returnValue =  parseInt(mqttMessageList[i].value)
                 mqttMessageList.removeAt(i);
@@ -656,12 +668,13 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=isBLMQTTMessage
-    //% block="$this| Is MQTT Message Available for variable $varName on click$clickBoardNum ?"
-    //% group="Brilliant Labs Cloud"
+    //% block="$this| BL MQTT is new data available for feed $feedName?"
+    //% group="MQTT"
+    //% subcategory="Brilliant Labs Cloud"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"   
-    isBLMQTTMessage(varName: string): boolean {
+    //% this.defl="wireless"  
+    isBLMQTTMessage(feedName: string): boolean {
         let startIndex = 0;
         let endIndex = 0;
         let remainingLength = 0;
@@ -702,9 +715,7 @@ namespace WiFi_BLE {
                             return false; //Not a publish packet
 
                         }
-                       
-                        
-
+ 
                         remainingLength = this.UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127) *Need to address this for RL >127
 
                         topicLength = this.UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)
@@ -725,15 +736,16 @@ namespace WiFi_BLE {
                         startIndex = this.MQTTMessage.indexOf("\"name\":")+9; //Retrieve the start of the word "name" and then add 9 to bring it to the first character of variable name
                         endIndex = this.MQTTMessage.indexOf("\"",startIndex)-1; //Retrieve the end of the variable name by looking for the ' " ' and then subtracting 1 to get the last character of the name
 
-                        MQTTMessageObject.varName = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable name 
-                    
+                        MQTTMessageObject.feedName = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable name 
+                       
                         startIndex = this.MQTTMessage.indexOf("\"value\":")+9; //Retrieve the start of the word "value" and then add 9 to bring it to the first character of variable value
                         endIndex = this.MQTTMessage.indexOf("}",startIndex)-2; //Retrieve the end of the variable value by looking for the ' " ' and then subtracting 2 to get the last character of the value
 
                         MQTTMessageObject.value = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable value
-                
-                        if(MQTTMessageObject.cmd  == "SET_VARIABLE") //We are only concerned with the case where an existing variable had a new value added to it (for now)
+   
+                        if(MQTTMessageObject.cmd  == "ADD_FEED_DATA") //We are only concerned with the case where an existing variable had a new value added to it (for now)
                         {
+                       
                             mqttMessageList.push(MQTTMessageObject); //Add the latest message to our list
                             
                         }
@@ -756,7 +768,7 @@ namespace WiFi_BLE {
 
         }
        
-        let results = mqttMessageList.filter(tempResults => tempResults.varName === varName)
+        let results = mqttMessageList.filter(tempResults => tempResults.feedName === feedName)
         if(results.length >= 1) //If a value was found
         {
             return true; 
@@ -768,14 +780,7 @@ namespace WiFi_BLE {
 
 
     // -------------- 3. Cloud ----------------
-    //% blockId=pingBLMQTT
-    //// block="$this| Ping BL MQTT every $pingInterval seconds on click$clickBoardNum"
-    //% group="Brilliant Labs Cloud"
-    //% weight=70   
-    //% blockGap=7  
-    //% pingInterval.min=1 pingInterval.max=59
-    //% advanced=false
-    //% this.defl="WiFi_BLE" 
+
     pingBLMQTT(pingInterval: number) {
         let PINs = new bBoard.PinSettings(this.clickBoardNumGlobalWiFi, this.clickSlotNumGlobalWiFi);
         if (this.BLpingActive == false) {
@@ -806,16 +811,16 @@ namespace WiFi_BLE {
     }
     // -------------- 2. WiFi ----------------
     //% blockId=WiFi_BLE_WiFiConnect
-    //% block="$this| Connect to ssid %ssid| with password %pwd on click%clickBoardNum"
+    //% block="$this| connect to ssid %ssid| with password %pwd"
     //% weight=100
-    //% group="Connect"
+    //% group="Initialize and Connect"
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     WifiConnect(ssid: string, pwd: string): void {
         let PINs = new bBoard.PinSettings(this.clickBoardNumGlobalWiFi, this.clickSlotNumGlobalWiFi);
-        PINs.clearPin(clickIOPin.RST)
-        PINs.setPin(clickIOPin.RST)
-        basic.pause(300)
+        PINs.clearPin(clickIOPin.CS)
+        PINs.setPin(clickIOPin.CS)
+        basic.pause(1000)
         this.clearUARTRxBuffer();
  
 
@@ -843,11 +848,11 @@ namespace WiFi_BLE {
 
     // --------------  Dual Auth----------------
     //% blockId=WiFi_BLE_dualAuth
-    //% block="$this PNB-Internet Captive Portal username $username and password $password on click$clickBoardNum"
+    //% block="$this PNB-Internet username $username and password $password"
     //% weight=90
-    //% group="Connect"
+    //% group="Initialize and Connect"
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     
     dualAuth(
     username: string,
@@ -881,11 +886,11 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=BLTest_set_thingspeak
-    //% block="$this| Send ThingSpeak key %key| fieldNum %fieldNum| data %data on click%clickBoardNum"
+    //% block="$this| ThingSpeak send data$data to fieldNum$fieldNum with key$key"
     //% weight=90
-    //% group="Thingspeak"
+    //% subcategory="Thingspeak"
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     sendThingspeak(
         key: string,
         fieldNum: number,
@@ -913,58 +918,53 @@ namespace WiFi_BLE {
             this.sendString(getData);
             this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS);
         //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */
-        // UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum)
-        //response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+        // UARTs.sendString("AT+CIPCLOSE=0\r\n",boardID)
+        //response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response "OK"
     }
 
     // -------------- 3. Cloud ----------------
     //% blockId=WiFi_BLE_HTTPSsendCommand
-    //% block="$this| BL HTTPS command %command|variable name %varName|data %data|API key %topic|on click%clickBoardNum"
+    //% block="$this| BL HTTPS command %command|feed name %feedName|data %data|project key %topic|"
     //% weight=90
-    //% group="Brilliant Labs Cloud"
+    //% group="HTTPS"
+    //% subcategory="Brilliant Labs Cloud"
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     HTTPSsendCommand(
         command:Command,
-        varName: string,
+        feedName: string,
         data: number,
         topic: string
     ): void {
         let cmd = ''
         switch(command)
         {
-            case Command.Set_Variable:
-                cmd = "SET_VARIABLE";
+            case Command.Add_Data:
+                cmd = "ADD_FEED_DATA";
                 break;
 
-            case Command.Create_Variable:
-                cmd = "CREATE_VARIABLE";
+            case Command.Create_Feed:
+                cmd = "CREATE_FEED";
                 break;     
             
-            case Command.Delete_Variable:
-                cmd = "DELETE_VARIABLE";
+            case Command.Delete_Feed:
+                cmd = "DELETE_FEED";
                 break;           
 
-                case Command.Create_Data_Point:
-                cmd = "CREATE_CHART";
+                case Command.Delete_Feed_Data:
+                cmd = "DELETE_FEED_DATA";
                 break;        
 
-                case Command.Add_Data_Point:
-                cmd = "ADD_DATA_POINT";
-                break;    
-                
-                case Command.Delete_Variable:
-                cmd = "DELETE_DATA_POINT";
-                break;    
+       
 
 
 
         }
 
-        let bodyString = "{\n    \"key\": \""+topic+ "\",\n   \"cmd\": \""+cmd+"\",\n    \"value\": "+data.toString()+",\n    \"name\": \""+varName+"\"\n}";
-        if(command = Command.Create_Data_Point)
+        let bodyString = "{\n    \"key\": \""+topic+ "\",\n   \"cmd\": \""+cmd+"\",\n    \"value\": "+data.toString()+",\n    \"name\": \""+feedName+"\"\n}";
+        if(command = Command.Create_Feed)
         {
-            bodyString = "{\n    \"key\": \""+topic+ "\",\n   \"cmd\": \""+cmd+"\",\n   \"type\": \"LINE\",\n    \"value\": "+data.toString()+",\n    \"name\": \""+varName+"\"\n}";
+            bodyString = "{\n    \"key\": \""+topic+ "\",\n   \"cmd\": \""+cmd+"\",\n   \"type\": \"LINE\",\n    \"value\": "+data.toString()+",\n    \"name\": \""+feedName+"\"\n}";
         }
         let getData ="GET /api? HTTP/1.1\r\n" +
             "Host: cloud.brilliantlabs.ca\r\n" +
@@ -986,7 +986,7 @@ namespace WiFi_BLE {
 
             this.sendString(getData);
 
-            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS);
+            this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS);
 
 
 
@@ -1013,16 +1013,17 @@ namespace WiFi_BLE {
        
   
     //% blockId=WiFi_BLE_getVariable
-    //% block="$this| BL HTTPS get variable $varName with API key $key on click$clickBoardNum"
+    //% block="$this| BL HTTPS get feed $feedName with project key$key"
     //% weight=90
-    //% group="Brilliant Labs Cloud"
+    //% group="HTTPS"
+    //% subcategory="Brilliant Labs Cloud"
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     BLgetVariable(
-        varName: string,
+        feedName: string,
         key: string
     ): number {
-        let bodyString = "{\n    \"key\": \""+key+ "\",\n   \"cmd\": \"GET_VARIABLE\",\n    \"name\": \""+varName+"\"\n}";
+        let bodyString = "{\n    \"key\": \""+key+ "\",\n   \"cmd\": \"GET_VARIABLE\",\n    \"name\": \""+feedName+"\"\n}";
 
         let getData ="GET /api? HTTP/1.1\r\n" +
             "Host: cloud.brilliantlabs.ca\r\n" +
@@ -1044,7 +1045,7 @@ namespace WiFi_BLE {
 
             this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS);
 
-        let startIndex = this.receivedData.indexOf("\""+varName+"\":")+varName.length+3; 
+        let startIndex = this.receivedData.indexOf("\""+feedName+"\":")+feedName.length+3; 
 
         let endIndex = this.receivedData.indexOf("}",startIndex)-1;
       
@@ -1058,15 +1059,15 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=BLTest_get_thingspeak
-    //% block="$this| Get ThingSpeak ChannelID %ChannelID| fieldNum %fieldNum on click%clickBoardNum"
+    //% block="$this|ThingSpeak get channelID $channelID fieldNum $fieldNum "
     //% weight=90
-    //% group="Thingspeak"
+    //% subcategory="Thingspeak"
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
-    getThingspeak(ChannelID: number, fieldNum: number): string {
+    //% this.defl="wireless"
+    getThingspeak(channelID: number, fieldNum: number): string {
         let getData =
             "GET /channels/" +
-            ChannelID.toString() +
+            channelID.toString() +
             "/fields/" +
             fieldNum.toString() +
             ".json?results=1\r\n";
@@ -1089,17 +1090,17 @@ namespace WiFi_BLE {
         data = this.ThingSpeakResponse();
 
         //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */
-        // UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum)
-        // SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK" //Wait for the response "OK"
+        // UARTs.sendString("AT+CIPCLOSE=0\r\n",boardID)
+        // SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response "OK" //Wait for the response "OK"
 
         return data;
     }
 
     //% blockId=BL_set_ifttt
-    //% block="$this| Send IFTTT key %key|event_name %event|value1 %value1 on click%clickBoardNum"
-    //% group="IFTTT"
+    //% block="$this IFTTT send key $key event_name $event data $value1 "
+    //% subcategory="IFTTT"
     //% weight=90
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     sendIFTTT(
         key: string,
         eventname: string,
@@ -1134,11 +1135,12 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=publishAdafruitMQTT
-    //% block="$this| Publish to Adafruit MQTT topic %string| data %data on click%clickBoardNum"
-    //% group="MQTT Adafruit"
+    //% block="$this Adafruit MQTT publish data %data to topic %topic  "
+    //% group="MQTT"
+    //% subcategory="Adafruit.io"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"   
+    //% this.defl="wireless"  
     publishAdafruitMQTT(topic: string, data: number): void {
         let publishPacketSize = 0
         let controlPacket = pins.createBuffer(1);
@@ -1189,15 +1191,15 @@ namespace WiFi_BLE {
         this.sendBuffer(topicLength)
         this.sendString(topic)
         this.sendString(data.toString())
-       // UARTs.sendString("\r\n",clickBoardNum)
+       // UARTs.sendString("\r\n",boardID)
 
 
        this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
         basic.pause(200)
 
 
-      //  UARTs.sendString("AT+CIPCLOSE=0\r\n",clickBoardNum)
-      //  SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,clickBoardNum); //Wait for the response "OK"
+      //  UARTs.sendString("AT+CIPCLOSE=0\r\n",boardID)
+      //  SetResponseObj.response = SetResponseObj.WiFiResponse("OK", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response "OK"
 
 
 
@@ -1206,11 +1208,12 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=connectMQTT
-    //% block="$this| Connect to Adafruit MQTT broker with username %userName| and AIO Key %password on click%clickBoardNum"
-    //% group="MQTT Adafruit"
+    //% block="$this|Adafruit MQTT connect with username$userName and AIO Key$password "
+    //% group="MQTT"
+    //% subcategory="Adafruit.io"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"  
+    //% this.defl="wireless" 
     connectMQTT(userName: string, password: string): void {
 
         let connectPacketSize = 0
@@ -1330,11 +1333,12 @@ namespace WiFi_BLE {
 
     // -------------- 3. Cloud ----------------
     //% blockId=subscribeAdafruitMQTT
-    //% block="$this| Subscribe to Adafruit MQTT topic $string on click$clickBoardNum"
-    //% group="MQTT Adafruit"
+    //% block="$this|Adafruit MQTT subscribe to topic $topic"
+    //% group="MQTT"
+    //% subcategory="Adafruit.io"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"  
+    //% this.defl="wireless" 
     subscribeAdafruitMQTT(topic: string): void {
 
         let subscribePacketSize = 0
@@ -1418,44 +1422,27 @@ namespace WiFi_BLE {
     
     // -------------- 3. Cloud ----------------
     //% blockId=getMQTTMessage
-    //% block="$this| Get MQTT Message on click$clickBoardNum"
-    //% group="MQTT Adafruit"
+    //% block="$this Adafruit MQTT get message"
+    //% group="MQTT"
+    //% subcategory="Adafruit.io"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE"  
+    //% this.defl="wireless" 
     getMQTTMessage(): string {
         return this.MQTTMessage
     }
   
-        //% blockId=createVariable
-        //% block="$this| Create Variable -> Api Key:%Key Name %Name on click%clickBoardNum"
-        CreateVariable(Key: string, Name: string): void {
-            // Add code here
-            let getData ="\{\r\n\"key\": \"9qvfccbdk0jrgfeh\",\r\n\"cmd\": \"CREATE_VARIABLE\",\r\n\"name\": \"msdsdfsfd\",\r\n\"value\": \"Hello my name is Josiah\"\r\n}\";"
-    
-            this.sendString("AT+CIPMUX=1\r\n"); 
-            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
-        
-            this.sendString("AT+CIPSTART=0,\"TCP\",\"https://cloud.brilliantlabs.ca\",80\r\n"); 
-            this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
-        
-            this.sendString(
-                    "AT+CIPSEND=0," + getData.length.toString() + "\r\n");
-                    this.response = this.WiFiResponse("OK", false, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
-        
-                    this.sendString(getData);
-                    this.response = this.WiFiResponse("OK", true, this.defaultWiFiTimeoutmS); //Wait for the response "OK"
-
-        }
+     
 
 
    // -------------- 3. Cloud ----------------
     //% blockId=isMQTTMessage
-    //% block="$this| Is MQTT Message Available on click%clickBoardNum ?"
-    //% group="MQTT Adafruit"
+    //% block="$this Adafruit MQTT is message available?"
+    //% group="MQTT"
+    //% subcategory="Adafruit.io"
     //% weight=70   
     //% blockGap=7
-    //% this.defl="WiFi_BLE" 
+    //% this.defl="wireless"
     isMQTTMessage(): boolean{
         let startIndex = 0;
         let remainingLength = 0;
@@ -1516,15 +1503,7 @@ namespace WiFi_BLE {
     }
 
 
-    // -------------- 3. Cloud ----------------
-    //% blockId=pingAdafruitMQTT
-    // block="$this Ping Adafruit MQTT every $pingInterval seconds on click$clickBoardNum"
-    //% group="MQTT Adafruit"
-    //% weight=70   
-    //% blockGap=7  
-    //% pingInterval.min=1 pingInterval.max=59
-    //% advanced=false
-    //% this.defl="WiFi_BLE" 
+
     pingAdafruitMQTT(pingInterval: number) 
     {
         if(this.pingActiveAdafruit == false)

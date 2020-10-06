@@ -1,4 +1,4 @@
-// total=7105 new=70.16% cached=0.00% other=29.84%
+// total=8079 new=73.77% cached=0.00% other=26.23%
 (function (ectx) {
 'use strict';
 const runtime = ectx.runtime;
@@ -56,7 +56,7 @@ const pxsim_pxtrt = pxsim.pxtrt;
 const pxsim_numops = pxsim.numops;
 
 
-function _main___P8093360(s) {
+function _main___P169648(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -66,25 +66,48 @@ if (yieldSteps-- < 0 && maybeYield(s, step, r0)) return null;
 switch (step) {
   case 0:
 
-    globals._intervals___8093663 = (undefined);
-    globals.listeners___8093674 = (undefined);
+    globals._intervals___170005 = (undefined);
+    globals.listeners___170016 = (undefined);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_TX_BUFFER___8093909 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___8093909, 2, 0, 1);
+    globals.CLEAR_BBOARD_TX_BUFFER___170252 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_TX_BUFFER___170252, 2, 0, 1);
     r0 = pxsim.pins.createBuffer(1);
-    globals.CLEAR_BBOARD_RX_BUFFER___8093921 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___8093921, 2, 0, 0);
+    globals.CLEAR_BBOARD_RX_BUFFER___170264 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.CLEAR_BBOARD_RX_BUFFER___170264, 2, 0, 0);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_TX_BUFFER_SIZE___8093931 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___8093931, 2, 0, 3);
+    globals.READ_TX_BUFFER_SIZE___170274 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_TX_BUFFER_SIZE___170274, 2, 0, 3);
     r0 = pxsim.pins.createBuffer(1);
-    globals.EXECUTE_BBOARD_COMMAND___8093941 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___8093941, 2, 0, 7);
+    globals.EXECUTE_BBOARD_COMMAND___170284 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.EXECUTE_BBOARD_COMMAND___170284, 2, 0, 7);
     r0 = pxsim.pins.createBuffer(1);
-    globals.READ_BBOARD_TX_BUFFER___8093951 = (r0);
-    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___8093951, 2, 0, 2);
-    s.tmp_0 = console_addListener__P8093677_mk(s);
-    s.tmp_0.arg0 = inline__P8094171;
+    globals.READ_BBOARD_TX_BUFFER___170294 = (r0);
+    r0 = pxsim.BufferMethods.setNumber(globals.READ_BBOARD_TX_BUFFER___170294, 2, 0, 2);
+    r0 = pxsim_pxtrt.mkMap();
+    s.tmp_0 = r0;
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_1 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "topic", s.tmp_1);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_2 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "key", s.tmp_2);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_3 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "cmd", s.tmp_3);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_4 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "feedName", s.tmp_4);
+    r0 = pxsim_String_.mkEmpty();
+    s.tmp_5 = r0;
+    r0 = pxsim_pxtrt.mapSetByString(s.tmp_0, "value", s.tmp_5);
+    globals.MQTTMessageObject___170468 = (s.tmp_0);
+    r0 = pxsim_Array__mk();
+    s.tmp_0 = r0;
+    r0 = pxsim_Array__push(s.tmp_0, globals.MQTTMessageObject___170468);
+    globals.mqttMessageList___170470 = (s.tmp_0);
+    r0 = pxsim_Array_.pop(globals.mqttMessageList___170470);
+    s.tmp_0 = console_addListener__P170019_mk(s);
+    s.tmp_0.arg0 = inline__P170553;
     s.pc = 1; return s.tmp_0;
   case 1:
     r0 = s.retval;
@@ -92,22 +115,27 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-_main___P8093360.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"devices.ts","functionName":"<main>","argumentNames":[]}
-_main___P8093360.continuations = [  ]
+_main___P169648.info = {"start":0,"length":0,"line":0,"column":0,"endLine":0,"endColumn":0,"fileName":"devices.ts","functionName":"<main>","argumentNames":[]}
+_main___P169648.continuations = [  ]
 
-function _main___P8093360_mk(s) {
+function _main___P169648_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: _main___P8093360, depth: s.depth + 1,
+        parent: s, fn: _main___P169648, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
+  tmp_1: undefined,
+  tmp_2: undefined,
+  tmp_3: undefined,
+  tmp_4: undefined,
+  tmp_5: undefined,
 } }
 
 
 
 
 
-function inline__P8094171(s) {
+function inline__P170553(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -126,12 +154,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-inline__P8094171.info = {"start":345,"length":29,"line":15,"column":24,"endLine":15,"endColumn":53,"fileName":"pxt_modules/bluetooth/bluetooth.ts","functionName":"inline","argumentNames":["msg"]}
+inline__P170553.info = {"start":345,"length":29,"line":15,"column":24,"endLine":15,"endColumn":53,"fileName":"pxt_modules/bluetooth/bluetooth.ts","functionName":"inline","argumentNames":["msg"]}
 
-function inline__P8094171_mk(s) {
+function inline__P170553_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: inline__P8094171, depth: s.depth + 1,
+        parent: s, fn: inline__P170553, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -140,7 +168,7 @@ function inline__P8094171_mk(s) {
 
 
 
-function bluetooth___log__P8094169(s) {
+function bluetooth___log__P170551(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -158,12 +186,12 @@ switch (step) {
     return leave(s, r0)
   default: oops()
 } } }
-bluetooth___log__P8094169.info = {"start":262,"length":58,"line":12,"column":4,"endLine":14,"endColumn":5,"fileName":"pxt_modules/bluetooth/bluetooth.ts","functionName":"__log","argumentNames":["msg"]}
+bluetooth___log__P170551.info = {"start":262,"length":58,"line":12,"column":4,"endLine":14,"endColumn":5,"fileName":"pxt_modules/bluetooth/bluetooth.ts","functionName":"__log","argumentNames":["msg"]}
 
-function bluetooth___log__P8094169_mk(s) {
+function bluetooth___log__P170551_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: bluetooth___log__P8094169, depth: s.depth + 1,
+        parent: s, fn: bluetooth___log__P170551, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   arg0: undefined,
 } }
@@ -172,7 +200,7 @@ function bluetooth___log__P8094169_mk(s) {
 
 
 
-function console_addListener__P8093677(s) {
+function console_addListener__P170019(s) {
 let r0 = s.r0, step = s.pc;
 s.pc = -1;
 
@@ -195,28 +223,28 @@ switch (step) {
     { step = 5; continue; }
   case 1:
   case 2:
-    r0 = pxsim_numops_toBoolDecr(globals.listeners___8093674);
+    r0 = pxsim_numops_toBoolDecr(globals.listeners___170016);
     s.tmp_3 = r0;
     r0 = pxsim_Boolean__bang(s.tmp_3);
     s.tmp_2 = r0;
     r0 = pxsim_numops_toBoolDecr(s.tmp_2);
     if (!r0) { step = 3; continue; }
     r0 = pxsim_Array__mk();
-    globals.listeners___8093674 = (r0);
+    globals.listeners___170016 = (r0);
   case 3:
   case 4:
-    r0 = pxsim_Array__push(globals.listeners___8093674, s.arg0);
+    r0 = pxsim_Array__push(globals.listeners___170016, s.arg0);
   case 5:
     r0 = undefined;
     return leave(s, r0)
   default: oops()
 } } }
-console_addListener__P8093677.info = {"start":1217,"length":186,"line":46,"column":4,"endLine":51,"endColumn":5,"fileName":"pxt_modules/core/console.ts","functionName":"addListener","argumentNames":["listener"]}
+console_addListener__P170019.info = {"start":1280,"length":186,"line":47,"column":4,"endLine":52,"endColumn":5,"fileName":"pxt_modules/core/console.ts","functionName":"addListener","argumentNames":["listener"]}
 
-function console_addListener__P8093677_mk(s) {
+function console_addListener__P170019_mk(s) {
     checkStack(s.depth);
     return {
-        parent: s, fn: console_addListener__P8093677, depth: s.depth + 1,
+        parent: s, fn: console_addListener__P170019, depth: s.depth + 1,
         pc: 0, retval: undefined, r0: undefined, overwrittenPC: false, lambdaArgs: null,
   tmp_0: undefined,
   tmp_1: undefined,
@@ -231,5 +259,5 @@ function console_addListener__P8093677_mk(s) {
 
 const breakpoints = setupDebugger(1, [])
 
-return _main___P8093360
+return _main___P169648
 })
