@@ -10,14 +10,14 @@ namespace Proximity_2{
 
     /**
      * Sets Proximity2 Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Proximity2 the Proximity2 Object
     */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Proximity2"
     //% weight=110
-    export function createProximity2Settings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Proximity2 {
-        return new Proximity2(clickBoardNum, clickSlot);
+    export function createProximity2Settings(boardID: BoardID, clickID:ClickID): Proximity2 {
+        return new Proximity2(boardID, clickID);
    }
 
     export class Proximity2 extends bBoard.I2CSettings{
@@ -41,11 +41,11 @@ namespace Proximity_2{
      readonly ADDRESS  : number;
     isInitialized : Array<number>;
     
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number 
+    private boardIDGlobalT:number
+    private clickIDNumGlobal:number 
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot)
+    constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID)
     this.INTERRUPT_STATUS= 0x00
     this.MAIN_CONFIGURATION = 0x01
     this.RECEIVE_CONFIGURATION=   0x02
@@ -65,8 +65,9 @@ namespace Proximity_2{
     
     this.ADDRESS = 0b1001010;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    this.clickBoardNumGlobal=clickBoardNum;
-    this.clickSlotNumGlobal=clickSlot;
+    this.boardIDGlobalT=boardID*3+clickID;
+    this.clickIDNumGlobal=clickID;
+    this.Proximity2_Initialize()
 
     }
 
@@ -77,10 +78,10 @@ namespace Proximity_2{
         //% advanced=false
         //% blockNamespace=Proximity_2
         //% this.shadow=variables_get
-        //% this.defl="ProximitySettings"
+        //% this.defl="Proximity2"
         Proximity2_Read_Proximity():number
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobalT] == 0)
             {
                 this.Proximity2_Initialize()
                 
@@ -97,10 +98,10 @@ namespace Proximity_2{
         //% advanced=false
         //% blockNamespace=Proximity_2
         //% this.shadow=variables_get
-        //% this.defl="ProximitySettings"
+        //% this.defl="Proximity2"
         Proximity2_Read_Als():number
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobalT] == 0)
             {
                 this.Proximity2_Initialize()
                 
@@ -132,7 +133,7 @@ namespace Proximity_2{
         i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, byte) 
        
     
-        super.i2cWriteBuffer(this.ADDRESS,i2cBuffer);
+        this.i2cWriteBuffer(this.ADDRESS,i2cBuffer);
     
        
     }
@@ -162,7 +163,7 @@ namespace Proximity_2{
     // Setup the chip for proximity sensing
     Proximity2_Initialize()
     {
-        this.isInitialized[this.clickBoardNumGlobal] = 1;
+        this.isInitialized[this.boardIDGlobalT] = 1;
         this.Write_Proximity2_Register(this.MAIN_CONFIGURATION, 0b110000);
         this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000);
         this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000);

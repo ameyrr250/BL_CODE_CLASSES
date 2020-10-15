@@ -10,14 +10,15 @@ namespace UV3{
 
     /**
      * Sets UV3 Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
+     * @param clickID the ClickID
      *  @param UV3 the UV3 Object
      */
-    //% block=" $clickBoardNum $clickSlott"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="UV3"
     //% weight=110
-    export function createUV3(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): UV3 {
-        return new UV3(clickBoardNum, clickSlot);
+    export function createUV3(boardID: BoardID, clickID:ClickID): UV3 {
+        return new UV3(boardID, clickID);
    }
 
 
@@ -40,23 +41,23 @@ namespace UV3{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number 
+    private boardIDGlobalT:number
+    private clickIDNumGlobal:number 
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID);
     this.controlReg=0;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    this.clickBoardNumGlobal=clickBoardNum
-    this.clickSlotNumGlobal=clickSlot
+    this.boardIDGlobalT=boardID*3+clickID
+    this.clickIDNumGlobal=clickID
     }
     
     
     initialize()
     {
     
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.isInitialized[this.boardIDGlobalT]  = 1
        
         this.controlReg = this.VEML6070_CMD_DEFAULT; //Int disabled, 1/2T (~ 60ms) and shutdown disabled. 
 
@@ -92,7 +93,7 @@ namespace UV3{
             {
                 
            
-                if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+                if(this.isInitialized[this.boardIDGlobalT] == 0)
                 {
                     this.initialize();
                 }
@@ -169,11 +170,11 @@ namespace UV3{
         
         setVEML6070Addr(deviceAddr:number)
         {
-            this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+            this.deviceAddress[this.boardIDGlobalT] = deviceAddr;
         }
         getVEML6070Addr():number
         {
-            return this.deviceAddress[this.clickBoardNumGlobal];
+            return this.deviceAddress[this.boardIDGlobalT];
         }
     
     }

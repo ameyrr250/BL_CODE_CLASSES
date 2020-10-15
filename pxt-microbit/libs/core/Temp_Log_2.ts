@@ -7,14 +7,14 @@ namespace Temp_Log_2{
 
     /**
      * Sets Temp_Log Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Temp_Log the Temp_Log Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Temp_Log"
     //% weight=110
-    export function createTemp_Log(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Temp_Log {
-        return new Temp_Log(clickBoardNum, clickSlot);
+    export function createTemp_Log(boardID: BoardID, clickID:ClickID): Temp_Log {
+        return new Temp_Log(boardID, clickID);
     }
 
 
@@ -31,32 +31,33 @@ namespace Temp_Log_2{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobalT:number
+    private clickIDNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot);
-    this.clickBoardNumGlobal=clickBoardNum;
-    this.clickSlotNumGlobal=clickSlot;
+    constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID);
+    this.boardIDGlobalT=boardID*3+clickID;
+    this.clickIDNumGlobal=clickID;
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    this.initialize(this.TMP116_DEVICE_ADDRESS)
     }
 
     initialize(deviceAddr:number)
     {
-        //setTMP116Addr(deviceAddr,clickBoardNum)
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        //setTMP116Addr(deviceAddr,boardID)
+        this.isInitialized[this.boardIDGlobalT]  = 1
         this.setTMP116Addr(deviceAddr)
         this.writeTMP116(this.TMP116_REG_CONFIG,0x0220) //Initialize the Config register
     
     }
     setTMP116Addr(deviceAddr:number)
     {
-        this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+        this.deviceAddress[this.boardIDGlobalT] = deviceAddr;
     }
     getTMP116Addr():number
     {
-        return this.deviceAddress[this.clickBoardNumGlobal];
+        return this.deviceAddress[this.boardIDGlobalT];
     }
     readTMP116Reg(register:number):number{
         return this.readTMP116(this.TMP116_REG_CONFIG)
@@ -112,7 +113,7 @@ namespace Temp_Log_2{
     {
     
     
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobalT] == 0)
         {
             this.initialize(this.TMP116_DEVICE_ADDRESS)
             
@@ -150,14 +151,14 @@ namespace Temp_Log_2{
     }
     
     
-    writeLowLimit(limit:number,clickBoardNum:clickBoardID)
+    writeLowLimit(limit:number,boardID:BoardID)
     {
         this.writeTMP116(this.TMP116_REG_LOW_LIMIT,(limit/0.0078125))
         
     
     }
     
-    readDeviceId(clickBoardNum:clickBoardID):number
+    readDeviceId(boardID:BoardID):number
     {
       
         return   (this.readTMP116(this.TMP116_REG_DEVICE_ID))

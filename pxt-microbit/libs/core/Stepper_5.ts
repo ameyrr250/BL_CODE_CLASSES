@@ -19,27 +19,27 @@ namespace Stepper_5 {
     }
 
 
-    //% block=" $clickBoardNum $clickSlot" 
+    //% block=" $boardID $clickID" 
     //% blockSetVariable="Stepper"
     //% weight=110
-    export function createStepper(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Stepper {
-        return new Stepper(clickBoardNum, clickSlot);
+    export function createStepper(boardID:BoardID, clickID:ClickID): Stepper {
+        return new Stepper(boardID, clickID);
    }
 
 
     export class Stepper extends bBoard.PinSettings{
 
-        private clickBoardNumGlobal:number
-        private clickSlotNumGlobal:number
+        private boardIDGlobal:number
+        private clickIDNumGlobal:number
     
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-            super(clickBoardNum, clickSlot);
-            this.clickBoardNumGlobal=clickBoardNum;
-            this.clickSlotNumGlobal=clickSlot;
+        constructor(boardID:BoardID, clickID:ClickID){
+            super(boardID, clickID);
+            this.boardIDGlobal=boardID;
+            this.clickIDNumGlobal=clickID;
         }
 
     //% blockId=step
-    //% block="$this Single step motor $direction on click$clickBoardNum"
+    //% block="$this Single step motor $direction on click$boardID"
     //% weight=100
     //% blockGap=7
     //% blockNamespace=Stepper_5
@@ -52,7 +52,7 @@ namespace Stepper_5 {
     }
 
     //% blockId=stepNum
-    //% block="$this Step motor $numSteps times $direction on click$clickBoardNum"
+    //% block="$this Step motor $numSteps times $direction on click$boardID"
     //% weight=100
     //% blockGap=7
     //% blockNamespace=Stepper_5

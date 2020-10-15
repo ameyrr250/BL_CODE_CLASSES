@@ -20,26 +20,26 @@ namespace Relay {
 
     /**
      * Sets Relay Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Relay the Relay Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Relay"
     //% weight=110
-    export function createRelay(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Relay {
-        return new Relay(clickBoardNum, clickSlot);
+    export function createRelay(boardID: BoardID, clickID:ClickID): Relay {
+        return new Relay(boardID, clickID);
     }
     
 
     export class Relay extends bBoard.PinSettings{
 
-        private clickBoardNumGlobal:number;
-        private clickSlotNumGlobal:number;
+        private boardIDGlobal:number;
+        private clickIDNumGlobal:number;
 
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-            super(clickBoardNum, clickSlot)
-            this.clickBoardNumGlobal=clickBoardNum
-            this.clickSlotNumGlobal = clickSlot
+        constructor(boardID: BoardID, clickID:ClickID){
+            super(boardID, clickID)
+            this.boardIDGlobal=boardID
+            this.clickIDNumGlobal = clickID
         }
         
         

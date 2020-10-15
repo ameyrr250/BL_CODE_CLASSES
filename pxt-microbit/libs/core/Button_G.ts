@@ -17,27 +17,27 @@ namespace Button_G {
 
     /**
      * Sets Button G object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Button_G the Button_G Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Button_G"
     //% weight=110
-    export function createButton_G(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Button_G {
-        return new Button_G(clickBoardNum, clickSlot);
+    export function createButton_G(boardID: BoardID, clickID:ClickID): Button_G {
+        return new Button_G(boardID, clickID);
    }
 
 
     export class Button_G extends bBoard.PinSettings{
-        private clickBoardNumGlobal:number
-        private clickSlotNumGlobal:number
+        private boardIDGlobal:number
+        private clickIDNumGlobal:number
         private PWMs : bBoard.PWMSettings;
     
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-            super(clickBoardNum, clickSlot);
-            this.clickBoardNumGlobal=clickBoardNum;
-            this.clickSlotNumGlobal=clickSlot;
-            this.PWMs= new bBoard.PWMSettings(clickBoardNum, clickSlot);
+        constructor(boardID: BoardID, clickID:ClickID){
+            super(boardID, clickID);
+            this.boardIDGlobal=boardID;
+            this.clickIDNumGlobal=clickID;
+            this.PWMs= new bBoard.PWMSettings(boardID, clickID);
         }
     
         //% blockId=ButtonG_SetLight
@@ -56,10 +56,10 @@ namespace Button_G {
         //% PWMValue.min=0 PWMValue.max=100
         //% blockNamespace=Button_G
         //% this.shadow=variables_get
-        //% this.defl="Button_G" 
+        //% this.defl="Button_G"
         setLightPWM(PWMValue:number)
         {
-            this.PWMs.PWMOut(clickPWMPin.PWM,PWMValue)
+            this.PWMs.setDuty(clickPWMPin.PWM,PWMValue)
         }
 
     

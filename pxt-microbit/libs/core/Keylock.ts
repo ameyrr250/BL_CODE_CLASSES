@@ -12,24 +12,24 @@ namespace Keylock {
         Reverse
     }
 
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="keylock"
     //% weight=110
-    export function createkeylock(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): keylock {
-        return new keylock(clickBoardNum, clickSlot);
+    export function createkeylock(boardID: BoardID, clickID:ClickID): keylock {
+        return new keylock(boardID, clickID);
     }
     
     
     
       export class keylock extends bBoard.PinSettings{
-        private clickBoardNumGlobal:number
-        private clickSlotNumGlobal:number
+        private boardIDGlobal:number
+        private clickIDNumGlobal:number
     
     
-        constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-            super(clickBoardNum, clickSlot);
-            this.clickBoardNumGlobal=clickBoardNum;
-            this.clickSlotNumGlobal=clickSlot;
+        constructor(boardID: BoardID, clickID:ClickID){
+            super(boardID, clickID);
+            this.boardIDGlobal=boardID;
+            this.clickIDNumGlobal=clickID;
         }
 
         

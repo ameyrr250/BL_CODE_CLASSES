@@ -53,15 +53,15 @@ declare const  MAX30100_PART_ID_REG         =   0xFF // Part ID, normally 0x11
         let I2Cs=new bBoard.I2CSettings();
 
      //%blockId=heartrate_initialize
-    //%block="Initialize device on click%clickBoardNum"
+    //%block="Initialize device on click%boardID"
     //% blockGap=7
     //% advanced=true
-        export function initialize(clickBoardNum:clickBoardID)
+        export function initialize(boardID:BoardID)
         {
             isInitialized  = 1
-            setMAX30100Addr(DEFAULT_I2C_ADDRESS,clickBoardNum)
-            HeartRate_initializeClick(clickBoardNum);
-            HeartRate_example(clickBoardNum);
+            setMAX30100Addr(DEFAULT_I2C_ADDRESS,boardID)
+            HeartRate_initializeClick(boardID);
+            HeartRate_example(boardID);
         
         
         }
@@ -445,7 +445,7 @@ let FIRCoeffs:number[] = [172, 321, 579, 927, 1360, 1858, 2390, 2916, 3391, 3768
 //  Heart Rate Monitor functions takes a sample value and the sample number
 //  Returns true if a beat is detected
 //  A running average of four samples is recommended for display on the screen.
-function checkForHRBeat( sample:number,clickBoardNum:clickBoardID):boolean
+function checkForHRBeat( sample:number,boardID:BoardID):boolean
 {
   let beatDetected = false;
 
@@ -458,8 +458,8 @@ function checkForHRBeat( sample:number,clickBoardNum:clickBoardID):boolean
   //Serial.println(IR_AC_Signal_Current);
 
   //  Process next data sample
-  IR_Average_Estimated = averageDCEstimator(ir_avg_reg, sample,clickBoardNum);
-  IR_AC_Signal_Current = lowPassFIRFilter(sample - IR_Average_Estimated,clickBoardNum);
+  IR_Average_Estimated = averageDCEstimator(ir_avg_reg, sample,boardID);
+  IR_AC_Signal_Current = lowPassFIRFilter(sample - IR_Average_Estimated,boardID);
 
   if(sample>IR_ACTIVE_THRESHOLD)
   {
@@ -519,7 +519,7 @@ function checkForHRBeat( sample:number,clickBoardNum:clickBoardID):boolean
 }
 
 //  Average DC Estimator
-function averageDCEstimator(p:number,  x:number,clickBoardNum:clickBoardID):number
+function averageDCEstimator(p:number,  x:number,boardID:BoardID):number
 {
   p += ((( x << 15) - p) >> 4);
   ir_avg_reg = p;
@@ -527,15 +527,15 @@ function averageDCEstimator(p:number,  x:number,clickBoardNum:clickBoardID):numb
 }
 
 //  Low Pass FIR Filter
-function lowPassFIRFilter( din:number,clickBoardNum:clickBoardID):number
+function lowPassFIRFilter( din:number,boardID:BoardID):number
 {  
   cbuf[offset] = din;
 
-  let z = mul16(FIRCoeffs[11], cbuf[(offset - 11) & 0x1F],clickBoardNum);
+  let z = mul16(FIRCoeffs[11], cbuf[(offset - 11) & 0x1F],boardID);
   
   for (let i = 0 ; i < 11 ; i++)
   {
-    z += mul16(FIRCoeffs[i], cbuf[(offset - i) & 0x1F] + cbuf[(offset - 22 + i) & 0x1F],clickBoardNum);
+    z += mul16(FIRCoeffs[i], cbuf[(offset - i) & 0x1F] + cbuf[(offset - 22 + i) & 0x1F],boardID);
   }
 
   offset++;
@@ -545,7 +545,7 @@ function lowPassFIRFilter( din:number,clickBoardNum:clickBoardID):number
 }
 
 //  Integer multiplier
-function mul16( x:number,  y:number,clickBoardNum:clickBoardID):number
+function mul16( x:number,  y:number,boardID:BoardID):number
 {
   return(x * y);
 }
@@ -555,58 +555,58 @@ function mul16( x:number,  y:number,clickBoardNum:clickBoardID):number
 
 /* Get Measurements */
 
-function MAX30100_readSensors(clickBoardNum:clickBoardID) 
+function MAX30100_readSensors(boardID:BoardID) 
 {
-    MAX30100_clearCounters(clickBoardNum);
+    MAX30100_clearCounters(boardID);
 
     if (mode_config_bits.mode == MAX30100_HR_ONLY) 
 	{
-        while (!MAX30100_isHrRdy(clickBoardNum))
+        while (!MAX30100_isHrRdy(boardID))
 		{
 		}
     } 
 	else if (mode_config_bits.mode == MAX30100_SPO2_EN) 
 	{
-        while (!MAX30100_isSpo2Rdy(clickBoardNum))
+        while (!MAX30100_isSpo2Rdy(boardID))
 		{
 		}
     }
 
-    MAX30100_readFifoData(clickBoardNum);
+    MAX30100_readFifoData(boardID);
 }
 
- function MAX30100_readTemp(clickBoardNum:clickBoardID) 
+ function MAX30100_readTemp(boardID:BoardID) 
 {
-    MAX30100_startTemp(clickBoardNum);
+    MAX30100_startTemp(boardID);
     control.waitMicros(29000);
 
-    while (!MAX30100_isTempRdy(clickBoardNum))
+    while (!MAX30100_isTempRdy(boardID))
 	{
 	}
-    temp_buff = MAX30100_readBlock(MAX30100_TEMP_INT_REG, 2,clickBoardNum);
+    temp_buff = MAX30100_readBlock(MAX30100_TEMP_INT_REG, 2,boardID);
 
     temp_int = temp_buff[0];
     temp_frac = temp_buff[1]*0.0625;
 }
 
-export function MAX30100_getIRdata(clickBoardNum:clickBoardID) :number
+export function MAX30100_getIRdata(boardID:BoardID) :number
 {
     return ir_data;
 }
 
-export function MAX30100_getREDdata(clickBoardNum:clickBoardID)  :number 
+export function MAX30100_getREDdata(boardID:BoardID)  :number 
 {
     return red_data;
 }
 
-function MAX30100_getTemp(clickBoardNum:clickBoardID)  :number
+function MAX30100_getTemp(boardID:BoardID)  :number
 {
     return (temp_int + temp_frac);
 }
 
 /* Setup the Sensor */
 
- function MAX30100_setMode( mode:number,clickBoardNum:clickBoardID)  
+ function MAX30100_setMode( mode:number,boardID:BoardID)  
 {
     switch (mode) {
         case MAX30100_HR_ONLY:
@@ -619,90 +619,90 @@ function MAX30100_getTemp(clickBoardNum:clickBoardID)  :number
     }
 }
 
- function MAX30100_setHiResEnabled( hiResEnable:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setHiResEnabled( hiResEnable:number,boardID:BoardID) 
 {
     spo2_config_bits.spo2_hires_en = hiResEnable;
 }
 
- function MAX30100_setSampleRate( sampRate:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setSampleRate( sampRate:number,boardID:BoardID) 
 {
     spo2_config_bits.spo2_sr = sampRate;
 }
 
- function MAX30100_setPulseWidth( pWidth:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setPulseWidth( pWidth:number,boardID:BoardID) 
 {
     spo2_config_bits.led_pw = pWidth;
 }
 
- function MAX30100_setIRLEDCurrent( irCurrent:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setIRLEDCurrent( irCurrent:number,boardID:BoardID) 
 {
     led_config_bits.ir_pa = irCurrent;
 }
 
- function MAX30100_setREDLEDCurrent( redCurrent:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setREDLEDCurrent( redCurrent:number,boardID:BoardID) 
 {
     led_config_bits.red_pa = redCurrent;
 }
 
 /* Interrupts */
 
- function MAX30100_setSpo2RdyInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setSpo2RdyInterrupt( interruptEnabled:number,boardID:BoardID) 
 {
     interrupt_en_bits.en_spo2_rdy = interruptEnabled;
 }
 
- function MAX30100_setHrRdyInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setHrRdyInterrupt( interruptEnabled:number,boardID:BoardID) 
 {
     interrupt_en_bits.en_hr_rdy = interruptEnabled;
 }
 
- function MAX30100_setTempRdyInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setTempRdyInterrupt( interruptEnabled:number,boardID:BoardID) 
 {
     interrupt_en_bits.en_temp_rdy = interruptEnabled;
 }
 
- function MAX30100_setFifoAfullInterrupt( interruptEnabled:number,clickBoardNum:clickBoardID) 
+ function MAX30100_setFifoAfullInterrupt( interruptEnabled:number,boardID:BoardID) 
 {
     interrupt_en_bits.en_fifo_afull = interruptEnabled;
 }
 
-function MAX30100_isPowerRdy(clickBoardNum:clickBoardID):number
+function MAX30100_isPowerRdy(boardID:BoardID):number
 {
-    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);
+    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,boardID);
     return interrupt_stat_bits.pwr_rdy;
 }
 
-function MAX30100_isSpo2Rdy(clickBoardNum:clickBoardID):number
+function MAX30100_isSpo2Rdy(boardID:BoardID):number
 {
-    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);
+    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,boardID);
     return interrupt_stat_bits.spo2_rdy;
 }
 
-function MAX30100_isHrRdy(clickBoardNum:clickBoardID):number 
+function MAX30100_isHrRdy(boardID:BoardID):number 
 {
-    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);
+    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,boardID);
     return interrupt_stat_bits.hr_rdy;
 }
 
-function MAX30100_isTempRdy(clickBoardNum:clickBoardID):number 
+function MAX30100_isTempRdy(boardID:BoardID):number 
 {
-    interrupt_stat_bits.temp_rdy = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);
+    interrupt_stat_bits.temp_rdy = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,boardID);
     return interrupt_stat_bits.temp_rdy;
 }
 
-function MAX30100_isFifoAfull(clickBoardNum:clickBoardID):number
+function MAX30100_isFifoAfull(boardID:BoardID):number
 {
-    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,clickBoardNum);
+    interrupt_stat_bits.interruptStat = MAX30100_readByte(MAX30100_INTERRUPT_STAT_REG,boardID);
     return interrupt_stat_bits.fifo_afull;
 }
 
 /* Initialize MAX30100 */
 
-function  MAX30100_initializeSensor(clickBoardNum:clickBoardID) 
+function  MAX30100_initializeSensor(boardID:BoardID) 
 {
      let I2CM_dataBuffer:number[] = [];
 
-    MAX30100_reset(clickBoardNum);
+    MAX30100_reset(boardID);
 
     // Initialize Settings
     interrupt_stat_bits.interruptStat = 0x00;
@@ -713,7 +713,7 @@ function  MAX30100_initializeSensor(clickBoardNum:clickBoardID)
     I2CM_dataBuffer[0] = MAX30100_INTERRUPT_STAT_REG;
     I2CM_dataBuffer[1] = interrupt_stat_bits.interruptStat;
     I2CM_dataBuffer[2] = interrupt_en_bits.interruptEn;
-    MAX30100_writeBlock(I2CM_dataBuffer, 3,clickBoardNum);
+    MAX30100_writeBlock(I2CM_dataBuffer, 3,boardID);
 
     // Configurations
     I2CM_dataBuffer[0] = MAX30100_MODE_CONFIG_REG;
@@ -721,29 +721,29 @@ function  MAX30100_initializeSensor(clickBoardNum:clickBoardID)
     I2CM_dataBuffer[2] = spo2_config_bits.spo2Config;
     I2CM_dataBuffer[3] = RESERVED;
     I2CM_dataBuffer[4] = led_config_bits.ledConfig;
-    MAX30100_writeBlock(I2CM_dataBuffer, 5,clickBoardNum);
+    MAX30100_writeBlock(I2CM_dataBuffer, 5,boardID);
 }
 
 /* Update Sensor Set-up */
 
- function MAX30100_updateSensorConfig(clickBoardNum:clickBoardID) 
+ function MAX30100_updateSensorConfig(boardID:BoardID) 
 {
      let I2CM_dataBuffer:number[]=[];
 
     I2CM_dataBuffer[0] = MAX30100_MODE_CONFIG_REG;
     I2CM_dataBuffer[1] = mode_config_bits.modeConfig;
     I2CM_dataBuffer[2] = spo2_config_bits.spo2Config;
-    MAX30100_writeBlock(I2CM_dataBuffer, 3,clickBoardNum);
+    MAX30100_writeBlock(I2CM_dataBuffer, 3,boardID);
 }
 
- function MAX30100_updateLEDCurrent(clickBoardNum:clickBoardID) 
+ function MAX30100_updateLEDCurrent(boardID:BoardID) 
 {
-    MAX30100_writeByte(MAX30100_LED_CONFIG_REG, led_config_bits.ledConfig,clickBoardNum);
+    MAX30100_writeByte(MAX30100_LED_CONFIG_REG, led_config_bits.ledConfig,boardID);
 }
 
- function MAX30100_updateEnabledInterrupts(clickBoardNum:clickBoardID) 
+ function MAX30100_updateEnabledInterrupts(boardID:BoardID) 
 {
-    MAX30100_writeByte(MAX30100_INTERRUPT_EN_REG, interrupt_en_bits.interruptEn,clickBoardNum);
+    MAX30100_writeByte(MAX30100_INTERRUPT_EN_REG, interrupt_en_bits.interruptEn,boardID);
 }
 
 /* FIFO Operations */
@@ -751,7 +751,7 @@ function  MAX30100_initializeSensor(clickBoardNum:clickBoardID)
 
 
 
- function MAX30100_clearCounters(clickBoardNum:clickBoardID)
+ function MAX30100_clearCounters(boardID:BoardID)
 {
      let I2CM_dataBuffer:number[] = [];
 
@@ -764,12 +764,12 @@ function  MAX30100_initializeSensor(clickBoardNum:clickBoardID)
     I2CM_dataBuffer[2] = ovf_ctr;
     I2CM_dataBuffer[3] = fifo_rd_ptr;
 
-    MAX30100_writeBlock(I2CM_dataBuffer, 4,clickBoardNum);
+    MAX30100_writeBlock(I2CM_dataBuffer, 4,boardID);
 }
 
- function MAX30100_readFifoData(clickBoardNum:clickBoardID) 
+ function MAX30100_readFifoData(boardID:BoardID) 
 {
-    fifo_buff = MAX30100_readBlock(MAX30100_FIFO_DATA_REG, 4,clickBoardNum);
+    fifo_buff = MAX30100_readBlock(MAX30100_FIFO_DATA_REG, 4,boardID);
 
     ir_data = (fifo_buff[0] << 8) | fifo_buff[1];
     red_data = (fifo_buff[2] << 8) | fifo_buff[3];
@@ -780,39 +780,39 @@ function  MAX30100_initializeSensor(clickBoardNum:clickBoardID)
 
 /* Misc. Operations */
 
- function MAX30100_reset(clickBoardNum:clickBoardID)
+ function MAX30100_reset(boardID:BoardID)
 {
     mode_config_bits.reset = ENABLED;
-    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);
+    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,boardID);
 }
 
-function MAX30100_wakeup(clickBoardNum:clickBoardID) 
+function MAX30100_wakeup(boardID:BoardID) 
 {
     mode_config_bits.shdn = DISABLED;
-    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);
+    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,boardID);
 }
 
-function MAX30100_shutdown(clickBoardNum:clickBoardID) 
+function MAX30100_shutdown(boardID:BoardID) 
 {
     mode_config_bits.shdn = ENABLED;
-    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);
+    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,boardID);
 }
 
- function MAX30100_getRevID(clickBoardNum:clickBoardID):number 
+ function MAX30100_getRevID(boardID:BoardID):number 
 {
-    return MAX30100_readByte(MAX30100_REV_ID_REG,clickBoardNum);
+    return MAX30100_readByte(MAX30100_REV_ID_REG,boardID);
 }
 
- function MAX30100_getPartID(clickBoardNum:clickBoardID):number  
+ function MAX30100_getPartID(boardID:BoardID):number  
 {
-    return MAX30100_readByte(MAX30100_PART_ID_REG,clickBoardNum);
+    return MAX30100_readByte(MAX30100_PART_ID_REG,boardID);
 }
 
 
-function  MAX30100_startTemp(clickBoardNum:clickBoardID) 
+function  MAX30100_startTemp(boardID:BoardID) 
 {
     mode_config_bits.temp_en = ENABLED;
-    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,clickBoardNum);
+    MAX30100_writeByte(MAX30100_MODE_CONFIG_REG, mode_config_bits.modeConfig,boardID);
 }
 
 function  Shift_Bits( read_res:number) 
@@ -831,13 +831,13 @@ function  Shift_Bits( read_res:number)
     return shift_res;
 }
 
-function  MAX30100_writeByte(register:number,dataByte:number,clickBoardNum:clickBoardID)
+function  MAX30100_writeByte(register:number,dataByte:number,boardID:BoardID)
 {
     let data:number[] = [dataByte]
-    writeMAX30100(data, register, clickBoardNum);
+    writeMAX30100(data, register, boardID);
 }
 
-function  MAX30100_writeBlock( write_buff:number[],  length:number,clickBoardNum:clickBoardID) 
+function  MAX30100_writeBlock( write_buff:number[],  length:number,boardID:BoardID) 
 {
   
 
@@ -851,22 +851,22 @@ function  MAX30100_writeBlock( write_buff:number[],  length:number,clickBoardNum
         }
 
 
-        I2Cs.i2cWriteBuffer(getMAX30100Addr(clickBoardNum),i2cBuffer,clickBoardNum); //Send the I2C buffer
+        I2Cs.i2cWriteBuffer(getMAX30100Addr(boardID),i2cBuffer,boardID); //Send the I2C buffer
 
 
 }
 
-function  MAX30100_readByte( reg_addr:number, clickBoardNum:clickBoardID):number
+function  MAX30100_readByte( reg_addr:number, boardID:BoardID):number
 {
-    return readMAX30100(1,reg_addr,clickBoardNum)[0];
+    return readMAX30100(1,reg_addr,boardID)[0];
 }
 
-function readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoardID):number[]
+function readMAX30100( numBytes:number, register:number,  boardID:BoardID):number[]
         {
            
             
-            I2Cs.i2cWriteNumber(getMAX30100Addr(clickBoardNum),register,NumberFormat.UInt8LE,clickBoardNum,true)
-           let i2cBuffer = I2Cs.I2CreadNoMem(getMAX30100Addr(clickBoardNum) ,numBytes,clickBoardNum);
+            I2Cs.i2cWriteNumber(getMAX30100Addr(boardID),register,NumberFormat.UInt8LE,boardID,true)
+           let i2cBuffer = I2Cs.I2CreadNoMem(getMAX30100Addr(boardID) ,numBytes,boardID);
 
             let dataArray:number[] = []; //Create an array to hold our read values
             for(let i=0; i<numBytes;i++)
@@ -886,10 +886,10 @@ function readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoa
 
 
     //%blockId=MAX30100_write
-        //%block="Write array %values to MAX30100 register%register on click%clickBoardNum ?"
+        //%block="Write array %values to MAX30100 register%register on click%boardID ?"
         //% blockGap=7
         //% advanced=true
-        export function writeMAX30100(values:number[],register:number,clickBoardNum:clickBoardID)
+        export function writeMAX30100(values:number[],register:number,boardID:BoardID)
         {
         
         
@@ -903,7 +903,7 @@ function readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoa
         }
     
         
-        I2Cs.i2cWriteBuffer(getMAX30100Addr(clickBoardNum),i2cBuffer,clickBoardNum); //Send the I2C buffer
+        I2Cs.i2cWriteBuffer(getMAX30100Addr(boardID),i2cBuffer,boardID); //Send the I2C buffer
          
         }
        
@@ -911,12 +911,12 @@ function readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoa
 
         
         
-      export function MAX30100_readBlock( reg_addr:number,numBytes:number, clickBoardNum:clickBoardID):number[] 
+      export function MAX30100_readBlock( reg_addr:number,numBytes:number, boardID:BoardID):number[] 
         {
            
             
-            I2Cs.i2cWriteNumber(getMAX30100Addr(clickBoardNum),reg_addr,NumberFormat.UInt8LE,clickBoardNum,true)
-           let i2cBuffer = I2Cs.I2CreadNoMem(getMAX30100Addr(clickBoardNum) ,numBytes,clickBoardNum);
+            I2Cs.i2cWriteNumber(getMAX30100Addr(boardID),reg_addr,NumberFormat.UInt8LE,boardID,true)
+           let i2cBuffer = I2Cs.I2CreadNoMem(getMAX30100Addr(boardID) ,numBytes,boardID);
 
             let dataArray:number[] = []; //Create an array to hold our read values
             for(let i=0; i<numBytes;i++)
@@ -932,11 +932,11 @@ function readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoa
         }
         
         
-        function setMAX30100Addr(deviceAddr:number,clickBoardNum:clickBoardID)
+        function setMAX30100Addr(deviceAddr:number,boardID:BoardID)
         {
             deviceAddress = deviceAddr;
         }
-        function getMAX30100Addr(clickBoardNum:clickBoardID):number
+        function getMAX30100Addr(boardID:BoardID):number
         {
             return deviceAddress;
         }
@@ -949,12 +949,12 @@ function readMAX30100( numBytes:number, register:number,  clickBoardNum:clickBoa
   Section: Example Code
  */
 
-function HeartRate_example(clickBoardNum:clickBoardID) 
+function HeartRate_example(boardID:BoardID) 
 {
   
     bpmRate = 0;
     let delta = 0;
-    //sampRate = getSampRate(clickBoardNum);
+    //sampRate = getSampRate(boardID);
 
   
 
@@ -963,10 +963,10 @@ function HeartRate_example(clickBoardNum:clickBoardID)
         while(1){
             basic.pause(sampRate)
           
-            //checkSample(clickBoardNum);
-            HeartRate_readSensors(clickBoardNum);
-            irData = HeartRate_getIRdata(clickBoardNum);
-            if (checkForHRBeat(irData,clickBoardNum) == true)
+            //checkSample(boardID);
+            HeartRate_readSensors(boardID);
+            irData = HeartRate_getIRdata(boardID);
+            if (checkForHRBeat(irData,boardID) == true)
             {
               //We sensed a beat!
               let delta = input.runningTime() - lastBeat;
@@ -1002,18 +1002,18 @@ function HeartRate_example(clickBoardNum:clickBoardID)
 
 
      //%blockId=Heart_Rate_getBPMRate
-    //%block="Get beats per minute on click%clickBoardNum"
+    //%block="Get beats per minute on click%boardID"
     //% blockGap=7
     //% advanced=false
-    export function BPMRate(clickBoardNum:clickBoardID):number 
+    export function BPMRate(boardID:BoardID):number 
     {
         if(isInitialized== 0)
         {
-            initialize(clickBoardNum)
+            initialize(boardID)
             
         }
 
-        if(HeartRate_getIRdata(clickBoardNum)<IR_ACTIVE_THRESHOLD || bpmRate <0)
+        if(HeartRate_getIRdata(boardID)<IR_ACTIVE_THRESHOLD || bpmRate <0)
         {
             bpmRate = 0
         }
@@ -1021,17 +1021,17 @@ function HeartRate_example(clickBoardNum:clickBoardID)
     }
     /**
      * The current value of IR reflection normalized between 0 and 100 (Great for neopixels)
-     * @param clickBoardNum the location of the click board being used
+     * @param boardID the location of the click board being used
      */
     //%blockId=Heart_Rate_getHRSignal
-    //%block="Get raw HR signal on click%clickBoardNum"
+    //%block="Get raw HR signal on click%boardID"
     //% blockGap=7
     //% advanced=false
-    export function pulse(clickBoardNum:clickBoardID):number 
+    export function pulse(boardID:BoardID):number 
     {
         if(isInitialized== 0)
         {
-            initialize(clickBoardNum)
+            initialize(boardID)
             
         }
         return Math.round(normalizedHR);
@@ -1040,50 +1040,50 @@ function HeartRate_example(clickBoardNum:clickBoardID)
 
     
 
-function HeartRate_readSensors(clickBoardNum:clickBoardID) 
+function HeartRate_readSensors(boardID:BoardID) 
 {
     if (!heartrate_initialized) {
-        HeartRate_initializeClick(clickBoardNum );
+        HeartRate_initializeClick(boardID );
     }
-    MAX30100_readSensors(clickBoardNum);
+    MAX30100_readSensors(boardID);
 }
 
-function HeartRate_getIRdata(clickBoardNum:clickBoardID) 
+function HeartRate_getIRdata(boardID:BoardID) 
 {
-    return MAX30100_getIRdata(clickBoardNum);
+    return MAX30100_getIRdata(boardID);
 }
 
-function HeartRate_getREDdata(clickBoardNum:clickBoardID) 
+function HeartRate_getREDdata(boardID:BoardID) 
 {
-    return MAX30100_getREDdata(clickBoardNum);
+    return MAX30100_getREDdata(boardID);
 }
 
-function HeartRate_getTemperature(clickBoardNum:clickBoardID) 
+function HeartRate_getTemperature(boardID:BoardID) 
 {
     if (!heartrate_initialized) 
 	{
-        HeartRate_initializeClick(clickBoardNum);
+        HeartRate_initializeClick(boardID);
     }
 
-    MAX30100_readTemp(clickBoardNum);
-    return MAX30100_getTemp(clickBoardNum);
+    MAX30100_readTemp(boardID);
+    return MAX30100_getTemp(boardID);
 }
 
-function HeartRate_initializeClick(clickBoardNum:clickBoardID) 
+function HeartRate_initializeClick(boardID:BoardID) 
 {
-    MAX30100_setSpo2RdyInterrupt(SPO2_INTERRUPT_EN,clickBoardNum);
-    MAX30100_setHrRdyInterrupt(HR_INTERRUPT_EN,clickBoardNum);
-    MAX30100_setTempRdyInterrupt(TEMP_INTERRUPT_EN,clickBoardNum);
-    MAX30100_setFifoAfullInterrupt(FIFO_INTERRUPT_EN,clickBoardNum);
+    MAX30100_setSpo2RdyInterrupt(SPO2_INTERRUPT_EN,boardID);
+    MAX30100_setHrRdyInterrupt(HR_INTERRUPT_EN,boardID);
+    MAX30100_setTempRdyInterrupt(TEMP_INTERRUPT_EN,boardID);
+    MAX30100_setFifoAfullInterrupt(FIFO_INTERRUPT_EN,boardID);
 
-    MAX30100_setMode(DEFAULT_MODE,clickBoardNum);
-    MAX30100_setHiResEnabled(DEFAULT_HIRES_SET,clickBoardNum);
-    MAX30100_setSampleRate(DEFAULT_SAMP_RATE,clickBoardNum);
-    MAX30100_setPulseWidth(DEFAULT_PWIDTH,clickBoardNum);
-    MAX30100_setIRLEDCurrent(DEFAULT_IR_CURRENT,clickBoardNum);
-    MAX30100_setREDLEDCurrent(DEFAULT_RED_CURRENT,clickBoardNum);
+    MAX30100_setMode(DEFAULT_MODE,boardID);
+    MAX30100_setHiResEnabled(DEFAULT_HIRES_SET,boardID);
+    MAX30100_setSampleRate(DEFAULT_SAMP_RATE,boardID);
+    MAX30100_setPulseWidth(DEFAULT_PWIDTH,boardID);
+    MAX30100_setIRLEDCurrent(DEFAULT_IR_CURRENT,boardID);
+    MAX30100_setREDLEDCurrent(DEFAULT_RED_CURRENT,boardID);
 
-    MAX30100_initializeSensor(clickBoardNum);
+    MAX30100_initializeSensor(boardID);
 
     heartrate_initialized = 1;
 }

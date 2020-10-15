@@ -16,14 +16,14 @@ namespace Noise {
 
     /**
      * Sets Noise Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Noise the Noise Object
     */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Noise"
     //% weight=110
-    export function createNoise(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Noise {
-        return new Noise(clickBoardNum, clickSlot);
+    export function createNoise(boardID: BoardID, clickID:ClickID): Noise {
+        return new Noise(boardID, clickID);
     }
 
 
@@ -32,23 +32,23 @@ namespace Noise {
     
     isInitialized : Array<number>;
 
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number
     private PINs : bBoard.PinSettings;
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-        super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+        super(boardID, clickID);
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum
-        this.clickSlotNumGlobal=clickSlot
-        this.PINs =  new bBoard.PinSettings(clickBoardNum, clickSlot);
+        this.boardIDGlobal=boardID
+        this.clickIDNumGlobal=clickID
+        this.PINs =  new bBoard.PinSettings(boardID, clickID);
     }
     
     
     initialize()
     {
      
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.isInitialized[this.boardIDGlobal]  = 1
         this.PINs.clearPin(clickIOPin.RST) // Enable the device
     
     
@@ -65,12 +65,12 @@ namespace Noise {
         //% this.defl="Noise"
         getNoiseLevel():number
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobal] == 0)
             {
                 this.initialize()
                 
             }
-            return bBoard.analogRead(clickADCPin.AN, this.clickBoardNumGlobal, this.clickSlotNumGlobal)
+            return this.PINs.analogRead(clickADCPin.AN, this.boardIDGlobal, this.clickIDNumGlobal)
         }
 
     //%blockId=Noise_isThresholdTriggered
@@ -82,7 +82,7 @@ namespace Noise {
     //% this.defl="Noise"
     isThresholdTriggered():boolean
     {   
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
             this.initialize()
             
@@ -106,7 +106,7 @@ namespace Noise {
             //% this.defl="Noise"
             setThreshold(threshold:number)
             {
-                if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+                if(this.isInitialized[this.boardIDGlobal] == 0)
                 {
                     this.initialize()
                     
@@ -135,7 +135,7 @@ namespace Noise {
             //% this.defl="Noise"
         write(value:number)
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobal] == 0)
             {
                 this.initialize()
                 

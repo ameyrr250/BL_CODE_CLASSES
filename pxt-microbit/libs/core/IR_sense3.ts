@@ -6,11 +6,11 @@
 namespace IR_Sense_3{
     
 
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="IR_Sense"
     //% weight=110
-    export function createIR_Sense(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): IR_Sense {
-        return new IR_Sense(clickBoardNum, clickSlot);
+    export function createIR_Sense(boardID: BoardID, clickID:ClickID): IR_Sense {
+        return new IR_Sense(boardID, clickID);
     }
 
     export class IR_Sense extends bBoard.I2CSettings{
@@ -28,22 +28,22 @@ namespace IR_Sense_3{
     isInitialized : Array<number>;
     deviceAddress : Array<number>;
     private PINs : bBoard.PinSettings;
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number
 
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-        super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+        super(boardID, clickID);
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.PINs=new bBoard.PinSettings(clickBoardNum, clickSlot);
-        this.clickBoardNumGlobal=clickBoardNum;
-        this.clickSlotNumGlobal=clickSlot;
+        this.PINs=new bBoard.PinSettings(boardID, clickID);
+        this.boardIDGlobal=boardID;
+        this.clickIDNumGlobal=clickID;
     }
     
     initialize(deviceAddr:number)
     {
-        //setTMP116Addr(deviceAddr,clickBoardNum)
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        //setTMP116Addr(deviceAddr,boardID)
+        this.isInitialized[this.boardIDGlobal]  = 1
         this.setAK9754Addr(deviceAddr)
         this.writeAK9754([0x20,0xff, 0xfc,0xa9, 0xf8, 0x80, 0xfa, 0xf0, 0x81, 0x0c, 0x80,0xf2, 0xff]) //Initialize the Config register
     
@@ -86,7 +86,7 @@ namespace IR_Sense_3{
             //% this.defl="IR_Sense"
             isHumanDetected():boolean
             {
-                if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+                if(this.isInitialized[this.boardIDGlobal] == 0)
                 {
                     this.initialize(this.AK9754_DEVICE_ADDRESS)
                     
@@ -137,11 +137,11 @@ namespace IR_Sense_3{
         
         setAK9754Addr(deviceAddr:number)
         {
-            this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+            this.deviceAddress[this.boardIDGlobal] = deviceAddr;
         }
         getAK9754Addr():number
         {
-            return this.deviceAddress[this.clickBoardNumGlobal];
+            return this.deviceAddress[this.boardIDGlobal];
         }
 
     }

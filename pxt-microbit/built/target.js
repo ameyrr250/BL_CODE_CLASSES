@@ -2662,8 +2662,27 @@ var pxtTargetBundle = {
     },
     "bundledpkgs": {
         "core": {
-            "LCD_Mini.ts": "\r\n\r\n\r\n\r\nenum lineNumber{\r\n  \r\n    //% block=\"1\"\r\n    one = 0,\r\n    //% block=\"2\"\r\n    two,\r\n  \r\n\r\n}\r\n\r\n\r\nenum LCDSettings{\r\n  \r\n  //% block=\"1\"\r\n  one = 1,\r\n  //% block=\"2\"\r\n  two,\r\n  //% block=\"3\"\r\n  three,\r\n  //% block=\"4\"\r\n  four,\r\n  //% block=\"5\"\r\n  five\r\n\r\n}\r\n\r\n\r\n//-------------------------Click Board Blocks Begin -----------------------------------\r\n//% weight=100 color=#D400D4 icon=\"\"\r\n//% advanced=true\r\nnamespace LCD_Mini{\r\n\r\n    /**\r\n     * Sets LCD object.\r\n     * @param clickBoardNum the clickBoardNum\r\n     *  @param LCDSettings the LCDSettings\r\n     */\r\n    //% block=\" $clickBoardNum $clickSlot\"\r\n    //% blockSetVariable=\"LCDSettings\"\r\n    //% blockId=LCDSettings\r\n    //% weight=110\r\n    export function createLCDSettings(clickBoardNum:BoardID, clickSlot:ClickID): LCDSettings {\r\n        return new LCDSettings(clickBoardNum, clickSlot);\r\n    }\r\n\r\n   \r\n\r\nexport class LCDSettings{\r\n        private LOW : number;\r\n        private HIGH : number;\r\n        private LCDInitialize : boolean;\r\n        private CS : number;\r\n        private CS2 : number;\r\n        private RST : number;\r\n        private IODIRB : number;\r\n        private OLATB : number;\r\n        private WRITE_BYTE : number;\r\n        private clickBoardNumGlobal:number;\r\n        private clickSlotNumGlobal:number;\r\n        private PINs:bBoard.PinSettings;\r\n        private SPIs:bBoard.SPIsetting;\r\n\r\n        constructor(clickBoardNum:BoardID, clickSlot:ClickID){      \r\n        this.LOW = 0; \r\n        this.HIGH = 1;\r\n        this.LCDInitialize = false;\r\n        this.CS = clickIOPin.CS;\r\n        this.CS2 = clickIOPin.AN;\r\n        this.RST = clickIOPin.RST;\r\n        this.IODIRB = 0x01;\r\n        this.OLATB = 0x15;\r\n        this.WRITE_BYTE = 0b01000000;\r\n        this.clickBoardNumGlobal = clickBoardNum\r\n        this.clickSlotNumGlobal = clickSlot\r\n        this.PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);\r\n        this.SPIs = new bBoard.SPIsetting(clickBoardNum, clickSlot);\r\n        }\r\n\r\n        get LOWval() {\r\n            return this.LOW\r\n          }\r\n        set LOWval(value) {\r\n            this.LOW = value\r\n          }\r\n\r\n        get HIGHval() {\r\n            return this.HIGH\r\n          }\r\n        set HIGHval(value) {\r\n            this.HIGH = value\r\n          }\r\n\r\n\r\n        get LCDInitializeval() {\r\n            return this.LCDInitialize\r\n          }\r\n        set LCDInitializeval(value) {\r\n            this.LCDInitialize = value\r\n          }\r\n\r\n\r\n        get CSval() {\r\n            return this.CS\r\n          }\r\n        set CSval(value) {\r\n            this.CS = value\r\n          }\r\n\r\n\r\n        get CS2val() {\r\n            return this.CS2\r\n          }\r\n        set CS2val(value) {\r\n            this.CS2 = value\r\n          }\r\n\r\n\r\n        get RSTval() {\r\n            return this.RST\r\n          }\r\n        set RSTval(value) {\r\n            this.RST = value\r\n          }\r\n\r\n\r\n       \tget IODIRBval() {\r\n            return this.RST\r\n          }\r\n        set IODIRBval(value) {\r\n            this.RST = value\r\n          }\r\n\r\n\r\n        get OLATBval() {\r\n            return this.OLATB\r\n          }\r\n        set OLATBval(value) {\r\n            this.OLATB = value\r\n          }\r\n\r\n\r\n        get WRITE_BYTEval() {\r\n            return this.WRITE_BYTE\r\n          }\r\n        set WRITE_BYTEval(value) {\r\n            this.WRITE_BYTE = value\r\n          }\r\n\r\n        __delay_us(delayuS: number)\r\n        {\r\n            control.waitMicros(delayuS)\r\n\r\n        }\r\n\r\n        lcd_sendNibble(nibble: number, RSbit: number){\r\n        let packet = (nibble << 4) | (RSbit << 2);\r\n        this.expander_setOutput(packet);\r\n        this.expander_setOutput(packet | (1<<3));\r\n        this.__delay_us(1);\r\n        this.expander_setOutput(packet);\r\n        this.__delay_us(40);\r\n        }\r\n\r\n\r\n        lcd_sendByte(byte: number, RSbit:number){\r\n        let nibbleHigh = byte >> 4;\r\n        let nibbleLow = byte & 0xF;\r\n        let packetHigh = (nibbleHigh << 4) | (RSbit << 2);\r\n        let packetLow = (nibbleLow << 4) | (RSbit << 2);\r\n        \r\n        this.expander_setOutput(packetHigh);\r\n        this.__delay_us(2);\r\n        this.expander_setOutput(packetHigh | (1<<3));\r\n        this.__delay_us(2);\r\n        this.expander_setOutput(packetLow)\r\n        this.__delay_us(2);\r\n        this.expander_setOutput(packetLow | (1<<3));\r\n        this.__delay_us(40);\r\n        }\r\n    \r\n        lcd_returnHome(){\r\n            this.lcd_sendByte(0b10, 0);\r\n            basic.pause(2)\r\n           \r\n        }\r\n\r\n\r\n        lcd_setAddr(row:number, character:number){\r\n        this.lcd_sendByte(0x80 | (character + (row*40)), 0);\r\n        }\r\n\r\n        lcd_writeChar(character:string){\r\n        this.lcd_sendByte(character.charCodeAt(0),1);\r\n        }\r\n\r\n        lcd_setContrast(contrast:number){\r\n        this.digipot_setWiper(contrast);\r\n        }\r\n\r\n        lcd_setup(){\r\n        this.PINs.writePin(this.HIGH,this.RST);\r\n        this.PINs.writePin(this.HIGH,this.CS2);\r\n        this.PINs.writePin(this.HIGH,this.CS);\r\n\r\n        this.expander_setup();\r\n        this.expander_setOutput(0);\r\n        basic.pause(40)\r\n        this.lcd_sendNibble(0b11, 0);\r\n        basic.pause(10)\r\n\r\n        this.lcd_sendNibble(0b11,  0);\r\n        basic.pause(10)\r\n\r\n        this.lcd_sendNibble(0b11,  0);\r\n        basic.pause(10)\r\n\r\n        this.lcd_sendNibble(0x2, 0);\r\n        this.lcd_sendByte(0x2C,  0);\r\n        this.lcd_sendByte(0b1100,  0);\r\n        this.lcd_sendByte(0x06,  0);\r\n        this.lcd_sendByte(0x0C,  0);\r\n        basic.pause(2)\r\n\r\n        this.lcd_returnHome();\r\n        this.lcd_clearDisplay();\r\n        }\r\n\r\n\r\n        expander_sendByte(addr:number, byte:number){\r\n        //spi1_master_open(LCD);\r\n        //  LCDMini_nCS_LAT = 0;\r\n        let cmd=[this.WRITE_BYTE,addr,byte];\r\n        //bBoard.clearPin(CS,clickBoardNum)\r\n        this.SPIs.SPIWriteArray(cmd)\r\n        //bBoard.setPin(CS,clickBoardNum)\r\n        }\r\n\r\n        expander_setup( ){\r\n        this.expander_sendByte(this.IODIRB, 0);\r\n        }\r\n\r\n        expander_setOutput(output:number){\r\n        this.expander_sendByte(this.OLATB, output);\r\n        }\r\n\r\n        digipot_setWiper(val:number){\r\n        let cmd = [0,val];\r\n        // bBoard.clearPin(CS2,clickBoardNum)\r\n        this.SPIs.spiCS(this.CS2)\r\n        this.SPIs.SPIWriteArray(cmd)\r\n        this.SPIs.spiCS(this.CS)\r\n        //bBoard.setPin(CS2,clickBoardNum)\r\n        }\r\n\r\n\r\n        /**\r\n         * Writes string value.\r\n         * @param LCDstring the string\r\n         * @param lineNum the lineNum\r\n         */\r\n        //% block=\"$this Write a $LCDstring to line $lineNum\"\r\n        //% blockId=LCDWriteString\r\n        //% blockNamespace=LCD_Mini\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"LCDSettings\"\r\n        //% weight=90 blockGap=12 color=#9E4894 icon=\"\"\r\n\r\n        lcd_writeString(LCDstring:string, lineNum: lineNumber){ //, clickBoardNum: clickBoardID) {\r\n            //let LCDstring1=['x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x']\r\n            if(this.LCDInitialize == false)\r\n            {\r\n                this.lcd_setup();\r\n                this.lcd_setContrast(0x30)\r\n                this.LCDInitialize = true; //LCD has been initialized\r\n            }\r\n    \r\n            this.lcd_setAddr(lineNum, 0);\r\n            let i = 0;\r\n            for (i = 1; i < 16; i++) {\r\n                if (LCDstring[i]) {\r\n                    this.lcd_writeChar(LCDstring[i]);\r\n                }\r\n            }\r\n            this.lcd_returnHome();\r\n            }\r\n\r\n        //% blockId=LCD_Clear\r\n        //% block=\"Clear $this LCD\"\r\n        //% weight=80\r\n        //% blockGap=7\r\n        //% blockNamespace=LCD_Mini\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"LCDSettings\"\r\n        lcd_clearDisplay(){\r\n            this.lcd_sendByte(1, 0);\r\n            basic.pause(2)\r\n            }\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n\r\n    }\r\n\r\n\r\n\r\n",
+            "Button_G.ts": "//% weight=100 color=#F4B820 icon=\"\"\r\n//% advanced=true\r\n\r\nnamespace Button_G {\r\n\r\n\r\n    \r\n    export enum Light{\r\n        Off = 0,\r\n        On = 1\r\n    \r\n    }\r\n\r\n\r\n    \r\n\r\n\r\n    /**\r\n     * Sets Button G object.\r\n     * @param boardID the boardID\r\n     *  @param Button_G the Button_G Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Button_G\"\r\n    //% weight=110\r\n    export function createButton_G(boardID: BoardID, clickID:ClickID): Button_G {\r\n        return new Button_G(boardID, clickID);\r\n   }\r\n\r\n\r\n    export class Button_G extends bBoard.PinSettings{\r\n        private boardIDGlobal:number\r\n        private clickIDNumGlobal:number\r\n        private PWMs : bBoard.PWMSettings;\r\n    \r\n        constructor(boardID: BoardID, clickID:ClickID){\r\n            super(boardID, clickID);\r\n            this.boardIDGlobal=boardID;\r\n            this.clickIDNumGlobal=clickID;\r\n            this.PWMs= new bBoard.PWMSettings(boardID, clickID);\r\n        }\r\n    \r\n        //% blockId=ButtonG_SetLight\r\n        //% block=\"$this Turn button light $onOff\"\r\n        //% blockNamespace=Button_G\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Button_G\"\r\n    setLight(onOff:Light)\r\n {\r\n    this.writePin(onOff,clickIOPin.PWM)\r\n }\r\n\r\n    \r\n        //% blockId=ButtonG_SetLight_PWM\r\n        //% block=\"$this Set button light to $PWMValue brightness\"\r\n        //% PWMValue.min=0 PWMValue.max=100\r\n        //% blockNamespace=Button_G\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Button_G\"\r\n        setLightPWM(PWMValue:number)\r\n        {\r\n            this.PWMs.setDuty(clickPWMPin.PWM,PWMValue)\r\n        }\r\n\r\n    \r\n        //% blockId=ButtonG_getSwitch\r\n        //% block=\"$this Read button state\"\r\n        //% blockNamespace=Button_G\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Button_G\"\r\n        getSwitch():number\r\n        {\r\n           return this.digitalReadPin(clickIOPin.INT)\r\n        }\r\n\r\n    }\r\n\r\n}\r\n",
+            "DC_Motor3.ts": "\r\n\r\n//-------------------------Click Board Blocks Begin -----------------------------------\r\n//% weight=100 color=#EF697B icon=\"\"\r\n//% advanced=true\r\n\r\nnamespace DC_Motor3 {\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"DC_MOTOR\"\r\n    //% weight=110\r\n    export function createDC_MOTOR(boardID: BoardID, clickID:ClickID): DC_MOTOR {\r\n      return new DC_MOTOR(boardID, clickID);\r\n  }\r\n    \r\n    \r\n\r\n    export enum MotorDirection {\r\n      //% block=\"Forward\"\r\n      Forward,\r\n      //% block=\"Reverse\"\r\n      Reverse\r\n    }\r\n    \r\n    export class DC_MOTOR extends bBoard.PWMSettings{\r\n    //Motor Click\r\n    private IN1  : number\r\n    private IN2  : number\r\n    private  SLP : number\r\n    private  PWM : number\r\n    private boardIDGlobal:number \r\n    private pwms : bBoard.PWMSettings;\r\n    private PINs : bBoard.PinSettings;\r\n    private clickIDNumGlobal:number\r\n    \r\n    isInitialized : Array<number>;\r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.IN1 = clickIOPin.AN\r\n        this.IN2 = clickIOPin.RST\r\n        this.SLP = clickIOPin.CS\r\n        this.PWM = clickIOPin.PWM\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.boardIDGlobal=boardID\r\n        this.clickIDNumGlobal=clickID\r\n        this.PINs = new bBoard.PinSettings(boardID, clickID);\r\n        this.pwms = new bBoard.PWMSettings(boardID, clickID);      \r\n    }\r\n    \r\n    get IN1val() {\r\n        return this.IN1\r\n      }\r\n    set IN1val(value) {\r\n        this.IN1 = value\r\n      }\r\n\r\n    get IN2val() {\r\n        return this.IN2\r\n      }\r\n    set IN2val(value) {\r\n        this.IN2 = value\r\n      }\r\n\r\n\r\n      get SLPval() {\r\n        return this.SLP\r\n      }\r\n    set SLPval(value) {\r\n        this.SLP = value\r\n      }\r\n\r\n      get PWMval() {\r\n        return this.PWM\r\n      }\r\n    set PWMval(value) {\r\n        this.PWM = value\r\n      }\r\n    \r\n    \r\n    initialize()\r\n    {\r\n        this.motorRotation(MotorDirection.Forward)\r\n        this.isInitialized[this.boardIDGlobal]  = 1\r\n    \r\n    }\r\n    \r\n        //------------------------Motor Click---------------------------------\r\n    \r\n    \r\n    \r\n    motorSpeed(Speed: number): void {\r\n            if(this.isInitialized[this.boardIDGlobal] == 0)\r\n            {\r\n                this.initialize()\r\n                \r\n            }\r\n    \r\n            if (Speed > 100) {\r\n                Speed = 100;\r\n            }\r\n            if (Speed < 0) {\r\n                Speed = 0;\r\n            }\r\n            this.pwms.setDuty(clickPWMPin.PWM,Speed);\r\n           \r\n        }\r\n    \r\n        //% blockId=Motor_speedDirection\r\n        //% block=\"Set $this speed to %speed with direction%direction\"\r\n        //% Speed.min=0 Speed.max=100\r\n        //% advanced=false\r\n        //% speed.min=0 speed.max=100\r\n        //% blockNamespace=DC_Motor3\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"DC_MOTOR\"\r\n    \r\n        motorSpeedDirection(speed: number,direction: MotorDirection): void {\r\n            if(this.isInitialized[this.boardIDGlobal] == 0)\r\n            {\r\n                this.initialize()\r\n                \r\n            }\r\n    \r\n            this.motorRotation(direction);\r\n            this.motorSpeed(speed)\r\n          \r\n           \r\n        }\r\n    \r\n    \r\n    \r\n        motorRotation(direction: MotorDirection): void {\r\n            switch (direction) {\r\n    \r\n                \r\n                case MotorDirection.Forward:\r\n                  this.PINs.writePin(1,this.IN1val);\r\n                  this.PINs.writePin(0,this.IN2val);\r\n                  break;\r\n    \r\n                case MotorDirection.Reverse:\r\n                \r\n                  this.PINs.writePin(0,this.IN1val);\r\n                  this.PINs.writePin(1,this.IN2val);\r\n                  break;\r\n            }\r\n        }\r\n    \r\n      \r\n    }\r\n    }",
+            "IR_Distance.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"↔\"\r\n//% advanced=true\r\nnamespace IR_Distance{\r\n\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"IR_Distance\"\r\n    //% weight=110\r\n    export function createIR_Distance(boardID: BoardID, clickID:ClickID): IR_Distance1 {\r\n        return new IR_Distance1(boardID, clickID);\r\n    }\r\n\r\n    export class IR_Distance1 extends bBoard.PinSettings{\r\n\r\n\r\n    isInitialized : Array<number>;\r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.boardIDGlobal=boardID;\r\n        this.clickIDNumGlobal=clickID;\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    }\r\n\r\n   \r\n        initialize()\r\n        {\r\n            this.enable() //Enable the module\r\n            this.isInitialized[this.boardIDGlobal]  = 1\r\n\r\n        }\r\n\r\n        //%blockId=IRDistance_getDistance\r\n        //%block=\"$this Get distance\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=IR_Distance\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Distance\"\r\n    getDistance():number\r\n    {\r\n        if(this.isInitialized[this.boardIDGlobal] == 0)\r\n        {\r\n            this.initialize()\r\n            \r\n        }\r\n       return 2700-this.analogRead(clickADCPin.AN, this.boardIDGlobal, this.clickIDNumGlobal)\r\n    \r\n    }\r\n\r\n        //%blockId=IRDistance_enable\r\n        //%block=\"$this Enable device\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=IR_Distance\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Distance\"\r\n        enable()\r\n        {\r\n            this.setPin(clickIOPin.RST); //Enable the module\r\n          \r\n        \r\n        }\r\n\r\n        //%blockId=IRDistance_disable\r\n        //%block=\"$this Disable device\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=IR_Distance\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Distance\"\r\n        disable()\r\n        {\r\n            this.clearPin(clickIOPin.RST); //Enable the module\r\n          \r\n        \r\n        }\r\n    }\r\n}",
+            "IR_sense3.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\\u223F\"\r\n//% advanced=true\r\nnamespace IR_Sense_3{\r\n    \r\n\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"IR_Sense\"\r\n    //% weight=110\r\n    export function createIR_Sense(boardID: BoardID, clickID:ClickID): IR_Sense {\r\n        return new IR_Sense(boardID, clickID);\r\n    }\r\n\r\n    export class IR_Sense extends bBoard.I2CSettings{\r\n\r\n    private readonly ST1 = 0x04\r\n    private readonly ST2 = 0x09\r\n    private readonly ST3 = 0x0A\r\n    private readonly ST4 = 0x1F\r\n    private readonly IRL = 0x05\r\n    private readonly IRH = 0x06\r\n    private readonly AK9754_DEVICE_ADDRESS = 0x60\r\n    \r\n    \r\n\r\n    isInitialized : Array<number>;\r\n    deviceAddress : Array<number>;\r\n    private PINs : bBoard.PinSettings;\r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number\r\n\r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.PINs=new bBoard.PinSettings(boardID, clickID);\r\n        this.boardIDGlobal=boardID;\r\n        this.clickIDNumGlobal=clickID;\r\n    }\r\n    \r\n    initialize(deviceAddr:number)\r\n    {\r\n        //setTMP116Addr(deviceAddr,boardID)\r\n        this.isInitialized[this.boardIDGlobal]  = 1\r\n        this.setAK9754Addr(deviceAddr)\r\n        this.writeAK9754([0x20,0xff, 0xfc,0xa9, 0xf8, 0x80, 0xfa, 0xf0, 0x81, 0x0c, 0x80,0xf2, 0xff]) //Initialize the Config register\r\n    \r\n    }\r\n   \r\n\r\n       \r\n        //%blockId=AK9754_write\r\n        //%block=\"$this Write array $values to AK9754 register$register ?\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=IR_Sense_3\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"IR_Sense\"\r\n        writeAK9754(values:number[])\r\n        {\r\n        \r\n        \r\n            let i2cBuffer = pins.createBuffer(values.length)\r\n\r\n            for (let i=0;i<values.length;i++)\r\n            {\r\n                i2cBuffer.setNumber(NumberFormat.UInt8LE, i, values[i])\r\n           \r\n            }\r\n    \r\n        \r\n            super.i2cWriteBuffer(this.getAK9754Addr(),i2cBuffer);\r\n         \r\n        }\r\n       \r\n\r\n        \r\n            //%blockId=IR_Sense_3_isHumandDetected\r\n            //%block=\"$this Has a human been detected ?\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=IR_Sense_3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"IR_Sense\"\r\n            isHumanDetected():boolean\r\n            {\r\n                if(this.isInitialized[this.boardIDGlobal] == 0)\r\n                {\r\n                    this.initialize(this.AK9754_DEVICE_ADDRESS)\r\n                    \r\n                }\r\n                if(this.PINs.digitalReadPin(clickIOPin.INT)==0) //If the interrupt pin has gone low (indicating human detected)\r\n                {\r\n                    this.readAK9754(this.IRL); //Datasheet indicates that reading from IRL will clear the interrupt. *Need to confirm if other reads are necessary\r\n                    this.readAK9754(this.IRH);\r\n                    this.readAK9754(this.ST1);\r\n                    this.readAK9754(this.ST2);\r\n                    this.readAK9754(this.ST3);\r\n                    this.readAK9754(this.ST4);\r\n\r\n                    return true;\r\n\r\n                }\r\n                \r\n                \r\n    \r\n        \r\n                return  false\r\n        \r\n                    \r\n            \r\n            }\r\n\r\n        \r\n            //%blockId=AK9754_read\r\n            //%block=\"$this Read from register$register ?\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=IR_Sense_3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"IR_Sense\"\r\n        readAK9754( register:number):number\r\n        {\r\n            \r\n    \r\n            this.i2cWriteNumber(this.getAK9754Addr(),register,NumberFormat.UInt8LE,true)\r\n\r\n    \r\n            return  this.I2CreadNoMem(this.getAK9754Addr(),1).getUint8(0)\r\n    \r\n                \r\n        \r\n        }\r\n        \r\n        \r\n        setAK9754Addr(deviceAddr:number)\r\n        {\r\n            this.deviceAddress[this.boardIDGlobal] = deviceAddr;\r\n        }\r\n        getAK9754Addr():number\r\n        {\r\n            return this.deviceAddress[this.boardIDGlobal];\r\n        }\r\n\r\n    }\r\n\r\n\r\n\r\n}\r\n\r\n\r\n\r\n",
+            "IrThermo_3.ts": "  \r\n/*\r\n  This is a library written for the MLX90632 Non-contact thermal sensor\r\n  SparkFun sells these at its website: www.sparkfun.com\r\n  Do you like this library? Help support SparkFun. Buy a board!\r\n  https://www.sparkfun.com/products/14569\r\n  Written by Nathan Seidle @ SparkFun Electronics, December 28th, 2017\r\n  The MLX90632 can remotely measure object temperatures within 1 degree C.\r\n  This library handles the initialization of the MLX90632 and the calculations\r\n  to get the temperatures.\r\n  https://github.com/sparkfun/SparkFun_MLX90632_Arduino_Library\r\n  Development environment specifics:\r\n  Arduino IDE 1.8.3\r\n  This program is distributed in the hope that it will be useful,\r\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\r\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\r\n  GNU General Public License for more details.\r\n  You should have received a copy of the GNU General Public License\r\n  along with this program.  If not, see <http://www.gnu.org/licenses/>.\r\n*/\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace IrThermo_3 {\r\n\r\n    enum status\r\n    {\r\n      SENSOR_SUCCESS,\r\n      SENSOR_ID_ERROR,\r\n      SENSOR_I2C_ERROR,\r\n      SENSOR_INTERNAL_ERROR,\r\n      SENSOR_GENERIC_ERROR,\r\n      SENSOR_TIMEOUT_ERROR\r\n      //...\r\n    } \r\n\r\n     //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"IrThermo\"\r\n    //% weight=110\r\n    export function createIrThermo(boardID: BoardID, clickID:ClickID): IrThermo {\r\n        return new IrThermo(boardID, clickID);\r\n    }\r\n    \r\nexport class IrThermo extends bBoard.I2CSettings{\r\n\r\n\r\n//Registers\r\nprivate readonly EE_VERSION =0x240B\r\n\r\n//32 bit constants\r\nprivate readonly EE_P_R =0x240C\r\nprivate readonly EE_P_G =0x240E\r\nprivate readonly EE_P_T =0x2410\r\nprivate readonly EE_P_O =0x2412\r\nprivate readonly EE_Aa =0x2414\r\nprivate readonly EE_Ab =0x2416\r\nprivate readonly EE_Ba =0x2418\r\nprivate readonly EE_Bb =0x241A\r\nprivate readonly EE_Ca =0x241C\r\nprivate readonly EE_Cb =0x241E\r\nprivate readonly EE_Da =0x2420\r\nprivate readonly EE_Db =0x2422\r\nprivate readonly EE_Ea =0x2424\r\nprivate readonly EE_Eb =0x2426\r\nprivate readonly EE_Fa =0x2428\r\nprivate readonly EE_Fb =0x242A\r\nprivate readonly EE_Ga =0x242C\r\n\r\n//16 bit constants\r\nprivate readonly EE_Ha =0x2481\r\nprivate readonly EE_Hb =0x2482\r\nprivate readonly EE_Gb =0x242E\r\nprivate readonly EE_Ka =0x242F\r\nprivate readonly EE_Kb =0x2430\r\n\r\n//Control registers\r\nprivate readonly EE_CONTROL =0x24D4\r\nprivate readonly EE_I2C_ADDRESS =0x24D5\r\nprivate readonly REG_I2C_ADDRESS =0x3000\r\nprivate readonly REG_CONTROL =0x3001\r\nprivate readonly REG_STATUS =0x3FFF\r\n\r\n//User RAM\r\nprivate readonly RAM_1 =0x4000\r\nprivate readonly RAM_2 =0x4001\r\nprivate readonly RAM_3 =0x4002\r\nprivate readonly RAM_4 =0x4003\r\nprivate readonly RAM_5 =0x4004\r\nprivate readonly RAM_6 =0x4005\r\nprivate readonly RAM_7 =0x4006\r\nprivate readonly RAM_8 =0x4007\r\nprivate readonly RAM_9 =0x4008\r\n\r\n//Three measurement modes available\r\nprivate readonly MODE_SLEEP =0b01\r\nprivate readonly MODE_STEP =0b10\r\nprivate readonly MODE_CONTINUOUS =0b11\r\n\r\n//REG_STATUS bits\r\nprivate readonly BIT_DEVICE_BUSY =10\r\nprivate readonly BIT_EEPROM_BUSY =9\r\nprivate readonly BIT_BROWN_OUT =8\r\nprivate readonly BIT_CYCLE_POS =2 //6:2 = 5 bits\r\nprivate readonly BIT_NEW_DATA =0\r\n\r\n//REG_CONTROL bits\r\nprivate readonly BIT_SOC =3\r\nprivate readonly BIT_MODE =1 //2:1 = 2 bits\r\n\r\nprivate readonly I2C_SPEED_STANDARD  =      100000\r\nprivate readonly I2C_SPEED_FAST       =     400000\r\n\r\nprivate readonly MAX_WAIT = 750; //Number of ms to wait before giving up. Some sensor actions take 512ms.\r\nprivate boardIDGlobalT:number\r\nprivate clickIDNumGlobal:number\r\n\r\n\r\n/*\r\n  This is a library written for the MLX90632 Non-contact thermal sensor\r\n  SparkFun sells these at its website: www.sparkfun.com\r\n  Do you like this library? Help support SparkFun. Buy a board!\r\n  https://www.sparkfun.com/products/14569\r\n  Written by Nathan Seidle @ SparkFun Electronics, December 28th, 2017\r\n  The MLX90632 can remotely measure object temperatures within 1 degree C.\r\n  This library handles the initialization of the MLX90632 and the calculations\r\n  to get the temperatures.\r\n  https://github.com/sparkfun/SparkFun_MLX90632_Arduino_Library\r\n  Development environment specifics:\r\n  Arduino IDE 1.8.3\r\n  This program is distributed in the hope that it will be useful,\r\n  but WITHOUT ANY WARRANTY; without even the implied warranty of\r\n  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\r\n  GNU General Public License for more details.\r\n  You should have received a copy of the GNU General Public License\r\n  along with this program.  If not, see <http://www.gnu.org/licenses/>.\r\n*/\r\n\r\n/*\r\n  TODO:\r\n  check EEPROM write\r\n  check timing - how fast to take reading? Setting the SOC twice may be doubling time\r\n  set emissivity\r\n*/\r\n\r\n//Declare global variables for the calibration values\r\nprivate P_R  : number;\r\nprivate P_G : number;\r\nprivate P_T : number;\r\nprivate P_O : number;\r\nprivate Ea : number;\r\nprivate Eb : number;\r\nprivate Fa : number;\r\nprivate Fb : number;\r\nprivate Ga : number;\r\nprivate Gb : number;\r\nprivate Ka : number;\r\nprivate Ha : number;\r\nprivate Hb : number;\r\n\r\nprivate TOdut : number; //Assume 25C for first iteration\r\nprivate TO0 : number; //object temp from previous calculation\r\nprivate TA0 : number; //ambient temp from previous calculation\r\nprivate sensorTemp :number; //Internal temp of the MLX sensor\r\n\r\n//The default I2C address for the MLX90632 on the SparkX breakout is =0x3B. =0x3A is also possible.\r\nprivate MLX90632_DEFAULT_ADDRESS : number;\r\n\r\n\r\n\r\n\r\nprivate isInitialized : Array<number>;\r\nprivate returnError : Array<number>;\r\n\r\nconstructor(boardID: BoardID, clickID:ClickID){\r\nsuper(boardID, clickID);\r\nthis.P_R = 0;\r\nthis.P_G= 0;\r\nthis.P_T= 0;\r\nthis.P_O= 0;\r\nthis.Ea= 0;\r\nthis.Eb= 0;\r\nthis.Fa= 0;\r\nthis.Fb= 0;\r\nthis.Ga= 0;\r\nthis.Gb= 0;\r\nthis.Ka= 0;\r\nthis.Ha= 0;\r\nthis.Hb= 0;\r\n\r\nthis.TOdut = 25.0; //Assume 25C for first iteration\r\nthis.TO0 = 25.0; //object temp from previous calculation\r\nthis.TA0 = 25.0; //ambient temp from previous calculation\r\nthis.sensorTemp; //Internal temp of the MLX sensor\r\nthis.MLX90632_DEFAULT_ADDRESS =0x3A\r\nthis.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\nthis.returnError = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\nthis.boardIDGlobalT=boardID*3+clickID;\r\nthis.clickIDNumGlobal=clickID;\r\n}\r\n\r\nget P_Rval(){\r\n    return this.P_R;\r\n}\r\n\r\nget P_Gval(){\r\n    return this.P_G;\r\n}\r\n\r\nget P_Tval(){\r\n    return this.P_T;\r\n}\r\n\r\nget P_Oval(){\r\n    return this.P_O;\r\n}\r\n\r\nget Eaval(){\r\n    return this.Ea;\r\n}\r\n\r\nget Ebval(){\r\n    return this.Eb;\r\n}\r\n\r\nget Faval(){\r\n    return this.Fa;\r\n}\r\n\r\nget Fbval(){\r\n    return this.Fb;\r\n}\r\n\r\nget Gaval(){\r\n    return this.Ga;\r\n}\r\n\r\nget Gbval(){\r\n    return this.Gb;\r\n}\r\n\r\nget Kaval(){\r\n    return this.Ka;\r\n}\r\n\r\nget Haval(){\r\n    return this.Ha;\r\n}\r\n\r\nget Hbval(){\r\n    return this.Hb;\r\n}\r\n\r\n\r\nget TOdutval(){\r\n    return this.TOdut;\r\n}\r\n\r\nget TO0val(){\r\n    return this.TO0;\r\n}\r\n \r\nget TA0val(){\r\n    return this.TA0;\r\n}\r\n\r\nget sensorTempval(){\r\n    return this.sensorTemp;\r\n}\r\n\r\n\r\nget MLX90632_DEFAULT_ADDRESSval(){\r\n    return this.MLX90632_DEFAULT_ADDRESS;\r\n}\r\n\r\n\r\nset P_Rval(value){\r\n    this.P_R = value;\r\n}\r\n\r\nset P_Gval(value){\r\n    this.P_G = value;\r\n}\r\n\r\nset P_Tval(value){\r\n    this.P_T = value;\r\n}\r\n\r\nset P_Oval(value){\r\n    this.P_O = value;\r\n}\r\n\r\nset Eaval(value){\r\n    this.Ea = value;\r\n}\r\n\r\nset Ebval(value){\r\n    this.Eb = value;\r\n}\r\n\r\nset Faval(value){\r\n    this.Fa = value;\r\n}\r\n\r\nset Fbval(value){\r\n    this.Fb = value;\r\n}\r\n\r\nset Gaval(value){\r\n    this.Ga = value;\r\n}\r\n\r\nset Gbval(value){\r\n    this.Gb = value;\r\n}\r\n\r\nset Kaval(value){\r\n    this.Ka = value;\r\n}\r\n\r\nset Haval(value){\r\n    this.Ha = value;\r\n}\r\n\r\nset Hbval(value){\r\n    this.Hb = value;\r\n}\r\n\r\n\r\nset TOdutval(value){\r\n    this.TOdut = value;\r\n}\r\n\r\nset TO0val(value){\r\n    this.TO0 = value;\r\n}\r\n\r\nset TA0val(value){\r\n    this.TA0 = value;\r\n}\r\n\r\nset sensorTempval(value){\r\n    this.sensorTemp = value;\r\n}\r\n\r\n\r\nset MLX90632_DEFAULT_ADDRESSval(value){\r\n    this.MLX90632_DEFAULT_ADDRESS = value;\r\n}\r\n\r\n\r\n\r\n\r\n\r\n//This begins the communication with the device\r\n//Returns a status error if anything went wrong\r\n\r\nbegin()\r\n{\r\n\r\n  let deviceAddress = this.MLX90632_DEFAULT_ADDRESS; //Get the I2C address from user\r\n\r\n  //We require caller to begin their I2C port, with the speed of their choice\r\n  //external to the library\r\n  //_i2cPort->begin();\r\n  //We could to a check here to see if user has init the Wire or not. Would\r\n  //need to be for different platforms\r\n\r\n  //Check communication with IC\r\n\r\nlet thisAddress = this.readRegister16(this.EE_I2C_ADDRESS);\r\n  \r\n  \r\n  //Wait for eeprom_busy to clear\r\n  let counter = 0;\r\n  while (this.eepromBusy())\r\n  {\r\n    control.waitMicros(1);\r\n    counter++;\r\n    if (counter == this.MAX_WAIT)\r\n    {\r\n    \r\n        this.returnError[this.boardIDGlobalT]  = status.SENSOR_TIMEOUT_ERROR;\r\n      \r\n    }\r\n  }\r\n\r\n  this.setMode(this.MODE_SLEEP); //Before reading EEPROM sensor needs to stop taking readings\r\n\r\n  //Load all the static calibration factors\r\n  let tempValue16;\r\n  let tempValue32;\r\n  tempValue32 =this.readRegister32(this.EE_P_R);\r\n  this.P_R = tempValue32 * Math.pow(2, -8);\r\n  tempValue32 =this.readRegister32(this.EE_P_G);\r\n  this.P_G = tempValue32 * Math.pow(2, -20);\r\n  tempValue32 =this.readRegister32(this.EE_P_T);\r\n  this.P_T = tempValue32 * Math.pow(2, -44);\r\n\r\n  tempValue32 =this.readRegister32(this.EE_P_O);\r\n  this.P_O = tempValue32 * Math.pow(2, -8);\r\n\r\n  tempValue32 =this.readRegister32(this.EE_Ea);\r\n  this.Ea = tempValue32 * Math.pow(2, -16);\r\n  tempValue32 =this.readRegister32(this.EE_Eb);\r\n  this.Eb = tempValue32 * Math.pow(2, -8);\r\n  tempValue32 =this.readRegister32(this.EE_Fa);\r\n  this.Fa = tempValue32 * Math.pow(2, -46);\r\n  tempValue32 =this.readRegister32(this.EE_Fb);\r\n  this.Fb = tempValue32 * Math.pow(2, -36);\r\n  tempValue32 = this.readRegister32(this.EE_Ga);\r\n  this.Ga = tempValue32 * Math.pow(2, -36);\r\n\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Gb);\r\n  this.Gb = tempValue16 * Math.pow(2, -10);\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Ka);\r\n  this.Ka = tempValue16 * Math.pow(2, -10);\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Ha);\r\n  this.Ha = tempValue16 * Math.pow(2, -14); //Ha!\r\n\r\n  tempValue16 = this.readRegister16(this.EE_Hb);\r\n  this.Hb = tempValue16 * Math.pow(2, -14);\r\n\r\n  //Note, sensor is in sleep mode\r\n\r\n  \r\n}\r\n\r\n//Read all calibration values and calculate the temperature of the thing we are looking at\r\n//Depending on mode, initiates a measurement\r\n//If in sleep or step mode, clears the new_data bit, sets the SOC bit\r\n    //%blockId=IRThermo_getObjectTemp\r\n    //%block=\"$this Get surface temperature in Celcius\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=IrThermo_3\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"IrThermo\"\r\ngetObjectTemp():number\r\n{\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS;\r\n    if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n    {\r\n        this.begin()\r\n        this.isInitialized[this.boardIDGlobalT] = 1; //Device is initialied\r\n    }\r\n  //If the sensor is not in continuous mode then the tell sensor to take reading\r\n  if(this.getMode() != this.MODE_CONTINUOUS){\r\n    this.setSOC();\r\n\r\n  } \r\n\r\n  //Write new_data = 0\r\n  this.clearNewData();\r\n\r\n  //Check when new_data = 1\r\n  let counter = 0;\r\n  while (this.dataAvailable() == false)\r\n  {\r\n    control.waitMicros(1);\r\n    counter++;\r\n    if (counter == this.MAX_WAIT)\r\n    {\r\nbasic.showString(\"E\")\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_TIMEOUT_ERROR;\r\n      return (0.0); //Error\r\n    }\r\n  }\r\n\r\n  this.gatherSensorTemp( );\r\n  if (this.returnError[this.boardIDGlobalT]  != status.SENSOR_SUCCESS)\r\n  {\r\n    \r\n    basic.showString(\"F\")\r\n\r\n    return (0.0); //Error\r\n  }\r\n\r\n  let lowerRAM = 0;\r\n  let upperRAM = 0;\r\n\r\n  //Get RAM_6 and RAM_9\r\n  let sixRAM = this.readRegister16(this.RAM_6);\r\n  let nineRAM = this.readRegister16(this.RAM_9);\r\n\r\n  //Read cycle_pos to get measurement pointer\r\n  let cyclePosition = this.getCyclePosition();\r\n\r\n  //If cycle_pos = 1\r\n  //Calculate TA and TO based on RAM_4, RAM_5, RAM_6, RAM_9\r\n  if (cyclePosition == 1)\r\n  {\r\n    lowerRAM = this.readRegister16(this.RAM_4);\r\n    upperRAM = this.readRegister16(this.RAM_5);\r\n  }\r\n  //If cycle_pos = 2\r\n  //Calculate TA and TO based on RAM_7, RAM_8, RAM_6, RAM_9\r\n  else if (cyclePosition == 2)\r\n  {\r\n    lowerRAM = this.readRegister16(this.RAM_7);\r\n    upperRAM = this.readRegister16(this.RAM_8);\r\n  }\r\n  else\r\n  {\r\n  \r\n    lowerRAM = this.readRegister16(this.RAM_4);\r\n    upperRAM = this.readRegister16(this.RAM_5);\r\n  }\r\n\r\n  //Object temp requires 3 iterations\r\n  for (let i = 0 ; i < 3 ; i++)\r\n  {\r\n    let VRta = nineRAM + this.Gb * (sixRAM / 12.0);\r\n\r\n    let AMB = ((sixRAM / 12.0) / VRta )* 524288;\r\n\r\n    //let sensorTemp = P_O + ((AMB - P_R) / P_G )+ (P_T * Math.pow((AMB - P_R), 2));\r\n\r\n    let S = (lowerRAM + upperRAM) / 2.0;\r\n    let VRto = nineRAM + (this.Ka * (sixRAM / 12.0));\r\n    let Sto = ((S / 12.0) / VRto) * 524288;\r\n\r\n    let TAdut = ((AMB - this.Eb) / this.Ea) + 25.0;\r\n\r\n    let ambientTempK = TAdut + 273.15;\r\n\r\n    let bigFraction = Sto / (1 * this.Fa * this.Ha * (1 +( this.Ga * (this.TOdut - this.TO0)) + (this.Fb * (TAdut - this.TA0))));\r\n\r\n    let objectTemp = bigFraction + Math.pow(ambientTempK, 4);\r\n    objectTemp = Math.sqrt(Math.sqrt(Math.abs(objectTemp))); //Take 4th root\r\n    objectTemp = objectTemp - 273.15 - this.Hb;\r\n\r\n    this.TO0 = objectTemp;\r\n\r\n  }\r\n\r\n  return (this.TO0);\r\n}\r\n\r\n    //%blockId=IRThermo_getObjectTempF\r\n    //%block=\"$this Get surface temperature in Fahrenheit\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=IrThermo_3\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"IrThermo\"\r\ngetObjectTempF():number\r\n{\r\n    \r\n  let tempC = this.getObjectTemp();\r\n  let tempF = tempC * 9.0/5.0 + 32.0;\r\n  return(tempF);\r\n}\r\n\r\n\r\n\r\ngetSensorTemp():number\r\n{\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS;\r\n\r\n  //If the sensor is not in continuous mode then the tell sensor to take reading\r\n  if(this.getMode() != this.MODE_CONTINUOUS) {\r\n    this.setSOC();\r\n  }\r\n  //Write new_data = 0\r\n  this.clearNewData();\r\n\r\n  //Wait for new data\r\n  let counter = 0;\r\n  while (this.dataAvailable() == false)\r\n  {\r\n    control.waitMicros(1);\r\n    counter++;\r\n    if (counter == this.MAX_WAIT)\r\n    {\r\n        this.returnError[this.boardIDGlobalT]  = status.SENSOR_TIMEOUT_ERROR;\r\n      return (0.0); //Error\r\n    }\r\n  }\r\n\r\n  return (this.gatherSensorTemp( ));\r\n}\r\n\r\n//This reads all the temperature calibration factors for the sensor itself\r\n//This is needed so that it can be called from getObjectTemp *and* users can call getSensorTemp \r\n//without causing a let read\r\ngatherSensorTemp( ):number\r\n{\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS;\r\n\r\n  //Get RAM_6 and RAM_9\r\n  let sixRAM = this.readRegister16(this.RAM_6);\r\n  \r\n  let nineRAM=  this.readRegister16(this.RAM_9);\r\n\r\n\r\n  let VRta = nineRAM + (this.Gb * (sixRAM / 12.0));\r\n\r\n  let AMB = ((sixRAM / 12.0) / VRta) * Math.pow(2, 19);\r\n\r\n  let sensorTemp = this.P_O + ((AMB - this.P_R) / this.P_G) + (this.P_T * Math.pow((AMB - this.P_R), 2));\r\n\r\n  \r\n\r\n  return(sensorTemp);\r\n}\r\n\r\n//Returns true if device is busy doing measurement\r\n//Always true in continuous mode\r\ndeviceBusy():boolean\r\n{\r\n  if (this.getStatus() & (1 << this.BIT_DEVICE_BUSY)) {return (true);}\r\n  return (false);\r\n}\r\n\r\n//Returns true if eeprom is busy\r\n//EEPROM is busy during boot up and during EEPROM write/erase\r\neepromBusy():boolean\r\n{\r\n  if (this.getStatus() & (1 << this.BIT_EEPROM_BUSY)) \r\n  {return (true);}\r\n  return (false);\r\n}\r\n\r\n//Returns the cycle_pos from status register. cycle_pos is 0 to 31\r\ngetCyclePosition():number\r\n{\r\n  let status = (this.getStatus() >> this.BIT_CYCLE_POS); //Shave off last two bits\r\n  status &= 0x1F; //Get lower 5 bits.\r\n  return (status);\r\n}\r\n\r\n//Returns true if new data is available\r\ndataAvailable():boolean\r\n{\r\n  if (this.getStatus() & (1 << this.BIT_NEW_DATA)) {return (true);}\r\n  return (false);\r\n}\r\n\r\n//Sets the brown_out bit. Datasheet says 'Customer should set bit to 1'. Ok.\r\nsetBrownOut()\r\n{\r\nlet reg = this.getStatus(); //Get current bits\r\n  reg |= (1 << this.BIT_BROWN_OUT); //Set the bit\r\n  this.writeRegister16(this.REG_STATUS, reg); //Set the mode bits\r\n}\r\n\r\n//Clear the new_data bit. This is done after a measurement is complete\r\nclearNewData()\r\n{\r\n  let reg = this.getStatus(); //Get current bits\r\n  reg &= ~(1 << this.BIT_NEW_DATA); //Clear the bit\r\n  this.writeRegister16(this.REG_STATUS, reg); //Set the mode bits\r\n}\r\n\r\ngetStatus()\r\n{\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\n  let deviceStatus   = this.readRegister16(this.REG_STATUS);\r\n\r\n  return (deviceStatus);\r\n}\r\n\r\n\r\n//Changes the mode to sleep\r\nsleepMode()\r\n{\r\n    this.setMode(this.MODE_SLEEP);\r\n}\r\n\r\n//Changes the mode to step\r\nstepMode()\r\n{\r\n    this.setMode(this.MODE_STEP);\r\n}\r\n\r\n//Changes the mode to continuous read\r\ncontinuousMode()\r\n{\r\n    this.setMode(this.MODE_CONTINUOUS);\r\n}\r\n\r\n//Sets the Start of Conversion (SOC) bit\r\nsetSOC()\r\n{\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\n  let reg = this.readRegister16(this.REG_CONTROL); //Get current bits\r\n\r\n  reg |= (1 << 3); //Set the bit\r\n  this.writeRegister16(this.REG_CONTROL, reg); //Set the bit\r\n\r\n}\r\n\r\n//Sets the sensing mode (3 modes availabe)\r\nsetMode(mode:number )\r\n{\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\n    \r\n  let reg = this.readRegister16(this.REG_CONTROL)//Get current bits\r\n   \r\n  reg &= ~(0x0003 << 1); //Clear the mode bits\r\n  reg |= (mode << 1); //Set the bits\r\n  this.writeRegister16(this.REG_CONTROL, reg); //Set the mode bits\r\n  \r\n}\r\n\r\n//Returns the mode of the sensor\r\ngetMode()\r\n{\r\n  \r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\nlet mode = this.readRegister16(this.REG_CONTROL); //Get current register settings\r\n  \r\n  mode = (mode >> 1) & 0x0003; //Clear all other bits\r\n  return (mode);\r\n}\r\n\r\n\r\n\r\n//Reads two consecutive bytes from a given location\r\n//Stores the result at the provided outputPointer\r\nreadRegister16( addr:number):number\r\n{\r\n    let i2cBuffer = pins.createBuffer(2);\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\n    super.i2cWriteNumber(this.MLX90632_DEFAULT_ADDRESS,addr,NumberFormat.Int16BE,true)\r\n\r\n i2cBuffer = super.I2CreadNoMem(this.MLX90632_DEFAULT_ADDRESS,2);\r\n\r\n\r\n let msb = i2cBuffer.getUint8(0)\r\n let lsb = i2cBuffer.getUint8(1)\r\n\r\nreturn  (msb << 8 | lsb)\r\n\r\n //return  bBoard.I2CreadNoMem(MLX90632_DEFAULT_ADDRESS,2,boardID).getNumber(NumberFormat.UInt16BE,0)\r\n}\r\n\r\n//Reads two 16-bit registers and combines them into 32 bits\r\nreadRegister32(addr:number):number\r\n{\r\n\r\n    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\n \r\n  //For the MLX90632 the first 16-bit chunk is LSB, the 2nd is MSB\r\n  let lower = this.readRegister16(addr)\r\n  let upper =this.readRegister16(addr+1)\r\n\r\n\r\n  return (upper << 16 | lower)\r\n}\r\n\r\n//Write two bytes to a spot\r\nwriteRegister16(addr:number,  val:number)\r\n{\r\n  this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success\r\nlet i2cBuffer = pins.createBuffer(4)\r\n\r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 0, addr >> 8 )\r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 1, addr & 0xFF)\r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 2, val >> 8) \r\ni2cBuffer.setNumber(NumberFormat.UInt8LE, 3, val & 0xFF)\r\n\r\nsuper.i2cWriteBuffer(this.MLX90632_DEFAULT_ADDRESS,i2cBuffer);\r\n\r\n  \r\n\r\n \r\n}\r\n\r\n//Write a value to EEPROM\r\n//Requires unlocking the EEPROM, writing =0x0000, unlocking again, then writing value\r\n//The datasheet doesn't go a good job of explaining how writing to EEPROM works.\r\n//This should work but doesn't. It seems the IC is very sensitive to I2C traffic while\r\n//the sensor is recording the new EEPROM.\r\nwriteEEPROM(addr:number,  val:number)\r\n{\r\n  //Put device into halt mode (page 15)\r\n  let originalMode = this.getMode();\r\n  this.setMode(this.MODE_SLEEP);\r\n\r\n  //Wait for complete\r\n  while (this.deviceBusy()) control.waitMicros(1);\r\n\r\n  //Magic unlock (page 17)\r\n  this.writeRegister16(0x3005, 0x554C);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n\r\n  //Now we can write to one EEPROM word\r\n  //Write =0x0000 to user's location (page 16) to erase\r\n  this.writeRegister16(addr, 0x0000);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n  //while (eepromBusy()) control.waitMicros(1);\r\n  //while (deviceBusy()) control.waitMicros(1);\r\n\r\n  //Magic unlock again\r\n  this.writeRegister16(0x3005, 0x554C);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n\r\n  //Now we can write to one EEPROM word\r\n  this.writeRegister16(addr, val);\r\n\r\n  //Wait for complete\r\n  control.waitMicros(100);\r\n  //while (eepromBusy()) control.waitMicros(1);\r\n  //while (deviceBusy()) control.waitMicros(1);\r\n\r\n  //Return to original mode\r\n  this.setMode(originalMode);\r\n}\r\n\r\n}\r\n}",
+            "K8.ts": "\r\nenum IRSensor {\r\n    //% block=\"left\"\r\n    LEFT = 7,\r\n    //% block=\"middle\"\r\n    MIDDLE = 8,\r\n    //% block=\"right\"\r\n    RIGHT = 9\r\n}\r\n\r\nenum IRColour {\r\n    //% block=\"black\"\r\n    BLACK,\r\n    //% block=\"white\"\r\n    WHITE\r\n}\r\nenum Motor {\r\n    //% block=\"left\"\r\n    LEFT = 0,\r\n    //% block=\"right\"\r\n    RIGHT = 1\r\n}\r\n\r\nenum MotorDirection {\r\n    //% block=\"forward\"\r\n    FORWARD = 0,\r\n    //% block=\"reverse\"\r\n    REVERSE = 1\r\n}\r\n\r\nenum MotorPower {\r\n    //% block=\"on\"\r\n    ON,\r\n    //% block=\"off\"\r\n    OFF\r\n}\r\nenum Comparison {\r\n    //% block=\"closer\"\r\n    CLOSER,\r\n    //% block=\"further\"\r\n    FURTHER\r\n}\r\n\r\n\r\n\r\n//% weight=0 color=#421C52 icon=\"\\uf1b9\"\r\n//% advanced=true\r\n\r\nnamespace k8 {\r\n    export let IR_SENSOR_LEFT = AnalogPin.P0\r\n    export let IR_SENSOR_MIDDLE = AnalogPin.P1\r\n    export let SPEAKER = AnalogPin.P1\r\n    export let IR_SENSOR_RIGHT = AnalogPin.P2\r\n    export let SERVO_2 = AnalogPin.P8\r\n    export let SONAR = DigitalPin.P8\r\n    export let SERVO_1 = AnalogPin.P12\r\n    export let M2_PWR: number = DigitalPin.P13\r\n    export let M2_DIR: number = DigitalPin.P14\r\n    export let M1_PWR: number = DigitalPin.P15\r\n    export let M1_DIR: number = DigitalPin.P16\r\n\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"K8\"\r\n    //% weight=110\r\n    export function createK8(boardID: BoardID, clickID:ClickID): K8 {\r\n        return new K8(boardID, clickID);\r\n   }\r\n\r\n\r\n    export class K8{\r\n\r\n        private MAX_PULSE : number\r\n        private motorState: MotorPower\r\n        private boardIDGlobal:number\r\n        private clickIDNumGlobal:number \r\n\r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        this.MAX_PULSE = 7800;\r\n        this.boardIDGlobal=boardID;\r\n        this.clickIDNumGlobal=clickID;\r\n        this.motorState = MotorPower.ON;\r\n    }\r\n\r\n    //----line sensor ----\r\n    /**\r\n   * Check if a chosen sensor is reading black or white\r\n   * @param sensor which of the three sensors\r\n   * @param colour whether the sensor looks for black or white\r\n   */\r\n    //% block\r\n    //% blockId=line_check_sensor block=\"$this $sensor| sensor is $colour|\"\r\n    //% weight=60\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    checkSensor(sensor: IRSensor, colour: IRColour = IRColour.WHITE): boolean {\r\n        let read: boolean\r\n        switch (sensor) {\r\n            case IRSensor.LEFT:\r\n                read = pins.analogReadPin(k8.IR_SENSOR_LEFT) > 200\r\n                break\r\n            case IRSensor.MIDDLE:\r\n                read = pins.analogReadPin(k8.IR_SENSOR_MIDDLE) > 200\r\n                break\r\n            case IRSensor.RIGHT:\r\n                read = pins.analogReadPin(k8.IR_SENSOR_RIGHT) > 200\r\n                break\r\n        }\r\n        if (colour == IRColour.WHITE) {\r\n            return !read\r\n        }\r\n        return read\r\n    }\r\n\r\n    /**\r\n     * Displays current status of all line sensors\r\n     */\r\n\r\n    //% groups=\" 'Line Sensor, 'Motion', 'Sonar',\"\r\n\r\n    //%blockId=Line_Sensor\r\n    //%block=\"$this Display Line Sensor Current Status\"\r\n    //%block=\"$this Display Current Status\"\r\n    //%group=\"Line Sensor\"\r\n    //% weight=50\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n\r\n    displaySensors(): void {\r\n        let i: number\r\n        for (i = 0; i < 5; i++)\r\n            led.plot(i, 4)\r\n\r\n        if (this.checkSensor(IRSensor.LEFT)) {\r\n            this.plotBar(4)\r\n        } else {\r\n            this.unplotBar(4)\r\n        }\r\n\r\n        if (this.checkSensor(IRSensor.MIDDLE)) {\r\n            this.plotBar(2)\r\n        } else {\r\n            this.unplotBar(2)\r\n        }\r\n\r\n        if (this.checkSensor(IRSensor.RIGHT)) {\r\n            this.plotBar(0)\r\n        } else {\r\n            this.unplotBar(0)\r\n        }\r\n    }\r\n\r\n    plotBar(x: number) {\r\n        led.plot(x, 1)\r\n        led.plot(x, 2)\r\n        led.plot(x, 3)\r\n    }\r\n    unplotBar(x: number) {\r\n        led.unplot(x, 1)\r\n        led.unplot(x, 2)\r\n        led.unplot(x, 3)\r\n    }\r\n\r\n\r\n \r\n\r\n    /**\r\n    * Returns the distance the robot is from an object (in centimetres)\r\n    * Max range 150cm\r\n    */\r\n    //% block\r\n    //% group=\"Sonar\"\r\n    //% weight=50\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    checkSonar(): number {\r\n        let list = [0, 0, 0, 0, 0];\r\n\r\n        for (let index = 0; index <= 4; index++) {\r\n            list[index] = this.ping()\r\n        }\r\n        list = list.sort()\r\n\r\n        return list[2];\r\n    }\r\n\r\n    /**\r\n     * Test that sonar is closer or further than the threshold in cm.\r\n     */\r\n    //% block\r\n    //% group=\"Sonar\"\r\n    //% blockId=sonar_is block=\"$this sonar is $comparison| than $threshold cm\"\r\n    //% weight=60\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    isSonar(comparison: Comparison = Comparison.FURTHER, threshold: number): boolean {\r\n        let distance = this.checkSonar()\r\n        if (comparison == Comparison.FURTHER) {\r\n            return threshold < distance || distance == 0\r\n        } else {\r\n            return threshold >= this.checkSonar()\r\n        }\r\n      }\r\n\r\n    /**\r\n    * Display the current sonar reading to leds.\r\n    */\r\n    //% block\r\n    //% group=\"Sonar\"\r\n    //% weight=40\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    displaySonar(): void {\r\n        led.plotBarGraph(this.checkSonar(), 80)\r\n    }\r\n\r\n    // d / 39 is the ratio that most resembled actual centimeters\r\n    // The datasheet says use d / 58 but that was off by a factor of 2/3\r\n        ping(): number {\r\n        // send pulse\r\n        pins.setPull(k8.SONAR, PinPullMode.PullNone);\r\n        pins.digitalWritePin(k8.SONAR, 0);\r\n        control.waitMicros(2);\r\n        pins.digitalWritePin(k8.SONAR, 1);\r\n        control.waitMicros(10);\r\n        pins.digitalWritePin(k8.SONAR, 0);\r\n\r\n        // read pulse\r\n        const d = pins.pulseIn(k8.SONAR, PulseValue.High, this.MAX_PULSE);\r\n        return Math.min(150, d / 39)\r\n    }\r\n\r\n\r\n\r\n\r\n    /**\r\n    *Drives the robot straight at a specified speed\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_drive_straight block=\"$this drive straight |speed: $speed\"\r\n    //% speed.min=-100 speed.max=100\r\n    //% weight=70\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    driveStraight(speed: number): void {\r\n    this.motorControl(Motor.LEFT, speed)\r\n    this.motorControl(Motor.RIGHT, speed)\r\n    }\r\n\r\n    /**\r\n    *Turns the robot to the left at a specified speed\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_turn_left block=\"$this turn left |speed: $speed\"\r\n    //% speed.min=0 speed.max=100\r\n    //% weight=60\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    turnLeft(speed: number): void {\r\n    this.motorControl(Motor.LEFT, 0)\r\n    this.motorControl(Motor.RIGHT, speed)\r\n    }\r\n\r\n    /**\r\n    *Turns the robot to the right at a specified speed\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_turn_right block=\"$this turn right |speed: $speed\"\r\n    //% speed.min=0 speed.max=100\r\n    //% weight=50\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    turnRight(speed: number): void {\r\n    this.motorControl(Motor.LEFT, speed)\r\n    this.motorControl(Motor.RIGHT, 0)\r\n    }\r\n\r\n    /**\r\n    *Stop the motors\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_stop block=\"$this stop motors\"\r\n    //% weight=45\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    stop(): void {\r\n    this.motorControl(Motor.LEFT, 0)\r\n    this.motorControl(Motor.RIGHT, 0)\r\n    }\r\n\r\n    /**\r\n    * Control both wheels in one function.\r\n    * Speeds range from -100 to 100.\r\n    * Negative speeds go backwards, positive go forwards.\r\n    */\r\n    //% block\r\n    //% group=\"Motion\"\r\n    //% blockId=motion_drive block=\"$this drive |left: $leftWheelSpeed|right: $rightWheelSpeed\"\r\n    //% leftWheelSpeed.min=-100 leftWheelSpeed.max=100\r\n    //% rightWheelSpeed.min=-100 rightWheelSpeed.max=100\r\n    //% weight=40\r\n    //% advanced=false\r\n    //% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\n    drive(leftWheelSpeed: number, rightWheelSpeed: number): void {\r\n    this.motorControl(Motor.LEFT, leftWheelSpeed)\r\n    this.motorControl(Motor.RIGHT, rightWheelSpeed)\r\n    }\r\n\r\n/**\r\n* Control the speed and direction of a single wheel\r\n*/\r\n//% block\r\n//% group=\"Motion\"\r\n//% blockId=motion_single block=\"$this drive |wheel: $wheel|speed: $speed\"\r\n//% speed.min=0 speed.max=100\r\n//% weight=30\r\n//% advanced=false\r\n//% blockNamespace=k8\r\n//% this.shadow=variables_get\r\n//% this.defl=\"K8\"\r\ndriveWheel(wheel: Motor, speed: number): void {\r\n    this.motorControl(wheel, speed)\r\n}\r\n\r\n/**\r\n* Turn the motors on/off - default on\r\n*/\r\n//% block\r\n//% group=\"Motion\"\r\n//% blockId=motion_power block=\"$this turn motors |power: $power\"\r\n//% weight=20\r\n//% advanced=false\r\n//% blockNamespace=k8\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"K8\"\r\nsetPowers(power: MotorPower): void {\r\n    if (power == MotorPower.OFF) {\r\n        this.stop()\r\n    }\r\n    this.motorState = power\r\n}\r\n\r\n/**\r\n * Advanced control of an individual motor. PWM is set to constant value.\r\n */\r\nmotorControl(whichMotor: Motor, speed: number): void {\r\n    let motorSpeed: number\r\n    let direction: MotorDirection\r\n\r\n    if (this.motorState == MotorPower.OFF) {\r\n        return\r\n    }\r\n\r\n    direction = speed < 0 ? MotorDirection.REVERSE : MotorDirection.FORWARD\r\n    speed = Math.abs(speed)\r\n\r\n    motorSpeed = this.remapSpeed(speed)\r\n\r\n    if (whichMotor == Motor.LEFT) {\r\n        pins.digitalWritePin(k8.M1_DIR, direction)\r\n        pins.analogSetPeriod(k8.M1_PWR, 512)\r\n        pins.analogWritePin(k8.M1_PWR, motorSpeed)\r\n    } else {\r\n        pins.digitalWritePin(k8.M2_DIR, direction)\r\n        pins.analogSetPeriod(k8.M2_PWR, 512)\r\n        pins.analogWritePin(k8.M2_PWR, motorSpeed)\r\n    }\r\n}\r\n\r\n// Rescale values from 0 - 100 to 0 - 1023\r\nremapSpeed(s: number): number {\r\n    let returnSpeed: number\r\n    if (s <= 0) {\r\n        returnSpeed = 0\r\n    } else if (s >= 100) {\r\n        returnSpeed = 1023\r\n    } else {\r\n    returnSpeed = (23200 + (s * 791)) / 100\r\n    }\r\n    return returnSpeed;\r\n}\r\n\r\n    }\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+            "Keylock.ts": "//% weight=100 color=#F4B820 icon=\"\"\r\n//% advanced=true\r\n\r\nnamespace Keylock {\r\n\r\n\r\n    \r\n    export enum MotorDirection {\r\n        //% block=\"Forward\"\r\n        Forward,\r\n        //% block=\"Reverse\"\r\n        Reverse\r\n    }\r\n\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"keylock\"\r\n    //% weight=110\r\n    export function createkeylock(boardID: BoardID, clickID:ClickID): keylock {\r\n        return new keylock(boardID, clickID);\r\n    }\r\n    \r\n    \r\n    \r\n      export class keylock extends bBoard.PinSettings{\r\n        private boardIDGlobal:number\r\n        private clickIDNumGlobal:number\r\n    \r\n    \r\n        constructor(boardID: BoardID, clickID:ClickID){\r\n            super(boardID, clickID);\r\n            this.boardIDGlobal=boardID;\r\n            this.clickIDNumGlobal=clickID;\r\n        }\r\n\r\n        \r\n        //% blockId=Keylock_getLockPosition\r\n        //% block=\"$this Get lock position\"\r\n        //% weight=60 color=#0fbc11\r\n        //% blockNamespace=Keylock\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"keylock\"\r\n        getLockPosition(): number {\r\n            \r\n          \r\n       \r\n            if(this.digitalReadPin(clickIOPin.AN) ==1)\r\n            {\r\n                return 1;\r\n            }\r\n\r\n                   \r\n            if( this.digitalReadPin(clickIOPin.PWM) ==1)\r\n            {\r\n                return 2;\r\n            }\r\n\r\n            if( this.digitalReadPin(clickIOPin.INT) ==1)\r\n            {\r\n                return 3;\r\n            }\r\n\r\n        return 0;\r\n\r\n           \r\n        }\r\n\r\n      }\r\n\r\n    }",
+            "Line_Follower.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB  icon=\"\\u21C8\"\r\n//% advanced=true\r\nnamespace Line_Follower{\r\n\r\n    export enum lineDetection\r\n    {\r\n        soft_right_turn = 0,\r\n        medium_right_turn = 1,\r\n        hard_right_turn = 2,\r\n        hard_left_turn = 3,\r\n        medium_left_turn = 4,\r\n        soft_left_turn = 5,\r\n        no_correction = 6\r\n\r\n    }\r\n\r\n    export enum reflection\r\n    {\r\n        reflected = 0,\r\n        not_reflected =1\r\n\r\n    }\r\n\r\n\r\n    export enum IRsensor\r\n    {\r\n        U1 = 1,\r\n        U2 = 2,\r\n        U3 = 3,\r\n        U4 = 4,\r\n        U5 = 5\r\n    }\r\n\r\n\r\n    /**\r\n     * Sets LineFollower Click object.\r\n     * @param boardID the boardID\r\n     * @param clickClot the bus number\r\n     *  @param LineFollower the LineFollower Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"LineFollower\"\r\n    //% weight=110\r\n    export function createLineFollower(boardID: BoardID, clickID:ClickID): LineFollower {\r\n        return new LineFollower(boardID, clickID);\r\n    }\r\n\r\n    export class LineFollower extends bBoard.PinSettings{\r\n   \r\n   \r\n    isInitialized : Array<number>;\r\n    private boardIDGlobalT:number\r\n    private clickIDNumGlobal:number\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.boardIDGlobalT=boardID*3+clickID;\r\n        this.clickIDNumGlobal=clickID;\r\n    }\r\n \r\n\r\n\r\n     \r\n        initialize(deviceAddr:number)\r\n        {\r\n           \r\n            this.isInitialized[this.boardIDGlobalT]  = 1\r\n\r\n        \r\n        }\r\n\r\n    //%blockId=Line_Follower_lineDetection\r\n    //%block=\"$this $enumName\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n    getDirectionEnum(enumName:lineDetection)\r\n    {\r\n        return enumName;\r\n    }\r\n    \r\n    //%blockId=Line_Follower_getWhiteDirection\r\n    //%block=\"$this Correction required to follow white line\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n    getWhiteDirection() {\r\n\r\n    let u1_now = this.getU1();\r\n    let u2_now = this.getU2();\r\n    let u3_now = this.getU3();\r\n    let u4_now = this.getU4();\r\n    let u5_now = this.getU5();\r\n    \r\n    if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n       \r\n        return lineDetection.soft_right_turn\r\n    }\r\n    else if((u5_now == 1) && (u4_now == 1) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n\r\n        return lineDetection.medium_right_turn\r\n    }\r\n    else if((u5_now == 1) && (u4_now == 1) && (u3_now==1) && (u2_now==0) && (u1_now==0)){\r\n\r\n        return lineDetection.hard_right_turn\r\n    }\r\n    else if((u5_now == 1) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==0)){\r\n\r\n        return lineDetection.hard_right_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n\r\n        return lineDetection.hard_left_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==0) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n\r\n        return lineDetection.hard_left_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==1) && (u1_now==1)){\r\n\r\n        return lineDetection.medium_left_turn\r\n    }\r\n    else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==1)){ \r\n\r\n        return lineDetection.soft_left_turn\r\n    }\r\n    else{\r\n\r\n        return lineDetection.no_correction\r\n  \r\n    }\r\n}\r\n\r\n   \r\n    //%blockId=Line_Follower_getBlackDirection\r\n    //%block=\"$this Correction required to follow black line\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n    getBlackDirection() {\r\n\r\n        let u1_now = this.getU1();\r\n        let u2_now = this.getU2();\r\n        let u3_now = this.getU3();\r\n        let u4_now = this.getU4();\r\n        let u5_now = this.getU5();\r\n\r\n\r\n        if((u5_now == 1) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n       \r\n            return lineDetection.hard_left_turn\r\n        }\r\n        else if((u5_now == 1) && (u4_now == 1) && (u3_now==0) && (u2_now==0) && (u1_now==0)){\r\n    \r\n            return lineDetection.medium_left_turn\r\n        }\r\n        else if((u5_now == 1) && (u4_now == 1) && (u3_now==1) && (u2_now==0) && (u1_now==0)){\r\n    \r\n            return lineDetection.soft_left_turn\r\n        }\r\n        else if((u5_now == 1) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==0)){\r\n    \r\n            return lineDetection.soft_left_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==1) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n    \r\n            return lineDetection.soft_right_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==0) && (u3_now==1) && (u2_now==1) && (u1_now==1)){\r\n    \r\n            return lineDetection.medium_right_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==1) && (u1_now==1)){\r\n    \r\n            return lineDetection.hard_right_turn\r\n        }\r\n        else if((u5_now == 0) && (u4_now==0) && (u3_now==0) && (u2_now==0) && (u1_now==1)){ \r\n    \r\n            return lineDetection.hard_right_turn\r\n        }\r\n        else{\r\n    \r\n            return lineDetection.no_correction\r\n      \r\n        }\r\n    }\r\n\r\n\r\n\r\ngetU1():number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.RST)\r\n\r\n    return reflectedValue\r\n}\r\n\r\ngetU2():number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.AN)\r\n\r\n    return reflectedValue\r\n}\r\ngetU3():number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.TX)\r\n\r\n    return reflectedValue\r\n}\r\ngetU4():number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.RX)\r\n\r\n    return reflectedValue\r\n}\r\n\r\n \r\ngetU5():number{\r\n    \r\n    let reflectedValue =  this.digitalReadPin(clickIOPin.PWM)\r\n\r\n    return reflectedValue\r\n}\r\n\r\n    //%blockId=Line_Follower_isReflected\r\n    //%block=\"$this Has light been reflected on $sensorNum\"\r\n    //% blockGap=7\r\n    //% advanced=true\r\n    //% blockNamespace=Line_Follower\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"LineFollower\"\r\n   isReflected(sensorNum:IRsensor):boolean{\r\n        \r\n        let reflectedValue = 1\r\n\r\n        switch (sensorNum)\r\n        {\r\n            case IRsensor.U1:\r\n                reflectedValue = this.getU1();\r\n            break;\r\n        \r\n            case IRsensor.U2:\r\n                 reflectedValue = this.getU2();\r\n            break;\r\n        \r\n            case IRsensor.U3:\r\n                 reflectedValue = this.getU3();\r\n            break;\r\n        \r\n            case IRsensor.U4:\r\n                 reflectedValue = this.getU4();\r\n            break;\r\n        \r\n            case IRsensor.U5:\r\n                 reflectedValue = this.getU5();\r\n            break;                                \r\n        }\r\n        \r\n        if (reflectedValue == reflection.reflected)\r\n        {\r\n            return true;\r\n        }\r\n\r\n        return false;\r\n    }\r\n\r\n}\r\n\r\n}\r\n\r\n\r\n ",
+            "Motion.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\\u27A0\"\r\n//% advanced=true\r\nnamespace Motion{\r\n\r\n\r\n    \r\n    \r\n    enum motion{\r\n        detected = 1,\r\n        none = 0,\r\n    }\r\n\r\n     /**\r\n     * Sets Thermo Click object.\r\n     * @param boardID the boardID\r\n     * @param clickID the ClickID\r\n     * @param Thermo the Motion Object\r\n    */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Motion\"\r\n    //% weight=110\r\n    export function createThermo(boardID: BoardID, clickID:ClickID): Motion {\r\n        return new Motion(boardID, clickID);\r\n   }\r\n\r\n\r\n    export class Motion{\r\n\r\n        private boardIDGlobal : BoardID\r\n        private clickIDGlobal : ClickID\r\n        constructor(boardID: BoardID, clickID:ClickID){\r\n            this.boardIDGlobal=boardID;\r\n            this.clickIDGlobal=clickID;\r\n        }\r\n    \r\n    \r\n        //%blockId=Motion_isDetected\r\n        //%block=\"$this Has motion been detected?\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Motion\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Motion\"\r\n    isDetected():boolean\r\n    {\r\n        let PINs = new bBoard.PinSettings(this.boardIDGlobal, this.clickIDGlobal);\r\n        if(PINs.digitalReadPin(clickIOPin.INT) == motion.detected)\r\n        {\r\n            return true\r\n        }\r\n        return false;\r\n    \r\n    }\r\n\r\n}\r\n}",
+            "NFC_Tag_2.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#FF2F92 icon=\"\"\r\n//% advanced=true\r\nnamespace NFC_Tag_2{\r\n\r\n    export enum URICode{\r\n\r\n        //% block=\"Full URL\" \r\n      zero = 0,\r\n      //% block=\"http://www.\"\r\n      one = 1,\r\n      //% block=\"https://www.\"\r\n      two = 2,\r\n      //% block=\"http://\"\r\n      three = 3,\r\n      //% block=\"https://\"\r\n      four = 4\r\n    }\r\n\r\n    /**\r\n     * Sets NFC_Tag Click object.\r\n     *  @param boardID the boardID\r\n     *  @param NFC_Tag the NFC_Tag Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"NFC_Tag\"\r\n    //% weight=110\r\n    export function createNFC_Tag(boardID: BoardID, clickID:ClickID): NFC_Tag {\r\n        return new NFC_Tag(boardID, clickID);\r\n    }\r\n\r\n    export class NFC_Tag extends bBoard.I2CSettings{\r\n\r\n    //Address Definitions\r\n    private readonly DEFAULT_I2C_ADDRESS =  0x55  \r\n\r\n\r\n    private readonly COVERING_PAGE_REG = 0x0\r\n    private readonly  USER_START_REG =0x1\r\n\r\n    private readonly NFC_BLOCK_SIZE = 16\r\n    private readonly UID_SIZE = 7\r\n\r\n\r\n    private readonly USER_END_REG  = 0x38 // just the first 8 bytes for the 1K\r\n    private readonly CONFIG_REG\t=   0x3A\r\n\r\n\r\n    private readonly SRAM_START_REG= 0xF8\r\n    private readonly SRAM_END_REG  = 0xFB // just the first 8 bytes\r\n\r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n            super(boardID, clickID);\r\n            this.DEFAULT_I2C_ADDRESS =  0x55  \r\n            this.COVERING_PAGE_REG = 0x0\r\n            this.USER_START_REG =0x1\r\n            this.NFC_BLOCK_SIZE = 16\r\n            this.UID_SIZE = 7\r\n            this.USER_END_REG  = 0x38 // just the first 8 bytes for the 1K\r\n            this.CONFIG_REG\t=   0x3A\r\n            this.SRAM_START_REG= 0xF8\r\n            this.SRAM_END_REG  = 0xFB // just the first 8 bytes\r\n            this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n            this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n            this.boardIDGlobal=boardID;\r\n            this.clickIDNumGlobal=clickID;\r\n        }\r\n\r\n  \r\n\r\n     \r\n        initialize(deviceAddr:number)\r\n        {     \r\n            this.isInitialized[this.boardIDGlobal]  = 1\r\n            this.setNT3H2111Addr(deviceAddr)  \r\n            let arrayTest = this.readNT3H2111(16, 0) //Need to read the first page of the tag memory\r\n            arrayTest[0] = this.DEFAULT_I2C_ADDRESS<<1 //Set the very first byte (the i2c address). The chip always returns 0x04 (manufacturer ID) and not the I2C address (0x55)\r\n            arrayTest[12] = 225 //The last 4 bytes are part of the container and need to be set\r\n            arrayTest[13] = 16\r\n            arrayTest[14] = 109\r\n            arrayTest[15] = 0\r\n            this.writeNT3H2111(arrayTest, 0)//Now write this back to the first block of memory\r\n        \r\n        }\r\n\r\n        readCoveringPage():number[] { //Get the entire covering page from the NT3H2111\r\n        return this.readNT3H2111(this.NFC_BLOCK_SIZE,this.COVERING_PAGE_REG);\r\n        }\r\n\r\n\r\n        //%blockId=NT3H2111_setURI\r\n        //%block=\"Write URL %URL to NFC device\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=NFC_Tag_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"NFC_Tag\"\r\n    setURI(URL:string)\r\n    {\r\n    if(this.isInitialized[this.boardIDGlobal] == 0)\r\n    {\r\n        this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n        \r\n    }\r\n\r\n    //Information found from https://www.remy.org.uk/elec.php?elec=1510617600#smoke\r\n    //https://learn.adafruit.com/adafruit-pn532-rfid-nfc/ndef\r\nlet bytesWritten = 0; //Track the amount of bytes written to the chip\r\n\r\n//NDEF Section\r\nlet NDEFHeader = 0xD1; //FirstRecord&LastRecord&ShortPayload&TypeNameFormate=1\r\nlet typeFieldSize = 0x01; //Type field size is 1 byte\r\nlet NDEFpayloadLength = 0; //This will contain the length of the NDEF payload\r\nlet NDEFtypeField = 0x55; //Indicates URI record type\r\nlet NDEFPayload:number[] = []; //This is where the NDEF payload will be stored\r\n\r\n\r\n\r\n//TLV Section\r\nlet TLVType = 0x03; //Indicates TLV block contains an NDEF Message\r\nlet TLVLength = 0; //This will contain the length of the TLV Block\r\nlet TLVValue:number[] = []; //The array that will hold the TLV block (where the NDEF message will live)\r\n\r\nNDEFPayload[0] = 0 ; //URIidentifierCode; //No prepending. User needs to provide entire URL\r\n\r\nfor(let i=0;i<URL.length;i++) //Load the string into the payload one character at a time \r\n{\r\n    NDEFPayload[i+1] = URL.charCodeAt(i)\r\n}\r\nNDEFpayloadLength = NDEFPayload.length; //We can now calculate the length of the NDEF payload\r\n\r\n\r\n\r\n//Let's build the TLV block\r\nTLVValue[0] = TLVType; //The first byte is the Type of the \"TLV\" Block. In this case it is 0x03 because it is an NDEF message\r\nTLVValue[1] = 0; //This will be the TLV Block length. We need to calculate it first\r\nTLVValue[2] = NDEFHeader; //The first byte of the TLV Message is the NDEF Header\r\nTLVValue[3] = typeFieldSize; //The second byte of the TLV Message is the NDEF Field type size which is 1 byte\r\nTLVValue[4] = NDEFpayloadLength; //The third byte of the TLV Message is the NDEF payload length\r\nTLVValue[5] = NDEFtypeField; //In the NDEF Header (Bits 0-2 = 0x01) we inidcated we would use a \"well-known record\". In this case, it will be 0x55 = URI Record\r\n\r\nfor(let i=0;i<NDEFpayloadLength;i++) //Append the NDEF payload one byte at a time\r\n{\r\n    TLVValue[i+6] = NDEFPayload[i];\r\n}\r\n\r\nTLVLength = TLVValue.length - 2; //We can now calculate the TLV Block Length (minus the Type and Length field)\r\nTLVValue[1] = TLVLength; //Now write this length to the TLV length field\r\n\r\n    let loopCounter = 0; \r\n\r\n    while(bytesWritten < TLVValue.length)\r\n    {\r\n\r\n            this.writeBlock(TLVValue.slice(this.NFC_BLOCK_SIZE*loopCounter,Math.min(TLVValue.length-1,this.NFC_BLOCK_SIZE*loopCounter+15)+1), loopCounter+1) \r\n            bytesWritten = bytesWritten + 16; \r\n            loopCounter++;\r\n      \r\n\r\n    }\r\n\r\n    \r\n\r\n\r\n}\r\n//Now we need to append the NDEF payload to our TLVBlock message.\r\n\r\n   // arrayTest = [0x3, 21, 0xd1, 0x1, 17, 0x55, 0x02, 0x62, 0x72, 0x69, 0x6c, 0x6c, 0x69, 0x61, 0x6e, 0x74]\r\n   // NFC_Tag_2.writeNT3H2111(arrayTest, 1, BoardID.one)\r\n    //arrayTest = [0x6c, 0x61, 0x62, 0x73, 0x2e, 0x63, 0x61, 0xfe, 0, 0, 0, 0, 0, 0, 0, 0]\r\n   // NFC_Tag_2.writeNT3H2111(arrayTest, 2, BoardID.one)\r\n\r\nreadUID():number[] { //Extracts the first 7 bytes of the \r\n    return this.readNT3H2111(this.UID_SIZE, this.COVERING_PAGE_REG);\r\n}\r\n\r\n \r\n        //%blockId=NT3H2111_writeBlock\r\n        //%block=\"Write array %values to block %blockAddr\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=NFC_Tag_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"NFC_Tag\"\r\n        writeBlock(values:number[],blockAddr:number)\r\n        {\r\n        \r\n            let byte = 0; //Byte to be written\r\n            let i2cBuffer = pins.createBuffer(16+1)\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, blockAddr) //Set the I2C Block address\r\n\r\n        for (let i=0;i<16;i++)\r\n        {\r\n            \r\n                if(i < values.length)\r\n                {\r\n                    byte = values[i];\r\n                }\r\n                else\r\n                {\r\n                    byte = 0; //Zero pad the block\r\n                }\r\n\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, i+1, byte)\r\n           \r\n        }\r\n    \r\n        \r\n        this.i2cWriteBuffer(this.getNT3H2111Addr(),i2cBuffer);\r\n         \r\n        }\r\n\r\n        //%blockId=NT3H2111_write\r\n        //%block=\"Write array %values to NT3H2111 register%register\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=NFC_Tag_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"NFC_Tag\"\r\n        writeNT3H2111(values:number[],register:number)\r\n        {\r\n        \r\n        \r\n            let i2cBuffer = pins.createBuffer(values.length+1)\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register) \r\n\r\n        for (let i=0;i<values.length;i++)\r\n        {\r\n            i2cBuffer.setNumber(NumberFormat.UInt8LE, i+1, values[i])\r\n           \r\n        }\r\n    \r\n        \r\n        this.i2cWriteBuffer(this.getNT3H2111Addr(),i2cBuffer);\r\n         \r\n        }\r\n       \r\n\r\n        \r\n     \r\n            findI2C()\r\n            {\r\n               \r\n                for(let i=0;i<128;i++)\r\n                {\r\n                    this.i2cWriteNumber(i,0,NumberFormat.UInt8LE,false)\r\n                }\r\n                \r\n             \r\n                    \r\n            \r\n            }\r\n\r\n        \r\n            //%blockId=NT3H2111_read\r\n            //%block=\"Read %numBytes bytes from register%register\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=NFC_Tag_2\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"NFC_Tag\"\r\n        readNT3H2111( numBytes:number, register:number):number[]\r\n        {\r\n           \r\n            \r\n            this.i2cWriteNumber(this.getNT3H2111Addr(),register,NumberFormat.UInt8LE,true)\r\n            let i2cBuffer = this.I2CreadNoMem(this.getNT3H2111Addr() ,numBytes);\r\n\r\n            let dataArray:number[] = []; //Create an array to hold our read values\r\n            for(let i=0; i<numBytes;i++)\r\n            {\r\n                dataArray[i] = i2cBuffer.getUint8(i); //Extract byte i from the buffer and store it in position i of our array\r\n            }\r\n           \r\n            \r\n            return  dataArray\r\n    \r\n                \r\n        \r\n        }\r\n        \r\n        \r\n        setNT3H2111Addr(deviceAddr:number)\r\n        {\r\n            this.deviceAddress[this.boardIDGlobal] = deviceAddr;\r\n        }\r\n        getNT3H2111Addr():number\r\n        {\r\n            return this.deviceAddress[this.boardIDGlobal];\r\n        }\r\n    }\r\n}\r\n\r\n",
+            "Noise.ts": "\r\n\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#F20D0D icon=\"\"\r\n//% advanced=true\r\nnamespace Noise {\r\n\r\n    enum threshold{\r\n        triggered = 0x01\r\n    }\r\n\r\n    \r\n\r\n    /**\r\n     * Sets Noise Click object.\r\n     * @param boardID the boardID\r\n     *  @param Noise the Noise Object\r\n    */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Noise\"\r\n    //% weight=110\r\n    export function createNoise(boardID: BoardID, clickID:ClickID): Noise {\r\n        return new Noise(boardID, clickID);\r\n    }\r\n\r\n\r\n    export class Noise extends bBoard.SPIsetting{\r\n    \r\n    \r\n    isInitialized : Array<number>;\r\n\r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number\r\n    private PINs : bBoard.PinSettings;\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.boardIDGlobal=boardID\r\n        this.clickIDNumGlobal=clickID\r\n        this.PINs =  new bBoard.PinSettings(boardID, clickID);\r\n    }\r\n    \r\n    \r\n    initialize()\r\n    {\r\n     \r\n        this.isInitialized[this.boardIDGlobal]  = 1\r\n        this.PINs.clearPin(clickIOPin.RST) // Enable the device\r\n    \r\n    \r\n    \r\n    }\r\n    \r\n    \r\n        //%blockId=Noise_getNoiseLevel\r\n        //%block=\"$this Get raw noise level\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Noise\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Noise\"\r\n        getNoiseLevel():number\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobal] == 0)\r\n            {\r\n                this.initialize()\r\n                \r\n            }\r\n            return this.PINs.analogRead(clickADCPin.AN, this.boardIDGlobal, this.clickIDNumGlobal)\r\n        }\r\n\r\n    //%blockId=Noise_isThresholdTriggered\r\n    //%block=\"$this Has noise threshold been triggered\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Noise\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Noise\"\r\n    isThresholdTriggered():boolean\r\n    {   \r\n        if(this.isInitialized[this.boardIDGlobal] == 0)\r\n        {\r\n            this.initialize()\r\n            \r\n        }\r\n        if(this.PINs.digitalReadPin(clickIOPin.INT) == threshold.triggered)\r\n        {\r\n            return true;\r\n        }\r\n        else\r\n        {\r\n            return false;\r\n        }\r\n     }\r\n            //%blockId=Noise_setThreshold\r\n            //%block=\"$this Set noise threshold to $threshold\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% threshold.min=0 threshold.max=100\r\n            //% blockNamespace=Noise\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Noise\"\r\n            setThreshold(threshold:number)\r\n            {\r\n                if(this.isInitialized[this.boardIDGlobal] == 0)\r\n                {\r\n                    this.initialize()\r\n                    \r\n                }\r\n                let config = 0x7000; //DACa, Buffered output, 1x Gain, Shutdown disabled\r\n                if(threshold > 100)\r\n                {\r\n                    threshold = 100\r\n                }\r\n                if(threshold < 0)\r\n                {\r\n                    threshold = 0\r\n                }\r\n                threshold = threshold * 40.96 - 1 //Convert to a 12 bit number\r\n    \r\n                this.write(threshold|config);\r\n    \r\n            }\r\n\r\n            //%blockId=Noise_write\r\n            //%block=\"$this Write $value\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=Noise\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Noise\"\r\n        write(value:number)\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobal] == 0)\r\n            {\r\n                this.initialize()\r\n                \r\n            }\r\n            let valueArray:number[] = [value>>8,value&0xFF]; //Split the value to be written into a LSB and MSB\r\n            this.spiCS(clickIOPin.CS)//Set the CS pin\r\n            this.SPIWriteArray(valueArray)\r\n        }\r\n\r\n    }\r\n}",
+            "Proximity_2.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"↦\"\r\n//% advanced=true\r\nnamespace Proximity_2{\r\n    enum Proximity2_Interrupts {ALS_INT, PROX_INT, NO_INT};\r\n    \r\n\r\n    /**\r\n     * Sets Proximity2 Click object.\r\n     * @param boardID the boardID\r\n     *  @param Proximity2 the Proximity2 Object\r\n    */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Proximity2\"\r\n    //% weight=110\r\n    export function createProximity2Settings(boardID: BoardID, clickID:ClickID): Proximity2 {\r\n        return new Proximity2(boardID, clickID);\r\n   }\r\n\r\n    export class Proximity2 extends bBoard.I2CSettings{\r\n     readonly INTERRUPT_STATUS : number\r\n     readonly MAIN_CONFIGURATION : number\r\n     readonly RECEIVE_CONFIGURATION : number\r\n     readonly TRANSMIT_CONFIGURATION : number\r\n     readonly ADC_HIGH_ALS : number\r\n     readonly ADC_LOW_ALS : number\r\n     readonly ADC_BYTE_PROX : number\r\n     readonly ALS_UPPER_THRESHOLD_HIGH : number\r\n     readonly ALS_UPPER_THRESHOLD_LOW : number\r\n     readonly ALS_LOWER_THRESHOLD_HIGH : number\r\n     readonly ALS_LOWER_THRESHOLD_LOW : number\r\n     readonly THRESHOLD_PERSIST_TIMER : number\r\n     readonly PROX_THRESHOLD_INDICATOR : number\r\n     readonly PROX_THRESHOLD : number\r\n     readonly DIGITAL_GAIN_TRIM_GREEN : number\r\n     readonly DIGITAL_GAIN_TRIM_INFRARED : number\r\n    \r\n     readonly ADDRESS  : number;\r\n    isInitialized : Array<number>;\r\n    \r\n    private boardIDGlobalT:number\r\n    private clickIDNumGlobal:number \r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n    super(boardID, clickID)\r\n    this.INTERRUPT_STATUS= 0x00\r\n    this.MAIN_CONFIGURATION = 0x01\r\n    this.RECEIVE_CONFIGURATION=   0x02\r\n    this.TRANSMIT_CONFIGURATION=  0x03\r\n    this.ADC_HIGH_ALS =   0x04\r\n    this.ADC_LOW_ALS= 0x05\r\n    this.ADC_BYTE_PROX=   0x16\r\n    this.ALS_UPPER_THRESHOLD_HIGH =0x06\r\n    this.ALS_UPPER_THRESHOLD_LOW = 0x07\r\n    this.ALS_LOWER_THRESHOLD_HIGH =   0x08\r\n    this.ALS_LOWER_THRESHOLD_LOW =0x09\r\n    this.THRESHOLD_PERSIST_TIMER= 0x0A\r\n    this.PROX_THRESHOLD_INDICATOR =   0x0B\r\n    this.PROX_THRESHOLD = 0x0C\r\n    this.DIGITAL_GAIN_TRIM_GREEN =0x0F\r\n    this.DIGITAL_GAIN_TRIM_INFRARED = 0x10\r\n    \r\n    this.ADDRESS = 0b1001010;\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.boardIDGlobalT=boardID*3+clickID;\r\n    this.clickIDNumGlobal=clickID;\r\n    this.Proximity2_Initialize()\r\n\r\n    }\r\n\r\n        //%blockId=Proximity2_ReadProximity\r\n        //%block=\"Get $this proximity reading\"\r\n        //% blockGap=7\r\n        //% weight=90   color=#9E4894 icon=\"\"\r\n        //% advanced=false\r\n        //% blockNamespace=Proximity_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Proximity2\"\r\n        Proximity2_Read_Proximity():number\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n            {\r\n                this.Proximity2_Initialize()\r\n                \r\n            }\r\n            let val = this.Read_Proximity2_Register(this.ADC_BYTE_PROX);\r\n            return val;\r\n        }\r\n        \r\n        \r\n        \r\n        //%blockId=Proximity2_ReadALS\r\n        //%block=\"Get $this ambient light reading\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Proximity_2\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Proximity2\"\r\n        Proximity2_Read_Als():number\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n            {\r\n                this.Proximity2_Initialize()\r\n                \r\n            }\r\n            let val = (this.Read_Proximity2_Register(this.ADC_HIGH_ALS) << 8) | this.Read_Proximity2_Register(this.ADC_LOW_ALS);\r\n            return val;\r\n        }\r\n    \r\n    \r\n    // Read a byte from register 'reg'\r\n    Read_Proximity2_Register( reg:number):number\r\n    {\r\n        let i2cBuffer = pins.createBuffer(2);\r\n    \r\n        super.i2cWriteNumber(this.ADDRESS,reg,NumberFormat.Int8LE,true)\r\n       \r\n        i2cBuffer = super.I2CreadNoMem(this.ADDRESS,1);\r\n       \r\n       \r\n        return i2cBuffer.getUint8(0)\r\n    }\r\n    \r\n    // Write byte 'byte' to register 'reg'\r\n    Write_Proximity2_Register(reg:number,  byte:number) \r\n    {\r\n        let i2cBuffer = pins.createBuffer(2)\r\n    \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, reg)\r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, byte) \r\n       \r\n    \r\n        this.i2cWriteBuffer(this.ADDRESS,i2cBuffer);\r\n    \r\n       \r\n    }\r\n    \r\n    Proximity2_Read_Interrupt():number\r\n    {\r\n        let val = this.Read_Proximity2_Register(this.INTERRUPT_STATUS);\r\n        if (val & 0b1) \r\n        {\r\n            return Proximity2_Interrupts.ALS_INT;\r\n        } \r\n        else if (val & 0b10) \r\n        {\r\n            return Proximity2_Interrupts.PROX_INT;\r\n        } \r\n        else \r\n        {\r\n            return Proximity2_Interrupts.NO_INT;\r\n        }\r\n    }\r\n    \r\n    Proximity2_Set_Threshold(thresh:number)\r\n    {\r\n        this.Write_Proximity2_Register(this.PROX_THRESHOLD, thresh);\r\n    }\r\n    \r\n    // Setup the chip for proximity sensing\r\n    Proximity2_Initialize()\r\n    {\r\n        this.isInitialized[this.boardIDGlobalT] = 1;\r\n        this.Write_Proximity2_Register(this.MAIN_CONFIGURATION, 0b110000);\r\n        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000);\r\n        this.Write_Proximity2_Register(this.PROX_THRESHOLD_INDICATOR, 0b01000000);\r\n        this.Write_Proximity2_Register(this.TRANSMIT_CONFIGURATION, 0b00001111);\r\n    }\r\n    \r\n    Proximity2_Set_Als_Upper_Threshold(thresh:number)\r\n    {\r\n        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_HIGH, thresh >> 8);;\r\n        this.Write_Proximity2_Register( this.ALS_UPPER_THRESHOLD_LOW, thresh & 0xFF);\r\n    }\r\n    \r\n    Proximity2_Set_Als_Lower_Threshold(thresh:number)\r\n    {\r\n        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_HIGH, thresh >> 8);\r\n        this.Write_Proximity2_Register( this.ALS_LOWER_THRESHOLD_LOW, thresh & 0xFF);\r\n    }\r\n\r\n\r\n    \r\n    }\r\n    \r\n    \r\n    \r\n    \r\n    \r\n    }",
             "README.md": "# core\n\nThe core library.\n\n",
+            "Reed.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Reed{\r\n\r\n    enum reed{\r\n        Activated = 1,\r\n        Not_Activated = 0,\r\n    }\r\n\r\n    /**\r\n     * Sets Reed Click object.\r\n     * @param boardID the boardID\r\n     *  @param Reed the Reed Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Reed\"\r\n    //% weight=110\r\n    export function createReed(boardID: BoardID, clickID:ClickID): Reed {\r\n        return new Reed(boardID, clickID);\r\n    }\r\n\r\n    export class Reed extends bBoard.PinSettings{\r\n\r\n    isInitialized : Array<number>;\r\n    \r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number \r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n        this.boardIDGlobal=boardID;\r\n        this.clickIDNumGlobal=clickID;\r\n    }\r\n\r\ninitialize()\r\n{\r\n\r\n    this.isInitialized[this.boardIDGlobal]  = 1\r\n    this.setPullDirection(clickIOPin.CS, IOPullDirection.two)\r\n}\r\n    \r\n    \r\n    \r\n    \r\n    \r\n        //%blockId=Reed_isActivated\r\n        //%block=\"For $this Has reed been activated\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Reed\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Reed\"\r\n    isActivated():boolean\r\n    {\r\n        if(this.isInitialized[this.boardIDGlobal] == 0)\r\n        {\r\n            this.initialize()\r\n            \r\n        }\r\n\r\n       if(this.digitalReadPin(clickIOPin.CS) == reed.Activated)\r\n       {\r\n        return true\r\n       }\r\n       return false;\r\n    \r\n    }\r\n\r\n    }\r\n}",
+            "Relay.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#66791B  icon=\"\"\r\n//% advanced=true\r\nnamespace Relay {\r\n\r\n    export enum relay\r\n    {\r\n        Relay1 = 1,\r\n        Relay2 = 2\r\n    }\r\n\r\n    export enum onOff\r\n    {\r\n        On = 1,\r\n        Off = 0\r\n    }\r\n\r\n    /**\r\n     * Sets Relay Click object.\r\n     * @param boardID the boardID\r\n     *  @param Relay the Relay Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Relay\"\r\n    //% weight=110\r\n    export function createRelay(boardID: BoardID, clickID:ClickID): Relay {\r\n        return new Relay(boardID, clickID);\r\n    }\r\n    \r\n\r\n    export class Relay extends bBoard.PinSettings{\r\n\r\n        private boardIDGlobal:number;\r\n        private clickIDNumGlobal:number;\r\n\r\n        constructor(boardID: BoardID, clickID:ClickID){\r\n            super(boardID, clickID)\r\n            this.boardIDGlobal=boardID\r\n            this.clickIDNumGlobal = clickID\r\n        }\r\n        \r\n        \r\n           //%blockId=Relay_relayOn\r\n            //%block=\"$this Turn on relay $relayNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=Relay\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Relay\"\r\n        relayOn(relayNum:relay)\r\n        {\r\n            switch(relayNum)\r\n            {\r\n                case relay.Relay1:\r\n                    this.setPin(clickIOPin.PWM);\r\n                break;\r\n    \r\n                case relay.Relay2:\r\n                    this.setPin(clickIOPin.CS);\r\n                break;\r\n            }\r\n        \r\n        }\r\n    \r\n            //%blockId=Relay_relayOff\r\n            //%block=\"$this Turn off relay $relayNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=Relay\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Relay\"\r\n            relayOff(relayNum:relay)\r\n            {\r\n                switch(relayNum)\r\n                {\r\n                    case relay.Relay1:\r\n                        this.clearPin(clickIOPin.PWM);\r\n                    break;\r\n        \r\n                    case relay.Relay2:\r\n                        this.clearPin(clickIOPin.CS);\r\n                    break;\r\n                }\r\n            \r\n            }\r\n    \r\n    \r\n            //%blockId=Relay_relayOnOff\r\n            //%block=\"$this Turn $onOff relay $relayNum\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=Relay\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Relay\"\r\n            relayOnOff(onOff: onOff,relayNum:relay)\r\n            {\r\n                switch(relayNum)\r\n                {\r\n                    case relay.Relay1:\r\n                        this.writePin(onOff,clickIOPin.PWM);\r\n                    break;\r\n        \r\n                    case relay.Relay2:\r\n                        this.writePin(onOff,clickIOPin.CS);\r\n                    break;\r\n                }\r\n            \r\n            }\r\n\r\n        }\r\n    }",
+            "Servo.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#EF697B icon=\"\"\r\n//% advanced=true\r\nnamespace Servo{\r\n    /**\r\n     * Sets Servo Click object.\r\n     * @param boardID the boardID\r\n     *  @param Servo the Servo Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Servo\"\r\n    //% weight=110\r\n    export function createLCDSettings(boardID: BoardID, clickID:ClickID): Servo {\r\n      return new Servo(boardID, clickID);\r\n }\r\n\r\n    export class Servo{\r\n    \r\n    readonly PCA9685_DEFAULT_I2C_ADDRESS :number;  \r\n    readonly LTC2497_DEFAULT_I2C_ADDRESS :number;  \r\n    readonly PCA9685_SUBADR1 : number;\r\n    readonly PCA9685_SUBADR2 : number;\r\n    readonly PCA9685_SUBADR3 : number;\r\n    \r\n    readonly PCA9685_MODE1 : number;\r\n    readonly PCA9685_MODE2 : number;\r\n    readonly PCA9685_PRESCALE :number;\r\n    \r\n    readonly LED0_ON_L  : number;\r\n    readonly LED0_ON_H  : number;\r\n    readonly LED0_OFF_L : number;\r\n    readonly LED0_OFF_H : number;\r\n    \r\n    readonly ALLLED_ON_L  : number;\r\n    readonly ALLLED_ON_H  : number;\r\n    readonly ALLLED_OFF_L : number;\r\n    readonly ALLLED_OFF_H : number;\r\n    \r\n    isInitialized : Array<number>;\r\n    deviceAddress : Array<number>;\r\n    \r\n    servoPulseMin : Array<number>;\r\n    servoPulseMax : Array<number>;\r\n    \r\n    servoAngleMin : Array<number>;\r\n    servoAngleMax : Array<number>;\r\n    \r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number\r\n\r\n    private PINs : bBoard.PinSettings\r\n    private I2Cs : bBoard.I2CSettings\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n    this.PCA9685_DEFAULT_I2C_ADDRESS =  0x40  \r\n    this.LTC2497_DEFAULT_I2C_ADDRESS =  0x48  \r\n    this.PCA9685_SUBADR1 =0x2 /**< i2c bus address 1 */\r\n    this.PCA9685_SUBADR2 =0x3 /**< i2c bus address 2 */\r\n    this.PCA9685_SUBADR3 =0x4 /**< i2c bus address 3 */\r\n    \r\n    this.PCA9685_MODE1 =0x0 /**< Mode Register 1 */\r\n    this.PCA9685_MODE2 =0x1 /**< Mode Register 2 */\r\n    this.PCA9685_PRESCALE =0xFE /**< Prescaler for PWM output frequency */\r\n    \r\n    this.LED0_ON_L= 0x6 /**< LED0 output and brightness control byte 0 */\r\n    this.LED0_ON_H =0x7 /**< LED0 output and brightness control byte 1 */\r\n    this.LED0_OFF_L =0x8 /**< LED0 output and brightness control byte 2 */\r\n    this.LED0_OFF_H =0x9 /**< LED0 output and brightness control byte 3 */\r\n    \r\n    this.ALLLED_ON_L =0xFA /**< load all the LEDn_ON registers, byte 0 */\r\n    this.ALLLED_ON_H =0xFB /**< load all the LEDn_ON registers, byte 1 */\r\n    this.ALLLED_OFF_L= 0xFC /**< load all the LEDn_OFF registers, byte 0 */\r\n    this.ALLLED_OFF_H =0xFD /**< load all the LEDn_OFF registers, byte 1 */\r\n    \r\n    \r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    \r\n    this.servoPulseMin  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.servoPulseMax = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    \r\n    this.servoAngleMin  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.servoAngleMax = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n\r\n    this.boardIDGlobal=boardID;\r\n    this.clickIDNumGlobal=clickID;\r\n    \r\n    this.PINs = new bBoard.PinSettings(boardID, clickID);\r\n    this.I2Cs= new bBoard.I2CSettings(boardID, clickID);\r\n    }\r\n    \r\n    // you can use this if you'd like to set the pulse length in seconds\r\n    // e.g. setServoPulse(0, 0.001) is a ~1 millisecond pulse width. its not precise!\r\n    setServoPulse( servoNumber:number, pulse:number) {\r\n        \r\n        \r\n        let pulselength = 1000000;   // 1,000,000 us per second\r\n        pulselength =pulselength/ 60;   // 60 Hz\r\n       \r\n        pulselength =pulselength/ 4096;  // 12 bits of resolution\r\n       \r\n        pulse = pulse/pulselength ;  // convert to us\r\n        \r\n        \r\n        this.setPWM(servoNumber, 0, pulse);\r\n      }\r\n    \r\n    \r\n     getServoAngleMin():number\r\n      {\r\n        return this.servoAngleMin[this.boardIDGlobal];\r\n      }\r\n      getServoAngleMax():number\r\n      {\r\n        return this.servoAngleMax[this.boardIDGlobal];\r\n      }\r\n      getServoPulseMin():number\r\n      {\r\n        return this.servoPulseMin[this.boardIDGlobal];\r\n      }\r\n      getServoPulseMax():number\r\n      {\r\n        return this.servoPulseMax[this.boardIDGlobal];\r\n      }\r\n    \r\n    \r\n    /*!\r\n     *  @brief  Sends a reset command to the PCA9685 chip over I2C\r\n     */\r\n    reset() {\r\n    \r\n    this.writePCA9685Array([this.PCA9685_MODE1, 0x80])\r\n    control.waitMicros(10000)\r\n    \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Puts board into sleep mode\r\n     */\r\n    sleep() {\r\n      let awake = this.readPCA9685(this.PCA9685_MODE1);\r\n      let sleep = awake | 0x10; // set sleep bit high\r\n      this.writePCA9685Array([this.PCA9685_MODE1, sleep])\r\n      control.waitMicros(5); // wait until cycle ends for sleep to be active\r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Wakes board from sleep\r\n     */\r\n    wakeup() {\r\n      let sleep = this.readPCA9685(this.PCA9685_MODE1);\r\n      let wakeup = sleep & ~0x10; // set sleep bit low\r\n      this.writePCA9685Array([this.PCA9685_MODE1, wakeup])\r\n    }\r\n    \r\n    /**************************************************************************/\r\n    /*!\r\n        @brief  Sets EXTCLK pin to use the external clock\r\n           @param  prescale Configures the prescale value to be used by the external\r\n       clock\r\n    */\r\n    /**************************************************************************/\r\n    setExtClk(prescale:number) {\r\n      let oldmode = this.readPCA9685(this.PCA9685_MODE1)\r\n      let newmode = (oldmode & 0x7F) | 0x10; // sleep\r\n      this.writePCA9685Array([this.PCA9685_MODE1, newmode])\r\n     \r\n    \r\n      // This sets both the SLEEP and EXTCLK bits of the MODE1 register to switch to\r\n      // use the external clock.\r\n      this.writePCA9685Array([this.PCA9685_MODE1, (newmode |= 0x40)])\r\n    \r\n      this.writePCA9685Array([this.PCA9685_PRESCALE, prescale])\r\n    \r\n        control.waitMicros(5000)\r\n        this.writePCA9685Array([this.PCA9685_MODE1, (newmode & ~(0x10) | 0xa0)])\r\n    \r\n    \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Sets the PWM frequency for the entire chip, up to ~1.6 KHz\r\n     *  @param  freq Floating point frequency that we will attempt to match\r\n     */\r\n    setPWMFreq(freq:number) {\r\n    \r\n    \r\n        freq *= 0.9; // Correct for overshoot in the frequency setting (see issue #11).\r\n        let prescaleval = 25000000;\r\n        prescaleval /= 4096;\r\n        prescaleval /= freq;\r\n        prescaleval -= 1;\r\n    \r\n    \r\n        let prescale = Math.floor(prescaleval + 0.5);\r\n    \r\n    \r\n        let oldmode = this.readPCA9685(this.PCA9685_MODE1)\r\n        let  newmode = (oldmode & 0x7F) | 0x10; // sleep\r\n    \r\n        this.writePCA9685Array([this.PCA9685_MODE1, newmode]);\r\n        this.writePCA9685Array([this.PCA9685_PRESCALE, prescale]);\r\n        this.writePCA9685Array([this.PCA9685_MODE1, oldmode]);\r\n        control.waitMicros(5000)\r\n        this.writePCA9685Array([this.PCA9685_MODE1, (oldmode |0xa0)&0x6F]);//  This sets the MODE1 register to turn on auto increment.\r\n    \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Sets the output mode of the PCA9685 to either \r\n     *  open drain or push pull / totempole. \r\n     *  Warning: LEDs with integrated zener diodes should\r\n     *  only be driven in open drain mode. \r\n     *  @param  totempole Totempole if true, open drain if false. \r\n     */\r\n    setOutputMode( totempole:boolean) {  \r\n       let oldmode =  this.readPCA9685(this.PCA9685_MODE2)\r\n    \r\n    let  newmode = 0;\r\n      if (totempole) {\r\n        newmode = (oldmode&0x7F) | 0x04;\r\n      }\r\n      else {\r\n        newmode = (oldmode&0x7F) & ~0x04;\r\n      }\r\n      let i2cArray:number[] = [this.PCA9685_MODE2, newmode];\r\n      this.writePCA9685Array(i2cArray); \r\n    }\r\n    \r\n    /*!\r\n     *  @brief  Gets the PWM output of one of the PCA9685 pins\r\n     *  @param  num One of the PWM output pins, from 0 to 15\r\n     *  @return requested PWM output value\r\n     */\r\n    //getPWM( num:number):number {\r\n        \r\n      //_i2c->requestFrom((int)_i2caddr, LED0_ON_L + 4 * num, (int)4);\r\n     // return _i2c->read();\r\n    //}\r\n    \r\n    \r\n    /*!\r\n     *  @brief  Sets the PWM output of one of the PCA9685 pins\r\n     *  @param  num One of the PWM output pins, from 0 to 15\r\n     *  @param  on At what point in the 4096-part cycle to turn the PWM output ON\r\n     *  @param  off At what point in the 4096-part cycle to turn the PWM output OFF\r\n     */\r\n      \r\n    setPWM(servoNumber:number, on:number, off:number)  {\r\n    \r\n        if(this.isInitialized[this.boardIDGlobal] == 0)\r\n        {\r\n          this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS);\r\n        }\r\n        servoNumber = Math.clamp(0,15,servoNumber)\r\n     \r\n       \r\n    \r\n        let i2cArray:number [] = []\r\n        i2cArray[0] = this.LED0_ON_L + 4 * servoNumber;\r\n      \r\n        i2cArray[1] = on & 0x00FF;\r\n    \r\n        i2cArray[2] = on >> 8;\r\n        i2cArray[3] = off & 0x00FF;\r\n        i2cArray[4] = off >> 8\r\n        this.writePCA9685Array(i2cArray);\r\n    }\r\n    \r\n    /*!\r\n     *   @brief  Helper to set pin PWM output. Sets pin without having to deal with\r\n     * on/off tick placement and properly handles a zero value as completely off and\r\n     * 4095 as completely on.  Optional invert parameter supports inverting the\r\n     * pulse for sinking to ground.\r\n     *   @param  num One of the PWM output pins, from 0 to 15\r\n     *   @param  val The number of ticks out of 4096 to be active, should be a value\r\n     * from 0 to 4095 inclusive.\r\n     *   @param  invert If true, inverts the output, defaults to 'false'\r\n     */\r\n    setPin(servoNumber:number, val:number, invert:boolean) {\r\n    \r\n       \r\n      // Clamp value between 0 and 4095 inclusive.\r\n      val = Math.min(val, 4095);\r\n      if (invert) {\r\n        if (val == 0) {\r\n          // Special value for signal fully on.\r\n          this.setPWM(servoNumber-1, 4096, 0);\r\n        } else if (val == 4095) {\r\n          // Special value for signal fully off.\r\n          this.setPWM(servoNumber-1, 0, 4096);\r\n        } else {\r\n            this.setPWM(servoNumber-1, 0, 4095 - val);\r\n        }\r\n      } else {\r\n        if (val == 4095) {\r\n          // Special value for signal fully on.\r\n          this.setPWM(servoNumber-1, 4096, 0);\r\n        } else if (val == 0) {\r\n          // Special value for signal fully off.\r\n          this.setPWM(servoNumber-1, 0, 4096);\r\n        } else {\r\n            this.setPWM(servoNumber-1, 0, val);\r\n        }\r\n      }\r\n    }\r\n    \r\n            setPCA9685Addr(deviceAddr:number)\r\n            {\r\n                this.deviceAddress[this.boardIDGlobal] = deviceAddr;\r\n            }\r\n            getPCA9685Addr():number\r\n            {\r\n                return this.deviceAddress[this.boardIDGlobal];\r\n            }\r\n\r\n\r\n\r\n            //%blockId=Servo_initialize\r\n            //%block=\"Initalize $this PCA9685 to i2c address $PCA9685Addr and LTC2497 to i2c address $LTC2497Addr\"\r\n            //% blockGap=7\r\n            //% weight=90   color=#9E4894 icon=\"\"\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n            //% advanced=true\r\n            initialize(PCA9685Addr:number, LTC2497Addr:number)\r\n            {\r\n               \r\n                this.isInitialized[this.boardIDGlobal]  = 1;\r\n                this.setPCA9685Addr(PCA9685Addr);\r\n                this.PINs.clearPin(clickIOPin.CS);\r\n                this.setPWMFreq(60);\r\n            \r\n            }\r\n        \r\n    \r\n    \r\n    \r\n    \r\n\r\n\r\n            //%blockId=Servo_Angle\r\n            //%block=\"Set $this servo $n to $angle\"\r\n            //% blockGap=7\r\n            //% weight=90   color=#9E4894 icon=\"\"\r\n            //% advanced=false\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n        setServoAngle( servoNumber:number, angle:number) {\r\n        \r\n        if(this.isInitialized[this.boardIDGlobal] == 0)\r\n        {\r\n            this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS)\r\n            \r\n        }\r\n    \r\n        servoNumber = Math.clamp(1,16,servoNumber)\r\n    \r\n        let angleMin = 0\r\n        let angleMax = 180\r\n        let pulseMin = 1000\r\n        let pulseMax = 2000\r\n    \r\n        let angleRange = (angleMax - angleMin)  \r\n        let pulseRange = (pulseMax - pulseMin)  \r\n        let pulseWidth = (((angle - angleMin) * pulseRange) / angleRange) + pulseMin\r\n    \r\n        this.setServoPulse(servoNumber-1,pulseWidth)\r\n      }\r\n    \r\n         //%blockId=Servo_AngleAdjusted\r\n        //%block=\"Set $this Servo Number $servoNumber to $angle with pulse range min $pulseMin and max $pulseMax\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% servoNumber.min=1 servoNumber.max=16\r\n        //% servoNumber.defl=1\r\n        //% blockNamespace=Servo\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Servo\"\r\n        setServoAngleAdjusted( servoNumber:number=1,  angle:number,pulseMin:number,pulseMax:number) {\r\n        \r\n        if(this.isInitialized[this.boardIDGlobal] == 0)\r\n        {\r\n            this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS)\r\n            \r\n        }\r\n        let angleMin = 0\r\n        let angleMax = 180\r\n    \r\n        let angleRange = (angleMax - angleMin)  \r\n        let pulseRange = (pulseMax - pulseMin)  \r\n        let pulseWidth = (((angle - angleMin) * pulseRange) / angleRange) + pulseMin\r\n        servoNumber = Math.clamp(1,16,servoNumber)\r\n       \r\n        this.setServoPulse(servoNumber-1,pulseWidth)\r\n      }\r\n    \r\n     \r\n    \r\n    \r\n    \r\n         //%blockId=Servo_setPWM\r\n        //%block=\"Set $this servo $servoNumber to be on $on and off $off\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% servoNumber.min=1 servoNumber.max=16\r\n        //% servoNumber.defl=1\r\n        //% blockNamespace=Servo\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Servo\"\r\n        userSetPWM(servoNumber:number, on:number, off:number)  \r\n        {\r\n          servoNumber = Math.clamp(1,16,servoNumber)\r\n          this.setPWM(servoNumber-1,on,off)\r\n        }\r\n    \r\n    \r\n    \r\n    \r\n    \r\n        \r\n            //%blockId=PCA9685_write\r\n            //%block=\"$this Write array $values to PCA9685 register$register\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n            writePCA9685Array(values:number[])\r\n            {\r\n            \r\n            \r\n                let i2cBuffer = pins.createBuffer(values.length)\r\n    \r\n            for (let i=0;i<values.length;i++)\r\n            {\r\n                i2cBuffer.setNumber(NumberFormat.UInt8LE, i, values[i])\r\n               \r\n            }\r\n        \r\n            \r\n                this.I2Cs.i2cWriteBuffer(this.getPCA9685Addr(),i2cBuffer);\r\n             \r\n            }\r\n           \r\n    \r\n    \r\n            \r\n            //%blockId=PCA9685_read\r\n            //%block=\"$this Read from register$register\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=Servo\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"Servo\"\r\n          readPCA9685( register:number):number\r\n            {\r\n                \r\n        \r\n                this.I2Cs.i2cWriteNumber(this.getPCA9685Addr(),register,NumberFormat.UInt8LE,true)\r\n    \r\n        \r\n                return  this.I2Cs.I2CreadNoMem(this.getPCA9685Addr(),1).getUint8(0)\r\n        \r\n                    \r\n            \r\n            }\r\n    \r\n    }\r\n    \r\n    \r\n    /*!\r\n     *  @file Adafruit_PWMServoDriver.cpp\r\n     *\r\n     *  @mainpage Adafruit 16-channel PWM & Servo driver\r\n     *\r\n     *  @section intro_sec Introduction\r\n     *\r\n     *  This is a library for the 16-channel PWM & Servo driver.\r\n     *\r\n     *  Designed specifically to work with the Adafruit PWM & Servo driver.\r\n     *\r\n     *  Pick one up today in the adafruit shop!\r\n     *  ------> https://www.adafruit.com/product/815\r\n     *\r\n     *  These displays use I2C to communicate, 2 pins are required to interface.\r\n     *\r\n     *  Adafruit invests time and resources providing this open source code,\r\n     *  please support Adafruit andopen-source hardware by purchasing products\r\n     *  from Adafruit!\r\n     *\r\n     *  @section author Author\r\n     *\r\n     *  Limor Fried/Ladyada (Adafruit Industries).\r\n     *\r\n     *  @section license License\r\n     *\r\n     *  BSD license, all text above must be included in any redistribution\r\n     */\r\n    \r\n    \r\n    /*!\r\n     *  @brief  Setups the I2C interface and hardware\r\n     *  @param  prescale\r\n     *          Sets External Clock (Optional)\r\n     *\r\n     */\r\n      \r\n    \r\n \r\n            \r\n            \r\n    \r\n            \r\n            }\r\n    ",
+            "Stepper_5.ts": "\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#EF697B icon=\"\"\r\n//% advanced=true\r\nnamespace Stepper_5 {\r\n\r\n   export enum Rotation\r\n    {\r\n          \r\n            //% block=\"Forward\"\r\n            Forward = 0,\r\n            //% block=\"Backwards\"\r\n            Backwards = 1\r\n         \r\n    \r\n    }\r\n\r\n\r\n    //% block=\" $boardID $clickID\" \r\n    //% blockSetVariable=\"Stepper\"\r\n    //% weight=110\r\n    export function createStepper(boardID:BoardID, clickID:ClickID): Stepper {\r\n        return new Stepper(boardID, clickID);\r\n   }\r\n\r\n\r\n    export class Stepper extends bBoard.PinSettings{\r\n\r\n        private boardIDGlobal:number\r\n        private clickIDNumGlobal:number\r\n    \r\n        constructor(boardID:BoardID, clickID:ClickID){\r\n            super(boardID, clickID);\r\n            this.boardIDGlobal=boardID;\r\n            this.clickIDNumGlobal=clickID;\r\n        }\r\n\r\n    //% blockId=step\r\n    //% block=\"$this Single step motor $direction on click$boardID\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Stepper_5\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Stepper\"\r\n    step(direction:Stepper_5.Rotation): void {\r\n        this.setPin(clickIOPin.PWM)\r\n        basic.pause(1)\r\n        this.clearPin(clickIOPin.PWM)\r\n    }\r\n\r\n    //% blockId=stepNum\r\n    //% block=\"$this Step motor $numSteps times $direction on click$boardID\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Stepper_5\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Stepper\"\r\n    stepNumber(numSteps: number, direction:Stepper_5.Rotation): void {\r\n        this.writePin(direction,clickIOPin.RST)\r\n        for(let i=0;i<numSteps;i++)\r\n        {\r\n            this.setPin(clickIOPin.PWM)\r\n            control.waitMicros(500);\r\n            this.clearPin(clickIOPin.PWM)\r\n            control.waitMicros(500);\r\n\r\n        }\r\n  \r\n    }\r\n}\r\n}\r\n",
+            "Temp_Log_2.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Temp_Log_2{\r\n\r\n    /**\r\n     * Sets Temp_Log Click object.\r\n     * @param boardID the boardID\r\n     *  @param Temp_Log the Temp_Log Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Temp_Log\"\r\n    //% weight=110\r\n    export function createTemp_Log(boardID: BoardID, clickID:ClickID): Temp_Log {\r\n        return new Temp_Log(boardID, clickID);\r\n    }\r\n\r\n\r\n    export class Temp_Log extends bBoard.I2CSettings{\r\n\r\n    private readonly TMP116_REG_TEMP\t= 0x00;\r\n    private readonly TMP116_REG_CONFIG = 0x01;\r\n    private readonly TMP116_REG_HIGH_LIMIT = 0x02;\r\n    private readonly TMP116_REG_LOW_LIMIT= 0x03;\t\r\n    private readonly TMP116_REG_DEVICE_ID = 0x0F;\r\n    private readonly TMP116_DEVICE_ADDRESS = 0x48;\r\n    \r\n    \r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    private boardIDGlobalT:number\r\n    private clickIDNumGlobal:number\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n    super(boardID, clickID);\r\n    this.boardIDGlobalT=boardID*3+clickID;\r\n    this.clickIDNumGlobal=clickID;\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.initialize(this.TMP116_DEVICE_ADDRESS)\r\n    }\r\n\r\n    initialize(deviceAddr:number)\r\n    {\r\n        //setTMP116Addr(deviceAddr,boardID)\r\n        this.isInitialized[this.boardIDGlobalT]  = 1\r\n        this.setTMP116Addr(deviceAddr)\r\n        this.writeTMP116(this.TMP116_REG_CONFIG,0x0220) //Initialize the Config register\r\n    \r\n    }\r\n    setTMP116Addr(deviceAddr:number)\r\n    {\r\n        this.deviceAddress[this.boardIDGlobalT] = deviceAddr;\r\n    }\r\n    getTMP116Addr():number\r\n    {\r\n        return this.deviceAddress[this.boardIDGlobalT];\r\n    }\r\n    readTMP116Reg(register:number):number{\r\n        return this.readTMP116(this.TMP116_REG_CONFIG)\r\n    }\r\n    \r\n    readT():number\r\n    {\r\n        return this.readTemperatureC();\r\n    }\r\n    \r\n    \r\n    writeTMP116(register:number,value:number)\r\n    {\r\n    \r\n    \r\n        let i2cBuffer = pins.createBuffer(3)\r\n    \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register)\r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value >> 8) \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, value & 0xFF)\r\n    \r\n        this.i2cWriteBuffer(this.getTMP116Addr(),i2cBuffer);\r\n     \r\n    }\r\n    //Reads two consecutive bytes from a given location\r\n    //Stores the result at the provided outputPointer\r\n    readTMP116( register:number):number\r\n    {\r\n        let i2cBuffer = pins.createBuffer(2);\r\n    \r\n        this.i2cWriteNumber(this.getTMP116Addr(),register,NumberFormat.Int8LE,true)\r\n    \r\n     i2cBuffer = this.I2CreadNoMem(this.getTMP116Addr(),2);\r\n    let sReturn =  Math.roundWithPrecision(i2cBuffer.getNumber(NumberFormat.Int16BE,0),1)\r\n    \r\n    \r\n    // let msb = i2cBuffer.getUint8(0)\r\n    // let lsb = i2cBuffer.getUint8(1)\r\n    \r\n    //return  (msb << 8 | lsb)\r\n    return sReturn\r\n    \r\n    }\r\n    \r\n    //%blockId=Temp_Log_readTemperatureC\r\n    //%block=\"$this Get temperature in Celcius\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Temp_Log_2\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Temp_Log\"\r\n    readTemperatureC():number\r\n    {\r\n    \r\n    \r\n        if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n        {\r\n            this.initialize(this.TMP116_DEVICE_ADDRESS)\r\n            \r\n        }\r\n        return (this.readTMP116(this.TMP116_REG_TEMP) * 0.0078125)\r\n    }\r\n    //%blockId=Temp_Log_readTemperatureF\r\n    //%block=\"$this Get temperature in Fahrenheit\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Temp_Log_2\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Temp_Log\"\r\n    readTemperatureF():number\r\n    {\r\n      \r\n        return ((this.readTemperatureC())* 9.0/5.0 + 32.0)\r\n    }\r\n    \r\n    readHighLimit():number\r\n    {\r\n        return  (this.readTMP116(this.TMP116_REG_HIGH_LIMIT) * 0.0078125)\r\n    }\r\n    \r\n    readLowLimit(): number\r\n    {\r\n    \r\n        return  (this.readTMP116(this.TMP116_REG_LOW_LIMIT) * 0.0078125)\r\n    }\r\n    \r\n    writeHighLimit(limit:number)\r\n    {\r\n        this.writeTMP116(this.TMP116_REG_HIGH_LIMIT,(limit/0.0078125))\r\n        \r\n    }\r\n    \r\n    \r\n    writeLowLimit(limit:number,boardID:BoardID)\r\n    {\r\n        this.writeTMP116(this.TMP116_REG_LOW_LIMIT,(limit/0.0078125))\r\n        \r\n    \r\n    }\r\n    \r\n    readDeviceId(boardID:BoardID):number\r\n    {\r\n      \r\n        return   (this.readTMP116(this.TMP116_REG_DEVICE_ID))\r\n    }\r\n    \r\n    }\r\n\r\n}\r\n    \r\n    ",
+            "Thermo_6.ts": "\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Thermo_6{\r\n\r\n    /**\r\n     * Sets Thermo Click object.\r\n     * @param boardID the boardID\r\n     * @param clickID the ClickID\r\n     * @param Thermo the Thermo Object\r\n    */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Thermo\"\r\n    //% weight=110\r\n    export function createThermo(boardID: BoardID, clickID:ClickID): Thermo {\r\n        return new Thermo(boardID, clickID);\r\n   }\r\n\r\n    export class Thermo extends bBoard.I2CSettings{\r\n    //Address Definitions\r\n    private readonly DEFAULT_I2C_ADDRESS =  0x48  \r\n    private readonly TEMP_REG       = 0x00\r\n    private readonly CONFIG_REG     = 0x01\r\n    private readonly THYST_REG       = 0x02\r\n    private readonly TOS_REG     = 0x03\r\n\r\n\r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    private boardIDGlobalT:number\r\n    private clickIDNumGlobal:number\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n    super(boardID, clickID);\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.boardIDGlobalT=boardID*3+clickID\r\n    this.clickIDNumGlobal=clickID;\r\n    this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n    }\r\n   \r\n    //%blockId=Thermo6_getTempC\r\n    //%block=\"$this Get the temperature in Celcius\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Thermo_6\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Thermo\"\r\n       getTempC():number\r\n       {\r\n               \r\n           let temp = this.readMAX31875( this.TEMP_REG)\r\n           return temp/256\r\n       \r\n       \r\n       }\r\n   \r\n    //%blockId=Thermo6_getTempF\r\n    //%block=\"$this Get the temperature in Fahrenheit\"\r\n    //% blockGap=7\r\n    //% advanced=false\r\n    //% blockNamespace=Thermo_6\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Thermo\"\r\n       getTempF():number\r\n       {\r\n          \r\n           if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n           {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n               \r\n           }\r\n           let tempC = this.getTempC();\r\n           let tempF = tempC * 9.0/5.0 + 32.0;\r\n\r\n           return tempF\r\n       \r\n       \r\n       }\r\n   \r\n    //%blockId=Thermo6_initialize\r\n    //%block=\"$this Initalize with i2c address $deviceAddr\"\r\n    //% blockGap=7\r\n    //% advanced=true\r\n    //% blockNamespace=Thermo_6\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Thermo\"\r\n   initialize(deviceAddr:number)\r\n   {\r\n      \r\n    this.isInitialized[this.boardIDGlobalT]  = 1\r\n    this.setMAX31875Addr(deviceAddr)\r\n    this.writeMAX31875(0x0066,this.CONFIG_REG) //Set PEC to off, 12 bit resolution and 8 samples/second\r\n   \r\n   \r\n   }\r\n\r\n\r\n    //%blockId=MAX31875_write\r\n    //%block=\"$this Write $value to register$register\"\r\n    //% blockGap=7\r\n    //% advanced=true\r\n    //% blockNamespace=Thermo_6\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Thermo\"\r\n   writeMAX31875(value:number,register:number)\r\n   {\r\n   \r\n   \r\n       let i2cBuffer = pins.createBuffer(3)\r\n   \r\n       i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register)\r\n       i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value>>8 ) \r\n       i2cBuffer.setNumber(NumberFormat.UInt8LE, 2, value & 0xFF)\r\n\r\n   \r\n       this.i2cWriteBuffer(this.getMAX31875Addr(),i2cBuffer);\r\n    \r\n   }\r\n   \r\n    //%blockId=MAX31875_read\r\n    //%block=\"$this Read from register$register\"\r\n    //% blockGap=7\r\n    //% advanced=true\r\n    //% blockNamespace=Thermo_6\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Thermo\"\r\n    readMAX31875( register:number):number\r\n   {\r\n       let i2cBuffer = pins.createBuffer(2);\r\n\r\n       this.i2cWriteNumber(this.getMAX31875Addr(),register,NumberFormat.UInt8LE,true)\r\n\r\n       i2cBuffer = this.I2CreadNoMem(this.getMAX31875Addr(),2);\r\n\r\n \r\n       let sReturn = Math.roundWithPrecision(i2cBuffer.getNumber(NumberFormat.Int16BE,0),1)\r\n       return  sReturn\r\n\r\n           \r\n   \r\n   }\r\n   \r\n   \r\n   setMAX31875Addr(deviceAddr:number)\r\n   {\r\n    this.deviceAddress[this.boardIDGlobalT] = deviceAddr;\r\n   }\r\n   getMAX31875Addr():number\r\n   {\r\n       return this.deviceAddress[this.boardIDGlobalT];\r\n   }\r\n\r\n\r\n}\r\n}",
+            "Touchpad.ts": "/*\r\n    (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this\r\n    software and any derivatives exclusively with Microchip products.\r\n\r\n    THIS SOFTWARE IS SUPPLIED BY MICROCHIP \"AS IS\". NO WARRANTIES, WHETHER\r\n    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED\r\n    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A\r\n    PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATION\r\n    WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION.\r\n\r\n    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,\r\n    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND\r\n    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS\r\n    BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE\r\n    FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN\r\n    ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,\r\n    THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.\r\n\r\n    MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE\r\n    TERMS.\r\n*/\r\n\r\n/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#F4B820 icon=\"\"\r\n//% advanced=true\r\nnamespace Touchpad{\r\n\r\n    enum gestures{\r\n        No_Gesture = 0x00,\r\n        Single_Click = 0x10,\r\n        Click_Hold = 0x11,\r\n        Double_Click = 0x20,\r\n        Down_Swipe = 0x31,\r\n        Down_Swipe_Hold = 0x32,\r\n        Right_Swipe = 0x41,\r\n        Right_Swipe_Hold = 0x42,\r\n        Up_Swipe = 0x51,\r\n        Up_Swipe_Hold = 0x52,\r\n        Left_Swipe = 0x61,\r\n        Left_Swipe_Hold = 0x62\r\n    }\r\n\r\n    /**\r\n     * Sets Touchpad Click object.\r\n     * @param boardID the boardID\r\n     *  @param Touchpad the Touchpad Object\r\n    */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Touchpad\"\r\n    //% weight=110\r\n    export function createTouchpad(boardID: BoardID, clickID:ClickID): Touchpad {\r\n        return new Touchpad(boardID, clickID);\r\n   }\r\n\r\n    export class Touchpad extends bBoard.I2CSettings{\r\n    //Address Definitions\r\n    private readonly DEFAULT_I2C_ADDRESS     =      0x25  \r\n    private readonly FWMAJOR        =     0x00\r\n    private readonly FWMINOR        =     0x01\r\n    private readonly APPIDH         =     0x02\r\n    private readonly APPIDL          =    0x03\r\n    private readonly CMD            =     0x04\r\n    private readonly MODE          =      0x05\r\n    private readonly MODECON       =      0x06\r\n    private readonly TOUCH_STATE   =      0x10\r\n    private readonly TOUCH_XREG    =      0x11\r\n    private readonly TOUCH_YREG    =      0x12\r\n    private readonly GESTURESTATE = 0x14\r\n    \r\n    \r\n    //Masks\r\n    private readonly touch_mask = 0x01\r\n    private readonly gesture_mask = 0x02\r\n    \r\n\r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    private boardIDGlobalT:number\r\n    private clickIDNumGlobal:number\r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n    super(boardID, clickID);\r\n\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.boardIDGlobalT=boardID*3+clickID\r\n    this.clickIDNumGlobal=clickID;\r\n    }\r\n    \r\n        //%blockId=Touchpad_initialize\r\n        //%block=\"$this Initalize touchpad with i2c address $deviceAddr\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    initialize(deviceAddr:number)\r\n    {\r\n        //setTMP116Addr(deviceAddr,boardID)\r\n        this.isInitialized[this.boardIDGlobalT]  = 1\r\n        this.setMTCH6102Addr(deviceAddr)\r\n        this.writeMTCH6102(0b0011,this.MODE) //Set the mode to full \r\n    \r\n    \r\n    }\r\n    \r\n        //%blockId=Touchpad_getX\r\n        //%block=\"$this Get X position\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    getX():number\r\n    {\r\n        if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n        {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n            \r\n        }\r\n        return this.readMTCH6102( this.TOUCH_XREG);\r\n    }\r\n    \r\n        //%blockId=Touchpad_getY\r\n        //%block=\"$this Get Y position\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    getY():number\r\n    {\r\n        if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n        {\r\n            this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n            \r\n        }\r\n        return this.readMTCH6102(this.TOUCH_YREG);\r\n    }\r\n    \r\n        //%blockId=Touchpad_isTouched\r\n        //%block=\"$this Has touch occured\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        isTouched():boolean\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n            {\r\n                this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n                \r\n            }\r\n        \r\n            \r\n            return this.readMTCH6102(this.TOUCH_STATE)&this.touch_mask? true:false;\r\n        }\r\n    \r\n        //%blockId=Touchpad_isGesture\r\n        //%block=\"$this Has gesture occured\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        isGesture():boolean\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n            {\r\n                this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n                \r\n            }\r\n        \r\n           let  gestureState = this.readMTCH6102(this.TOUCH_STATE)\r\n    \r\n           if(((gestureState&this.gesture_mask)>>1) == 1)\r\n           {\r\n               return true\r\n            }\r\n           return false;\r\n        }\r\n    \r\n        //%blockId=Touchpad_getGestureName\r\n        //%block=\"$this Convert gesture ID $gestureID to a friendly name\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        getGestureName(gestureID:number):string\r\n        {\r\n        switch (gestureID)\r\n        {\r\n      \r\n    \r\n        case  gestures.Single_Click:\r\n        return \"Single Click\"\r\n        break;\r\n    \r\n        case  gestures.Click_Hold :\r\n        return \"Click & Hold\"\r\n        break;\r\n    \r\n        case  gestures.Double_Click:\r\n        return \"Double Click\"\r\n        break;\r\n        \r\n        case  gestures.Down_Swipe :\r\n        return \"Down\"\r\n        break;\r\n        \r\n        case  gestures.Down_Swipe_Hold:\r\n        return \"Down Hold\"\r\n        break;\r\n    \r\n        case  gestures.Right_Swipe :\r\n        return \"Right\"\r\n        break;\r\n    \r\n        case  gestures.Right_Swipe_Hold :\r\n        return \"Right Hold\"\r\n        break;\r\n    \r\n        case  gestures.Up_Swipe :\r\n        return \"Up\"\r\n        break;\r\n    \r\n        case  gestures.Up_Swipe_Hold: \r\n        return \"Up Hold\"\r\n        break;\r\n    \r\n        case  gestures.Left_Swipe:\r\n        return \"Left\"\r\n        break;\r\n    \r\n        case  gestures.Left_Swipe_Hold: \r\n        return \"Left Hold\"\r\n        break;\r\n        }\r\n        return \"None\"\r\n        }\r\n    \r\n        //%blockId=Touchpad_getTouchState\r\n        //%block=\"$this Get touch status\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        getTouchState():number\r\n        {\r\n        return this.readMTCH6102(this.TOUCH_STATE);\r\n        }\r\n    \r\n        //%blockId=Touchpad_getGesture\r\n        //%block=\"$this Get gesture\"\r\n        //% blockGap=7\r\n        //% advanced=false\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n        getGesture():number\r\n        {\r\n            if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n            {\r\n                this.initialize(this.DEFAULT_I2C_ADDRESS)\r\n                \r\n            }\r\n        \r\n            \r\n            return this.readMTCH6102(this.GESTURESTATE);\r\n        }\r\n    \r\n        //%blockId=Touchpad_write\r\n        //%block=\"$this Write $value to register$register\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    writeMTCH6102(value:number,register:number)\r\n    {\r\n    \r\n    \r\n        let i2cBuffer = pins.createBuffer(2)\r\n    \r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, register)\r\n        i2cBuffer.setNumber(NumberFormat.UInt8LE, 1, value ) \r\n        \r\n    \r\n        this.i2cWriteBuffer(this.getMTCH6102Addr(),i2cBuffer);\r\n     \r\n    }\r\n    \r\n        //%blockId=Touchpad_read\r\n        //%block=\"$this Read from register$register\"\r\n        //% blockGap=7\r\n        //% advanced=true\r\n        //% blockNamespace=Touchpad\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Touchpad\"\r\n    readMTCH6102( register:number):number\r\n    {\r\n        let i2cBuffer = pins.createBuffer(1);\r\n    \r\n        this.i2cWriteNumber(this.getMTCH6102Addr(),register,NumberFormat.Int8LE,true)\r\n    \r\n    return this.I2CreadNoMem(this.getMTCH6102Addr(),1).getUint8(0);\r\n    \r\n    \r\n    \r\n    }\r\n    \r\n    \r\n    setMTCH6102Addr(deviceAddr:number)\r\n    {\r\n        this.deviceAddress[this.boardIDGlobalT] = deviceAddr;\r\n    }\r\n    getMTCH6102Addr():number\r\n    {\r\n        return this.deviceAddress[this.boardIDGlobalT];\r\n    }\r\n    \r\n    }\r\n}\r\n",
+            "Water_Detect.ts": "/**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace Water_Detect {\r\n\r\n\r\n    /**\r\n     * Sets Water_Detect Click object.\r\n     * @param boardID the boardID\r\n     * @param clickID the ClickID\r\n     * @param Water_Detect the Water_Detect Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Water_Detect\"\r\n    //% weight=110\r\n    export function createWaterDetect(boardID: BoardID, clickID:ClickID): Water_Detect {\r\n        return new Water_Detect(boardID, clickID);\r\n   }\r\n\r\n    export class Water_Detect extends bBoard.PinSettings{\r\n\r\n    private boardIDGlobal:number\r\n    private clickIDNumGlobal:number \r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n        super(boardID, clickID);\r\n        this.boardIDGlobal=boardID\r\n        this.clickIDNumGlobal=clickID\r\n    }\r\n\r\n    //% blockId=Water_Detect_isWater\r\n    //% block=\"$this Is water detected\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Water_Detect\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Water_Detect\"\r\n    isWater(): number {\r\n           if(this.digitalReadPin(clickIOPin.INT) == 1)\r\n           {\r\n               return 1;\r\n           }\r\n           else{\r\n               return 0;\r\n           }\r\n    }\r\n\r\n    //% blockId=Water_Detect_isWater1\r\n    //% block=\"$this Is water detected\"\r\n    //% weight=100\r\n    //% blockGap=7\r\n    //% blockNamespace=Water_Detect\r\n    //% this.shadow=variables_get\r\n    //% this.defl=\"Water_Detect\"\r\n    isWater1(): boolean {\r\n        if(this.digitalReadPin(clickIOPin.INT) == 1)\r\n        {\r\n            return true;\r\n        }\r\n        else{\r\n            return false;\r\n        }\r\n }\r\n\r\n\r\n  }\r\n}",
             "advmath.cpp": "#include \"pxtbase.h\"\n\nusing namespace std;\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\nnamespace Math_ {\n\n//%\nTNumber log2(TNumber x){SINGLE(log2)}\n//%\nTNumber exp(TNumber x){SINGLE(exp)}\n//%\nTNumber tanh(TNumber x){SINGLE(tanh)}\n//%\nTNumber sinh(TNumber x){SINGLE(sinh)}\n//%\nTNumber cosh(TNumber x){SINGLE(cosh)}\n//%\nTNumber atanh(TNumber x){SINGLE(atanh)}\n//%\nTNumber asinh(TNumber x){SINGLE(asinh)}\n//%\nTNumber acosh(TNumber x){SINGLE(acosh)}\n\n}",
             "bBoard.ts": "\n\n\n\n// Configuring command messages...\n\n\nconst enum BoardID{\n\n    //% block=\"b.Board\"\n    zero = 0,\n    //% block=\"Expansion 1\"\n    one = 1,\n    //% block=\"Expansion 2\"\n    two,\n    //% block=\"Expansion 3\"\n    three,\n    //% block=\"Expansion 4\"\n    four,\n    //% block=\"Expansion 5\"\n    five,\n    //% block=\"Expansion 6\"\n    six,\n    //% block=\"Expansion 7\"\n    seven,\n    //% block=\"Expansion 8\"\n    eight,\n    //% block=\"Expansion 9\"\n    nine, \n        //% block=\"Expansion 10\"\n        ten,\n        //% block=\"Expansion 11\"\n        eleven,\n        //% block=\"Expansion 12\"\n        twelve,\n        //% block=\"Expansion 13\"\n        thirteen,\n        //% block=\"Expansion 14\"\n        fourteen,\n        //% block=\"Expansion 15\"\n        fifteen,\n        //% block=\"Expansion 16\"\n        sixteen,\n        //% block=\"Expansion 17\"\n        seventeen,\n        //% block=\"Expansion 18\"\n        eighteen,\n        //% block=\"Expansion 19\"\n        nineteen, \n        //% block=\"Expansion 20\"\n        Twenty\n\n}\n\n\nconst enum ClickID{\n\n\n//% block=\"Click A\"\nA = 1,\n \n\n//% block=\"Click B\"\nB=2,\n\n   //% block=\"No Click\"\n   Zero= 0\n\n}\n// function checkifexists(): number{\n//     let retval=25;\n//     for (var _i = 2; _i < 24; _i++) {\n//         if(bBoard.arrayClick.indexOf(_i) !== -1){\n//             retval= 25;\n//         }\n//         else{\n//             retval= _i;\n//         }\n//     }\n//     console.log(\"RetVal \"+retval)\n//     return retval;\n// }\n\nenum clickIOPin {\n\nAN = 0x0001,\nRST = 0x0002,\nCS = 0x0004,\nSCK = 0x0008,\nMISO = 0x0010,\nMOSI = 0x0020,\nSDA = 0x0400,\nSCL = 0x0800,\nTX = 0x1000,\nRX = 0x2000,\nINT = 0x4000,\nPWM = 0x8000\n\n\n}\nenum IOPullDirection\n{\n  \n    //% block=\"Pull Up\"\n    one = 1,\n    //% block=\"Pull Down\"\n    two = 2,\n    //% block=\"None\"\n    three = 3\n\n}\nenum ODCEnable\n{\n  \n    //% block=\"Disable\"\n    zero = 0,\n    //% block=\"Enable\"\n    one = 1,\n \n\n}\nenum clickADCPin {\nAN = 0x0001,\nRST = 0x0002,\nPWM = 0x8000\n\n}\nenum SPIMode {\n\nMode0 = 0,\nMode1 = 1,\nMode2 = 2,\nMode3 = 3\n\n}\n\n\nenum clickPWMPin {\nAN = 0x0001,\nRST = 0x0002,\nPWM = 0x8000,\nINT = 0x4000\n}\n\nenum clickIODirection {\n\ninput = 3,\noutput = 2\n\n}\n\nenum moduleIDs\n{\n\n    // Module Ids\nGPIO_module_id = 1,\n UART_module_id = 2,\n I2C_module_id = 4,\n SPI_module_id = 5,\n MOTOR_module_id = 6,\n MIC_module_id = 7,\n PWM_module_id = 8,\n ADC_module_id = 9,\n MUSIC_module_id = 10,\n EEPROM_module_id = 0xD,\n NEOPIXEL_module_id = 0xE,\n STATUS_module_id = 0x10\n}\n\n/**\n * Custom clickBoard\n */\n//% weight=100 color=#9E4894 icon=\"\"\n//% advanced=true\n\n\n\n//-------------------------Click Board Blocks Begin -----------------------------------\n//% weight=100 color=#9E4894 icon=\"\"\nnamespace bBoard {\n    export let arrayClick: BoardID[]=[]\n\n //   export let arrayClickList: BoardID[]=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n\n    //% block=\" $boardID $clickID\"\n    //% inlineInputMode=inline\n    //% blockSetVariable=\"IOSettings\"\n    //% group=\"IO\"\n    //% weight=110\n    export function createIOSettings(boardID:BoardID, clickID:ClickID): IOSettings {\n        return new IOSettings(boardID, clickID);\n   }\n\n    //% block=\" $boardID $clickID\"\n    //% blockSetVariable=\"PWMSettings\"\n    //% group=\"PWM\"\n    //% weight=110\n    export function createPWMSettings(boardID:BoardID, clickID:ClickID): PWMSettings {\n        return new PWMSettings(boardID, clickID);\n   }\n\n    //% block=\" $boardID $clickID\"\n    //% blockSetVariable=\"UARTSettings\"\n    //% group=\"UART\"\n    //% weight=110\n    export function createUARTSettings(boardID:BoardID, clickID:ClickID): UARTSettings {\n        return new UARTSettings(boardID, clickID);\n   }\n\n    //% block=\" $boardID $clickID\"\n    //% blockSetVariable=\"I2CSettings\"\n    //% group=\"I2C\"\n    //% weight=110\n    export function createI2cSettings(boardID:BoardID, clickID:ClickID): I2CSettings {\n        return new I2CSettings(boardID, clickID);\n   }\n\n\n    //% block=\" $boardID $clickID\"\n    //% blockSetVariable=\"SPISettings\"\n    //% group=\"SPI\"\n    //% weight=110\n    export function createSPISettings(boardID:BoardID, clickID:ClickID): SPIsetting {\n        return new SPIsetting(boardID, clickID);\n   }\n\n    //% block=\" $boardID $clickID\"\n    //% blockSetVariable=\"PinSettings\"\n    //% group=\"PINs\"\n    //% weight=110\n    export function createPinSettings(boardID:BoardID, clickID:ClickID): PinSettings {\n        return new PinSettings(boardID, clickID);\n   }\n\n\n    let AnalogValue = 0\n    let BBOARD_BASE_ADDRESS = 40;\n    let BBOARD_UART_TX_BUFF_SIZE = 128;\n    let actionCount = 0\n        \n    let BBOARD_I2C_ADDRESS = 40\n\n        \n    let BBOARD_COMMAND_SW_VERSION = 9\n\n    const enum RX_TX_Settings{\n\n    BBOARD_COMMAND_CLEAR_TX_BUFFER = 1,\n    BBOARD_COMMAND_READ_TX_BUFFER_DATA = 2,\n    BBOARD_COMMAND_READ_TX_BUFFER_SIZE = 3,\n    BBOARD_COMMAND_WRITE_RX_BUFFER_DATA = 4,\n    BBOARD_COMMAND_CLEAR_RX_BUFFER = 0,\n    BBOARD_COMMAND_EXECUTE_COMMAND = 7\n\n    }\n\n    // 'Clear BBoard tx buffer' command\n    let CLEAR_BBOARD_TX_BUFFER = pins.createBuffer(1)\n    CLEAR_BBOARD_TX_BUFFER.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_CLEAR_TX_BUFFER)\n\n    // 'Clear BBoard rx buffer' command\n    let CLEAR_BBOARD_RX_BUFFER = pins.createBuffer(1)\n    CLEAR_BBOARD_RX_BUFFER.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_CLEAR_RX_BUFFER)\n\n    // 'Read BBoard tx buffer size' command\n    let READ_TX_BUFFER_SIZE = pins.createBuffer(1)\n    READ_TX_BUFFER_SIZE.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_READ_TX_BUFFER_SIZE)\n\n    // 'Execute BBoard command' command\n    let EXECUTE_BBOARD_COMMAND = pins.createBuffer(1)\n    EXECUTE_BBOARD_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_EXECUTE_COMMAND)\n\n    // 'Read BBoard TX buffer' command\n    let READ_BBOARD_TX_BUFFER = pins.createBuffer(1)\n    READ_BBOARD_TX_BUFFER.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_READ_TX_BUFFER_DATA)\n\n\n\n\n\n// Module Ids\nlet GPIO_module_id = 1\nlet UART_module_id = 2\nlet I2C_module_id = 4\nlet SPI_module_id = 5\nlet PWM_module_id = 8\nlet ADC_module_id = 9\nlet STATUS_module_id = 0x10\n\n// STATUS Ids\nlet Knock_Knock_id = 1\nlet FIRMWARE_VERSION_id = 2\n\n\n// PWM Function Ids\nlet PWM_VAL_id = 1\nlet PWM_PR_id = 2\nlet PWM_channel_id\nlet PWM_dutyCycle\n\n//Neopixel Function IDs\n\nlet NEOPIXEL_ADD     =          0x01\nlet NEOPIXEL_REMOVE    =        0x02\nlet NEOPIXEL_SHOW   =           0x03\nlet NEOPIXEL_HIDE    =          0x04\nlet NEOPIXEL_CLEAR      =       0x05\nlet NEOPIXEL_STRIP_WRITE_SINGLE_DATA =0x06\nlet NEOPIXEL_STRIP_WRITE_BUFFER_DATA =0x07\nlet NEOPIXEL_STRIP_READ_SINGLE_DATA  =0x08\nlet NEOPIXEL_STRIP_READ_BUFFER_DATA  =0x09\n\n// ADC Function Ids\nlet ADC_READ_id = 16\n\n\nexport class peripheralSettings\n{\n    private clickBoardNumGlobalPeripheral:number\n    private clickSlotNumGlobalPeripheral:number\n    private clickAddress : number\n\n    constructor(boardID: BoardID, clickID:ClickID){\n        this.clickBoardNumGlobalPeripheral=boardID;\n        this.clickSlotNumGlobalPeripheral=clickID;\n        this.clickAddress = this.clickBoardNumGlobalPeripheral*3 + this.clickSlotNumGlobalPeripheral \n    }\n\n    sendCommand(clickPin: clickIOPin,moduleID:number,functionID:number)\n    {\n \n        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)\n       \n        let dataBuff = pins.createBuffer(6);\n\n\n        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n\n\n        \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    }\n\n\n    sendData(clickPin: clickIOPin,moduleID:number,functionID:number, data: number[] )\n    {\n \n        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)\n       \n \n        let dataBuff = pins.createBuffer(6+data.length);\n        let dataBuffLength = dataBuff.length\n\n        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n\n        for(let i=0; i<dataBuffLength-6;i++)\n        {\n   \n            dataBuff.setNumber(NumberFormat.UInt8LE, i+6, data[i]);\n            \n        \n        }\n        \n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    }\n    readData16(clickPin: clickIOPin,moduleID:number,functionID:number, data: number[] ):number\n    {\n \n        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)\n        let dataBuff = pins.createBuffer(6+data.length);\n        let dataBuffLength = dataBuff.length\n\n\n\n  \n        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n\n        for(let i=0; i<dataBuffLength-6;i++)\n        {\n   \n            dataBuff.setNumber(NumberFormat.UInt8LE, i+6, data[i]);\n            \n        \n        }\n\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        control.waitMicros(500)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n        let TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 2, false)\n        return (TX_BUFFER_DATAbuf.getUint8(0) + TX_BUFFER_DATAbuf.getUint8(1) * 256)\n\n\n      \n    }\n\n    sendBuffer(clickPin: clickIOPin,moduleID:number,functionID:number, buff: Buffer )\n    {\n \n        //Derive the address of the click port (0= on board 1=A 2=B on b.Board)(3 = on board, 4=A, 5=B on Expansion 1 etc)\n        let dataBuffLength = buff.length\n\n        let dataBuff = pins.createBuffer(6+dataBuffLength);\n\n\n        dataBuff.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 1, this.clickAddress)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 2, moduleID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 3, functionID)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        dataBuff.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n\n           \n\n   \n             dataBuff.write(6,buff)\n           \n        \n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, dataBuff, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    }\n  \n\n\n    \n\n}\n    \n    export class IOSettings{\n            \n        // GPIO Function Ids\n        protected DIRSET_id : number\n        protected DIRCLR_id : number\n        public GPIO_id : number\n        public SET_id : number\n        // ADC Function Ids\npublic ADC_READ_id: number\n\n        public CLR_id : number\n        protected TOGGLE_id : number\n        protected GPIOPULLENSET_id : number\n        protected ODC_id : number\n        private clickBoardNumGlobalIO : number\n\n        constructor(boardID: BoardID, clickID: ClickID){\n        this.DIRSET_id = 2\n        this.DIRCLR_id = 3\n        this.GPIO_id = 4\n        this.SET_id = 5\n        this.CLR_id = 6\n        this.TOGGLE_id = 7\n        this.GPIOPULLENSET_id = 0x0B\n        this.ODC_id = 0x0D\n        this.ADC_READ_id = 16\n        this.clickBoardNumGlobalIO=boardID*3 + clickID;\n        }\n\n\n        //%blockId=set_IO_direction\n        //%block=\"$this set pin $clickPin to $direction\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"IOSettings\"\n        //% group=\"IO\"\n        setIODirection(clickPin: clickIOPin,direction: clickIODirection){\n            \n            \n            let GPIO_CONFIG_OUTPUT_PINS = pins.createBuffer(8)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalIO)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 2, GPIO_module_id)\n            if(direction == clickIODirection.output)\n            {\n                GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 3, this.DIRSET_id)\n\n            }\n            else{\n                GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 3, this.DIRCLR_id)\n\n            }\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 6, 0x00)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 7, 0x00)\n            \n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_CONFIG_OUTPUT_PINS, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n\n        }\n\n        //%blockId=Open_Drain_set\n        //%block=\"$this $ODC_Enable open drain on $clickPin\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"IOSettings\"\n        //% group=\"IO\"\n        setOpenDrain(ODC_Enable: ODCEnable,clickPin: clickIOPin){\n            let GPIO_CONFIG_OUTPUT_PINS = pins.createBuffer(7)\n\n\n\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalIO)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 2, GPIO_module_id)\n        \n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 3, this.ODC_id)\n\n        \n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 6, ODC_Enable)\n        \n            \n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_CONFIG_OUTPUT_PINS, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n\n        }\n\n        //%blockId=GPIO_pull_set\n        //%block=\"$this set pin $clickPin to $pullDirection\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"IOSettings\"\n        //% group=\"IO\"\n\n        setPullDirection(clickPin: clickIOPin,pullDirection: IOPullDirection ){\n            let GPIO_CONFIG_OUTPUT_PINS = pins.createBuffer(7)\n\n\n\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalIO)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 2, GPIO_module_id)\n        \n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 3, this.GPIOPULLENSET_id)\n\n        \n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n            GPIO_CONFIG_OUTPUT_PINS.setNumber(NumberFormat.UInt8LE, 6, pullDirection)\n        \n            \n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_CONFIG_OUTPUT_PINS, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n\n        }\n\n\n\n\n\n    }\n\n\n   \n\n    \n    export class PWMSettings{\n        pitchPin : number;\n        pitchClick : number;\n        private clickBoardNumGlobalPWM:number;\n\n        constructor(boardID: BoardID, clickID: ClickID){\n        this.pitchPin = clickPWMPin.PWM; \n        this.pitchClick = BoardID.one;\n        this.clickBoardNumGlobalPWM=boardID*3+clickID;\n        }\n\n        analogPitch(frequency:number,ms:number)\n        {\n      \n            if (frequency <= 0) {\n            \n            this.setDuty(this.pitchPin,0);\n            } else {\n                this.setDuty(this.pitchPin,70);\n                this.PWMFrequency(this.pitchPin,frequency*100);\n            }\n    \n            if (ms > 0) {\n                control.waitMicros(ms*1000)\n                \n                this.setDuty(this.pitchPin,0);\n                // TODO why do we use wait_ms() here? it's a busy wait I think\n                basic.pause(5);\n            }\n        \n  \n        }\n\n    \n\n        //%blockId=set_Duty\n        //%block=\"$this set duty cycle on pin $clickPin to $duty\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% duty.min=0 duty.max=100 \n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"PWMSettings\"\n        //% group=\"PWM\"\n        setDuty( clickPin: clickPWMPin,duty: number){\n\n            let pinNum = 0; \n            let dutyCycle = 0;\n            duty = duty/100; \n            dutyCycle = duty * 1000; //the BLiX chip expects a value of 0-1000\n\n\n            let GPIO_SET_PWM_DUTY = pins.createBuffer(8);\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalPWM)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 2, PWM_module_id)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 3, PWM_VAL_id)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 6, dutyCycle & 0x00FF)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 7, (dutyCycle & 0xFF00)>>8)\n\n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_SET_PWM_DUTY, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        \n    \n\n\n    \n        }\n\n        //%blockId=PWM_frequency\n        //%block=\"$this set PWM frequency on pin $clickPin to $PWMfreq\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"PWMSettings\"\n        //% group=\"PWM\"\n        PWMFrequency( clickPin: clickPWMPin,PWMfreq: number){\n\n            let pinNum = 0; \n\n\n            let GPIO_SET_PWM_DUTY = pins.createBuffer(8);\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 1, this.pitchClick)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 2, PWM_module_id)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 3, PWM_PR_id)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 6, PWMfreq & 0x00FF)\n            GPIO_SET_PWM_DUTY.setNumber(NumberFormat.UInt8LE, 7, (PWMfreq & 0xFF00)>>8)\n\n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_SET_PWM_DUTY, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        \n    \n\n\n    \n        }\n\n        \n\n\n    }\n\n    /// End of PWM settings\n\n\n\n\n        /// End of PWM functions\n\n    ///Start of Class UARTSettings\n    export class UARTSettings{\n        //UART Function ids\n        protected UART_STATUS : number\n        protected UART_INTEN  : number\n        protected UART_INTENCLR : number\n        public UART_BAUD_id  : number\n        protected UART_WRITE_TX_DATA : number\n        protected UART_READ_RX_DATA : number\n        public UART_READ_RX_DATA_BYTES : number\n        protected UART_CLEAR_RX_DATA : number\n        private clickBoardNumGlobalUART:number\n\n        constructor(boardID:BoardID, clickID:ClickID){\n        this.UART_STATUS = 0\n        this.UART_INTEN =  2\n        this.UART_INTENCLR = 3\n        this.UART_BAUD_id = 4\n        this.UART_WRITE_TX_DATA = 5\n        this.UART_READ_RX_DATA = 6\n        this.UART_READ_RX_DATA_BYTES = 7\n        this.UART_CLEAR_RX_DATA = 8\n        this.clickBoardNumGlobalUART=boardID*3+clickID;\n\n        }\n\n       getUARTDataSize():number{\n    \n    \n        let UARTSizeBuf = pins.createBuffer(4)\n    \n        let UART_TX_SIZE = 0\n        let UART_RX_SIZE = 0\n\n        UARTSizeBuf.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        UARTSizeBuf.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalUART)\n        UARTSizeBuf.setNumber(NumberFormat.UInt8LE, 2, UART_module_id)\n        UARTSizeBuf.setNumber(NumberFormat.UInt8LE, 3, this.UART_STATUS )\n\n          // Ask the click board to send the number of the bytes in the UART Buffers to the bBoard\n          pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n          pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n          pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, UARTSizeBuf, false)\n          pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n     \n        // I then read the message sent back and build it into the RX and TX size\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        control.waitMicros(500)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n        let TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 4, false)\n        UART_RX_SIZE = TX_BUFFER_DATAbuf.getUint8(0) + TX_BUFFER_DATAbuf.getUint8(1) * 256\n        UART_TX_SIZE = TX_BUFFER_DATAbuf.getUint8(2) + TX_BUFFER_DATAbuf.getUint8(3) * 256\n\n       \n       return UART_RX_SIZE;\n    }\n\n\n    clearUARTRxBuffer(){\n\n\n        let UART_CLEARRx_COMMAND = pins.createBuffer(5)\n        UART_CLEARRx_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        UART_CLEARRx_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalUART)\n        UART_CLEARRx_COMMAND.setNumber(NumberFormat.UInt8LE, 2, UART_module_id)\n        UART_CLEARRx_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.UART_CLEAR_RX_DATA)\n\n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, UART_CLEARRx_COMMAND, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    }\n\n    //%blockId=is_UART_Data_Avail\n    //%block=\"$this is UART data available?\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"UARTSettings\"\n    //% group=\"UART\"\n\n    isUARTDataAvailable():boolean {\n\n      \n      \n        if (this.getUARTDataSize()) \n        {\n            \n           return true;\n           \n        }\n     return false;\n    }\n    \n    /**\n    * Set the UART baud rate\n    * @param baud the baud rate, eg: 115200\n    */\n    //% weight=4 advanced=true\n    //% blockId=bBoard_UART_frequency block=\"$this set UART baud to $baud\"\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% baud.delf=115200\n    //% this.defl=\"UARTSettings\"\n    //% group=\"UART\"\n    UARTFrequency(baud:number) {\n        \n        // (Note: BRG = Fp / baudrate)\n        //(Note: Fp = 40000000)\n\n        let Fp = 40000000; //Frequency of the dspic Peripheral clock\n        let brg = Fp/baud \n        \n        let UART_WRITE1_COMMAND = pins.createBuffer(6)\n        UART_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        UART_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalUART)\n        UART_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, UART_module_id)\n        UART_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.UART_BAUD_id)\n        UART_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, brg & 0x00FF)\n        UART_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 5, (brg & 0xFF00)>>8)\n        \n       \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, UART_WRITE1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n    }\n\n        //%blockId=send_UART_Buffer\n        //%block=\"$this send buffer $Buf\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"UARTSettings\"\n        //% group=\"UART\"\n\n        sendBuffer( Buf: Buffer){\n\n    \n\n            let buffLength = Buf.length+4;\n    \n\n            let UARTBuf = pins.createBuffer(buffLength);\n\n            \n\n                    UARTBuf.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n                    UARTBuf.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalUART)\n                    UARTBuf.setNumber(NumberFormat.UInt8LE, 2, UART_module_id)\n                    UARTBuf.setNumber(NumberFormat.UInt8LE, 3, 5)\n\n            \n\n                    for(let i=0; i<buffLength-4;i++){\n            \n                        UARTBuf.setNumber(NumberFormat.UInt8LE, i+4, Buf.getNumber(NumberFormat.UInt8LE,i));\n                    \n                \n                    }\n                \n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, UARTBuf, false)\n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n                }\n\n    \n\n   \n\n    //%blockId=get_UART_Byte\n    //%block=\"$this read string\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"UARTSettings\"\n    //% group=\"UART\"\n\n    getUARTData():string\n    {\n\n\n        let UART_Rx_BuffSize  = this.getUARTDataSize();\n        let TX_BuffSize = 0\n       \n       \n        let UARTDataBuf = pins.createBuffer(6)\n\n        UARTDataBuf.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        UARTDataBuf.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalUART)\n        UARTDataBuf.setNumber(NumberFormat.UInt8LE, 2, UART_module_id)\n        UARTDataBuf.setNumber(NumberFormat.UInt8LE, 3, this.UART_READ_RX_DATA_BYTES )\n        UARTDataBuf.setNumber(NumberFormat.UInt8LE, 4, UART_Rx_BuffSize & 0x00FF )\n        UARTDataBuf.setNumber(NumberFormat.UInt8LE, 5, (UART_Rx_BuffSize & 0xFF00)>>8 )\n\n         // I ask for the UART RX data to be sent to the bboard...\n         pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n         pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n         pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, UARTDataBuf, false)\n         pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        \n        // I check to see how many bytes have arrived on the bboard...\n      //  pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n      //  pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_TX_BUFFER_SIZE, false)\n      //  let TX_BUFFER_SizeBuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 2, false)\n      //  TX_BuffSize = TX_BUFFER_SizeBuf.getUint8(0) + TX_BUFFER_SizeBuf.getUint8(1) * 256 //\n\n        // I retrieve those bytes from the bboard to the microbit\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n\n        control.waitMicros(500)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n        let TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, UART_Rx_BuffSize, false)\n\n        return TX_BUFFER_DATAbuf.toString();\n     }\n\n        //%blockId=send_UART_String\n        //%block=\"$this send string $UARTString\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"UARTSettings\"\n        //% group=\"UART\"\n\n        sendString( UARTString: string){\n            let remainingBytes = UARTString.length\n            \n            while( remainingBytes )\n            {\n                let messageLength = Math.min(remainingBytes+ 4,128);\n                let UARTBuf = pins.createBuffer(messageLength);\n\n                UARTBuf.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n                UARTBuf.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalUART)\n                UARTBuf.setNumber(NumberFormat.UInt8LE, 2, UART_module_id)\n                UARTBuf.setNumber(NumberFormat.UInt8LE, 3,  5)\n\n                for(let i=4; i<messageLength;i++)\n                {\n                        UARTBuf.setNumber(NumberFormat.UInt8LE, i, UARTString.charCodeAt(UARTString.length - remainingBytes + i - 4));\n                }\n\n                // Send a message to the UART TX Line to ask for data\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, UARTBuf, false)\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n                remainingBytes =remainingBytes - messageLength + 4;\n            }\n\n        }\n   \n    \n\n    }\n    ///END of Class UARTSettings  \n\n     // End of UART functions\n\n\n    ///Start of PinSettings\n    export class PinSettings extends IOSettings{\n        private clickBoardNumGlobalPin: number;\n        constructor(boardID:BoardID,clickID:ClickID){\n            super(boardID,clickID);\n            this.clickBoardNumGlobalPin=boardID*3+clickID;\n        }\n\n        //%blockId=digital_Read_Pin\n        //%block=\"$this digital read pin $clickPin\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"PinSettings\"\n        //% group=\"PINs\"\n        digitalReadPin( clickPin: clickIOPin):number\n        {\n            let pinStatus = 0;\n            let READ_CLICKBOARD_DIGITAL_INPUTS = pins.createBuffer(6)\n            let TX_BUFFER_DATAbuf = pins.createBuffer(2);\n            READ_CLICKBOARD_DIGITAL_INPUTS.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            READ_CLICKBOARD_DIGITAL_INPUTS.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalPin)\n            READ_CLICKBOARD_DIGITAL_INPUTS.setNumber(NumberFormat.UInt8LE, 2, GPIO_module_id)\n            READ_CLICKBOARD_DIGITAL_INPUTS.setNumber(NumberFormat.UInt8LE, 3, this.GPIO_id)\n            READ_CLICKBOARD_DIGITAL_INPUTS.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n            READ_CLICKBOARD_DIGITAL_INPUTS.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n        \n\n            // Send a message to read the digital input values\n            // specified\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_CLICKBOARD_DIGITAL_INPUTS, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    \n            \n            // I then actually read the data that has been\n            // returned by the clickboard\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            control.waitMicros(500)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n\n            TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 2, false);\n            pinStatus = (TX_BUFFER_DATAbuf.getUint8(0) + TX_BUFFER_DATAbuf.getUint8(1) * 256) & clickPin;\n    \n            return pinStatus == 0 ? 0:1\n        \n        }\n    \n        //%blockId=write_pin\n        //%block=\"$this write pin $clickPin to $value\"\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"PinSettings\"\n        //% group=\"PINs\"\n\n        writePin(value: number, clickPin: clickIOPin){\n        \n            if(value > 0){\n                this.setPin(clickPin);\n            \n            }\n\n            else{\n                this.clearPin(clickPin);\n            }\n        \n    \n        }\n\n    \n\n        \n\n        setPin(clickPin: clickIOPin){\n\n        // 'Set clickboard output pins values HIGH' command\n        let GPIO_SET_OUTPUT_PINS_HIGH = pins.createBuffer(8)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalPin)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 2, GPIO_module_id)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 3, this.SET_id)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 6, 0x00)\n        GPIO_SET_OUTPUT_PINS_HIGH.setNumber(NumberFormat.UInt8LE, 7, 0x00)\n\n        //setIODirection(clickPin,clickIODirection.output,boardID); //Done automatically on bBoard\n                \n        // Send commands\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_SET_OUTPUT_PINS_HIGH, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)  \n        }\n\n     \n\n        clearPin( clickPin: clickIOPin){\n        \n        // 'Set clickboard output pins values LOW' command\n\n\n        let GPIO_SET_OUTPUT_PINS_LOW = pins.createBuffer(8)\n\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalPin)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 2, GPIO_module_id)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 3, this.CLR_id)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 6, 0x00)\n        GPIO_SET_OUTPUT_PINS_LOW.setNumber(NumberFormat.UInt8LE, 7, 0x00)\n            \n    // setIODirection(clickPin,clickIODirection.output,boardID); //Done automatically on bBoard\n        // Send commands\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GPIO_SET_OUTPUT_PINS_LOW, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    \n    \n        }\n\n            //%blockId=Analog_Read\n    //%block=\"$this analog read pin %clickPin\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n        //% this.defl=\"PinSettings\"\n        //% group=\"PINs\"\n\n    analogRead(clickPin: clickADCPin, boardID: BoardID, clickSlotNum : ClickID): number{\n\n\n        let ADC_READ1_COMMAND = pins.createBuffer(6)\n        ADC_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        ADC_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardNumGlobalPin)\n        ADC_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, ADC_module_id)\n        ADC_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.ADC_READ_id)\n        ADC_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        ADC_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n\n\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, ADC_READ1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        control.waitMicros(500)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n        let TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 2, false)\n        return (TX_BUFFER_DATAbuf.getUint8(0) + TX_BUFFER_DATAbuf.getUint8(1) * 256)\n\n\n      \n    }\n\n\n       \n    }\n\n\n    ///END of class PinSettings\n\n     \n\n   /// End of pinsettings functions\n\n\n    //%blockId=getFirmwareVersion\n    //%block=\"Get firmware version of $boardID at slot $clickSlotNum\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% group=\"_____________\"\n    \n\n    export function getFirmwareVersion(boardID: BoardID, clickSlotNum : ClickID): number{\n        let clickNumSlot=boardID*3+clickSlotNum\n        let analogValue = 0;\n\n\n        let GET_VERSION_COMMAND = pins.createBuffer(4)\n        GET_VERSION_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        GET_VERSION_COMMAND.setNumber(NumberFormat.UInt8LE, 1, clickNumSlot)\n        GET_VERSION_COMMAND.setNumber(NumberFormat.UInt8LE, 2, STATUS_module_id)\n        GET_VERSION_COMMAND.setNumber(NumberFormat.UInt8LE, 3, FIRMWARE_VERSION_id)\n\n\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, GET_VERSION_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        control.waitMicros(500)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n        let VERSIONBuffer = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, 2, false)\n        \n        let versionInt = VERSIONBuffer.getUint8(1);\n        let versionDec = VERSIONBuffer.getUint8(0);\n        //basic.showNumber(versionInt)\n        //basic.showNumber(versionDec)\n\n        return (versionInt + versionDec/100);\n\n    }\n\n\n\n\n\n    ///START of SPISettings\n    export class SPIsetting{\n        // SPI Function Ids\n        public SPI_WRITE_id : number\n        public SPI_READ_id : number\n        public SPI_CONFIG_id : number\n        public SPI_WRITEBULK_id : number\n        protected SPI_WRITEBULK_CS_id : number\n        protected  SPI_READBULK_CS_id : number\n        public SPI_BAUD_id : number\n        public SPI_CONFIG_CS_id : number\n        private clickBoardGlobalNumSPI : number\n\n        constructor(boardID:BoardID,clickID:ClickID){\n        this.SPI_WRITE_id = 1\n        this.SPI_READ_id = 2\n        this.SPI_CONFIG_id = 3\n        this.SPI_WRITEBULK_id = 4\n        this.SPI_WRITEBULK_CS_id = 5\n        this. SPI_READBULK_CS_id = 6\n        this.SPI_BAUD_id = 7\n        this.SPI_CONFIG_CS_id = 8\n        this.clickBoardGlobalNumSPI=boardID*3+clickID;\n\n        }\n \n        \n    //%blockId=spi_Write\n    //%block=\"$this spi write $value\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"SPISettings\"\n    //% group=\"SPI\"\n\n    SPIWrite(value: number){\n       \n\n        let SPI_WRITE1_COMMAND = pins.createBuffer(5)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_WRITE_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, value)\n\n       \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_WRITE1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n  \n    }\n\n\n    //%blockId=spi_Write_array\n    //%block=\"$this spi write array $arrayValues\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"SPISettings\"\n    //% group=\"SPI\"\n\n    SPIWriteArray(arrayValues: number[]){\n       \n        let arrayLength = arrayValues.length\n        let SPI_WRITE1_COMMAND = pins.createBuffer(4+arrayLength)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_WRITEBULK_id)\n\n        \n        for(let i=0;i<arrayLength;i++){\n\n            SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, i + 4, arrayValues[i])\n\n        }\n     \n\n       \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_WRITE1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n  \n    }\n    /**\n    * Set the SPI frequency\n    * @param frequency the clock frequency, eg: 1000000\n    */\n    //% help=pins/spi-frequency weight=4 advanced=true\n    //% blockId=bBoard_spi_frequency block=\"$this spi set frequency $frequency\"\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"SPISettings\"\n    //% group=\"SPI\"\n    spiFrequency(frequency:number) {\n        \n        // (Note: BRG = ( Fp / (2 * BaudRate) ) - 1   )\n       // (Note: Fp = 40000000)\n\n        let Fp = 40000000; //Frequency of the dspic Peripheral clock\n        let brgl = (Fp/(2*frequency))-1 \n        \n        let SPI_WRITE1_COMMAND = pins.createBuffer(6)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_BAUD_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, brgl & 0x00FF)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 5, (brgl & 0xFF00)>>8)\n        \n        \n    \n    \n \n        \n       \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_WRITE1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n    }\n\n\n    //%blockId=spi_Write_buffer\n    //%block=\"$this spi write buffer $bufferValues\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"SPISettings\"\n    //% group=\"SPI\"\n    SPIWriteBuffer(bufferValues: Buffer){\n       \n        let bufferLength = bufferValues.length\n        let SPI_WRITE1_COMMAND = pins.createBuffer(4+bufferLength)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_WRITEBULK_id)\n        \n        for(let i=0;i<bufferLength;i++){\n\n            SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, i + 4, bufferValues.getNumber(NumberFormat.UInt8LE,i))\n\n        }\n     \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_WRITE1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n  \n    }\n\n    //%blockId=spi_Mode_Select\n    //%block=\"$this spi set mode to $mode\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"SPISettings\"\n    //% group=\"SPI\"\n\n    SPIModeSelect(mode: SPIMode){\n        let SPI_CKE = 1\n        let SPI_CKP = 0\n\n\n       switch(mode)\n       {\n        case SPIMode.Mode0:\n            SPI_CKE = 1\n            SPI_CKP = 0\n            break;\n\n        case SPIMode.Mode1:\n            SPI_CKE = 0\n            SPI_CKP = 0\n            break;\n\n        case SPIMode.Mode2:\n            SPI_CKE = 1\n            SPI_CKP = 1\n        break;\n        case SPIMode.Mode3:\n            SPI_CKE = 0\n            SPI_CKP = 1\n        break;\n       }\n      \n\n\n        let SPI_CONFIG_COMMAND = pins.createBuffer(6)\n        SPI_CONFIG_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_CONFIG_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_CONFIG_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_CONFIG_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_CONFIG_id)\n        SPI_CONFIG_COMMAND.setNumber(NumberFormat.UInt8LE, 4, SPI_CKE)\n        SPI_CONFIG_COMMAND.setNumber(NumberFormat.UInt8LE, 5, SPI_CKP)\n        \n        \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_CONFIG_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n  \n    }\n\n\n\n    //%blockId=spi_Read\n    //%block=\"$this spi read $numBytes bytes\"\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"SPISettings\"\n    //% group=\"SPI\"\n\n    SPIread(numBytes: number):number{\n   \n        let READ_BBOARD_TX_BUFFER = pins.createBuffer(1)\n        READ_BBOARD_TX_BUFFER.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_READ_TX_BUFFER_DATA)\n\n        let SPI_READ1_COMMAND = pins.createBuffer(5)\n        SPI_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_READ_id)\n        SPI_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, numBytes)\n\n\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_READ1_COMMAND, false)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n  \n            control.waitMicros(500)\n            pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n           let  TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, numBytes, false)\n            return TX_BUFFER_DATAbuf.getUint8(0)\n      \n        }\n\n        /**\n        * Set the SPI Chip Select Pin\n        */\n        //% weight=4 advanced=true\n        //% blockId=bBoard_spi_CS block=\"$this spi assign CS Pin to pin $clickPin\"\n        //% blockNamespace=bBoard\n        //% this.shadow=variables_get\n         //% this.defl=\"SPISettings\"\n         //% group=\"SPI\"\n\n        spiCS(clickPin: clickIOPin) {\n        \n    \n        \n        let SPI_WRITE1_COMMAND = pins.createBuffer(6)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumSPI)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, SPI_module_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.SPI_CONFIG_CS_id)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, clickPin & 0x00FF)\n        SPI_WRITE1_COMMAND.setNumber(NumberFormat.UInt8LE, 5, (clickPin & 0xFF00)>>8)\n        \n       \n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, SPI_WRITE1_COMMAND, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n\n        }\n    \n\n\n    }\n\n\n\n    ///END  of class SPISettings\n\n\n\n    //End of SPIsetting functions\n\n\n    ///START of I2CSettings\n        export class I2CSettings{\n\n            // I2C Function Ids\n            public I2C_WRITE_id : number\n            public I2C_READ_id : number\n            public I2C_WRITE_NO_MEM_id : number\n            public I2C_READ_NO_MEM_id : number\n            private clickBoardGlobalNumI2C : number\n\n            constructor(boardID:BoardID, clickID:ClickID ){\n                this.I2C_WRITE_id = 1\n                this.I2C_READ_id = 2\n                this.I2C_WRITE_NO_MEM_id = 3\n                this.I2C_READ_NO_MEM_id = 4\n                this.clickBoardGlobalNumI2C=boardID*3+clickID;\n\n            }\n\n \n\n\n        //%blockId=i2c_ReadNoMem\n        //% blockGap=7\n        //% weight=90   color=#9E4894 icon=\"\"\n        //% advanced=false\n        //% blockNamespace=bBoard\n        //% block=\"$this i2c read $numBytes bytes at i2c address $address\" weight=6\n\n        //% this.shadow=variables_get\n        //% this.defl=\"I2CSettings\"\n        //% group=\"I2C\"\n        \n\n        I2CreadNoMem(address:number, numBytes: number):Buffer{\n    \n            let READ_BBOARD_TX_BUFFER = pins.createBuffer(1)\n            let TX_BUFFER_DATAbuf = pins.createBuffer(numBytes);\n            READ_BBOARD_TX_BUFFER.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_READ_TX_BUFFER_DATA)\n\n            let I2C_READ1_COMMAND = pins.createBuffer(6)\n            I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n            I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumI2C)\n            I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, I2C_module_id)\n            I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.I2C_READ_NO_MEM_id)\n            I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, address)\n            I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 5, numBytes)\n\n\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, I2C_READ1_COMMAND, false)\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n    \n                control.waitMicros(500)\n                pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n                TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, numBytes, false)\n                return TX_BUFFER_DATAbuf\n        \n        }\n\n\n\n            //%blockId=i2c_Read\n            //% blockGap=7\n            //% weight=90   color=#9E4894 icon=\"\"\n             //% block=\"$this i2c read $numBytes bytes |at memory address $memAddress |at i2c address $address\" weight=6\n            //% advanced=false\n            //% blockNamespace=bBoard\n            //% this.shadow=variables_get\n            //% this.defl=\"I2CSettings\"\n            //% group=\"I2C\"\n            \n        \n\n            I2Cread(address:number, memAddress:number,numBytes: number):number{\n        \n                let READ_BBOARD_TX_BUFFER = pins.createBuffer(1)\n                READ_BBOARD_TX_BUFFER.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_READ_TX_BUFFER_DATA)\n\n                let I2C_READ1_COMMAND = pins.createBuffer(7)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumI2C)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 2, I2C_module_id)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 3, this.I2C_READ_id)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 4, address)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 5, memAddress)\n                I2C_READ1_COMMAND.setNumber(NumberFormat.UInt8LE, 6, numBytes)\n\n\n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_TX_BUFFER, false)\n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, I2C_READ1_COMMAND, false)\n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n                    control.waitMicros(500)\n        \n                    pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, READ_BBOARD_TX_BUFFER, false)\n                let  TX_BUFFER_DATAbuf = pins.i2cReadBuffer(BBOARD_I2C_ADDRESS, numBytes, false)\n                    return TX_BUFFER_DATAbuf.getUint8(0)\n            \n            }\n\n\n        \n\n        \n\n\n    /**\n     * Write one number to a 7-bit I2C address.\n     */\n    //% blockId=i2c_write_number\n    //% block=\"i2c $this write number $value|to i2c address $address|of format $format | repeated $repeated\" weight=6\n    //% blockGap=7\n    //% weight=90   color=#9E4894 icon=\"\"\n    //% advanced=false\n    //% blockNamespace=bBoard\n    //% this.shadow=variables_get\n    //% this.defl=\"I2CSettings\"\n    //% group=\"I2C\"\n\n    i2cWriteNumber(address:number, value: number, format:NumberFormat, repeated: boolean){\n      \n        let I2C_WRITE = pins.createBuffer(6 +  pins.sizeOf(format))\n        let tempBuf = pins.createBuffer(pins.sizeOf(format))\n        let disableStop = repeated == true? 1:0;\n        tempBuf.setNumber(format,0,value)\n  \n\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumI2C)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 2, I2C_module_id)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 3, this.I2C_WRITE_id)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 4, address)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 5, disableStop)\n\n        for(let i=0; i<tempBuf.length; i++)\n        {\n            I2C_WRITE.setNumber(NumberFormat.UInt8LE, i+6, tempBuf.getNumber(NumberFormat.UInt8LE,i))\n        }\n\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, I2C_WRITE, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n   \n    }\n\n\n             /**\n     * Write a buffer to a 7-bit I2C address.\n     */\n    //% help=pins/i2c-write-number blockGap=8\n    //% blockNamespace=bBoard\n\n    i2cWriteBuffer(address:number, buf: Buffer){\n      \n        let I2C_WRITE = pins.createBuffer(6 + buf.length)\n        let disableStop = 0; //We want a stop bit sent at the end.\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 0, RX_TX_Settings.BBOARD_COMMAND_WRITE_RX_BUFFER_DATA)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 1, this.clickBoardGlobalNumI2C)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 2, I2C_module_id)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 3, this.I2C_WRITE_id)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 4, address)\n        I2C_WRITE.setNumber(NumberFormat.UInt8LE, 5, disableStop)\n\n        for(let i=0; i<buf.length; i++)\n        {\n            I2C_WRITE.setNumber(NumberFormat.UInt8LE, 6+i, buf.getNumber(NumberFormat.UInt8LE,i))\n        }\n\n\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, CLEAR_BBOARD_RX_BUFFER, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, I2C_WRITE, false)\n        pins.i2cWriteBuffer(BBOARD_I2C_ADDRESS, EXECUTE_BBOARD_COMMAND, false)\n        basic.pause(2);\n   \n    }\n\n\n\n\n      \n       \n    }\n\n    ///END of I2CSettings\n        \n        \n\n\n      ///  End of I2C settings functions\n\n\n\n\n}\n\n\n\n",
             "bBoardMic.ts": "//-------------------------Click Board Blocks Begin -----------------------------------\n//% weight=100 color=#EF697B icon=\"\"\n//% advanced=true\n\nnamespace bBoard_Mic {\n\n    /**\n    * Sets mic object.\n    * @param boardID the click\n    * @param clickID the bus\n    *  @param mic the neopixel Object\n    */\n   //% block=\" $boardID $clickID\"\n   //% blockSetVariable=\"microphone\"\n   //% clickID.defl=ClickID.Zero\n   //% weight=110\n   export function createMic(boardID: BoardID, clickID:ClickID): bBoardMic {\n     return new bBoardMic(boardID, clickID);\n }\n \nenum functionID\n{\n\n    // FunctionIds\n    getSoundLevel=1,\n    setThreshold = 2,\n    getThresholdFlag = 3,\n    clearThresholdFlag = 4,\n    enable = 5,\n    getRMS = 6,\n    setBaseline = 7\n\n}\nexport enum micEnable\n{\n\n    disabled = 0,\n    enabled = 1\n\n}\n  \nexport class bBoardMic extends bBoard.peripheralSettings{\n  //Motor Click\n private threshold  : number\n \n //private board: BoardID;\n //private clickPort: ClickID;\n\n private boardIDGlobal:number\n private clickIDGlobal:number\n \n\n  constructor(boardID: BoardID, clickID:ClickID){\n   super(boardID, clickID)\n   this.boardIDGlobal=boardID;\n   this.clickIDGlobal=clickID;\n   this.threshold = 50\n    \n  }\n  \n\n\n   get threshVal() {\n       return this.threshold\n     }\n\n   set threshVal(value) {\n      this.threshold = value\n    }\n\n\n\n   \n     //% blockId=Mic_Enable\n     //% block=\"$this $enable\"\n     //% advanced=false\n     //% blockNamespace=bBoard_Mic\n     //% this.shadow=variables_get\n     //% this.defl=\"microphone\"\n     //% parts=\"bBoardMic\"\n\n     micEnable(enable:bBoard_Mic.micEnable) {\n     \n     this.sendData(0, moduleIDs.MIC_module_id, functionID.enable,[enable]) //Enable module\n         this.sendData(0,moduleIDs.MIC_module_id,functionID.setBaseline,[]) //Get a baseline reading\n     }\n\n   \n     //% blockId=Mic_baseline\n     //% block=\"$this update microphone baseline\"\n     //% advanced=false\n     //% blockNamespace=bBoard_Mic\n     //% this.shadow=variables_get\n     //% this.defl=\"microphone\"\n     //% parts=\"bBoardMic\"\n      micBaseline() {\n     \n     \n          this.sendData(0,moduleIDs.MIC_module_id,functionID.setBaseline,[]) //Get a baseline reading\n      }\n\n     \n   \n     //% blockId=Mic_Sound_Level\n     //% block=\"$this get sound level\"\n     //% advanced=false\n     //% blockNamespace=bBoard_Mic\n     //% this.shadow=variables_get\n     //% this.defl=\"microphone\"\n     //% parts=\"bBoardMic\"\n      micSoundLevel(): number {\n          let soundLevel: number\n     \n      \n          soundLevel = this.readData16(0, moduleIDs.MIC_module_id, functionID.getRMS,[])\n            \n           return soundLevel\n        }\n \n  \n     //% blockId=Mic_Threshold_Flag\n     //% block=\"$this has threshold been reached?\"\n     //% advanced=false\n     //% blockNamespace=bBoard_Mic\n     //% this.shadow=variables_get\n     //% this.defl=\"microphone\"\n     //% parts=\"bBoardMic\"\n      micThresholdFlag(): boolean {\n       let micThreshold: number\n  \n   \n       micThreshold = this.readData16(0, moduleIDs.MIC_module_id, functionID.getThresholdFlag,[])\n         \n        return micThreshold == 1? true:false\n     }\n\n     //% blockId=Mic_Set_Threshold\n     //% block=\"$this set mic threshold level to %threshold\"\n     //% advanced=false\n     //% blockNamespace=bBoard_Mic\n     //% this.shadow=variables_get\n     //% this.defl=\"microphone\"\n     //% parts=\"bBoardMic\"\n      setThresholdLevel(threshold:number) {\n      \n   \n       this.sendData(0, moduleIDs.MIC_module_id, functionID.setThreshold,[threshold & 0x00FF, ((threshold & 0xFF00)>>8)])\n         \n        \n     }\n\n     //% blockId=Clear_Threshold_Flag\n     //% block=\"$this clear threshold flag\"\n     //% advanced=false\n     //% blockNamespace=bBoard_Mic\n     //% this.shadow=variables_get\n     //% this.defl=\"microphone\"\n     //% parts=\"bBoardMic\"\n      clearThresholdFlag() {\n      \n   \n       this.sendData(0, moduleIDs.MIC_module_id, functionID.clearThresholdFlag,[])\n       \n      \n   }\n\n   \n  \n  \n  \n   \n  \n    \n  }\n  }",
@@ -2682,6 +2701,7 @@ var pxtTargetBundle = {
             "dal.d.ts": "// Auto-generated. Do not edit.\ndeclare const enum DAL {\n    // /libraries/codal-core/inc/JACDAC/JACDAC.h\n    JD_STARTED = 2,\n    JD_SERVICE_ARRAY_SIZE = 20,\n    // /libraries/codal-core/inc/JACDAC/JDPhysicalLayer.h\n    JD_VERSION = 0,\n    JD_BYTE_AT_125KBAUD = 80,\n    JD_MIN_INTERLODATA_SPACING = 40,\n    JD_SERIAL_MAX_BUFFERS = 10,\n    JD_SERIAL_MAX_SERVICE_NUMBER = 15,\n    JD_SERIAL_RECEIVING = 1,\n    JD_SERIAL_RECEIVING_HEADER = 2,\n    JD_SERIAL_TRANSMITTING = 4,\n    JD_SERIAL_RX_LO_PULSE = 8,\n    JD_SERIAL_TX_LO_PULSE = 16,\n    JD_SERIAL_BUS_LO_ERROR = 32,\n    JD_SERIAL_BUS_TIMEOUT_ERROR = 64,\n    JD_SERIAL_BUS_UART_ERROR = 128,\n    JD_SERIAL_ERR_MSK = 224,\n    JD_SERIAL_BUS_STATE = 256,\n    JD_SERIAL_BUS_TOGGLED = 512,\n    JD_SERIAL_DEBUG_BIT = 32768,\n    JD_SERIAL_EVT_DATA_READY = 1,\n    JD_SERIAL_EVT_BUS_ERROR = 2,\n    JD_SERIAL_EVT_CRC_ERROR = 3,\n    JD_SERIAL_EVT_DRAIN = 4,\n    JD_SERIAL_EVT_RX_TIMEOUT = 5,\n    JD_SERIAL_EVT_BUS_CONNECTED = 5,\n    JD_SERIAL_EVT_BUS_DISCONNECTED = 6,\n    JD_SERIAL_HEADER_SIZE = 4,\n    JD_SERIAL_CRC_HEADER_SIZE = 2,\n    JD_SERIAL_MAX_PAYLOAD_SIZE = 255,\n    JD_SERIAL_MAXIMUM_BUFFERS = 10,\n    JD_SERIAL_DMA_TIMEOUT = 2,\n    JD_SERIAL_MAX_BAUD = 1000000,\n    JD_SERIAL_TX_MAX_BACKOFF = 1000,\n    JD_RX_ARRAY_SIZE = 10,\n    JD_TX_ARRAY_SIZE = 10,\n    JD_SERIAL_BAUD_1M = 1,\n    JD_SERIAL_BAUD_500K = 2,\n    JD_SERIAL_BAUD_250K = 4,\n    JD_SERIAL_BAUD_125K = 8,\n    Receiving = 0,\n    Transmitting = 1,\n    Unknown = 3,\n    ListeningForPulse = 0,\n    ErrorRecovery = 1,\n    Off = 2,\n    Baud1M = 1,\n    Baud500K = 2,\n    Baud250K = 4,\n    Baud125K = 8,\n    Continuation = 0,\n    BusLoError = 32,\n    BusTimeoutError = 64,\n    BusUARTError = 128,\n    // /libraries/codal-core/inc/JACDAC/JDService.h\n    JD_MAX_HOST_SERVICES = 16,\n    JD_SERVICE_EVT_CONNECTED = 65520,\n    JD_SERVICE_EVT_DISCONNECTED = 65521,\n    JD_SERVICE_EVT_ERROR = 65526,\n    JD_SERVICE_NUMBER_UNINITIALISED_VAL = 65535,\n    JD_SERVICE_STATUS_FLAGS_INITIALISED = 2,\n    JD_SERVICE_INFO_HEADER_SIZE = 6,\n    JD_SERVICE_MODE_CLIENT = 1,\n    JD_SERVICE_MODE_HOST = 2,\n    JD_SERVICE_MODE_BROADCAST_HOST = 3,\n    JD_SERVICE_MODE_CONTROL_LAYER = 4,\n    ClientService = 1,\n    HostService = 2,\n    BroadcastHostService = 3,\n    ControlLayerService = 4,\n    // /libraries/codal-core/inc/JACDAC/JDServiceClasses.h\n    STATIC_CLASS_START = 0,\n    STATIC_CLASS_END = 16777215,\n    DYNAMIC_CLASS_END = 4294967295,\n    JD_SERVICE_CLASS_CODAL_START = 0,\n    JD_SERVICE_CLASS_CODAL_END = 2000,\n    JD_SERVICE_CLASS_MAKECODE_START = 2000,\n    JD_SERVICE_CLASS_MAKECODE_END = 4000,\n    JD_SERVICE_CLASS_CONTROL = 0,\n    JD_SERVICE_CLASS_CONTROL_RNG = 1,\n    JD_SERVICE_CLASS_CONTROL_CONFIGURATION = 2,\n    JD_SERVICE_CLASS_CONTROL_TEST = 3,\n    JD_SERVICE_CLASS_JOYSTICK = 4,\n    JD_SERVICE_CLASS_MESSAGE_BUS = 5,\n    JD_SERVICE_CLASS_BRIDGE = 6,\n    JD_SERVICE_CLASS_BUTTON = 7,\n    JD_SERVICE_CLASS_ACCELEROMETER = 8,\n    JD_SERVICE_CLASS_CONSOLE = 9,\n    // /libraries/codal-core/inc/JACDAC/control/JDCRC.h\n    JD_CRC_POLYNOMIAL = 3859,\n    // /libraries/codal-core/inc/JACDAC/control/JDConfigurationService.h\n    JD_CONTROL_CONFIGURATION_SERVICE_NUMBER = 1,\n    JD_CONTROL_CONFIGURATION_SERVICE_REQUEST_TYPE_NAME = 1,\n    JD_CONTROL_CONFIGURATION_SERVICE_REQUEST_TYPE_IDENTIFY = 2,\n    JD_CONTROL_CONFIGURATION_SERVICE_PACKET_HEADER_SIZE = 2,\n    JD_CONTROL_CONFIGURATION_EVT_NAME = 1,\n    JD_CONTROL_CONFIGURATION_EVT_IDENTIFY = 2,\n    JD_DEFAULT_INDICATION_TIME = 5,\n    // /libraries/codal-core/inc/JACDAC/control/JDControlService.h\n    JD_CONTROL_SERVICE_STATUS_ENUMERATE = 2,\n    JD_CONTROL_SERVICE_STATUS_ENUMERATING = 4,\n    JD_CONTROL_SERVICE_STATUS_ENUMERATED = 8,\n    JD_CONTROL_SERVICE_STATUS_BUS_LO = 16,\n    JD_CONTROL_SERVICE_EVT_CHANGED = 2,\n    JD_CONTROL_SERVICE_EVT_TIMER_CALLBACK = 3,\n    JD_CONTROL_PACKET_HEADER_SIZE = 10,\n    JD_CONTROL_ROLLING_TIMEOUT_VAL = 3,\n    // /libraries/codal-core/inc/JACDAC/control/JDDeviceManager.h\n    JD_DEVICE_FLAGS_NACK = 8,\n    JD_DEVICE_FLAGS_HAS_NAME = 4,\n    JD_DEVICE_FLAGS_PROPOSING = 2,\n    JD_DEVICE_FLAGS_REJECT = 1,\n    JD_DEVICE_MAX_HOST_SERVICES = 16,\n    JD_DEVICE_DEFAULT_COMMUNICATION_RATE = 1,\n    // /libraries/codal-core/inc/JACDAC/control/JDRNGService.h\n    JD_CONTROL_RNG_SERVICE_NUMBER = 2,\n    JD_CONTROL_RNG_SERVICE_REQUEST_TYPE_REQ = 1,\n    JD_CONTROL_RNG_SERVICE_REQUEST_TYPE_RESP = 2,\n    // /libraries/codal-core/inc/JACDAC/services/JDAccelerometerService.h\n    JD_ACCEL_EVT_SEND_DATA = 1,\n    // /libraries/codal-core/inc/JACDAC/services/JDConsoleService.h\n    JD_CONSOLE_LOG_PRIORITY_LOG = 1,\n    JD_CONSOLE_LOG_PRIORITY_INFO = 2,\n    JD_CONSOLE_LOG_PRIORITY_DEBUG = 3,\n    JD_CONSOLE_LOG_PRIORITY_ERROR = 4,\n    Log = 1,\n    Info = 2,\n    Debug = 3,\n    // /libraries/codal-core/inc/JACDAC/services/JDMessageBusService.h\n    JD_MESSAGEBUS_TYPE_EVENT = 1,\n    JD_MESSAGEBUS_TYPE_LISTEN = 2,\n    // /libraries/codal-core/inc/core/CodalComponent.h\n    DEVICE_ID_BUTTON_A = 1,\n    DEVICE_ID_BUTTON_B = 2,\n    DEVICE_ID_BUTTON_AB = 3,\n    DEVICE_ID_BUTTON_RESET = 4,\n    DEVICE_ID_ACCELEROMETER = 5,\n    DEVICE_ID_COMPASS = 6,\n    DEVICE_ID_DISPLAY = 7,\n    DEVICE_ID_THERMOMETER = 8,\n    DEVICE_ID_RADIO = 9,\n    DEVICE_ID_RADIO_DATA_READY = 10,\n    DEVICE_ID_MULTIBUTTON_ATTACH = 11,\n    DEVICE_ID_SERIAL = 12,\n    DEVICE_ID_GESTURE = 13,\n    DEVICE_ID_SYSTEM_TIMER = 14,\n    DEVICE_ID_SCHEDULER = 15,\n    DEVICE_ID_COMPONENT = 16,\n    DEVICE_ID_LIGHT_SENSOR = 17,\n    DEVICE_ID_TOUCH_SENSOR = 18,\n    DEVICE_ID_SYSTEM_DAC = 19,\n    DEVICE_ID_SYSTEM_MICROPHONE = 20,\n    DEVICE_ID_SYSTEM_LEVEL_DETECTOR = 21,\n    DEVICE_ID_SYSTEM_LEVEL_DETECTOR_SPL = 22,\n    DEVICE_ID_MSC = 23,\n    DEVICE_ID_SPI = 24,\n    DEVICE_ID_DISTANCE = 25,\n    DEVICE_ID_GYROSCOPE = 26,\n    DEVICE_ID_HUMIDITY = 27,\n    DEVICE_ID_PRESSURE = 28,\n    DEVICE_ID_SINGLE_WIRE_SERIAL = 29,\n    DEVICE_ID_JACDAC = 30,\n    DEVICE_ID_JACDAC_PHYS = 31,\n    DEVICE_ID_JACDAC_CONTROL_SERVICE = 32,\n    DEVICE_ID_JACDAC_CONFIGURATION_SERVICE = 33,\n    DEVICE_ID_IO_P0 = 100,\n    DEVICE_ID_MESSAGE_BUS_LISTENER = 1021,\n    DEVICE_ID_NOTIFY_ONE = 1022,\n    DEVICE_ID_NOTIFY = 1023,\n    DEVICE_ID_BUTTON_UP = 2000,\n    DEVICE_ID_BUTTON_DOWN = 2001,\n    DEVICE_ID_BUTTON_LEFT = 2002,\n    DEVICE_ID_BUTTON_RIGHT = 2003,\n    DEVICE_ID_JD_DYNAMIC_ID = 3000,\n    DEVICE_COMPONENT_RUNNING = 4096,\n    DEVICE_COMPONENT_STATUS_SYSTEM_TICK = 8192,\n    DEVICE_COMPONENT_STATUS_IDLE_TICK = 16384,\n    DEVICE_COMPONENT_LISTENERS_CONFIGURED = 1,\n    DEVICE_COMPONENT_EVT_SYSTEM_TICK = 1,\n    // /libraries/codal-core/inc/core/CodalFiber.h\n    DEVICE_SCHEDULER_RUNNING = 1,\n    DEVICE_SCHEDULER_IDLE = 2,\n    DEVICE_FIBER_FLAG_FOB = 1,\n    DEVICE_FIBER_FLAG_PARENT = 2,\n    DEVICE_FIBER_FLAG_CHILD = 4,\n    DEVICE_FIBER_FLAG_DO_NOT_PAGE = 8,\n    DEVICE_SCHEDULER_EVT_TICK = 1,\n    DEVICE_SCHEDULER_EVT_IDLE = 2,\n    // /libraries/codal-core/inc/core/CodalListener.h\n    MESSAGE_BUS_LISTENER_PARAMETERISED = 1,\n    MESSAGE_BUS_LISTENER_METHOD = 2,\n    MESSAGE_BUS_LISTENER_BUSY = 4,\n    MESSAGE_BUS_LISTENER_REENTRANT = 8,\n    MESSAGE_BUS_LISTENER_QUEUE_IF_BUSY = 16,\n    MESSAGE_BUS_LISTENER_DROP_IF_BUSY = 32,\n    MESSAGE_BUS_LISTENER_NONBLOCKING = 64,\n    MESSAGE_BUS_LISTENER_URGENT = 128,\n    MESSAGE_BUS_LISTENER_DELETING = 32768,\n    MESSAGE_BUS_LISTENER_IMMEDIATE = 192,\n    // /libraries/codal-core/inc/core/ErrorNo.h\n    DEVICE_OK = 0,\n    DEVICE_INVALID_PARAMETER = -1001,\n    DEVICE_NOT_SUPPORTED = -1002,\n    DEVICE_CALIBRATION_IN_PROGRESS = -1003,\n    DEVICE_CALIBRATION_REQUIRED = -1004,\n    DEVICE_NO_RESOURCES = -1005,\n    DEVICE_BUSY = -1006,\n    DEVICE_CANCELLED = -1007,\n    DEVICE_I2C_ERROR = -1010,\n    DEVICE_SERIAL_IN_USE = -1011,\n    DEVICE_NO_DATA = -1012,\n    DEVICE_NOT_IMPLEMENTED = -1013,\n    DEVICE_SPI_ERROR = -1014,\n    DEVICE_INVALID_STATE = -1015,\n    DEVICE_OOM = 20,\n    DEVICE_HEAP_ERROR = 30,\n    DEVICE_NULL_DEREFERENCE = 40,\n    DEVICE_USB_ERROR = 50,\n    DEVICE_JACDAC_ERROR = 60,\n    DEVICE_HARDWARE_CONFIGURATION_ERROR = 90,\n    // /libraries/codal-core/inc/core/NotifyEvents.h\n    DISPLAY_EVT_FREE = 1,\n    CODAL_SERIAL_EVT_TX_EMPTY = 2,\n    BLE_EVT_SERIAL_TX_EMPTY = 3,\n    ARCADE_PLAYER_JOIN_RESULT = 4,\n    DEVICE_NOTIFY_USER_EVENT_BASE = 1024,\n    // /libraries/codal-core/inc/driver-models/AbstractButton.h\n    DEVICE_BUTTON_EVT_DOWN = 1,\n    DEVICE_BUTTON_EVT_UP = 2,\n    DEVICE_BUTTON_EVT_CLICK = 3,\n    DEVICE_BUTTON_EVT_LONG_CLICK = 4,\n    DEVICE_BUTTON_EVT_HOLD = 5,\n    DEVICE_BUTTON_EVT_DOUBLE_CLICK = 6,\n    DEVICE_BUTTON_LONG_CLICK_TIME = 1000,\n    DEVICE_BUTTON_HOLD_TIME = 1500,\n    DEVICE_BUTTON_STATE = 1,\n    DEVICE_BUTTON_STATE_HOLD_TRIGGERED = 2,\n    DEVICE_BUTTON_STATE_CLICK = 4,\n    DEVICE_BUTTON_STATE_LONG_CLICK = 8,\n    DEVICE_BUTTON_SIGMA_MIN = 0,\n    DEVICE_BUTTON_SIGMA_MAX = 12,\n    DEVICE_BUTTON_SIGMA_THRESH_HI = 8,\n    DEVICE_BUTTON_SIGMA_THRESH_LO = 2,\n    DEVICE_BUTTON_DOUBLE_CLICK_THRESH = 50,\n    DEVICE_BUTTON_SIMPLE_EVENTS = 0,\n    DEVICE_BUTTON_ALL_EVENTS = 1,\n    ACTIVE_LOW = 0,\n    ACTIVE_HIGH = 1,\n    // /libraries/codal-core/inc/driver-models/Accelerometer.h\n    ACCELEROMETER_IMU_DATA_VALID = 2,\n    ACCELEROMETER_EVT_DATA_UPDATE = 1,\n    ACCELEROMETER_EVT_NONE = 0,\n    ACCELEROMETER_EVT_TILT_UP = 1,\n    ACCELEROMETER_EVT_TILT_DOWN = 2,\n    ACCELEROMETER_EVT_TILT_LEFT = 3,\n    ACCELEROMETER_EVT_TILT_RIGHT = 4,\n    ACCELEROMETER_EVT_FACE_UP = 5,\n    ACCELEROMETER_EVT_FACE_DOWN = 6,\n    ACCELEROMETER_EVT_FREEFALL = 7,\n    ACCELEROMETER_EVT_3G = 8,\n    ACCELEROMETER_EVT_6G = 9,\n    ACCELEROMETER_EVT_8G = 10,\n    ACCELEROMETER_EVT_SHAKE = 11,\n    ACCELEROMETER_EVT_2G = 12,\n    ACCELEROMETER_REST_TOLERANCE = 200,\n    ACCELEROMETER_TILT_TOLERANCE = 200,\n    ACCELEROMETER_FREEFALL_TOLERANCE = 400,\n    ACCELEROMETER_SHAKE_TOLERANCE = 400,\n    ACCELEROMETER_2G_TOLERANCE = 2048,\n    ACCELEROMETER_3G_TOLERANCE = 3072,\n    ACCELEROMETER_6G_TOLERANCE = 6144,\n    ACCELEROMETER_8G_TOLERANCE = 8192,\n    ACCELEROMETER_GESTURE_DAMPING = 5,\n    ACCELEROMETER_SHAKE_DAMPING = 10,\n    ACCELEROMETER_SHAKE_RTX = 30,\n    ACCELEROMETER_SHAKE_COUNT_THRESHOLD = 4,\n    // /libraries/codal-core/inc/driver-models/Compass.h\n    COMPASS_STATUS_RUNNING = 1,\n    COMPASS_STATUS_CALIBRATED = 2,\n    COMPASS_STATUS_CALIBRATING = 4,\n    COMPASS_STATUS_ADDED_TO_IDLE = 8,\n    COMPASS_EVT_DATA_UPDATE = 1,\n    COMPASS_EVT_CONFIG_NEEDED = 2,\n    COMPASS_EVT_CALIBRATE = 3,\n    COMPASS_EVT_CALIBRATION_NEEDED = 4,\n    // /libraries/codal-core/inc/driver-models/Gyroscope.h\n    GYROSCOPE_IMU_DATA_VALID = 2,\n    GYROSCOPE_EVT_DATA_UPDATE = 1,\n    // /libraries/codal-core/inc/driver-models/LowLevelTimer.h\n    TimerModeTimer = 0,\n    TimerModeCounter = 1,\n    TimerModeAlternateFunction = 2,\n    BitMode8 = 0,\n    BitMode16 = 1,\n    BitMode24 = 2,\n    BitMode32 = 3,\n    // /libraries/codal-core/inc/driver-models/Pin.h\n    IO_STATUS_DIGITAL_IN = 1,\n    IO_STATUS_DIGITAL_OUT = 2,\n    IO_STATUS_ANALOG_IN = 4,\n    IO_STATUS_ANALOG_OUT = 8,\n    IO_STATUS_TOUCH_IN = 16,\n    IO_STATUS_EVENT_ON_EDGE = 32,\n    IO_STATUS_EVENT_PULSE_ON_EDGE = 64,\n    IO_STATUS_INTERRUPT_ON_EDGE = 128,\n    IO_STATUS_ACTIVE_HI = 256,\n    DEVICE_PIN_MAX_OUTPUT = 1023,\n    DEVICE_PIN_MAX_SERVO_RANGE = 180,\n    DEVICE_PIN_DEFAULT_SERVO_RANGE = 2000,\n    DEVICE_PIN_DEFAULT_SERVO_CENTER = 1500,\n    DEVICE_PIN_EVENT_NONE = 0,\n    DEVICE_PIN_INTERRUPT_ON_EDGE = 1,\n    DEVICE_PIN_EVENT_ON_EDGE = 2,\n    DEVICE_PIN_EVENT_ON_PULSE = 3,\n    DEVICE_PIN_EVENT_ON_TOUCH = 4,\n    DEVICE_PIN_EVT_RISE = 2,\n    DEVICE_PIN_EVT_FALL = 3,\n    DEVICE_PIN_EVT_PULSE_HI = 4,\n    DEVICE_PIN_EVT_PULSE_LO = 5,\n    PIN_CAPABILITY_DIGITAL = 1,\n    PIN_CAPABILITY_ANALOG = 2,\n    PIN_CAPABILITY_AD = 3,\n    PIN_CAPABILITY_ALL = 3,\n    None = 0,\n    Down = 1,\n    Up = 2,\n    // /libraries/codal-core/inc/driver-models/Radio.h\n    RADIO_EVT_DATA_READY = 2,\n    // /libraries/codal-core/inc/driver-models/SPIFlash.h\n    SPIFLASH_PAGE_SIZE = 256,\n    SPIFLASH_SMALL_ROW_PAGES = 16,\n    SPIFLASH_BIG_ROW_PAGES = 256,\n    // /libraries/codal-core/inc/driver-models/Sensor.h\n    SENSOR_THRESHOLD_LOW = 1,\n    SENSOR_THRESHOLD_HIGH = 2,\n    SENSOR_UPDATE_NEEDED = 3,\n    SENSOR_INITIALISED = 1,\n    SENSOR_HIGH_THRESHOLD_PASSED = 2,\n    SENSOR_LOW_THRESHOLD_PASSED = 4,\n    SENSOR_LOW_THRESHOLD_ENABLED = 8,\n    SENSOR_HIGH_THRESHOLD_ENABLED = 16,\n    SENSOR_DEFAULT_SENSITIVITY = 868,\n    SENSOR_DEFAULT_SAMPLE_PERIOD = 500,\n    // /libraries/codal-core/inc/driver-models/Serial.h\n    CODAL_SERIAL_DEFAULT_BAUD_RATE = 115200,\n    CODAL_SERIAL_DEFAULT_BUFFER_SIZE = 20,\n    CODAL_SERIAL_EVT_DELIM_MATCH = 1,\n    CODAL_SERIAL_EVT_HEAD_MATCH = 2,\n    CODAL_SERIAL_EVT_RX_FULL = 3,\n    CODAL_SERIAL_EVT_DATA_RECEIVED = 4,\n    CODAL_SERIAL_STATUS_RX_IN_USE = 1,\n    CODAL_SERIAL_STATUS_TX_IN_USE = 2,\n    CODAL_SERIAL_STATUS_RX_BUFF_INIT = 4,\n    CODAL_SERIAL_STATUS_TX_BUFF_INIT = 8,\n    CODAL_SERIAL_STATUS_RXD = 16,\n    ASYNC = 0,\n    SYNC_SPINWAIT = 1,\n    SYNC_SLEEP = 2,\n    RxInterrupt = 0,\n    TxInterrupt = 1,\n    // /libraries/codal-core/inc/driver-models/SingleWireSerial.h\n    SWS_EVT_DATA_RECEIVED = 1,\n    SWS_EVT_DATA_SENT = 2,\n    SWS_EVT_ERROR = 3,\n    SWS_EVT_DATA_DROPPED = 4,\n    SingleWireRx = 0,\n    SingleWireTx = 1,\n    SingleWireDisconnected = 2,\n    // /libraries/codal-core/inc/driver-models/Timer.h\n    CODAL_TIMER_DEFAULT_EVENT_LIST_SIZE = 10,\n    // /libraries/codal-core/inc/drivers/AnalogSensor.h\n    ANALOG_THRESHOLD_LOW = 1,\n    ANALOG_THRESHOLD_HIGH = 2,\n    ANALOG_SENSOR_UPDATE_NEEDED = 3,\n    ANALOG_SENSOR_INITIALISED = 1,\n    ANALOG_SENSOR_HIGH_THRESHOLD_PASSED = 2,\n    ANALOG_SENSOR_LOW_THRESHOLD_PASSED = 4,\n    ANALOG_SENSOR_LOW_THRESHOLD_ENABLED = 8,\n    ANALOG_SENSOR_HIGH_THRESHOLD_ENABLED = 16,\n    // /libraries/codal-core/inc/drivers/AnimatedDisplay.h\n    DISPLAY_EVT_ANIMATION_COMPLETE = 1,\n    DISPLAY_DEFAULT_AUTOCLEAR = 1,\n    DISPLAY_SPACING = 1,\n    DISPLAY_ANIMATE_DEFAULT_POS = -255,\n    DISPLAY_DEFAULT_SCROLL_SPEED = 120,\n    DISPLAY_DEFAULT_SCROLL_STRIDE = -1,\n    DISPLAY_DEFAULT_PRINT_SPEED = 400,\n    ANIMATION_MODE_NONE = 0,\n    ANIMATION_MODE_STOPPED = 1,\n    ANIMATION_MODE_SCROLL_TEXT = 2,\n    ANIMATION_MODE_PRINT_TEXT = 3,\n    ANIMATION_MODE_SCROLL_IMAGE = 4,\n    ANIMATION_MODE_ANIMATE_IMAGE = 5,\n    ANIMATION_MODE_ANIMATE_IMAGE_WITH_CLEAR = 6,\n    ANIMATION_MODE_PRINT_CHARACTER = 7,\n    // /libraries/codal-core/inc/drivers/FAT.h\n    FAT_RESERVED_SECTORS = 1,\n    FAT_ROOT_DIR_SECTORS = 4,\n    // /libraries/codal-core/inc/drivers/HID.h\n    HID_REQUEST_GET_REPORT = 1,\n    HID_REQUEST_GET_IDLE = 2,\n    HID_REQUEST_GET_PROTOCOL = 3,\n    HID_REQUEST_SET_REPORT = 9,\n    HID_REQUEST_SET_IDLE = 10,\n    HID_REQUEST_SET_PROTOCOL = 11,\n    // /libraries/codal-core/inc/drivers/HIDKeyboard.h\n    HID_KEYBOARD_NUM_REPORTS = 3,\n    HID_KEYBOARD_REPORT_GENERIC = 1,\n    HID_KEYBOARD_REPORT_CONSUMER = 2,\n    HID_KEYBOARD_KEYSTATE_SIZE_GENERIC = 8,\n    HID_KEYBOARD_KEYSTATE_SIZE_CONSUMER = 2,\n    HID_KEYBOARD_MODIFIER_OFFSET = 2,\n    HID_KEYBOARD_DELAY_DEFAULT = 10,\n    PressKey = 0,\n    ReleaseKey = 1,\n    // /libraries/codal-core/inc/drivers/KeyMap.h\n    KEYMAP_ALL_KEYS_UP_Val = 1,\n    KEYMAP_ALL_KEYS_UP_POS = 28,\n    KEYMAP_NORMAL_KEY_Val = 0,\n    KEYMAP_MODIFIER_KEY_Val = 1,\n    KEYMAP_MODIFIER_POS = 29,\n    KEYMAP_MEDIA_KEY_Val = 1,\n    KEYMAP_MEDIA_POS = 30,\n    KEYMAP_KEY_UP_Val = 0,\n    KEYMAP_KEY_DOWN_Val = 1,\n    KEYMAP_KEY_DOWN_POS = 31,\n    // /libraries/codal-core/inc/drivers/KeyValueStorage.h\n    DEVICE_KEY_VALUE_STORE_OFFSET = 4,\n    KEY_VALUE_STORAGE_MAGIC = 49370,\n    KEY_VALUE_STORAGE_BLOCK_SIZE = 48,\n    KEY_VALUE_STORAGE_KEY_SIZE = 16,\n    KEY_VALUE_STORAGE_SCRATCH_WORD_SIZE = 64,\n    KEY_VALUE_STORAGE_MAX_PAIRS = 5,\n    // /libraries/codal-core/inc/drivers/LEDMatrix.h\n    LED_MATRIX_GREYSCALE_BIT_DEPTH = 8,\n    LED_MATRIX_EVT_LIGHT_SENSE = 2,\n    LED_MATRIX_EVT_FRAME_TIMEOUT = 3,\n    LED_MATRIX_MINIMUM_BRIGHTNESS = 1,\n    LED_MATRIX_MAXIMUM_BRIGHTNESS = 255,\n    LED_MATRIX_DEFAULT_BRIGHTNESS = 255,\n    DISPLAY_MODE_BLACK_AND_WHITE = 0,\n    DISPLAY_MODE_GREYSCALE = 1,\n    DISPLAY_MODE_BLACK_AND_WHITE_LIGHT_SENSE = 2,\n    MATRIX_DISPLAY_ROTATION_0 = 0,\n    MATRIX_DISPLAY_ROTATION_90 = 1,\n    MATRIX_DISPLAY_ROTATION_180 = 2,\n    MATRIX_DISPLAY_ROTATION_270 = 3,\n    NO_CONN = 0,\n    // /libraries/codal-core/inc/drivers/MAG3110.h\n    MAG3110_DEFAULT_ADDR = 29,\n    MAG3110_SAMPLE_RATES = 11,\n    MAG3110_WHOAMI_VAL = 196,\n    // /libraries/codal-core/inc/drivers/MMA8653.h\n    MICROBIT_ACCEL_PITCH_ROLL_VALID = 2,\n    // /libraries/codal-core/inc/drivers/MultiButton.h\n    MULTI_BUTTON_STATE_1 = 1,\n    MULTI_BUTTON_STATE_2 = 2,\n    MULTI_BUTTON_HOLD_TRIGGERED_1 = 4,\n    MULTI_BUTTON_HOLD_TRIGGERED_2 = 8,\n    MULTI_BUTTON_SUPRESSED_1 = 16,\n    MULTI_BUTTON_SUPRESSED_2 = 32,\n    MULTI_BUTTON_ATTACHED = 64,\n    // /libraries/codal-core/inc/drivers/ST7735.h\n    MADCTL_MY = 128,\n    MADCTL_MX = 64,\n    MADCTL_MV = 32,\n    MADCTL_ML = 16,\n    MADCTL_RGB = 0,\n    MADCTL_BGR = 8,\n    MADCTL_MH = 4,\n    // /libraries/codal-core/inc/drivers/TouchButton.h\n    TOUCH_BUTTON_CALIBRATION_PERIOD = 10,\n    TOUCH_BUTTON_CALIBRATION_LINEAR_OFFSET = 2,\n    TOUCH_BUTTON_CALIBRATION_PERCENTAGE_OFFSET = 5,\n    TOUCH_BUTTON_CALIBRATING = 16,\n    // /libraries/codal-core/inc/drivers/TouchSensor.h\n    TOUCH_SENSOR_MAX_BUTTONS = 10,\n    TOUCH_SENSOR_SAMPLE_PERIOD = 50,\n    TOUCH_SENSE_SAMPLE_MAX = 1000,\n    TOUCH_SENSOR_UPDATE_NEEDED = 1,\n    // /libraries/codal-core/inc/drivers/USBJACDAC.h\n    JACDAC_USB_STATUS_CLEAR_TO_SEND = 2,\n    // /libraries/codal-core/inc/drivers/USB_HID_Keys.h\n    KEY_MOD_LCTRL = 1,\n    KEY_MOD_LSHIFT = 2,\n    KEY_MOD_LALT = 4,\n    KEY_MOD_LMETA = 8,\n    KEY_MOD_RCTRL = 16,\n    KEY_MOD_RSHIFT = 32,\n    KEY_MOD_RALT = 64,\n    KEY_MOD_RMETA = 128,\n    KEY_NONE = 0,\n    KEY_ERR_OVF = 1,\n    KEY_A = 4,\n    KEY_B = 5,\n    KEY_C = 6,\n    KEY_D = 7,\n    KEY_E = 8,\n    KEY_F = 9,\n    KEY_G = 10,\n    KEY_H = 11,\n    KEY_I = 12,\n    KEY_J = 13,\n    KEY_K = 14,\n    KEY_L = 15,\n    KEY_M = 16,\n    KEY_N = 17,\n    KEY_O = 18,\n    KEY_P = 19,\n    KEY_Q = 20,\n    KEY_R = 21,\n    KEY_S = 22,\n    KEY_T = 23,\n    KEY_U = 24,\n    KEY_V = 25,\n    KEY_W = 26,\n    KEY_X = 27,\n    KEY_Y = 28,\n    KEY_Z = 29,\n    KEY_1 = 30,\n    KEY_2 = 31,\n    KEY_3 = 32,\n    KEY_4 = 33,\n    KEY_5 = 34,\n    KEY_6 = 35,\n    KEY_7 = 36,\n    KEY_8 = 37,\n    KEY_9 = 38,\n    KEY_0 = 39,\n    KEY_ENTER = 40,\n    KEY_ESC = 41,\n    KEY_BACKSPACE = 42,\n    KEY_TAB = 43,\n    KEY_SPACE = 44,\n    KEY_MINUS = 45,\n    KEY_EQUAL = 46,\n    KEY_LEFTBRACE = 47,\n    KEY_RIGHTBRACE = 48,\n    KEY_BACKSLASH = 49,\n    KEY_HASHTILDE = 50,\n    KEY_SEMICOLON = 51,\n    KEY_APOSTROPHE = 52,\n    KEY_GRAVE = 53,\n    KEY_COMMA = 54,\n    KEY_DOT = 55,\n    KEY_SLASH = 56,\n    KEY_CAPSLOCK = 57,\n    KEY_F1 = 58,\n    KEY_F2 = 59,\n    KEY_F3 = 60,\n    KEY_F4 = 61,\n    KEY_F5 = 62,\n    KEY_F6 = 63,\n    KEY_F7 = 64,\n    KEY_F8 = 65,\n    KEY_F9 = 66,\n    KEY_F10 = 67,\n    KEY_F11 = 68,\n    KEY_F12 = 69,\n    KEY_SYSRQ = 70,\n    KEY_SCROLLLOCK = 71,\n    KEY_PAUSE = 72,\n    KEY_INSERT = 73,\n    KEY_HOME = 74,\n    KEY_PAGEUP = 75,\n    KEY_DELETE = 76,\n    KEY_END = 77,\n    KEY_PAGEDOWN = 78,\n    KEY_RIGHT = 79,\n    KEY_LEFT = 80,\n    KEY_DOWN = 81,\n    KEY_UP = 82,\n    KEY_NUMLOCK = 83,\n    KEY_KPSLASH = 84,\n    KEY_KPASTERISK = 85,\n    KEY_KPMINUS = 86,\n    KEY_KPPLUS = 87,\n    KEY_KPENTER = 88,\n    KEY_KP1 = 89,\n    KEY_KP2 = 90,\n    KEY_KP3 = 91,\n    KEY_KP4 = 92,\n    KEY_KP5 = 93,\n    KEY_KP6 = 94,\n    KEY_KP7 = 95,\n    KEY_KP8 = 96,\n    KEY_KP9 = 97,\n    KEY_KP0 = 98,\n    KEY_KPDOT = 99,\n    KEY_102ND = 100,\n    KEY_COMPOSE = 101,\n    KEY_POWER = 102,\n    KEY_KPEQUAL = 103,\n    KEY_F13 = 104,\n    KEY_F14 = 105,\n    KEY_F15 = 106,\n    KEY_F16 = 107,\n    KEY_F17 = 108,\n    KEY_F18 = 109,\n    KEY_F19 = 110,\n    KEY_F20 = 111,\n    KEY_F21 = 112,\n    KEY_F22 = 113,\n    KEY_F23 = 114,\n    KEY_F24 = 115,\n    KEY_OPEN = 116,\n    KEY_HELP = 117,\n    KEY_PROPS = 118,\n    KEY_FRONT = 119,\n    KEY_STOP = 120,\n    KEY_AGAIN = 121,\n    KEY_UNDO = 122,\n    KEY_CUT = 123,\n    KEY_COPY = 124,\n    KEY_PASTE = 125,\n    KEY_FIND = 126,\n    KEY_MUTE = 127,\n    KEY_VOLUMEUP = 128,\n    KEY_VOLUMEDOWN = 129,\n    KEY_KPCOMMA = 133,\n    KEY_RO = 135,\n    KEY_KATAKANAHIRAGANA = 136,\n    KEY_YEN = 137,\n    KEY_HENKAN = 138,\n    KEY_MUHENKAN = 139,\n    KEY_KPJPCOMMA = 140,\n    KEY_HANGEUL = 144,\n    KEY_HANJA = 145,\n    KEY_KATAKANA = 146,\n    KEY_HIRAGANA = 147,\n    KEY_ZENKAKUHANKAKU = 148,\n    KEY_KPLEFTPAREN = 182,\n    KEY_KPRIGHTPAREN = 183,\n    KEY_LEFTCTRL = 224,\n    KEY_LEFTSHIFT = 225,\n    KEY_LEFTALT = 226,\n    KEY_LEFTMETA = 227,\n    KEY_RIGHTCTRL = 228,\n    KEY_RIGHTSHIFT = 229,\n    KEY_RIGHTALT = 230,\n    KEY_RIGHTMETA = 231,\n    KEY_MEDIA_PLAYPAUSE = 232,\n    KEY_MEDIA_STOPCD = 233,\n    KEY_MEDIA_PREVIOUSSONG = 234,\n    KEY_MEDIA_NEXTSONG = 235,\n    KEY_MEDIA_EJECTCD = 236,\n    KEY_MEDIA_VOLUMEUP = 237,\n    KEY_MEDIA_VOLUMEDOWN = 238,\n    KEY_MEDIA_MUTE = 239,\n    KEY_MEDIA_WWW = 240,\n    KEY_MEDIA_BACK = 241,\n    KEY_MEDIA_FORWARD = 242,\n    KEY_MEDIA_STOP = 243,\n    KEY_MEDIA_FIND = 244,\n    KEY_MEDIA_SCROLLUP = 245,\n    KEY_MEDIA_SCROLLDOWN = 246,\n    KEY_MEDIA_EDIT = 247,\n    KEY_MEDIA_SLEEP = 248,\n    KEY_MEDIA_COFFEE = 249,\n    KEY_MEDIA_REFRESH = 250,\n    KEY_MEDIA_CALC = 251,\n    // /libraries/codal-core/inc/drivers/uf2format.h\n    UF2FORMAT_H = 1,\n    APP_START_ADDRESS = 8192,\n    UF2_FLAG_NOFLASH = 1,\n    // /libraries/codal-core/inc/streams/DataStream.h\n    DATASTREAM_MAXIMUM_BUFFERS = 1,\n    // /libraries/codal-core/inc/streams/LevelDetector.h\n    LEVEL_THRESHOLD_LOW = 1,\n    LEVEL_THRESHOLD_HIGH = 2,\n    LEVEL_DETECTOR_INITIALISED = 1,\n    LEVEL_DETECTOR_HIGH_THRESHOLD_PASSED = 2,\n    LEVEL_DETECTOR_LOW_THRESHOLD_PASSED = 4,\n    LEVEL_DETECTOR_DEFAULT_WINDOW_SIZE = 128,\n    // /libraries/codal-core/inc/streams/LevelDetectorSPL.h\n    LEVEL_DETECTOR_SPL_INITIALISED = 1,\n    LEVEL_DETECTOR_SPL_HIGH_THRESHOLD_PASSED = 2,\n    LEVEL_DETECTOR_SPL_LOW_THRESHOLD_PASSED = 4,\n    LEVEL_DETECTOR_SPL_DEFAULT_WINDOW_SIZE = 128,\n    // /libraries/codal-core/inc/streams/MemorySource.h\n    MEMORY_SOURCE_MAX_BUFFER = 256,\n    // /libraries/codal-core/inc/streams/Synthesizer.h\n    SYNTHESIZER_SAMPLE_RATE = 44100,\n    TONE_WIDTH = 1024,\n    // /libraries/codal-core/inc/types/BitmapFont.h\n    BITMAP_FONT_WIDTH = 5,\n    BITMAP_FONT_HEIGHT = 5,\n    BITMAP_FONT_ASCII_START = 32,\n    BITMAP_FONT_ASCII_END = 126,\n    // /libraries/codal-core/inc/types/CoordinateSystem.h\n    COORDINATE_SPACE_ROTATED_0 = 0,\n    COORDINATE_SPACE_ROTATED_90 = 1,\n    COORDINATE_SPACE_ROTATED_180 = 2,\n    COORDINATE_SPACE_ROTATED_270 = 3,\n    RAW = 0,\n    SIMPLE_CARTESIAN = 1,\n    NORTH_EAST_DOWN = 2,\n    EAST_NORTH_UP = 3,\n    // /libraries/codal-core/inc/types/Event.h\n    DEVICE_ID_ANY = 0,\n    DEVICE_EVT_ANY = 0,\n    CREATE_ONLY = 0,\n    CREATE_AND_FIRE = 1,\n    DEVICE_EVENT_DEFAULT_LAUNCH_MODE = 1,\n    // /libraries/codal-microbit/inc/MicroBitDevice.h\n    MICROBIT_NAME_LENGTH = 5,\n    MICROBIT_NAME_CODE_LETTERS = 5,\n    // /libraries/codal-microbit/inc/MicroBitRadio.h\n    MICROBIT_RADIO_STATUS_INITIALISED = 1,\n    MICROBIT_RADIO_BASE_ADDRESS = 1969383796,\n    MICROBIT_RADIO_DEFAULT_GROUP = 0,\n    MICROBIT_RADIO_DEFAULT_TX_POWER = 7,\n    MICROBIT_RADIO_DEFAULT_FREQUENCY = 7,\n    MICROBIT_RADIO_MAX_PACKET_SIZE = 32,\n    MICROBIT_RADIO_HEADER_SIZE = 4,\n    MICROBIT_RADIO_MAXIMUM_RX_BUFFERS = 4,\n    MICROBIT_RADIO_POWER_LEVELS = 10,\n    MICROBIT_RADIO_PROTOCOL_DATAGRAM = 1,\n    MICROBIT_RADIO_PROTOCOL_EVENTBUS = 2,\n    MICROBIT_RADIO_EVT_DATAGRAM = 1,\n    // /libraries/codal-microbit/inc/MicroBitStorage.h\n    MICROBIT_STORAGE_MAGIC = 51966,\n    MICROBIT_STORAGE_BLOCK_SIZE = 48,\n    MICROBIT_STORAGE_KEY_SIZE = 16,\n    MICROBIT_STORAGE_STORE_PAGE_OFFSET = 17,\n    MICROBIT_STORAGE_SCRATCH_PAGE_OFFSET = 19,\n    // /libraries/codal-microbit/inc/MicroBitThermometer.h\n    MICROBIT_THERMOMETER_PERIOD = 1000,\n    MICROBIT_THERMOMETER_EVT_UPDATE = 1,\n    // /libraries/codal-microbit/inc/bluetooth/ExternalEvents.h\n    MICROBIT_ID_BLE = 1000,\n    MICROBIT_ID_BLE_UART = 1200,\n    MICROBIT_BLE_EVT_CONNECTED = 1,\n    MICROBIT_BLE_EVT_DISCONNECTED = 2,\n    // /libraries/codal-microbit/inc/bluetooth/MESEvents.h\n    MES_REMOTE_CONTROL_ID = 1001,\n    MES_REMOTE_CONTROL_EVT_PLAY = 1,\n    MES_REMOTE_CONTROL_EVT_PAUSE = 2,\n    MES_REMOTE_CONTROL_EVT_STOP = 3,\n    MES_REMOTE_CONTROL_EVT_NEXTTRACK = 4,\n    MES_REMOTE_CONTROL_EVT_PREVTRACK = 5,\n    MES_REMOTE_CONTROL_EVT_FORWARD = 6,\n    MES_REMOTE_CONTROL_EVT_REWIND = 7,\n    MES_REMOTE_CONTROL_EVT_VOLUMEUP = 8,\n    MES_REMOTE_CONTROL_EVT_VOLUMEDOWN = 9,\n    MES_CAMERA_ID = 1002,\n    MES_CAMERA_EVT_LAUNCH_PHOTO_MODE = 1,\n    MES_CAMERA_EVT_LAUNCH_VIDEO_MODE = 2,\n    MES_CAMERA_EVT_TAKE_PHOTO = 3,\n    MES_CAMERA_EVT_START_VIDEO_CAPTURE = 4,\n    MES_CAMERA_EVT_STOP_VIDEO_CAPTURE = 5,\n    MES_CAMERA_EVT_STOP_PHOTO_MODE = 6,\n    MES_CAMERA_EVT_STOP_VIDEO_MODE = 7,\n    MES_CAMERA_EVT_TOGGLE_FRONT_REAR = 8,\n    MES_ALERTS_ID = 1004,\n    MES_ALERT_EVT_DISPLAY_TOAST = 1,\n    MES_ALERT_EVT_VIBRATE = 2,\n    MES_ALERT_EVT_PLAY_SOUND = 3,\n    MES_ALERT_EVT_PLAY_RINGTONE = 4,\n    MES_ALERT_EVT_FIND_MY_PHONE = 5,\n    MES_ALERT_EVT_ALARM1 = 6,\n    MES_ALERT_EVT_ALARM2 = 7,\n    MES_ALERT_EVT_ALARM3 = 8,\n    MES_ALERT_EVT_ALARM4 = 9,\n    MES_ALERT_EVT_ALARM5 = 10,\n    MES_ALERT_EVT_ALARM6 = 11,\n    MES_SIGNAL_STRENGTH_ID = 1101,\n    MES_SIGNAL_STRENGTH_EVT_NO_BAR = 1,\n    MES_SIGNAL_STRENGTH_EVT_ONE_BAR = 2,\n    MES_SIGNAL_STRENGTH_EVT_TWO_BAR = 3,\n    MES_SIGNAL_STRENGTH_EVT_THREE_BAR = 4,\n    MES_SIGNAL_STRENGTH_EVT_FOUR_BAR = 5,\n    MES_DEVICE_INFO_ID = 1103,\n    MES_DEVICE_ORIENTATION_LANDSCAPE = 1,\n    MES_DEVICE_ORIENTATION_PORTRAIT = 2,\n    MES_DEVICE_GESTURE_NONE = 3,\n    MES_DEVICE_GESTURE_DEVICE_SHAKEN = 4,\n    MES_DEVICE_DISPLAY_OFF = 5,\n    MES_DEVICE_DISPLAY_ON = 6,\n    MES_DEVICE_INCOMING_CALL = 7,\n    MES_DEVICE_INCOMING_MESSAGE = 8,\n    MES_DPAD_CONTROLLER_ID = 1104,\n    MES_DPAD_BUTTON_A_DOWN = 1,\n    MES_DPAD_BUTTON_A_UP = 2,\n    MES_DPAD_BUTTON_B_DOWN = 3,\n    MES_DPAD_BUTTON_B_UP = 4,\n    MES_DPAD_BUTTON_C_DOWN = 5,\n    MES_DPAD_BUTTON_C_UP = 6,\n    MES_DPAD_BUTTON_D_DOWN = 7,\n    MES_DPAD_BUTTON_D_UP = 8,\n    MES_DPAD_BUTTON_1_DOWN = 9,\n    MES_DPAD_BUTTON_1_UP = 10,\n    MES_DPAD_BUTTON_2_DOWN = 11,\n    MES_DPAD_BUTTON_2_UP = 12,\n    MES_DPAD_BUTTON_3_DOWN = 13,\n    MES_DPAD_BUTTON_3_UP = 14,\n    MES_DPAD_BUTTON_4_DOWN = 15,\n    MES_DPAD_BUTTON_4_UP = 16,\n    MES_BROADCAST_GENERAL_ID = 2000,\n    // /libraries/codal-microbit/inc/bluetooth/MicroBitBLEManager.h\n    MICROBIT_BLE_PAIR_REQUEST = 1,\n    MICROBIT_BLE_PAIR_COMPLETE = 2,\n    MICROBIT_BLE_PAIR_PASSCODE = 4,\n    MICROBIT_BLE_PAIR_SUCCESSFUL = 8,\n    MICROBIT_BLE_PAIRING_TIMEOUT = 90,\n    MICROBIT_BLE_POWER_LEVELS = 8,\n    MICROBIT_BLE_MAXIMUM_BONDS = 4,\n    MICROBIT_BLE_EDDYSTONE_ADV_INTERVAL = 400,\n    MICROBIT_BLE_EDDYSTONE_DEFAULT_POWER = 240,\n    MICROBIT_BLE_STATUS_STORE_SYSATTR = 2,\n    MICROBIT_BLE_STATUS_DISCONNECT = 4,\n    MICROBIT_BLE_DISCONNECT_AFTER_PAIRING_DELAY = 500,\n    // /libraries/codal-microbit/inc/bluetooth/MicroBitDFUService.h\n    MICROBIT_DFU_OPCODE_START_DFU = 1,\n    MICROBIT_DFU_HISTOGRAM_WIDTH = 5,\n    MICROBIT_DFU_HISTOGRAM_HEIGHT = 5,\n    // /libraries/codal-microbit/inc/bluetooth/MicroBitIOPinService.h\n    MICROBIT_IO_PIN_SERVICE_PINCOUNT = 19,\n    MICROBIT_IO_PIN_SERVICE_DATA_SIZE = 10,\n    MICROBIT_PWM_PIN_SERVICE_DATA_SIZE = 2,\n    // /libraries/codal-microbit/inc/bluetooth/MicroBitLEDService.h\n    MICROBIT_BLE_MAXIMUM_SCROLLTEXT = 20,\n    // /libraries/codal-microbit/inc/bluetooth/MicroBitMagnetometerService.h\n    COMPASS_CALIBRATION_STATUS_UNKNOWN = 0,\n    COMPASS_CALIBRATION_REQUESTED = 1,\n    COMPASS_CALIBRATION_COMPLETED_OK = 2,\n    COMPASS_CALIBRATION_COMPLETED_ERR = 3,\n    // /libraries/codal-microbit/inc/bluetooth/MicroBitUARTService.h\n    MICROBIT_UART_S_DEFAULT_BUF_SIZE = 20,\n    MICROBIT_UART_S_EVT_DELIM_MATCH = 1,\n    MICROBIT_UART_S_EVT_HEAD_MATCH = 2,\n    MICROBIT_UART_S_EVT_RX_FULL = 3,\n    // /libraries/codal-microbit/inc/compat/MicroBitCompat.h\n    MICROBIT_BUSY = -1006,\n    MICROBIT_CANCELLED = -1007,\n    MICROBIT_CALIBRATION_IN_PROGRESS = -1003,\n    MICROBIT_CALIBRATION_REQUIRED = -1004,\n    MICROBIT_HEAP_ERROR = 30,\n    MICROBIT_I2C_ERROR = -1010,\n    MICROBIT_INVALID_PARAMETER = -1001,\n    MICROBIT_NO_DATA = -1012,\n    MICROBIT_NO_RESOURCES = -1005,\n    MICROBIT_NOT_SUPPORTED = -1002,\n    MICROBIT_NULL_DEREFERENCE = 40,\n    MICROBIT_OK = 0,\n    MICROBIT_OOM = 20,\n    MICROBIT_SERIAL_IN_USE = -1011,\n    MICROBIT_ACCELEROMETER_3G_TOLERANCE = 3072,\n    MICROBIT_ACCELEROMETER_6G_TOLERANCE = 6144,\n    MICROBIT_ACCELEROMETER_8G_TOLERANCE = 8192,\n    MICROBIT_ACCELEROMETER_FREEFALL_TOLERANCE = 400,\n    MICROBIT_ACCELEROMETER_GESTURE_DAMPING = 5,\n    MICROBIT_ACCELEROMETER_REST_TOLERANCE = 200,\n    MICROBIT_ACCELEROMETER_SHAKE_COUNT_THRESHOLD = 4,\n    MICROBIT_ACCELEROMETER_SHAKE_DAMPING = 10,\n    MICROBIT_ACCELEROMETER_SHAKE_RTX = 30,\n    MICROBIT_ACCELEROMETER_SHAKE_TOLERANCE = 400,\n    MICROBIT_ACCELEROMETER_TILT_TOLERANCE = 200,\n    MICROBIT_COMPONENT_RUNNING = 4096,\n    MICROBIT_DEFAULT_PRINT_SPEED = 400,\n    MICROBIT_DEFAULT_SCROLL_SPEED = 120,\n    MICROBIT_DEFAULT_SCROLL_STRIDE = -1,\n    MICROBIT_DISPLAY_DEFAULT_AUTOCLEAR = 1,\n    MICROBIT_DISPLAY_DEFAULT_BRIGHTNESS = 255,\n    MICROBIT_DISPLAY_GREYSCALE_BIT_DEPTH = 8,\n    MICROBIT_DISPLAY_MAXIMUM_BRIGHTNESS = 255,\n    MICROBIT_DISPLAY_MINIMUM_BRIGHTNESS = 1,\n    MICROBIT_DISPLAY_ROTATION_0 = 0,\n    MICROBIT_DISPLAY_ROTATION_180 = 2,\n    MICROBIT_DISPLAY_ROTATION_270 = 3,\n    MICROBIT_DISPLAY_ROTATION_90 = 1,\n    MICROBIT_EVENT_DEFAULT_LAUNCH_MODE = 1,\n    MICROBIT_DISPLAY_ANIMATE_DEFAULT_POS = -255,\n    MICROBIT_FONT_ASCII_END = 126,\n    MICROBIT_FONT_ASCII_START = 32,\n    MICROBIT_FONT_HEIGHT = 5,\n    MICROBIT_FONT_WIDTH = 5,\n    MICROBIT_I2C_MAX_RETRIES = 1,\n    MICROBIT_PIN_DEFAULT_SERVO_CENTER = 1500,\n    MICROBIT_PIN_DEFAULT_SERVO_RANGE = 2000,\n    MICROBIT_PIN_EVENT_NONE = 0,\n    MICROBIT_PIN_EVENT_ON_EDGE = 2,\n    MICROBIT_PIN_EVENT_ON_PULSE = 3,\n    MICROBIT_PIN_EVENT_ON_TOUCH = 4,\n    MICROBIT_PIN_EVT_FALL = 3,\n    MICROBIT_PIN_EVT_PULSE_HI = 4,\n    MICROBIT_PIN_EVT_PULSE_LO = 5,\n    MICROBIT_PIN_EVT_RISE = 2,\n    MICROBIT_PIN_MAX_OUTPUT = 1023,\n    MICROBIT_PIN_MAX_SERVO_RANGE = 180,\n    MICROBIT_UART_S_EVT_TX_EMPTY = 3,\n    MICROBIT_ACCELEROMETER_EVT_3G = 8,\n    MICROBIT_ACCELEROMETER_EVT_6G = 9,\n    MICROBIT_ACCELEROMETER_EVT_8G = 10,\n    MICROBIT_ACCELEROMETER_EVT_DATA_UPDATE = 1,\n    MICROBIT_ACCELEROMETER_EVT_FACE_DOWN = 6,\n    MICROBIT_ACCELEROMETER_EVT_FACE_UP = 5,\n    MICROBIT_ACCELEROMETER_EVT_FREEFALL = 7,\n    MICROBIT_ACCELEROMETER_EVT_NONE = 0,\n    MICROBIT_ACCELEROMETER_EVT_SHAKE = 11,\n    MICROBIT_ACCELEROMETER_EVT_TILT_DOWN = 2,\n    MICROBIT_ACCELEROMETER_EVT_TILT_LEFT = 3,\n    MICROBIT_ACCELEROMETER_EVT_TILT_RIGHT = 4,\n    MICROBIT_ACCELEROMETER_EVT_TILT_UP = 1,\n    MICROBIT_BUTTON_ALL_EVENTS = 1,\n    MICROBIT_BUTTON_SIMPLE_EVENTS = 0,\n    MICROBIT_BUTTON_EVT_CLICK = 3,\n    MICROBIT_BUTTON_EVT_DOUBLE_CLICK = 6,\n    MICROBIT_BUTTON_EVT_DOWN = 1,\n    MICROBIT_BUTTON_EVT_HOLD = 5,\n    MICROBIT_BUTTON_EVT_LONG_CLICK = 4,\n    MICROBIT_BUTTON_EVT_UP = 2,\n    MICROBIT_COMPASS_EVT_CALIBRATE = 3,\n    MICROBIT_COMPASS_EVT_CONFIG_NEEDED = 2,\n    MICROBIT_COMPASS_EVT_DATA_UPDATE = 1,\n    MICROBIT_COMPASS_EVT_CALIBRATION_NEEDED = 4,\n    MICROBIT_DISPLAY_EVT_ANIMATION_COMPLETE = 1,\n    MICROBIT_DISPLAY_EVT_FREE = 1,\n    MICROBIT_SERIAL_EVT_DELIM_MATCH = 1,\n    MICROBIT_SERIAL_EVT_HEAD_MATCH = 2,\n    MICROBIT_SERIAL_EVT_RX_FULL = 3,\n    MICROBIT_SERIAL_EVT_TX_EMPTY = 2,\n    MICROBIT_ID_ANY = 0,\n    MICROBIT_EVT_ANY = 0,\n    MICROBIT_ID_ACCELEROMETER = 5,\n    MICROBIT_ID_BUTTON_A = 1,\n    MICROBIT_ID_BUTTON_B = 2,\n    MICROBIT_ID_BUTTON_AB = 3,\n    MICROBIT_ID_BUTTON_RESET = 4,\n    MICROBIT_ID_COMPASS = 6,\n    MICROBIT_ID_DISPLAY = 7,\n    MICROBIT_ID_GESTURE = 13,\n    MICROBIT_ID_IO_P0 = 100,\n    MICROBIT_ID_IO_P1 = 101,\n    MICROBIT_ID_IO_P2 = 102,\n    MICROBIT_ID_IO_P3 = 103,\n    MICROBIT_ID_IO_P4 = 104,\n    MICROBIT_ID_IO_P5 = 105,\n    MICROBIT_ID_IO_P6 = 106,\n    MICROBIT_ID_IO_P7 = 107,\n    MICROBIT_ID_IO_P8 = 108,\n    MICROBIT_ID_IO_P9 = 109,\n    MICROBIT_ID_IO_P10 = 110,\n    MICROBIT_ID_IO_P11 = 111,\n    MICROBIT_ID_IO_P12 = 112,\n    MICROBIT_ID_IO_P13 = 113,\n    MICROBIT_ID_IO_P14 = 114,\n    MICROBIT_ID_IO_P15 = 115,\n    MICROBIT_ID_IO_P16 = 116,\n    MICROBIT_ID_IO_P19 = 119,\n    MICROBIT_ID_IO_P20 = 120,\n    MICROBIT_ID_MESSAGE_BUS_LISTENER = 1021,\n    MICROBIT_ID_MULTIBUTTON_ATTACH = 11,\n    MICROBIT_ID_NOTIFY = 1023,\n    MICROBIT_ID_NOTIFY_ONE = 1022,\n    MICROBIT_ID_RADIO = 9,\n    MICROBIT_ID_RADIO_DATA_READY = 10,\n    MICROBIT_ID_SERIAL = 12,\n    MICROBIT_ID_THERMOMETER = 8,\n    MICROBIT_NESTED_HEAP_SIZE = 0,\n    MICROBIT_SCHEDULER_RUNNING = 1,\n    MICROBIT_SERIAL_DEFAULT_BAUD_RATE = 115200,\n    MICROBIT_SERIAL_DEFAULT_BUFFER_SIZE = 20,\n    MICROBIT_COMPASS_STATUS_ADDED_TO_IDLE = 8,\n    // /libraries/codal-microbit/model/MicroBit.h\n    DEVICE_INITIALIZED = 1,\n    // /libraries/codal-microbit/model/MicroBitIO.h\n    MICROBIT_PIN_BUTTON_RESET = -1,\n    ID_PIN_P0 = 100,\n    ID_PIN_P1 = 101,\n    ID_PIN_P2 = 102,\n    ID_PIN_P3 = 103,\n    ID_PIN_P4 = 104,\n    ID_PIN_P5 = 105,\n    ID_PIN_P6 = 106,\n    ID_PIN_P7 = 107,\n    ID_PIN_P8 = 108,\n    ID_PIN_P9 = 109,\n    ID_PIN_P10 = 110,\n    ID_PIN_P11 = 111,\n    ID_PIN_P12 = 112,\n    ID_PIN_P13 = 113,\n    ID_PIN_P14 = 114,\n    ID_PIN_P15 = 115,\n    ID_PIN_P16 = 116,\n    ID_PIN_P17 = 117,\n    ID_PIN_P18 = 118,\n    ID_PIN_P19 = 119,\n    ID_PIN_P20 = 120,\n    ID_PIN_P21 = 121,\n    ID_PIN_P22 = 122,\n    ID_PIN_P23 = 123,\n    ID_PIN_P24 = 124,\n    ID_PIN_P25 = 125,\n    ID_PIN_P26 = 126,\n    ID_PIN_P27 = 127,\n    ID_PIN_P28 = 128,\n    ID_PIN_P29 = 129,\n    ID_PIN_P30 = 130,\n    ID_PIN_P31 = 131,\n    ID_PIN_P32 = 132,\n    ID_PIN_P33 = 133,\n    ID_PIN_P34 = 134,\n    ID_PIN_P35 = 135,\n    ID_PIN_P36 = 136,\n    ID_PIN_P37 = 137,\n    ID_PIN_P38 = 138,\n    ID_PIN_P39 = 139,\n    ID_PIN_P40 = 140,\n    ID_PIN_P41 = 141,\n    ID_PIN_P42 = 142,\n    ID_PIN_P43 = 143,\n    ID_PIN_P44 = 144,\n    ID_PIN_P45 = 145,\n    ID_PIN_P46 = 146,\n    ID_PIN_P47 = 147,\n    // /pxtapp/configkeys.h\n    CFG_PIN_NAME_MSK = 65535,\n    CFG_PIN_CONFIG_MSK = 4294901760,\n    CFG_PIN_CONFIG_ACTIVE_LO = 65536,\n    CFG_MAGIC0 = 513675505,\n    CFG_MAGIC1 = 539130489,\n    CFG_PIN_ACCELEROMETER_INT = 1,\n    CFG_PIN_ACCELEROMETER_SCL = 2,\n    CFG_PIN_ACCELEROMETER_SDA = 3,\n    CFG_PIN_BTN_A = 4,\n    CFG_PIN_BTN_B = 5,\n    CFG_PIN_BTN_SLIDE = 6,\n    CFG_PIN_DOTSTAR_CLOCK = 7,\n    CFG_PIN_DOTSTAR_DATA = 8,\n    CFG_PIN_FLASH_CS = 9,\n    CFG_PIN_FLASH_MISO = 10,\n    CFG_PIN_FLASH_MOSI = 11,\n    CFG_PIN_FLASH_SCK = 12,\n    CFG_PIN_LED = 13,\n    CFG_PIN_LIGHT = 14,\n    CFG_PIN_MICROPHONE = 15,\n    CFG_PIN_MIC_CLOCK = 16,\n    CFG_PIN_MIC_DATA = 17,\n    CFG_PIN_MISO = 18,\n    CFG_PIN_MOSI = 19,\n    CFG_PIN_NEOPIXEL = 20,\n    CFG_PIN_RX = 21,\n    CFG_PIN_RXLED = 22,\n    CFG_PIN_SCK = 23,\n    CFG_PIN_SCL = 24,\n    CFG_PIN_SDA = 25,\n    CFG_PIN_SPEAKER_AMP = 26,\n    CFG_PIN_TEMPERATURE = 27,\n    CFG_PIN_TX = 28,\n    CFG_PIN_TXLED = 29,\n    CFG_PIN_IR_OUT = 30,\n    CFG_PIN_IR_IN = 31,\n    CFG_PIN_DISPLAY_SCK = 32,\n    CFG_PIN_DISPLAY_MISO = 33,\n    CFG_PIN_DISPLAY_MOSI = 34,\n    CFG_PIN_DISPLAY_CS = 35,\n    CFG_PIN_DISPLAY_DC = 36,\n    CFG_DISPLAY_WIDTH = 37,\n    CFG_DISPLAY_HEIGHT = 38,\n    CFG_DISPLAY_CFG0 = 39,\n    CFG_DISPLAY_CFG1 = 40,\n    CFG_DISPLAY_CFG2 = 41,\n    CFG_DISPLAY_CFG3 = 42,\n    CFG_PIN_DISPLAY_RST = 43,\n    CFG_PIN_DISPLAY_BL = 44,\n    CFG_PIN_SERVO_1 = 45,\n    CFG_PIN_SERVO_2 = 46,\n    CFG_PIN_BTN_LEFT = 47,\n    CFG_PIN_BTN_RIGHT = 48,\n    CFG_PIN_BTN_UP = 49,\n    CFG_PIN_BTN_DOWN = 50,\n    CFG_PIN_BTN_MENU = 51,\n    CFG_PIN_LED_R = 52,\n    CFG_PIN_LED_G = 53,\n    CFG_PIN_LED_B = 54,\n    CFG_PIN_LED1 = 55,\n    CFG_PIN_LED2 = 56,\n    CFG_PIN_LED3 = 57,\n    CFG_PIN_LED4 = 58,\n    CFG_SPEAKER_VOLUME = 59,\n    CFG_PIN_JACK_TX = 60,\n    CFG_PIN_JACK_SENSE = 61,\n    CFG_PIN_JACK_HPEN = 62,\n    CFG_PIN_JACK_BZEN = 63,\n    CFG_PIN_JACK_PWREN = 64,\n    CFG_PIN_JACK_SND = 65,\n    CFG_PIN_JACK_BUSLED = 66,\n    CFG_PIN_JACK_COMMLED = 67,\n    CFG_PIN_BTN_SOFT_RESET = 69,\n    CFG_ACCELEROMETER_TYPE = 70,\n    CFG_PIN_BTNMX_LATCH = 71,\n    CFG_PIN_BTNMX_CLOCK = 72,\n    CFG_PIN_BTNMX_DATA = 73,\n    CFG_PIN_BTN_MENU2 = 74,\n    CFG_PIN_BATTSENSE = 75,\n    CFG_PIN_VIBRATION = 76,\n    CFG_PIN_PWREN = 77,\n    CFG_DISPLAY_TYPE = 78,\n    CFG_PIN_ROTARY_ENCODER_A = 79,\n    CFG_PIN_ROTARY_ENCODER_B = 80,\n    CFG_ACCELEROMETER_SPACE = 81,\n    CFG_PIN_WIFI_MOSI = 82,\n    CFG_PIN_WIFI_MISO = 83,\n    CFG_PIN_WIFI_SCK = 84,\n    CFG_PIN_WIFI_TX = 85,\n    CFG_PIN_WIFI_RX = 86,\n    CFG_PIN_WIFI_CS = 87,\n    CFG_PIN_WIFI_BUSY = 88,\n    CFG_PIN_WIFI_RESET = 89,\n    CFG_PIN_WIFI_GPIO0 = 90,\n    CFG_PIN_WIFI_AT_TX = 91,\n    CFG_PIN_WIFI_AT_RX = 92,\n    CFG_PIN_USB_POWER = 93,\n    ACCELEROMETER_TYPE_LIS3DH = 50,\n    ACCELEROMETER_TYPE_LIS3DH_ALT = 48,\n    ACCELEROMETER_TYPE_MMA8453 = 56,\n    ACCELEROMETER_TYPE_FXOS8700 = 60,\n    ACCELEROMETER_TYPE_MMA8653 = 58,\n    ACCELEROMETER_TYPE_MSA300 = 76,\n    ACCELEROMETER_TYPE_MPU6050 = 104,\n    DISPLAY_TYPE_ST7735 = 7735,\n    DISPLAY_TYPE_ILI9341 = 9341,\n    DISPLAY_TYPE_SMART = 4242,\n    CFG_PIN_A0 = 100,\n    CFG_PIN_A1 = 101,\n    CFG_PIN_A2 = 102,\n    CFG_PIN_A3 = 103,\n    CFG_PIN_A4 = 104,\n    CFG_PIN_A5 = 105,\n    CFG_PIN_A6 = 106,\n    CFG_PIN_A7 = 107,\n    CFG_PIN_A8 = 108,\n    CFG_PIN_A9 = 109,\n    CFG_PIN_A10 = 110,\n    CFG_PIN_A11 = 111,\n    CFG_PIN_A12 = 112,\n    CFG_PIN_A13 = 113,\n    CFG_PIN_A14 = 114,\n    CFG_PIN_A15 = 115,\n    CFG_PIN_A16 = 116,\n    CFG_PIN_A17 = 117,\n    CFG_PIN_A18 = 118,\n    CFG_PIN_A19 = 119,\n    CFG_PIN_A20 = 120,\n    CFG_PIN_A21 = 121,\n    CFG_PIN_A22 = 122,\n    CFG_PIN_A23 = 123,\n    CFG_PIN_A24 = 124,\n    CFG_PIN_A25 = 125,\n    CFG_PIN_A26 = 126,\n    CFG_PIN_A27 = 127,\n    CFG_PIN_A28 = 128,\n    CFG_PIN_A29 = 129,\n    CFG_PIN_A30 = 130,\n    CFG_PIN_A31 = 131,\n    CFG_PIN_D0 = 150,\n    CFG_PIN_D1 = 151,\n    CFG_PIN_D2 = 152,\n    CFG_PIN_D3 = 153,\n    CFG_PIN_D4 = 154,\n    CFG_PIN_D5 = 155,\n    CFG_PIN_D6 = 156,\n    CFG_PIN_D7 = 157,\n    CFG_PIN_D8 = 158,\n    CFG_PIN_D9 = 159,\n    CFG_PIN_D10 = 160,\n    CFG_PIN_D11 = 161,\n    CFG_PIN_D12 = 162,\n    CFG_PIN_D13 = 163,\n    CFG_PIN_D14 = 164,\n    CFG_PIN_D15 = 165,\n    CFG_PIN_D16 = 166,\n    CFG_PIN_D17 = 167,\n    CFG_PIN_D18 = 168,\n    CFG_PIN_D19 = 169,\n    CFG_PIN_D20 = 170,\n    CFG_PIN_D21 = 171,\n    CFG_PIN_D22 = 172,\n    CFG_PIN_D23 = 173,\n    CFG_PIN_D24 = 174,\n    CFG_PIN_D25 = 175,\n    CFG_PIN_D26 = 176,\n    CFG_PIN_D27 = 177,\n    CFG_PIN_D28 = 178,\n    CFG_PIN_D29 = 179,\n    CFG_PIN_D30 = 180,\n    CFG_PIN_D31 = 181,\n    CFG_NUM_NEOPIXELS = 200,\n    CFG_NUM_DOTSTARS = 201,\n    CFG_DEFAULT_BUTTON_MODE = 202,\n    CFG_SWD_ENABLED = 203,\n    CFG_FLASH_BYTES = 204,\n    CFG_RAM_BYTES = 205,\n    CFG_SYSTEM_HEAP_BYTES = 206,\n    CFG_LOW_MEM_SIMULATION_KB = 207,\n    CFG_BOOTLOADER_BOARD_ID = 208,\n    CFG_UF2_FAMILY = 209,\n    CFG_PINS_PORT_SIZE = 210,\n    CFG_BOOTLOADER_PROTECTION = 211,\n    CFG_POWER_DEEPSLEEP_TIMEOUT = 212,\n    CFG_ANALOG_BUTTON_THRESHOLD = 213,\n    CFG_CPU_MHZ = 214,\n    CFG_CONTROLLER_LIGHT_MAX_BRIGHTNESS = 215,\n    CFG_ANALOG_JOYSTICK_MIN = 216,\n    CFG_ANALOG_JOYSTICK_MAX = 217,\n    CFG_TIMERS_TO_USE = 218,\n    CFG_PIN_ONBOARD_DOTSTAR_CLOCK = 219,\n    CFG_PIN_ONBOARD_DOTSTAR_DATA = 220,\n    CFG_NUM_ONBOARD_DOTSTARS = 221,\n    CFG_PIN_ONBOARD_NEOPIXEL = 222,\n    CFG_NUM_ONBOARD_NEOPIXELS = 223,\n    CFG_MATRIX_KEYPAD_MESSAGE_ID = 239,\n    CFG_NUM_MATRIX_KEYPAD_ROWS = 240,\n    CFG_PIN_MATRIX_KEYPAD_ROW0 = 241,\n    CFG_PIN_MATRIX_KEYPAD_ROW1 = 242,\n    CFG_PIN_MATRIX_KEYPAD_ROW2 = 243,\n    CFG_PIN_MATRIX_KEYPAD_ROW3 = 244,\n    CFG_PIN_MATRIX_KEYPAD_ROW4 = 245,\n    CFG_PIN_MATRIX_KEYPAD_ROW5 = 246,\n    CFG_PIN_MATRIX_KEYPAD_ROW6 = 247,\n    CFG_PIN_MATRIX_KEYPAD_ROW7 = 248,\n    CFG_NUM_MATRIX_KEYPAD_COLS = 250,\n    CFG_PIN_MATRIX_KEYPAD_COL0 = 251,\n    CFG_PIN_MATRIX_KEYPAD_COL1 = 252,\n    CFG_PIN_MATRIX_KEYPAD_COL2 = 253,\n    CFG_PIN_MATRIX_KEYPAD_COL3 = 254,\n    CFG_PIN_MATRIX_KEYPAD_COL4 = 255,\n    CFG_PIN_MATRIX_KEYPAD_COL5 = 256,\n    CFG_PIN_MATRIX_KEYPAD_COL6 = 257,\n    CFG_PIN_MATRIX_KEYPAD_COL7 = 258,\n    CFG_PIN_B0 = 300,\n    CFG_PIN_B1 = 301,\n    CFG_PIN_B2 = 302,\n    CFG_PIN_B3 = 303,\n    CFG_PIN_B4 = 304,\n    CFG_PIN_B5 = 305,\n    CFG_PIN_B6 = 306,\n    CFG_PIN_B7 = 307,\n    CFG_PIN_B8 = 308,\n    CFG_PIN_B9 = 309,\n    CFG_PIN_B10 = 310,\n    CFG_PIN_B11 = 311,\n    CFG_PIN_B12 = 312,\n    CFG_PIN_B13 = 313,\n    CFG_PIN_B14 = 314,\n    CFG_PIN_B15 = 315,\n    CFG_PIN_B16 = 316,\n    CFG_PIN_B17 = 317,\n    CFG_PIN_B18 = 318,\n    CFG_PIN_B19 = 319,\n    CFG_PIN_B20 = 320,\n    CFG_PIN_B21 = 321,\n    CFG_PIN_B22 = 322,\n    CFG_PIN_B23 = 323,\n    CFG_PIN_B24 = 324,\n    CFG_PIN_B25 = 325,\n    CFG_PIN_B26 = 326,\n    CFG_PIN_B27 = 327,\n    CFG_PIN_B28 = 328,\n    CFG_PIN_B29 = 329,\n    CFG_PIN_B30 = 330,\n    CFG_PIN_B31 = 331,\n    CFG_PIN_C0 = 350,\n    CFG_PIN_C1 = 351,\n    CFG_PIN_C2 = 352,\n    CFG_PIN_C3 = 353,\n    CFG_PIN_C4 = 354,\n    CFG_PIN_C5 = 355,\n    CFG_PIN_C6 = 356,\n    CFG_PIN_C7 = 357,\n    CFG_PIN_C8 = 358,\n    CFG_PIN_C9 = 359,\n    CFG_PIN_C10 = 360,\n    CFG_PIN_C11 = 361,\n    CFG_PIN_C12 = 362,\n    CFG_PIN_C13 = 363,\n    CFG_PIN_C14 = 364,\n    CFG_PIN_C15 = 365,\n    CFG_PIN_C16 = 366,\n    CFG_PIN_C17 = 367,\n    CFG_PIN_C18 = 368,\n    CFG_PIN_C19 = 369,\n    CFG_PIN_C20 = 370,\n    CFG_PIN_C21 = 371,\n    CFG_PIN_C22 = 372,\n    CFG_PIN_C23 = 373,\n    CFG_PIN_C24 = 374,\n    CFG_PIN_C25 = 375,\n    CFG_PIN_C26 = 376,\n    CFG_PIN_C27 = 377,\n    CFG_PIN_C28 = 378,\n    CFG_PIN_C29 = 379,\n    CFG_PIN_C30 = 380,\n    CFG_PIN_C31 = 381,\n    CFG_PIN_P0 = 400,\n    CFG_PIN_P1 = 401,\n    CFG_PIN_P2 = 402,\n    CFG_PIN_P3 = 403,\n    CFG_PIN_P4 = 404,\n    CFG_PIN_P5 = 405,\n    CFG_PIN_P6 = 406,\n    CFG_PIN_P7 = 407,\n    CFG_PIN_P8 = 408,\n    CFG_PIN_P9 = 409,\n    CFG_PIN_P10 = 410,\n    CFG_PIN_P11 = 411,\n    CFG_PIN_P12 = 412,\n    CFG_PIN_P13 = 413,\n    CFG_PIN_P14 = 414,\n    CFG_PIN_P15 = 415,\n    CFG_PIN_P16 = 416,\n    CFG_PIN_P17 = 417,\n    CFG_PIN_P18 = 418,\n    CFG_PIN_P19 = 419,\n    CFG_PIN_P20 = 420,\n    CFG_PIN_P21 = 421,\n    CFG_PIN_P22 = 422,\n    CFG_PIN_P23 = 423,\n    CFG_PIN_P24 = 424,\n    CFG_PIN_P25 = 425,\n    CFG_PIN_P26 = 426,\n    CFG_PIN_P27 = 427,\n    CFG_PIN_P28 = 428,\n    CFG_PIN_P29 = 429,\n    CFG_PIN_P30 = 430,\n    CFG_PIN_P31 = 431,\n    CFG_PIN_LORA_MISO = 1001,\n    CFG_PIN_LORA_MOSI = 1002,\n    CFG_PIN_LORA_SCK = 1003,\n    CFG_PIN_LORA_CS = 1004,\n    CFG_PIN_LORA_BOOT = 1005,\n    CFG_PIN_LORA_RESET = 1006,\n    CFG_PIN_IRRXLED = 1007,\n    CFG_PIN_IRTXLED = 1008,\n    CFG_PIN_LCD_RESET = 1009,\n    CFG_PIN_LCD_ENABLE = 1010,\n    CFG_PIN_LCD_DATALINE4 = 1011,\n    CFG_PIN_LCD_DATALINE5 = 1012,\n    CFG_PIN_LCD_DATALINE6 = 1013,\n    CFG_PIN_LCD_DATALINE7 = 1014,\n    CFG_NUM_LCD_COLUMNS = 1015,\n    CFG_NUM_LCD_ROWS = 1016,\n    CFG_PIN_RCC0 = 1017,\n    CFG_PIN_RCC1 = 1018,\n    CFG_PIN_RCC2 = 1019,\n    CFG_PIN_RCC3 = 1020,\n    CFG_PIN_RCC4 = 1021,\n    CFG_PIN_RCC5 = 1022,\n    CFG_PIN_RCC6 = 1023,\n    CFG_PIN_RCC7 = 1024,\n    CFG_PIN_SERVO0 = 1025,\n    CFG_PIN_SERVO1 = 1026,\n    CFG_PIN_SERVO2 = 1027,\n    CFG_PIN_SERVO3 = 1028,\n    CFG_PIN_SERVO4 = 1029,\n    CFG_PIN_SERVO5 = 1030,\n    CFG_PIN_SERVO6 = 1031,\n    CFG_PIN_SERVO7 = 1032,\n    CFG_PIN_SERVO8 = 1033,\n    CFG_PIN_PI_TX = 1034,\n    CFG_PIN_PI_RX = 1035,\n    CFG_PIN_GPS_SDA = 1036,\n    CFG_PIN_GPS_SCL = 1037,\n    CFG_PIN_GPS_TX = 1038,\n    CFG_PIN_GPS_RX = 1039,\n    CFG_PIN_GROVE0 = 1040,\n    CFG_PIN_GROVE1 = 1041,\n    CFG_PIN_SS = 1042,\n    // /pxtapp/platform.h\n    PXT_MICROBIT_TAGGED_INT = 1,\n    PXT_POWI = 1,\n    // /pxtapp/pxtbase.h\n    PXT_UTF8 = 0,\n    PXT32 = 1,\n    PXT64 = 1,\n    PXT_REFCNT_FLASH = 65534,\n    VTABLE_MAGIC = 249,\n    Undefined = 0,\n    Boolean = 1,\n    Number = 2,\n    String = 3,\n    Object = 4,\n    Function = 5,\n    BoxedString = 1,\n    BoxedNumber = 2,\n    BoxedBuffer = 3,\n    RefAction = 4,\n    RefImage = 5,\n    RefCollection = 6,\n    RefRefLocal = 7,\n    RefMap = 8,\n    RefMImage = 9,\n    MMap = 10,\n    User0 = 16,\n    PXT_IOS_HEAP_ALLOC_BITS = 20,\n    IMAGE_HEADER_MAGIC = 135,\n    Int8LE = 1,\n    UInt8LE = 2,\n    Int16LE = 3,\n    UInt16LE = 4,\n    Int32LE = 5,\n    Int8BE = 6,\n    UInt8BE = 7,\n    Int16BE = 8,\n    UInt16BE = 9,\n    Int32BE = 10,\n    UInt32LE = 11,\n    UInt32BE = 12,\n    Float32LE = 13,\n    Float64LE = 14,\n    Float32BE = 15,\n    Float64BE = 16,\n    NUM_TRY_FRAME_REGS = 3,\n    GC = 0,\n    // /pxtapp/pxtcore.h\n    GC_MAX_ALLOC_SIZE = 9000,\n    GC_BLOCK_SIZE = 256,\n    NON_GC_HEAP_RESERVATION = 1024,\n}\n",
             "enums.d.ts": "// Auto-generated. Do not edit.\n\n\n    declare const enum NumberFormat {\n    Int8LE = 1,\n    UInt8LE = 2,\n    Int16LE = 3,\n    UInt16LE = 4,\n    Int32LE = 5,\n    Int8BE = 6,\n    UInt8BE = 7,\n    Int16BE = 8,\n    UInt16BE = 9,\n    Int32BE = 10,\n\n    UInt32LE = 11,\n    UInt32BE = 12,\n    Float32LE = 13,\n    Float64LE = 14,\n    Float32BE = 15,\n    Float64BE = 16,\n    }\n\n\n    declare const enum PerfCounters {\n    GC = 0,\n    }\ndeclare namespace images {\n}\ndeclare namespace basic {\n}\n\n\n    declare const enum Button {\n    A = 1,  // MICROBIT_ID_BUTTON_A\n    B = 2,  // MICROBIT_ID_BUTTON_B\n    //% block=\"A+B\"\n    AB = 3,  // MICROBIT_ID_BUTTON_AB\n    }\n\n\n    declare const enum Dimension {\n    //% block=x\n    X = 0,\n    //% block=y\n    Y = 1,\n    //% block=z\n    Z = 2,\n    //% block=strength\n    Strength = 3,\n    }\n\n\n    declare const enum Rotation {\n    //% block=pitch\n    Pitch = 0,\n    //% block=roll\n    Roll = 1,\n    }\n\n\n    declare const enum TouchPin {\n    P0 = 100,  // MICROBIT_ID_IO_P0\n    P1 = 101,  // MICROBIT_ID_IO_P1\n    P2 = 102,  // MICROBIT_ID_IO_P2\n    }\n\n\n    declare const enum AcceleratorRange {\n    /**\n     * The accelerator measures forces up to 1 gravity\n     */\n    //%  block=\"1g\"\n    OneG = 1,\n    /**\n     * The accelerator measures forces up to 2 gravity\n     */\n    //%  block=\"2g\"\n    TwoG = 2,\n    /**\n     * The accelerator measures forces up to 4 gravity\n     */\n    //% block=\"4g\"\n    FourG = 4,\n    /**\n     * The accelerator measures forces up to 8 gravity\n     */\n    //% block=\"8g\"\n    EightG = 8,\n    }\n\n\n    declare const enum Gesture {\n    /**\n     * Raised when shaken\n     */\n    //% block=shake\n    //% jres=gestures.shake\n    Shake = 11,  // MICROBIT_ACCELEROMETER_EVT_SHAKE\n    /**\n     * Raised when the logo is upward and the screen is vertical\n     */\n    //% block=\"logo up\"\n    //% jres=gestures.tiltforward\n    LogoUp = 1,  // MICROBIT_ACCELEROMETER_EVT_TILT_UP\n    /**\n     * Raised when the logo is downward and the screen is vertical\n     */\n    //% block=\"logo down\"\n    //% jres=gestures.tiltbackwards\n    LogoDown = 2,  // MICROBIT_ACCELEROMETER_EVT_TILT_DOWN\n    /**\n     * Raised when the screen is pointing up and the board is horizontal\n     */\n    //% block=\"screen up\"\n    //% jres=gestures.frontsideup\n    ScreenUp = 5,  // MICROBIT_ACCELEROMETER_EVT_FACE_UP\n    /**\n     * Raised when the screen is pointing down and the board is horizontal\n     */\n    //% block=\"screen down\"\n    //% jres=gestures.backsideup\n    ScreenDown = 6,  // MICROBIT_ACCELEROMETER_EVT_FACE_DOWN\n    /**\n     * Raised when the screen is pointing left\n     */\n    //% block=\"tilt left\"\n    //% jres=gestures.tiltleft\n    TiltLeft = 3,  // MICROBIT_ACCELEROMETER_EVT_TILT_LEFT\n    /**\n     * Raised when the screen is pointing right\n     */\n    //% block=\"tilt right\"\n    //% jres=gestures.tiltright\n    TiltRight = 4,  // MICROBIT_ACCELEROMETER_EVT_TILT_RIGHT\n    /**\n     * Raised when the board is falling!\n     */\n    //% block=\"free fall\"\n    //% jres=gestures.freefall\n    FreeFall = 7,  // MICROBIT_ACCELEROMETER_EVT_FREEFALL\n    /**\n     * Raised when a 3G shock is detected\n     */\n    //% block=\"3g\"\n    //% jres=gestures.impact3g\n    ThreeG = 8,  // MICROBIT_ACCELEROMETER_EVT_3G\n    /**\n     * Raised when a 6G shock is detected\n     */\n    //% block=\"6g\"\n    //% jres=gestures.impact6g\n    SixG = 9,  // MICROBIT_ACCELEROMETER_EVT_6G\n    /**\n     * Raised when a 8G shock is detected\n     */\n    //% block=\"8g\"\n    //% jres=gestures.impact8g\n    EightG = 10,  // MICROBIT_ACCELEROMETER_EVT_8G\n    }\n\n\n    declare const enum MesDpadButtonInfo {\n    //% block=\"A down\"\n    ADown = 1,  // MES_DPAD_BUTTON_A_DOWN\n    //% block=\"A up\"\n    AUp = 2,  // MES_DPAD_BUTTON_A_UP\n    //% block=\"B down\"\n    BDown = 3,  // MES_DPAD_BUTTON_B_DOWN\n    //% block=\"B up\"\n    BUp = 4,  // MES_DPAD_BUTTON_B_UP\n    //% block=\"C down\"\n    CDown = 5,  // MES_DPAD_BUTTON_C_DOWN\n    //% block=\"C up\"\n    CUp = 6,  // MES_DPAD_BUTTON_C_UP\n    //% block=\"D down\"\n    DDown = 7,  // MES_DPAD_BUTTON_D_DOWN\n    //% block=\"D up\"\n    DUp = 8,  // MES_DPAD_BUTTON_D_UP\n    //% block=\"1 down\"\n    _1Down = 9,  // MES_DPAD_BUTTON_1_DOWN\n    //% block=\"1 up\"\n    _1Up = 10,  // MES_DPAD_BUTTON_1_UP\n    //% block=\"2 down\"\n    _2Down = 11,  // MES_DPAD_BUTTON_2_DOWN\n    //% block=\"2 up\"\n    _2Up = 12,  // MES_DPAD_BUTTON_2_UP\n    //% block=\"3 down\"\n    _3Down = 13,  // MES_DPAD_BUTTON_3_DOWN\n    //% block=\"3 up\"\n    _3Up = 14,  // MES_DPAD_BUTTON_3_UP\n    //% block=\"4 down\"\n    _4Down = 15,  // MES_DPAD_BUTTON_4_DOWN\n    //% block=\"4 up\"\n    _4Up = 16,  // MES_DPAD_BUTTON_4_UP\n    }\ndeclare namespace input {\n}\n\n\n    /**\n     * How to create the event.\n     */\n\n    declare const enum EventCreationMode {\n    /**\n     * MicroBitEvent is initialised, and no further processing takes place.\n     */\n    CreateOnly = 0,  // CREATE_ONLY\n    /**\n     * MicroBitEvent is initialised, and its event handlers are immediately fired (not suitable for use in interrupts!).\n     */\n    CreateAndFire = 1,  // CREATE_AND_FIRE\n    }\n\n\n    declare const enum EventBusSource {\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_BUTTON_A = 1,  // MICROBIT_ID_BUTTON_A\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_BUTTON_B = 2,  // MICROBIT_ID_BUTTON_B\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_BUTTON_AB = 3,  // MICROBIT_ID_BUTTON_AB\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_RADIO = 9,  // MICROBIT_ID_RADIO\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_GESTURE = 13,  // MICROBIT_ID_GESTURE\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_ACCELEROMETER = 5,  // MICROBIT_ID_ACCELEROMETER\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P0 = 100,  // MICROBIT_ID_IO_P0\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P1 = 101,  // MICROBIT_ID_IO_P1\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P2 = 102,  // MICROBIT_ID_IO_P2\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P3 = 103,  // MICROBIT_ID_IO_P3\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P4 = 104,  // MICROBIT_ID_IO_P4\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P5 = 105,  // MICROBIT_ID_IO_P5\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P6 = 106,  // MICROBIT_ID_IO_P6\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P7 = 107,  // MICROBIT_ID_IO_P7\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P8 = 108,  // MICROBIT_ID_IO_P8\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P9 = 109,  // MICROBIT_ID_IO_P9\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P10 = 110,  // MICROBIT_ID_IO_P10\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P11 = 111,  // MICROBIT_ID_IO_P11\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P12 = 112,  // MICROBIT_ID_IO_P12\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P13 = 113,  // MICROBIT_ID_IO_P13\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P14 = 114,  // MICROBIT_ID_IO_P14\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P15 = 115,  // MICROBIT_ID_IO_P15\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P16 = 116,  // MICROBIT_ID_IO_P16\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P19 = 119,  // MICROBIT_ID_IO_P19\n    //% blockIdentity=\"control.eventSourceId\"\n    MICROBIT_ID_IO_P20 = 120,  // MICROBIT_ID_IO_P20\n    //% blockIdentity=\"control.eventSourceId\"\n    MES_DEVICE_INFO_ID = 1103,  // MES_DEVICE_INFO_ID\n    //% blockIdentity=\"control.eventSourceId\"\n    MES_SIGNAL_STRENGTH_ID = 1101,  // MES_SIGNAL_STRENGTH_ID\n    //% blockIdentity=\"control.eventSourceId\"\n    MES_DPAD_CONTROLLER_ID = 1104,  // MES_DPAD_CONTROLLER_ID\n    //% blockIdentity=\"control.eventSourceId\"\n    MES_BROADCAST_GENERAL_ID = 2000,  // MES_BROADCAST_GENERAL_ID\n    }\n\n\n    declare const enum EventBusValue {\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_EVT_ANY = 0,  // MICROBIT_EVT_ANY\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_BUTTON_EVT_DOWN = 1,  // MICROBIT_BUTTON_EVT_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_BUTTON_EVT_UP = 2,  // MICROBIT_BUTTON_EVT_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_BUTTON_EVT_CLICK = 3,  // MICROBIT_BUTTON_EVT_CLICK\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_RADIO_EVT_DATAGRAM = 1,  // MICROBIT_RADIO_EVT_DATAGRAM\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_ACCELEROMETER_EVT_DATA_UPDATE = 1,  // MICROBIT_ACCELEROMETER_EVT_DATA_UPDATE\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_PIN_EVT_RISE = 2,  // MICROBIT_PIN_EVT_RISE\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_PIN_EVT_FALL = 3,  // MICROBIT_PIN_EVT_FALL\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_PIN_EVT_PULSE_HI = 4,  // MICROBIT_PIN_EVT_PULSE_HI\n    //% blockIdentity=\"control.eventValueId\"\n    MICROBIT_PIN_EVT_PULSE_LO = 5,  // MICROBIT_PIN_EVT_PULSE_LO\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_ALARM1 = 6,  // MES_ALERT_EVT_ALARM1\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_ALARM2 = 7,  // MES_ALERT_EVT_ALARM2\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_ALARM3 = 8,  // MES_ALERT_EVT_ALARM3\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_ALARM4 = 9,  // MES_ALERT_EVT_ALARM4\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_ALARM5 = 10,  // MES_ALERT_EVT_ALARM5\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_ALARM6 = 11,  // MES_ALERT_EVT_ALARM6\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_DISPLAY_TOAST = 1,  // MES_ALERT_EVT_DISPLAY_TOAST\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_FIND_MY_PHONE = 5,  // MES_ALERT_EVT_FIND_MY_PHONE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_PLAY_RINGTONE = 4,  // MES_ALERT_EVT_PLAY_RINGTONE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_PLAY_SOUND = 3,  // MES_ALERT_EVT_PLAY_SOUND\n    //% blockIdentity=\"control.eventValueId\"\n    MES_ALERT_EVT_VIBRATE = 2,  // MES_ALERT_EVT_VIBRATE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_LAUNCH_PHOTO_MODE = 1,  // MES_CAMERA_EVT_LAUNCH_PHOTO_MODE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_LAUNCH_VIDEO_MODE = 2,  // MES_CAMERA_EVT_LAUNCH_VIDEO_MODE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_START_VIDEO_CAPTURE = 4,  // MES_CAMERA_EVT_START_VIDEO_CAPTURE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_STOP_PHOTO_MODE = 6,  // MES_CAMERA_EVT_STOP_PHOTO_MODE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_STOP_VIDEO_CAPTURE = 5,  // MES_CAMERA_EVT_STOP_VIDEO_CAPTURE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_STOP_VIDEO_MODE = 7,  // MES_CAMERA_EVT_STOP_VIDEO_MODE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_TAKE_PHOTO = 3,  // MES_CAMERA_EVT_TAKE_PHOTO\n    //% blockIdentity=\"control.eventValueId\"\n    MES_CAMERA_EVT_TOGGLE_FRONT_REAR = 8,  // MES_CAMERA_EVT_TOGGLE_FRONT_REAR\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_DISPLAY_OFF = 5,  // MES_DEVICE_DISPLAY_OFF\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_DISPLAY_ON = 6,  // MES_DEVICE_DISPLAY_ON\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_GESTURE_DEVICE_SHAKEN = 4,  // MES_DEVICE_GESTURE_DEVICE_SHAKEN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_INCOMING_CALL = 7,  // MES_DEVICE_INCOMING_CALL\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_INCOMING_MESSAGE = 8,  // MES_DEVICE_INCOMING_MESSAGE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_ORIENTATION_LANDSCAPE = 1,  // MES_DEVICE_ORIENTATION_LANDSCAPE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DEVICE_ORIENTATION_PORTRAIT = 2,  // MES_DEVICE_ORIENTATION_PORTRAIT\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_1_DOWN = 9,  // MES_DPAD_BUTTON_1_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_1_UP = 10,  // MES_DPAD_BUTTON_1_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_2_DOWN = 11,  // MES_DPAD_BUTTON_2_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_2_UP = 12,  // MES_DPAD_BUTTON_2_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_3_DOWN = 13,  // MES_DPAD_BUTTON_3_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_3_UP = 14,  // MES_DPAD_BUTTON_3_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_4_DOWN = 15,  // MES_DPAD_BUTTON_4_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_4_UP = 16,  // MES_DPAD_BUTTON_4_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_A_DOWN = 1,  // MES_DPAD_BUTTON_A_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_A_UP = 2,  // MES_DPAD_BUTTON_A_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_B_DOWN = 3,  // MES_DPAD_BUTTON_B_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_B_UP = 4,  // MES_DPAD_BUTTON_B_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_C_DOWN = 5,  // MES_DPAD_BUTTON_C_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_C_UP = 6,  // MES_DPAD_BUTTON_C_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_D_DOWN = 7,  // MES_DPAD_BUTTON_D_DOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_DPAD_BUTTON_D_UP = 8,  // MES_DPAD_BUTTON_D_UP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_FORWARD = 6,  // MES_REMOTE_CONTROL_EVT_FORWARD\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_NEXTTRACK = 4,  // MES_REMOTE_CONTROL_EVT_NEXTTRACK\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_PAUSE = 2,  // MES_REMOTE_CONTROL_EVT_PAUSE\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_PLAY = 1,  // MES_REMOTE_CONTROL_EVT_PLAY\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_PREVTRACK = 5,  // MES_REMOTE_CONTROL_EVT_PREVTRACK\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_REWIND = 7,  // MES_REMOTE_CONTROL_EVT_REWIND\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_STOP = 3,  // MES_REMOTE_CONTROL_EVT_STOP\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_VOLUMEDOWN = 9,  // MES_REMOTE_CONTROL_EVT_VOLUMEDOWN\n    //% blockIdentity=\"control.eventValueId\"\n    MES_REMOTE_CONTROL_EVT_VOLUMEUP = 8,  // MES_REMOTE_CONTROL_EVT_VOLUMEUP\n    }\n\n\n    declare const enum EventFlags {\n    //%\n    QueueIfBusy = 16,  // MESSAGE_BUS_LISTENER_QUEUE_IF_BUSY\n    //%\n    DropIfBusy = 32,  // MESSAGE_BUS_LISTENER_DROP_IF_BUSY\n    //%\n    Reentrant = 8,  // MESSAGE_BUS_LISTENER_REENTRANT\n    }\ndeclare namespace control {\n}\n\n\n    declare const enum DisplayMode {\n    //% block=\"black and white\"\n    BlackAndWhite = 0,  // DISPLAY_MODE_BLACK_AND_WHITE\n    //% blockHidden=true\n    BackAndWhite = 0,  // DISPLAY_MODE_BLACK_AND_WHITE\n    //% block=\"greyscale\"\n    Greyscale = 1,  // DISPLAY_MODE_GREYSCALE\n    // TODO DISPLAY_MODE_BLACK_AND_WHITE_LIGHT_SENSE\n    }\ndeclare namespace led {\n}\n\n\n    declare const enum DigitalPin {\n    P0 = 100,  // MICROBIT_ID_IO_P0\n    P1 = 101,  // MICROBIT_ID_IO_P1\n    P2 = 102,  // MICROBIT_ID_IO_P2\n    P3 = 103,  // MICROBIT_ID_IO_P3\n    P4 = 104,  // MICROBIT_ID_IO_P4\n    P5 = 105,  // MICROBIT_ID_IO_P5\n    P6 = 106,  // MICROBIT_ID_IO_P6\n    P7 = 107,  // MICROBIT_ID_IO_P7\n    P8 = 108,  // MICROBIT_ID_IO_P8\n    P9 = 109,  // MICROBIT_ID_IO_P9\n    P10 = 110,  // MICROBIT_ID_IO_P10\n    P11 = 111,  // MICROBIT_ID_IO_P11\n    P12 = 112,  // MICROBIT_ID_IO_P12\n    P13 = 113,  // MICROBIT_ID_IO_P13\n    P14 = 114,  // MICROBIT_ID_IO_P14\n    P15 = 115,  // MICROBIT_ID_IO_P15\n    P16 = 116,  // MICROBIT_ID_IO_P16\n    //% blockHidden=1\n    P19 = 119,  // MICROBIT_ID_IO_P19\n    //% blockHidden=1\n    P20 = 120,  // MICROBIT_ID_IO_P20\n    }\n\n\n    declare const enum AnalogPin {\n    P0 = 100,  // MICROBIT_ID_IO_P0\n    P1 = 101,  // MICROBIT_ID_IO_P1\n    P2 = 102,  // MICROBIT_ID_IO_P2\n    P3 = 103,  // MICROBIT_ID_IO_P3\n    P4 = 104,  // MICROBIT_ID_IO_P4\n    P10 = 110,  // MICROBIT_ID_IO_P10\n    //% block=\"P5 (write only)\"\n    P5 = 105,  // MICROBIT_ID_IO_P5\n    //% block=\"P6 (write only)\"\n    P6 = 106,  // MICROBIT_ID_IO_P6\n    //% block=\"P7 (write only)\"\n    P7 = 107,  // MICROBIT_ID_IO_P7\n    //% block=\"P8 (write only)\"\n    P8 = 108,  // MICROBIT_ID_IO_P8\n    //% block=\"P9 (write only)\"\n    P9 = 109,  // MICROBIT_ID_IO_P9\n    //% block=\"P11 (write only)\"\n    P11 = 111,  // MICROBIT_ID_IO_P11\n    //% block=\"P12 (write only)\"\n    P12 = 112,  // MICROBIT_ID_IO_P12\n    //% block=\"P13 (write only)\"\n    P13 = 113,  // MICROBIT_ID_IO_P13\n    //% block=\"P14 (write only)\"\n    P14 = 114,  // MICROBIT_ID_IO_P14\n    //% block=\"P15 (write only)\"\n    P15 = 115,  // MICROBIT_ID_IO_P15\n    //% block=\"P16 (write only)\"\n    P16 = 116,  // MICROBIT_ID_IO_P16\n    //% block=\"P19 (write only)\"\n    //% blockHidden=1\n    P19 = 119,  // MICROBIT_ID_IO_P19\n    //% block=\"P20 (write only)\"\n    //% blockHidden=1\n    P20 = 120,  // MICROBIT_ID_IO_P20\n    }\n\n\n    declare const enum PulseValue {\n    //% block=high\n    High = 4,  // MICROBIT_PIN_EVT_PULSE_HI\n    //% block=low\n    Low = 5,  // MICROBIT_PIN_EVT_PULSE_LO\n    }\n\n\n    declare const enum PinPullMode {\n    //% block=\"down\"\n    PullDown = 0,\n    //% block=\"up\"\n    PullUp = 1,\n    //% block=\"none\"\n    PullNone = 2,\n    }\n\n\n    declare const enum PinEventType {\n    //% block=\"edge\"\n    Edge = 2,  // MICROBIT_PIN_EVENT_ON_EDGE\n    //% block=\"pulse\"\n    Pulse = 3,  // MICROBIT_PIN_EVENT_ON_PULSE\n    //% block=\"touch\"\n    Touch = 4,  // MICROBIT_PIN_EVENT_ON_TOUCH\n    //% block=\"none\"\n    None = 0,  // MICROBIT_PIN_EVENT_NONE\n    }\n\n\n    declare const enum SerialPin {\n    P0 = 100,  // MICROBIT_ID_IO_P0\n    P1 = 101,  // MICROBIT_ID_IO_P1\n    P2 = 102,  // MICROBIT_ID_IO_P2\n    P8 = 108,  // MICROBIT_ID_IO_P8\n    P12 = 112,  // MICROBIT_ID_IO_P12\n    P13 = 113,  // MICROBIT_ID_IO_P13\n    P14 = 114,  // MICROBIT_ID_IO_P14\n    P15 = 115,  // MICROBIT_ID_IO_P15\n    P16 = 116,  // MICROBIT_ID_IO_P16\n    USB_TX = 1001,\n    USB_RX = 1002,\n    }\n\n\n    declare const enum BaudRate {\n    //% block=115200\n    BaudRate115200 = 115200,\n    //% block=57600\n    BaudRate57600 = 57600,\n    //% block=38400\n    BaudRate38400 = 38400,\n    //% block=31250\n    BaudRate31250 = 31250,\n    //% block=28800\n    BaudRate28800 = 28800,\n    //% block=19200\n    BaudRate19200 = 19200,\n    //% block=14400\n    BaudRate14400 = 14400,\n    //% block=9600\n    BaudRate9600 = 9600,\n    //% block=4800\n    BaudRate4800 = 4800,\n    //% block=2400\n    BaudRate2400 = 2400,\n    //% block=1200\n    BaudRate1200 = 1200,\n    }\ndeclare namespace serial {\n}\n\n// Auto-generated. Do not edit. Really.\n",
             "fixed.ts": "interface Fx8 {\n    _dummyFx8: string;\n}\n\nfunction Fx8(v: number) {\n    return ((v * 256) | 0) as any as Fx8\n}\n\nnamespace Fx {\n    export const zeroFx8 = 0 as any as Fx8\n    export const oneHalfFx8 = 128 as any as Fx8\n    export const oneFx8 = 256 as any as Fx8\n    export const twoFx8 = 512 as any as Fx8\n\n    export function neg(a: Fx8) {\n        return (-(a as any as number)) as any as Fx8\n    }\n    export function toIntShifted(a: Fx8, n: number) {\n        return (a as any as number) >> (n + 8)\n    }\n    export function add(a: Fx8, b: Fx8) {\n        return ((a as any as number) + (b as any as number)) as any as Fx8\n    }\n    export function iadd(a: number, b: Fx8) {\n        return ((a << 8) + (b as any as number)) as any as Fx8\n    }\n    export function sub(a: Fx8, b: Fx8) {\n        return ((a as any as number) - (b as any as number)) as any as Fx8\n    }\n    export function mul(a: Fx8, b: Fx8) {\n        return (Math.imul((a as any as number), (b as any as number)) >> 8) as any as Fx8\n    }\n    export function imul(a: Fx8, b: number) {\n        return Math.imul((a as any as number), (b as any as number)) as any as Fx8\n    }\n    export function div(a: Fx8, b: Fx8) {\n        return Math.idiv((a as any as number) << 8, b as any as number) as any as Fx8\n    }\n    export function idiv(a: Fx8, b: number) {\n        return Math.idiv((a as any as number), b) as any as Fx8\n    }\n    export function compare(a: Fx8, b: Fx8) {\n        return (a as any as number) - (b as any as number)\n    }\n    export function abs(a: Fx8) {\n        if ((a as any as number) < 0)\n            return (-(a as any as number)) as any as Fx8\n        else\n            return a\n    }\n    export function min(a: Fx8, b: Fx8) {\n        if (a < b)\n            return a\n        else\n            return b\n    }\n    export function max(a: Fx8, b: Fx8) {\n        if (a > b)\n            return a\n        else\n            return b\n    }\n    export function leftShift(a: Fx8, n: number) {\n        return (a as any as number << n) as any as Fx8\n    }\n    export function rightShift(a: Fx8, n: number) {\n        return (a as any as number >> n) as any as Fx8\n    }\n    export function toInt(v: Fx8) {\n        return ((v as any as number) + 128) >> 8\n    }\n    export function toFloat(v: Fx8) {\n        return (v as any as number) / 256\n    }\n}",
+            "force.ts": "//**\r\n //* Provides access to basic micro:bit functionality.\r\n //*/\r\n//% color=#1E90FF weight=98 icon=\"\\uf00a\"\r\n//% advanced=true\r\n\r\nnamespace Force{\r\n\r\n\r\n    /**\r\n     * Sets Force Click object.\r\n     * @param boardID the boardID\r\n     * @param clickID the ClickID\r\n     *  @param Force the Force Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"Force\"\r\n    export function createForceSettings(boardID:BoardID, clickID:ClickID): Force {\r\n        return new Force(boardID, clickID);\r\n   }\r\n \r\n    export class Force extends bBoard.PinSettings{\r\n       A : number;\r\n       sumA : number;\r\n       Force_voltage : number;\r\n       Force_val : number;\r\n       rangefactor : number;\r\n       Vadc_3 : number;       \r\n       private boardIDGlobal:number;\r\n       private clickIDNumGlobal:number; \r\n    \r\n       constructor(boardID: BoardID, clickID:ClickID){\r\n       super(boardID, clickID);\r\n       this.A=0;\r\n       this.sumA=0;\r\n       this.Force_voltage=0;\r\n       this.Force_val=0;\r\n       this.rangefactor=20/3.3\r\n       this.Vadc_3=3.3/4096;\r\n       this.boardIDGlobal=boardID;\r\n       this.clickIDNumGlobal = clickID; \r\n       }\r\n\r\n        /**\r\n         * Measures force and returns string value.\r\n         */\r\n        //% help=Force/Force/forceclickstring\r\n        //% block=\"Get string value at $this of force\"\r\n        //% blockId=forceS\r\n        //% blockNamespace=Force\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Force\"\r\n        //% weight=90 blockGap=12 color=#9E4894 icon=\"\"\r\n\r\n        forceclickstring() : string{\r\n            let valueForce= this.forceclick();\r\n            let stringForce= valueForce.toString();\r\n            return stringForce;\r\n           }\r\n\r\n        \r\n        /**\r\n         * Measures force and returns value.\r\n         */\r\n        //% help=Force/Force/forceclickstring\r\n        //% block=\"Get value at $this of force\"\r\n        //% blockId=force\r\n        //% blockNamespace=Force\r\n        //% this.shadow=variables_get\r\n        //% this.defl=\"Force\"\r\n        //% weight=90 blockGap=12 color=#9E4894 icon=\"\"\r\n\r\n        forceclick() : number{\r\n        for (let i=1;i<=20;i++)\r\n        {\r\n            this.A=(this.analogRead(clickADCPin.AN,this.boardIDGlobal, this.clickIDNumGlobal))\r\n            this.sumA+=this.A;\r\n        }\r\n        this.sumA=this.sumA/20;\r\n        this.Force_voltage=this.sumA*this.Vadc_3; //Voltage for the force click board\r\n        this.Force_val=this.Force_voltage*this.rangefactor;\r\n        return this.Force_val\r\n        }\r\n\r\n     \r\n   }\r\n \r\n }",
             "game.ts": "enum Direction {\n    //% block=right\n    Right,\n    //% block=left\n    Left\n}\n\nenum LedSpriteProperty {\n    //% block=x\n    X,\n    //% block=y\n    Y,\n    //% block=direction\n    Direction,\n    //% block=brightness\n    Brightness,\n    //% block=blink\n    Blink\n}\n\n/**\n * A single-LED sprite game engine\n */\n//% color=#007A4B weight=32 icon=\"\\uf11b\"\n//% advanced=true\nnamespace game {\n    let _score: number = 0;\n    let _life: number = 3;\n    let _startTime: number = 0;\n    let _endTime: number = 0;\n    let _isGameOver: boolean = false;\n    let _countdownPause: number = 0;\n    let _level: number = 1;\n    let _gameId: number = 0;\n    let _img: Image;\n    let _sprites: LedSprite[];\n    let _paused: boolean = false;\n    let _backgroundAnimation = false; // indicates if an auxiliary animation (and fiber) is already running\n\n    /**\n     * Creates a new LED sprite pointing to the right.\n     * @param x sprite horizontal coordinate, eg: 2\n     * @param y sprite vertical coordinate, eg: 2\n     */\n    //% weight=60 blockGap=8 help=game/create-sprite\n    //% blockId=game_create_sprite block=\"create sprite at|x: %x|y: %y\"\n    //% parts=\"ledmatrix\"\n    export function createSprite(x: number, y: number): LedSprite {\n        init();\n        let p = new LedSprite(x, y);\n        return p;\n    }\n\n    /**\n     * Gets the current score\n     */\n    //% weight=9 help=game/score\n    //% blockId=game_score block=\"score\" blockGap=8\n    export function score(): number {\n        return _score;\n    }\n\n    /**\n     * Adds points to the current score and shows an animation\n     * @param points amount of points to change, eg: 1\n     */\n    //% weight=10 help=game/add-score\n    //% blockId=game_add_score block=\"change score by|%points\" blockGap=8\n    //% parts=\"ledmatrix\"\n    export function addScore(points: number): void {\n        setScore(_score + points);\n        if (!_paused && !_backgroundAnimation) {\n            _backgroundAnimation = true;\n            control.inBackground(() => {\n                led.stopAnimation();\n                basic.showAnimation(`0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 0 1 0 0 0 0 0\n    0 0 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0\n    0 0 1 0 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n    0 0 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0\n    0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 0 1 0 0 0 0 0`, 20);\n                _backgroundAnimation = false;\n            });\n        }\n    }\n\n    /**\n     * Shows an animation, then starts a game countdown timer, which causes Game Over when it reaches 0\n     * @param ms countdown duration in milliseconds, eg: 10000\n     */\n    //% weight=9 help=game/start-countdown\n    //% blockId=game_start_countdown block=\"start countdown|(ms) %duration\" blockGap=8\n    //% parts=\"ledmatrix\"\n    export function startCountdown(ms: number): void {\n        if (checkStart()) {\n            basic.showAnimation(`1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0\n0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0\n1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0\n0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0\n1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0`, 400);\n            _countdownPause = Math.max(500, ms);\n            _startTime = -1;\n            _endTime = input.runningTime() + _countdownPause;\n            _paused = false;\n            control.inBackground(() => {\n                basic.pause(_countdownPause);\n                gameOver();\n            });\n        }\n    }\n\n    /**\n     * Displays a game over animation and the score.\n     */\n    //% weight=8 help=game/game-over\n    //% blockId=game_game_over block=\"game over\"\n    //% parts=\"ledmatrix\"\n    export function gameOver(): void {\n        if (!_isGameOver) {\n            _isGameOver = true;\n            unplugEvents();\n            led.stopAnimation();\n            led.setBrightness(255);\n            while (true) {\n                for (let i = 0; i < 8; i++) {\n                    basic.clearScreen();\n                    basic.pause(100);\n                    basic.showLeds(`1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1`, 300);\n                }\n                basic.showAnimation(`1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0\n1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 0 1 1 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n1 1 0 1 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 0 1 1 1 0 0 0 1 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 0 1 1 1 0 0 0 1 1 0 0 0 0 1 0 0 0 0 0`, 100);\n                for (let j = 0; j < 3; j++) {\n                    basic.showString(\" GAMEOVER \", 100);\n                    showScore();\n                }\n            }\n        } else {\n            // already in game over mode in another fiber\n            while (true) {\n                basic.pause(10000);\n            }\n        }\n    }\n\n    /**\n     * Sets the current score value\n     * @param value new score value.\n     */\n    //% blockId=game_set_score block=\"set score %points\" blockGap=8\n    //% weight=10 help=game/set-score\n    export function setScore(value: number): void {\n        _score = Math.max(0, value);\n    }\n\n    /**\n     * Gets the current life\n     */\n    //% weight=10\n    export function life(): number {\n        return _life;\n    }\n\n    /**\n     * Sets the current life value\n     * @param value current life value\n     */\n    //% weight=10 help=game/set-life\n    //% blockId=game_set_life block=\"set life %value\" blockGap=8\n    export function setLife(value: number): void {\n        _life = Math.max(0, value);\n        if (_life <= 0) {\n            gameOver();\n        }\n    }\n\n    /**\n     * Add life points to the current life amount\n     * @param lives amount of lives to add\n     */\n    //% weight=10 help=game/add-life\n    //% blockId=game_add_life block=\"add life %lives\" blockGap=8\n    export function addLife(lives: number): void {\n        setLife(_life + lives);\n    }\n\n    /**\n     * Gets the remaining time (since `start countdown`) or current time (since the device started or `start stopwatch`) in milliseconds.\n     */\n    //% weight=10\n    export function currentTime(): number {\n        if (_endTime > 0) {\n            return Math.max(0, _endTime - input.runningTime());\n        } else {\n            return input.runningTime() - _startTime;\n        }\n    }\n\n    /**\n     * Remove some life\n     * @param life amount of life to remove\n     */\n    //% weight=10 help=game/remove-life\n    //% parts=\"ledmatrix\"\n    //% blockId=game_remove_life block=\"remove life %life\" blockGap=8\n    export function removeLife(life: number): void {\n        setLife(_life - life);\n        if (!_paused && !_backgroundAnimation) {\n            _backgroundAnimation = true;\n            control.inBackground(() => {\n                led.stopAnimation();\n                basic.showAnimation(`1 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0\n0 1 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0\n0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0\n0 1 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0\n1 0 0 0 1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0`, 40);\n                _backgroundAnimation = false;\n            });\n        }\n    }\n\n    /**\n     * Increments the level and display a message.\n     */\n    //% weight=10\n    //% parts=\"ledmatrix\"\n    export function levelUp(): void {\n        _level = _level + 1;\n        basic.showString(\"LEVEL:\", 150);\n        basic.showNumber(_level, 150);\n    }\n\n    /**\n     * Gets the current level\n     */\n    //% weight=10\n    export function level(): number {\n        return _level;\n    }\n\n    /**\n     * Starts a stopwatch timer. `current time` will return the elapsed time.\n     */\n    //% weight=10\n    export function startStopwatch(): void {\n        _startTime = input.runningTime();\n        _endTime = -1;\n    }\n\n    /**\n     * Indicates if the game is still running. Returns `false` if the game is over or paused.\n     */\n    //% weight=5 help=game/is-running\n    //% blockId=game_isrunning block=\"is running\" blockGap=8\n    export function isRunning(): boolean {\n        return !_isGameOver && !_paused && !!_img;\n    }\n\n    /**\n     * Displays the score on the screen.\n     */\n    //%  weight=60\n    //% parts=\"ledmatrix\"\n    export function showScore(): void {\n        basic.showString(\" SCORE \", 100);\n        basic.showNumber(_score, 150);\n        basic.showString(\" \", 150);\n    }\n\n    /**\n     * Indicates if the game is over and displaying the game over sequence.\n     */\n    //% weight=7 help=game/is-game-over\n    //% blockId=game_isgameover block=\"is game over\" blockGap=8\n    export function isGameOver(): boolean {\n        return _isGameOver;\n    }\n\n    /**\n     * Indicates if the game rendering is paused to allow other animations\n     */\n    //% weight=6 help=game/is-paused\n    //% blockId=game_ispaused block=\"is paused\" blockGap=8\n    export function isPaused(): boolean {\n        return _paused;\n    }\n\n    /**\n     * Pauses the game rendering engine to allow other animations\n     */\n    //% blockId=game_pause block=\"pause\"\n    //% advanced=true blockGap=8 help=game/pause\n    export function pause(): void {\n        plot()\n        _paused = true;\n    }\n\n\n    /**\n     * Resumes the game rendering engine\n     */\n    //% blockId=game_resume block=\"resume\"\n    //% advanced=true blockGap=8 help=game/resumeP\n    export function resume(): void {\n        _paused = false;\n        plot();\n    }\n\n    /**\n     * returns false if game can't start\n     */\n    function checkStart(): boolean {\n        if (_countdownPause > 0 || _startTime > 0) {\n            return false;\n        } else {\n            return true;\n        }\n    }\n\n    function unplugEvents(): void {\n        input.onButtonPressed(Button.A, () => { });\n        input.onButtonPressed(Button.B, () => { });\n        input.onButtonPressed(Button.AB, () => {\n            control.reset();\n        });\n    }\n\n    /**\n     * A game sprite rendered as a single LED\n     */\n    //%\n    export class LedSprite {\n        private _x: number;\n        private _y: number;\n        private _dir: number;\n        private _brightness: number;\n        private _blink: number;\n        private _enabled: boolean;\n\n        constructor(x: number, y: number) {\n            this._x = Math.clamp(0, 4, x);\n            this._y = Math.clamp(0, 4, y);\n            this._dir = 90;\n            this._brightness = 255;\n            this._enabled = true;\n            init();\n            _sprites.push(this);\n            plot();\n        }\n\n        /**\n         * Move a certain number of LEDs in the current direction\n         * @param this the sprite to move\n         * @param leds number of leds to move, eg: 1, -1\n         */\n        //% weight=50 help=game/move\n        //% blockId=game_move_sprite block=\"%sprite|move by %leds\" blockGap=8\n        //% parts=\"ledmatrix\"\n        public move(leds: number): void {\n            if (this._dir == 0) {\n                this._y = this._y - leds;\n            } else if (this._dir == 45) {\n                this._x = this._x + leds;\n                this._y = this._y - leds;\n            } else if (this._dir == 90) {\n                this._x = this._x + leds;\n            } else if (this._dir == 135) {\n                this._x = this._x + leds;\n                this._y = this._y + leds;\n            } else if (this._dir == 180) {\n                this._y = this._y + leds;\n            } else if (this._dir == -45) {\n                this._x = this._x - leds;\n                this._y = this._y - leds;\n            } else if (this._dir == -90) {\n                this._x = this._x - leds;\n            } else {\n                this._x = this._x - leds;\n                this._y = this._y + leds;\n            }\n            this._x = Math.clamp(0, 4, this._x);\n            this._y = Math.clamp(0, 4, this._y);\n            plot();\n        }\n\n        /**\n         * Go to this position on the screen\n         * @param this TODO\n         * @param x TODO\n         * @param y TODO\n         */\n        //% parts=\"ledmatrix\"\n        public goTo(x: number, y: number): void {\n            this._x = x;\n            this._y = y;\n            this._x = Math.clamp(0, 4, this._x);\n            this._y = Math.clamp(0, 4, this._y);\n            plot();\n        }\n\n        /**\n         * If touching the edge of the stage and facing towards it, then turn away.\n         * @param this the sprite to check for bounce\n         */\n        //% weight=18 help=game/if-on-edge-bounce\n        //% blockId=game_sprite_bounce block=\"%sprite|if on edge, bounce\"\n        //% parts=\"ledmatrix\"\n        public ifOnEdgeBounce(): void {\n            if (this._dir == 0 && this._y == 0) {\n                this._dir = 180;\n            } else if (this._dir == 45 && (this._x == 4 || this._y == 0)) {\n                if (this._x == 0 && this._y == 0) {\n                    this._dir = -135;\n                } else if (this._y == 0) {\n                    this._dir = 135;\n                } else {\n                    this._dir = -45;\n                }\n            } else if (this._dir == 90 && this._x == 4) {\n                this._dir = -90;\n            } else if (this._dir == 135 && (this._x == 4 || this._y == 4)) {\n                if (this.x() == 4 && this.y() == 4) {\n                    this._dir = -45;\n                } else if (this._y == 4) {\n                    this._dir = 45;\n                } else {\n                    this._dir = -135;\n                }\n            } else if (this._dir == 180 && this._y == 4) {\n                this._dir = 0;\n            } else if (this._dir == -45 && (this._x == 0 || this._y == 0)) {\n                if (this.x() == 0 && this.y() == 0) {\n                    this._dir = 135;\n                } else if (this._y == 0) {\n                    this._dir = -135;\n                } else {\n                    this._dir = 45;\n                }\n            } else if (this._dir == -90 && this._x == 0) {\n                this._dir = 90;\n            } else if (this._dir == -135 && (this._x == 0 || this._y == 4)) {\n                if (this._x == 0 && this._y == 4) {\n                    this._dir = 45;\n                } else if (this._y == 4) {\n                    this._dir = -45;\n                } else {\n                    this._dir = 135;\n                }\n            }\n            plot();\n        }\n\n        /**\n         * Turn the sprite\n         * @param this the sprite to trun\n         * @param direction left or right\n         * @param degrees angle in degrees to turn, eg: 45, 90, 180, 135\n         */\n        //% weight=49 help=game/turn\n        //% blockId=game_turn_sprite block=\"%sprite|turn %direction|by (°) %degrees\"\n        public turn(direction: Direction, degrees: number) {\n            if (direction == Direction.Right)\n                this.setDirection(this._dir + degrees);\n            else\n                this.setDirection(this._dir - degrees);\n        }\n\n        /**\n         * Turn to the right (clockwise)\n         * @param this the sprite to turn\n         * @param degrees TODO\n         */\n        public turnRight(degrees: number): void {\n            this.turn(Direction.Right, degrees);\n        }\n\n        /**\n         * Turn to the left (counter-clockwise)\n         * @param this the sprite to turn\n         * @param degrees TODO\n         */\n        public turnLeft(degrees: number): void {\n            this.turn(Direction.Left, degrees);\n        }\n\n        /**\n         * Sets a property of the sprite\n         * @param property the name of the property to change\n         * @param the updated value\n         */\n        //% weight=29 help=game/set\n        //% blockId=game_sprite_set_property block=\"%sprite|set %property|to %value\" blockGap=8\n        public set(property: LedSpriteProperty, value: number) {\n            switch (property) {\n                case LedSpriteProperty.X: this.setX(value); break;\n                case LedSpriteProperty.Y: this.setY(value); break;\n                case LedSpriteProperty.Direction: this.setDirection(value); break;\n                case LedSpriteProperty.Brightness: this.setBrightness(value); break;\n                case LedSpriteProperty.Blink: this.setBlink(value); break;\n            }\n        }\n\n        /**\n         * Changes a property of the sprite\n         * @param property the name of the property to change\n         * @param value amount of change, eg: 1\n         */\n        //% weight=30 help=game/change\n        //% blockId=game_sprite_change_xy block=\"%sprite|change %property|by %value\" blockGap=8\n        public change(property: LedSpriteProperty, value: number) {\n            switch (property) {\n                case LedSpriteProperty.X: this.changeXBy(value); break;\n                case LedSpriteProperty.Y: this.changeYBy(value); break;\n                case LedSpriteProperty.Direction: this.changeDirectionBy(value); break;\n                case LedSpriteProperty.Brightness: this.changeBrightnessBy(value); break;\n                case LedSpriteProperty.Blink: this.changeBlinkBy(value); break;\n            }\n        }\n\n        /**\n         * Gets a property of the sprite\n         * @param property the name of the property to change\n         */\n        //% weight=28 help=game/get\n        //% blockId=game_sprite_property block=\"%sprite|%property\"\n        public get(property: LedSpriteProperty) {\n            switch (property) {\n                case LedSpriteProperty.X: return this.x();\n                case LedSpriteProperty.Y: return this.y();\n                case LedSpriteProperty.Direction: return this.direction()\n                case LedSpriteProperty.Brightness: return this.brightness();\n                case LedSpriteProperty.Blink: return this.blink();\n                default: return 0;\n            }\n        }\n\n        /**\n         * Set the direction of the current sprite, rounded to the nearest multiple of 45\n         * @param this the sprite to set direction for\n         * @param degrees new direction in degrees\n         */\n        //% parts=\"ledmatrix\"\n        public setDirection(degrees: number): void {\n            this._dir = (Math.floor(degrees / 45) % 8) * 45;\n            if (this._dir <= -180) {\n                this._dir = this._dir + 360;\n            } else if (this._dir > 180) {\n                this._dir = this._dir - 360;\n            }\n            plot();\n        }\n\n        /**\n         * Reports the ``x`` position of a sprite on the LED screen\n         * @param this TODO\n         */\n        public x(): number {\n            return this._x;\n        }\n\n        /**\n         * Reports the ``y`` position of a sprite on the LED screen\n         * @param this TODO\n         */\n        public y(): number {\n            return this._y;\n        }\n\n        /**\n         * Reports the current direction of a sprite\n         * @param this TODO\n         */\n        public direction(): number {\n            return this._dir;\n        }\n\n        /**\n         * Set the ``x`` position of a sprite\n         * @param this TODO\n         * @param x TODO\n         */\n        public setX(x: number): void {\n            this.goTo(x, this._y);\n        }\n\n        /**\n         * Set the ``y`` position of a sprite\n         * @param this TODO\n         * @param y TODO\n         */\n        public setY(y: number): void {\n            this.goTo(this._x, y);\n        }\n\n        /**\n         * Changes the ``y`` position by the given amount\n         * @param this TODO\n         * @param y TODO\n         */\n        public changeYBy(y: number): void {\n            this.goTo(this._x, this._y + y);\n        }\n\n        /**\n         * Changes the ``x`` position by the given amount\n         * @param this TODO\n         * @param x TODO\n         */\n        public changeXBy(x: number): void {\n            this.goTo(this._x + x, this._y);\n        }\n\n        /**\n         * Reports true if sprite has the same position as specified sprite\n         * @param this the sprite to check overlap or touch\n         * @param other the other sprite to check overlap or touch\n         */\n        //% weight=20 help=game/is-touching\n        //% blockId=game_sprite_touching_sprite block=\"is %sprite|touching %other\" blockGap=8\n        public isTouching(other: LedSprite): boolean {\n            return this._enabled && other._enabled && this._x == other._x && this._y == other._y;\n        }\n\n        /**\n         * Reports true if sprite is touching an edge\n         * @param this the sprite to check for an edge contact\n         */\n        //% weight=19 help=game/is-touching-edge\n        //% blockId=game_sprite_touching_edge block=\"is %sprite|touching edge\" blockGap=8\n        public isTouchingEdge(): boolean {\n            return this._enabled && (this._x == 0 || this._x == 4 || this._y == 0 || this._y == 4);\n        }\n\n        /**\n         * Turns on the sprite (on by default)\n         * @param this the sprite\n         */\n        public on(): void {\n            this.setBrightness(255);\n        }\n\n        /**\n         * Turns off the sprite (on by default)\n         * @param this the sprite\n         */\n        public off(): void {\n            this.setBrightness(0);\n        }\n\n        /**\n         * Set the ``brightness`` of a sprite\n         * @param this the sprite\n         * @param brightness the brightness from 0 (off) to 255 (on), eg: 255.\n         */\n        //% parts=\"ledmatrix\"\n        public setBrightness(brightness: number): void {\n            this._brightness = Math.clamp(0, 255, brightness);\n            plot();\n        }\n\n        /**\n         * Reports the ``brightness` of a sprite on the LED screen\n         * @param this the sprite\n         */\n        //% parts=\"ledmatrix\"\n        public brightness(): number {\n            let r: number;\n            return this._brightness;\n        }\n\n        /**\n         * Changes the ``y`` position by the given amount\n         * @param this the sprite\n         * @param value the value to change brightness\n         */\n        public changeBrightnessBy(value: number): void {\n            this.setBrightness(this._brightness + value);\n        }\n\n        /**\n         * Changes the ``direction`` position by the given amount by turning right\n         * @param this TODO\n         * @param angle TODO\n         */\n        public changeDirectionBy(angle: number): void {\n            this.turnRight(angle);\n        }\n\n        /**\n         * Deletes the sprite from the game engine. The sprite will no longer appear on the screen or interact with other sprites.\n         * @param this sprite to delete\n         */\n        //% weight=59 blockGap=8 help=game/delete\n        //% blockId=\"game_delete_sprite\" block=\"delete %this(sprite)\"\n        public delete(): void {\n            this._enabled = false;\n            if (_sprites.removeElement(this))\n                plot();\n        }\n\n        /**\n         * Reports whether the sprite has been deleted from the game engine.\n         */\n        //% weight=58 help=game/is-deleted\n        //% blockId=\"game_sprite_is_deleted\" block=\"is %sprite|deleted\"\n        public isDeleted(): boolean {\n            return !this._enabled;\n        }\n\n        /**\n         * Sets the blink duration interval in millisecond.\n         * @param sprite TODO\n         * @param ms TODO\n         */\n        public setBlink(ms: number): void {\n            this._blink = Math.clamp(0, 10000, ms);\n        }\n\n        /**\n         * Changes the ``blink`` duration by the given amount of millisecons\n         * @param this TODO\n         * @param ms TODO\n         */\n        public changeBlinkBy(ms: number): void {\n            this.setBlink(this._blink + ms);\n        }\n\n        /**\n         * Reports the ``blink`` duration of a sprite\n         * @param this TODO\n         */\n        public blink(): number {\n            return this._blink;\n        }\n\n        //% weight=-1\n        //% parts=\"ledmatrix\"\n        public _plot(now: number) {\n            let ps = this\n            if (ps._brightness > 0) {\n                let r = 0;\n                if (ps._blink > 0) {\n                    r = Math.floor(now / ps._blink) % 2;\n                }\n                if (r == 0) {\n                    _img.setPixelBrightness(ps._x, ps._y, _img.pixelBrightness(ps._x, ps._y) + ps._brightness);\n                }\n            }\n        }\n    }\n\n    function init(): void {\n        if (_img) return;\n        const img = images.createImage(\n`0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0`);\n        _sprites = (<LedSprite[]>[]);\n        basic.forever(() => {\n            basic.pause(30);\n            plot();\n            if (game.isGameOver()) {\n                basic.pause(600);\n            }\n        });\n        _img = img;\n    }\n\n    /**\n     * Plots the current sprites on the screen\n     */\n    //% parts=\"ledmatrix\"\n    function plot(): void {\n        if (game.isGameOver() || game.isPaused() || !_img || _backgroundAnimation) {\n            return;\n        }\n        // ensure greyscale mode\n        const dm = led.displayMode();\n        if (dm != DisplayMode.Greyscale)\n            led.setDisplayMode(DisplayMode.Greyscale);\n        // render sprites\n        const now = input.runningTime();\n        _img.clear();\n        for (let i = 0; i < _sprites.length; i++) {\n            _sprites[i]._plot(now);\n        }\n        _img.plotImage(0);\n    }\n\n    /**\n     * Gets an invalid sprite; used to initialize locals.\n     */\n    //% weight=0\n    export function invalidSprite(): LedSprite {\n        return null;\n    }\n\n}\n\n",
             "gc.cpp": "#include \"pxtbase.h\"\n\n#ifndef GC_BLOCK_SIZE\n#define GC_BLOCK_SIZE (1024 * 16)\n#endif\n\n#ifndef GC_MAX_ALLOC_SIZE\n#define GC_MAX_ALLOC_SIZE (GC_BLOCK_SIZE - 16)\n#endif\n\n#ifndef GC_ALLOC_BLOCK\n#define GC_ALLOC_BLOCK xmalloc\n#endif\n\n#ifdef PXT64\n#define HIGH_SHIFT 48\n#define BYTES_TO_WORDS(x) ((x) >> 3)\n#define WORDS_TO_BYTES(x) ((x) << 3)\n#define ALIGN_TO_WORD(x) (((x) + 7) & (~7ULL))\n#define VAR_BLOCK_WORDS(vt) ((uint32_t)(vt) >> 2)\n#else\n#define HIGH_SHIFT 28\n#define BYTES_TO_WORDS(x) ((x) >> 2)\n#define WORDS_TO_BYTES(x) ((x) << 2)\n#define ALIGN_TO_WORD(x) (((x) + 3) & (~3U))\n#define VAR_BLOCK_WORDS(vt) (((uint32_t)(vt) << 4) >> (4 + 2))\n#endif\n\n#define FREE_MASK (1ULL << (HIGH_SHIFT + 3))\n#define ARRAY_MASK (1ULL << (HIGH_SHIFT + 2))\n#define PERMA_MASK (1ULL << (HIGH_SHIFT + 1))\n#define MARKED_MASK 0x1\n#define ANY_MARKED_MASK 0x3\n\n// the bit operations should be faster than loading large constants\n#define IS_FREE(vt) ((uintptr_t)(vt) >> (HIGH_SHIFT + 3))\n#define IS_ARRAY(vt) (((uintptr_t)(vt) >> (HIGH_SHIFT + 2)) & 1)\n#define IS_PERMA(vt) (((uintptr_t)(vt) >> (HIGH_SHIFT + 1)) & 1)\n#define IS_VAR_BLOCK(vt) ((uintptr_t)(vt) >> (HIGH_SHIFT + 2))\n#define IS_MARKED(vt) ((uintptr_t)(vt)&MARKED_MASK)\n#define IS_LIVE(vt) (IS_MARKED(vt) || (((uintptr_t)(vt) >> (HIGH_SHIFT)) == 0x6))\n\n//#define PXT_GC_DEBUG 1\n#ifndef PXT_GC_CHECKS\n#define PXT_GC_CHECKS 1\n#endif\n//#define PXT_GC_STRESS 1\n\n//#define PXT_GC_CHECKS 1\n\n#define MARK(v)                                                                                    \\\n    do {                                                                                           \\\n        GC_CHECK(inGCArea(v), 42);                                                                 \\\n        *(uintptr_t *)(v) |= MARKED_MASK;                                                          \\\n    } while (0)\n\n#ifdef PXT_GC_DEBUG\n#define LOG DMESG\n#define VLOG DMESG\n#define VVLOG DMESG\n#else\n#define LOG NOLOG\n#define VLOG NOLOG\n#define VVLOG NOLOG\n#endif\n\n#ifdef PXT_GC_CHECKS\n#define GC_CHECK(cond, code)                                                                       \\\n    if (!(cond))                                                                                   \\\n    oops(code)\n#else\n#define GC_CHECK(cond, code) ((void)0)\n#endif\n\nnamespace pxt {\n\n// keep in sync with base/control.ts, function gcStats()\nstruct GCStats {\n    uint32_t numGC;\n    uint32_t numBlocks;\n    uint32_t totalBytes;\n    uint32_t lastFreeBytes;\n    uint32_t lastMaxBlockBytes;\n    uint32_t minFreeBytes;\n};\n\nstatic GCStats gcStats;\n\n//% expose\nBuffer getGCStats() {\n    return mkBuffer((uint8_t*)&gcStats, sizeof(gcStats));\n}\n\n//%\nvoid popThreadContext(ThreadContext *ctx);\n//%\nThreadContext *pushThreadContext(void *sp, void *endSP);\n\nunsigned RefRecord_gcsize(RefRecord *r) {\n    VTable *tbl = getVTable(r);\n    return BYTES_TO_WORDS(tbl->numbytes);\n}\n\n#ifdef PXT_GC_THREAD_LIST\nThreadContext *threadContexts;\n#endif\n\n#define IN_GC_ALLOC 1\n#define IN_GC_COLLECT 2\n#define IN_GC_FREEZE 4\n#define IN_GC_PREALLOC 8\n\n#ifndef PXT_VM\nstatic TValue *tempRoot;\nstatic uint8_t tempRootLen;\n#endif\n\nuint8_t inGC;\n\nvoid popThreadContext(ThreadContext *ctx) {\n#ifndef PXT_VM\n    VLOG(\"pop: %p\", ctx);\n\n    if (!ctx)\n        return;\n\n    auto n = ctx->stack.next;\n    if (n) {\n        VLOG(\"seg %p\", n);\n        ctx->stack.top = n->top;\n        ctx->stack.bottom = n->bottom;\n        ctx->stack.next = n->next;\n        app_free(n);\n    } else {\n#ifdef PXT_GC_THREAD_LIST\n        if (ctx->next)\n            ctx->next->prev = ctx->prev;\n        if (ctx->prev)\n            ctx->prev->next = ctx->next;\n        else {\n            if (threadContexts != ctx)\n                oops(41);\n            threadContexts = ctx->next;\n            if (threadContexts)\n                threadContexts->prev = NULL;\n        }\n#endif\n        app_free(ctx);\n        setThreadContext(NULL);\n    }\n#endif\n}\n\n#define ALLOC(tp) (tp *)app_alloc(sizeof(tp))\n\nThreadContext *pushThreadContext(void *sp, void *endSP) {\n#ifdef PXT_VM\n    return NULL;\n#else\n    if (PXT_IN_ISR())\n        target_panic(PANIC_CALLED_FROM_ISR);\n\n    auto curr = getThreadContext();\n    tempRoot = (TValue *)endSP;\n    tempRootLen = (uintptr_t *)sp - (uintptr_t *)endSP;\n    if (curr) {\n#ifdef PXT_GC_THREAD_LIST\n#ifdef PXT_GC_DEBUG\n        auto ok = false;\n        for (auto p = threadContexts; p; p = p->next)\n            if (p == curr) {\n                ok = true;\n                break;\n            }\n        if (!ok)\n            oops(49);\n#endif\n#endif\n        auto seg = ALLOC(StackSegment);\n        VLOG(\"stack %p / %p\", seg, curr);\n        seg->top = curr->stack.top;\n        seg->bottom = curr->stack.bottom;\n        seg->next = curr->stack.next;\n        curr->stack.next = seg;\n    } else {\n        curr = ALLOC(ThreadContext);\n        LOG(\"push: %p\", curr);\n        curr->globals = globals;\n        curr->stack.next = NULL;\n        curr->thrownValue = TAG_NON_VALUE;\n        curr->tryFrame = NULL;\n\n#ifdef PXT_GC_THREAD_LIST\n        curr->next = threadContexts;\n        curr->prev = NULL;\n        if (curr->next)\n            curr->next->prev = curr;\n        threadContexts = curr;\n#endif\n        setThreadContext(curr);\n    }\n    tempRootLen = 0;\n    curr->stack.bottom = sp;\n    curr->stack.top = NULL;\n    return curr;\n#endif\n}\n\nclass RefBlock : public RefObject {\n  public:\n    RefBlock *nextFree;\n};\n\nstruct GCBlock {\n    GCBlock *next;\n    uint32_t blockSize;\n    RefObject data[0];\n};\n\nstruct PendingArray {\n    PendingArray *next;\n    TValue *data;\n    unsigned len;\n};\n\n#define PENDING_ARRAY_THR 100\n\nstatic PendingArray *pendingArrays;\nstatic LLSegment gcRoots;\nLLSegment workQueue; // (ab)used by consString making\nstatic GCBlock *firstBlock;\nstatic RefBlock *firstFree;\nstatic uint8_t *midPtr;\n\nstatic bool inGCArea(void *ptr) {\n    for (auto block = firstBlock; block; block = block->next) {\n        if ((void *)block->data <= ptr && ptr < (void *)((uint8_t *)block->data + block->blockSize))\n            return true;\n    }\n    return false;\n}\n\n#define NO_MAGIC(vt) ((VTable *)vt)->magic != VTABLE_MAGIC\n#define VT(p) (*(uintptr_t *)(p))\n#define SKIP_PROCESSING(p)                                                                         \\\n    (isReadOnly(p) || (VT(p) & (ANY_MARKED_MASK | ARRAY_MASK)) || NO_MAGIC(VT(p)))\n\nvoid gcMarkArray(void *data) {\n    auto segBl = (uintptr_t *)data - 1;\n    GC_CHECK(!IS_MARKED(VT(segBl)), 47);\n    MARK(segBl);\n}\n\nvoid gcScan(TValue v) {\n    if (SKIP_PROCESSING(v))\n        return;\n    MARK(v);\n    workQueue.push(v);\n}\n\nvoid gcScanMany(TValue *data, unsigned len) {\n    // VLOG(\"scan: %p %d\", data, len);\n    for (unsigned i = 0; i < len; ++i) {\n        auto v = data[i];\n        // VLOG(\"psh: %p %d %d\", v, isReadOnly(v), (*(uint32_t *)v & 1));\n        if (SKIP_PROCESSING(v))\n            continue;\n        MARK(v);\n        workQueue.push(v);\n        if (workQueue.getLength() > PENDING_ARRAY_THR) {\n            i++;\n            // store rest of the work for later, when we have cleared the queue\n            auto pa = (PendingArray *)xmalloc(sizeof(PendingArray));\n            pa->next = pendingArrays;\n            pa->data = data + i;\n            pa->len = len - i;\n            pendingArrays = pa;\n            break;\n        }\n    }\n}\n\nvoid gcScanSegment(Segment &seg) {\n    auto data = seg.getData();\n    if (!data)\n        return;\n    VVLOG(\"seg %p %d\", data, seg.getLength());\n    gcMarkArray(data);\n    gcScanMany(data, seg.getLength());\n}\n\n#define getScanMethod(vt) ((RefObjectMethod)(((VTable *)(vt))->methods[2]))\n#define getSizeMethod(vt) ((RefObjectSizeMethod)(((VTable *)(vt))->methods[3]))\n\nvoid gcProcess(TValue v) {\n    if (SKIP_PROCESSING(v))\n        return;\n    VVLOG(\"gcProcess: %p\", v);\n    MARK(v);\n    auto scan = getScanMethod(VT(v) & ~ANY_MARKED_MASK);\n    if (scan)\n        scan((RefObject *)v);\n    for (;;) {\n        while (workQueue.getLength()) {\n            auto curr = (RefObject *)workQueue.pop();\n            VVLOG(\" - %p\", curr);\n            scan = getScanMethod(curr->vtable & ~ANY_MARKED_MASK);\n            if (scan)\n                scan(curr);\n        }\n        if (pendingArrays) {\n            auto pa = pendingArrays;\n            pendingArrays = pa->next;\n            auto data = pa->data;\n            auto len = pa->len;\n            xfree(pa);\n            gcScanMany(data, len);\n        } else {\n            break;\n        }\n    }\n}\n\nstatic void mark(int flags) {\n#ifdef PXT_GC_DEBUG\n    flags |= 2;\n#endif\n    auto data = gcRoots.getData();\n    auto len = gcRoots.getLength();\n    if (flags & 2) {\n        DMESG(\"--MARK\");\n        DMESG(\"RP:%p/%d\", data, len);\n    }\n    for (unsigned i = 0; i < len; ++i) {\n        auto d = data[i];\n        if ((uintptr_t)d & 1) {\n            d = *(TValue *)((uintptr_t)d & ~1);\n        }\n        gcProcess(d);\n    }\n\n#ifdef PXT_GC_THREAD_LIST\n    for (auto ctx = threadContexts; ctx; ctx = ctx->next) {\n        gcProcess(ctx->thrownValue);\n        for (auto seg = &ctx->stack; seg; seg = seg->next) {\n            auto ptr = (TValue *)threadAddressFor(ctx, seg->top);\n            auto end = (TValue *)threadAddressFor(ctx, seg->bottom);\n            VLOG(\"mark: %p - %p\", ptr, end);\n            while (ptr < end) {\n                gcProcess(*ptr++);\n            }\n        }\n    }\n#else\n    gcProcessStacks(flags);\n#endif\n\n    if (globals) {\n#ifdef PXT_VM\n        auto nonPtrs = vmImg->infoHeader->nonPointerGlobals;\n#else\n        auto nonPtrs = bytecode[21];\n#endif\n        len = getNumGlobals() - nonPtrs;\n        data = globals + nonPtrs;\n        if (flags & 2)\n            DMESG(\"RG:%p/%d\", data, len);\n        VLOG(\"globals: %p %d\", data, len);\n        for (unsigned i = 0; i < len; ++i) {\n            gcProcess(*data++);\n        }\n    }\n\n#ifndef PXT_VM\n    data = tempRoot;\n    len = tempRootLen;\n    for (unsigned i = 0; i < len; ++i) {\n        gcProcess(*data++);\n    }\n#endif\n}\n\nstatic uint32_t getObjectSize(RefObject *o) {\n    auto vt = o->vtable & ~ANY_MARKED_MASK;\n    uint32_t r;\n    GC_CHECK(vt != 0, 49);\n    if (IS_VAR_BLOCK(vt)) {\n        r = VAR_BLOCK_WORDS(vt);\n    } else {\n        auto sz = getSizeMethod(vt);\n        // GC_CHECK(0x2000 <= (intptr_t)sz && (intptr_t)sz <= 0x100000, 47);\n        r = sz(o);\n    }\n    GC_CHECK(1 <= r && (r <= BYTES_TO_WORDS(GC_MAX_ALLOC_SIZE) || IS_FREE(vt)), 41);\n    return r;\n}\n\nstatic void setupFreeBlock(GCBlock *curr) {\n    gcStats.numBlocks++;\n    gcStats.totalBytes += curr->blockSize;\n    curr->data[0].vtable = FREE_MASK | (TOWORDS(curr->blockSize) << 2);\n    ((RefBlock *)curr->data)[0].nextFree = firstFree;\n    firstFree = (RefBlock *)curr->data;\n    midPtr = (uint8_t *)curr->data + curr->blockSize / 4;\n}\n\nstatic void linkFreeBlock(GCBlock *curr) {\n    // blocks need to be sorted by address for midPtr to work\n    if (!firstBlock || curr < firstBlock) {\n        curr->next = firstBlock;\n        firstBlock = curr;\n    } else {\n        for (auto p = firstBlock; p; p = p->next) {\n            if (!p->next || curr < p->next) {\n                curr->next = p->next;\n                p->next = curr;\n                break;\n            }\n        }\n    }\n}\n\nvoid gcPreAllocateBlock(uint32_t sz) {\n    auto curr = (GCBlock *)GC_ALLOC_BLOCK(sz);\n    curr->blockSize = sz - sizeof(GCBlock);\n    LOG(\"GC pre-alloc: %p\", curr);\n    GC_CHECK((curr->blockSize & 3) == 0, 40);\n    setupFreeBlock(curr);\n    linkFreeBlock(curr);\n}\n\nstatic GCBlock *allocateBlockCore() {\n    int sz = GC_BLOCK_SIZE;\n    void *dummy = NULL;\n#ifdef GC_GET_HEAP_SIZE\n    if (firstBlock) {\n#ifdef GC_STACK_BASE\n        if (!firstBlock->next) {\n            int memSize = getConfig(CFG_RAM_BYTES, 0);\n            int codalEnd = GC_STACK_BASE;\n            // round up to 1k - there is sometimes a few bytes below the stack\n            codalEnd = (codalEnd + 1024) & ~1023;\n            int codalSize = codalEnd & 0xffffff;\n            sz = memSize - codalSize - 4;\n            if (sz > 0) {\n                auto curr = (GCBlock *)codalEnd;\n                curr->blockSize = sz - sizeof(GCBlock);\n                return curr;\n            }\n        }\n#endif\n        gc(2); // dump roots\n        target_panic(PANIC_GC_OOM);\n    }\n    auto lowMem = getConfig(CFG_LOW_MEM_SIMULATION_KB, 0);\n    auto sysHeapSize = getConfig(CFG_SYSTEM_HEAP_BYTES, 4 * 1024);\n    auto heapSize = GC_GET_HEAP_SIZE();\n    sz = heapSize - sysHeapSize;\n    if (lowMem) {\n        auto memIncrement = 32 * 1024;\n        // get the memory size - assume it's increment of 32k,\n        // and we don't statically allocate more than 32k\n        auto memSize = ((heapSize + memIncrement - 1) / memIncrement) * memIncrement;\n        int fillerSize = memSize - lowMem * 1024;\n        if (fillerSize > 0) {\n            dummy = GC_ALLOC_BLOCK(fillerSize);\n            sz -= fillerSize;\n        }\n    }\n#endif\n    auto curr = (GCBlock *)GC_ALLOC_BLOCK(sz);\n    curr->blockSize = sz - sizeof(GCBlock);\n    // make sure reference to allocated block is stored somewhere, otherwise\n    // GCC optimizes out the call to GC_ALLOC_BLOCK\n    curr->data[4].vtable = (uint32_t)(uintptr_t)dummy;\n    return curr;\n}\n\n__attribute__((noinline)) static void allocateBlock() {\n    auto curr = allocateBlockCore();\n    LOG(\"GC alloc: %p\", curr);\n    GC_CHECK((curr->blockSize & 3) == 0, 40);\n    setupFreeBlock(curr);\n    linkFreeBlock(curr);\n}\n\nstatic void sweep(int flags) {\n    RefBlock *prevFreePtr = NULL;\n    uint32_t freeSize = 0;\n    uint32_t totalSize = 0;\n    uint32_t maxFreeBlock = 0;\n    firstFree = NULL;\n\n    gcStats.numGC++;\n\n    for (auto h = firstBlock; h; h = h->next) {\n        auto d = h->data;\n        auto words = BYTES_TO_WORDS(h->blockSize);\n        auto end = d + words;\n        totalSize += words;\n        VLOG(\"sweep: %p - %p\", d, end);\n        while (d < end) {\n            if (IS_LIVE(d->vtable)) {\n                VVLOG(\"Live %p\", d);\n                d->vtable &= ~MARKED_MASK;\n                d += getObjectSize(d);\n            } else {\n                auto start = (RefBlock *)d;\n                while (d < end) {\n                    if (IS_FREE(d->vtable)) {\n                        VVLOG(\"Free %p\", d);\n                    } else if (IS_LIVE(d->vtable)) {\n                        break;\n                    } else if (IS_ARRAY(d->vtable)) {\n                        VVLOG(\"Dead Arr %p\", d);\n                    } else {\n                        VVLOG(\"Dead Obj %p\", d);\n                        GC_CHECK(((VTable *)d->vtable)->magic == VTABLE_MAGIC, 41);\n                        d->destroyVT();\n                        VVLOG(\"destroyed\");\n                    }\n                    d += getObjectSize(d);\n                }\n                auto sz = d - (RefObject *)start;\n                freeSize += sz;\n                if (sz > (int)maxFreeBlock)\n                    maxFreeBlock = sz;\n#ifdef PXT_GC_CHECKS\n                memset(start, 0xff, WORDS_TO_BYTES(sz));\n#endif\n                start->vtable = (sz << 2) | FREE_MASK;\n                if (sz > 1) {\n                    start->nextFree = NULL;\n                    if (!prevFreePtr) {\n                        firstFree = start;\n                    } else {\n                        prevFreePtr->nextFree = start;\n                    }\n                    prevFreePtr = start;\n                }\n            }\n        }\n    }\n\n    if (midPtr) {\n        uint32_t currFree = 0;\n        auto limit = freeSize * 1 / 2;\n        for (auto p = firstFree; p; p = p->nextFree) {\n            auto len = VAR_BLOCK_WORDS(p->vtable);\n            currFree += len;\n            if (currFree > limit) {\n                midPtr = (uint8_t *)p + ((limit - currFree + len) << 2);\n                break;\n            }\n        }\n    }\n\n    freeSize = WORDS_TO_BYTES(freeSize);\n    totalSize = WORDS_TO_BYTES(totalSize);\n    maxFreeBlock = WORDS_TO_BYTES(maxFreeBlock);\n\n    gcStats.lastFreeBytes = freeSize;\n    gcStats.lastMaxBlockBytes = maxFreeBlock;\n\n    if (gcStats.minFreeBytes == 0 || gcStats.minFreeBytes > freeSize)\n        gcStats.minFreeBytes = freeSize;\n\n    if (flags & 1)\n        DMESG(\"GC %d/%d free; %d maxBlock\", freeSize, totalSize, maxFreeBlock);\n    else\n        LOG(\"GC %d/%d free; %d maxBlock\", freeSize, totalSize, maxFreeBlock);\n\n#ifndef GC_GET_HEAP_SIZE\n    // if the heap is 90% full, allocate a new block\n    if (freeSize * 10 <= totalSize) {\n        allocateBlock();\n    }\n#endif\n}\n\nvoid gc(int flags) {\n    startPerfCounter(PerfCounters::GC);\n    GC_CHECK(!(inGC & IN_GC_COLLECT), 40);\n    inGC |= IN_GC_COLLECT;\n    VLOG(\"GC mark\");\n    mark(flags);\n    VLOG(\"GC sweep\");\n    sweep(flags);\n    VLOG(\"GC done\");\n    stopPerfCounter(PerfCounters::GC);\n    inGC &= ~IN_GC_COLLECT;\n}\n\n#ifdef GC_GET_HEAP_SIZE\nextern \"C\" void free(void *ptr) {\n    if (!ptr)\n        return;\n    if (inGCArea(ptr))\n        app_free(ptr);\n    else\n        xfree(ptr);\n}\n\nextern \"C\" void *malloc(size_t sz) {\n    if (PXT_IN_ISR() || inGC)\n        return xmalloc(sz);\n    else\n        return app_alloc(sz);\n}\n\nextern \"C\" void *realloc(void *ptr, size_t size) {\n    if (inGCArea(ptr)) {\n        void *mem = malloc(size);\n\n        if (ptr != NULL && mem != NULL) {\n            auto r = (uintptr_t *)ptr;\n            GC_CHECK((r[-1] >> (HIGH_SHIFT + 1)) == 3, 41);\n            size_t blockSize = VAR_BLOCK_WORDS(r[-1]);\n            memcpy(mem, ptr, min(blockSize * sizeof(void *), size));\n            free(ptr);\n        }\n\n        return mem;\n    } else {\n        return device_realloc(ptr, size);\n    }\n}\n#endif\n\nvoid *gcAllocateArray(int numbytes) {\n    numbytes = ALIGN_TO_WORD(numbytes);\n    numbytes += sizeof(void *);\n    auto r = (uintptr_t *)gcAllocate(numbytes);\n    *r = ARRAY_MASK | (TOWORDS(numbytes) << 2);\n    return r + 1;\n}\n\nvoid *app_alloc(int numbytes) {\n    if (!numbytes)\n        return NULL;\n\n    // gc(0);\n    auto r = (uintptr_t *)gcAllocateArray(numbytes);\n    r[-1] |= PERMA_MASK;\n    return r;\n}\n\nvoid *app_free(void *ptr) {\n    auto r = (uintptr_t *)ptr;\n    GC_CHECK((r[-1] >> (HIGH_SHIFT + 1)) == 3, 41);\n    r[-1] |= FREE_MASK;\n    return r;\n}\n\nvoid gcFreeze() {\n    inGC |= IN_GC_FREEZE;\n}\n\nvoid gcReset() {\n    inGC &= ~IN_GC_FREEZE;\n\n    gcRoots.setLength(0);\n\n    if (inGC)\n        oops(41);\n\n    if (workQueue.getLength())\n        oops(41);\n\n    memset(&gcStats, 0, sizeof(gcStats));\n    firstFree = NULL;\n    for (auto h = firstBlock; h; h = h->next) {\n        setupFreeBlock(h);\n    }\n}\n\n#ifdef PXT_VM\nstatic uint8_t *preallocBlock;\nstatic uint8_t *preallocPointer;\n\n#define PREALLOC_SIZE (1024 * 1024)\n\nvoid gcPreStartup() {\n    xfree(preallocBlock);\n    preallocBlock = (uint8_t *)xmalloc(PREALLOC_SIZE);\n    preallocPointer = preallocBlock;\n    if (!isReadOnly((TValue)preallocBlock))\n        oops(40);\n    inGC |= IN_GC_PREALLOC;\n}\n\nvoid gcStartup() {\n    inGC &= ~IN_GC_PREALLOC;\n    preallocPointer = NULL;\n}\n\nvoid *gcPrealloc(int numbytes) {\n    if (!preallocPointer)\n        oops(49);\n    void *r = preallocPointer;\n    preallocPointer += ALIGN_TO_WORD(numbytes);\n    if (preallocPointer > preallocBlock + PREALLOC_SIZE) {\n        DMESG(\"pre-alloc size exceeded! block=%p ptr=%p sz=%d\", preallocBlock, preallocPointer,\n              (int)PREALLOC_SIZE);\n        oops(48);\n    }\n    return r;\n}\n\nbool inGCPrealloc() {\n    return (inGC & IN_GC_PREALLOC) != 0;\n}\n#endif\n\nvoid *gcAllocate(int numbytes) {\n    size_t numwords = BYTES_TO_WORDS(ALIGN_TO_WORD(numbytes));\n    // VVLOG(\"alloc %d bytes %d words\", numbytes, numwords);\n\n    if (numbytes > GC_MAX_ALLOC_SIZE)\n        target_panic(PANIC_GC_TOO_BIG_ALLOCATION);\n\n    if (PXT_IN_ISR() || (inGC & (IN_GC_ALLOC | IN_GC_COLLECT | IN_GC_FREEZE)))\n        target_panic(PANIC_CALLED_FROM_ISR);\n\n#ifdef PXT_VM\n    if (inGCPrealloc())\n        return gcPrealloc(numbytes);\n#endif\n\n    inGC |= IN_GC_ALLOC;\n\n#if defined(PXT_GC_CHECKS) && !defined(PXT_VM)\n    {\n        auto curr = getThreadContext();\n        if (curr && !curr->stack.top)\n            oops(46);\n    }\n#endif\n\n#ifdef PXT_GC_STRESS\n    gc(0);\n#endif\n\n    for (int i = 0;; ++i) {\n        RefBlock *prev = NULL;\n        for (auto p = firstFree; p; p = p->nextFree) {\n            VVLOG(\"p=%p\", p);\n            if (i == 0 && (uint8_t *)p > midPtr) {\n                VLOG(\"past midptr %p; gc\", midPtr);\n                break;\n            }\n            GC_CHECK(!isReadOnly((TValue)p), 49);\n            auto vt = p->vtable;\n            if (!IS_FREE(vt))\n                oops(43);\n            int left = (int)(VAR_BLOCK_WORDS(vt) - numwords);\n            VVLOG(\"%p %d - %d = %d\", (void *)vt, (int)VAR_BLOCK_WORDS(vt), (int)numwords, left);\n            if (left >= 0) {\n                auto nf = (RefBlock *)((void **)p + numwords);\n                auto nextFree = p->nextFree; // p and nf can overlap when allocating 4 bytes\n                // VVLOG(\"nf=%p nef=%p\", nf, nextFree);\n                if (left)\n                    nf->vtable = (left << 2) | FREE_MASK;\n                if (left >= 2) {\n                    nf->nextFree = nextFree;\n                } else {\n                    nf = nextFree;\n                }\n                if (prev)\n                    prev->nextFree = nf;\n                else\n                    firstFree = nf;\n                p->vtable = 0;\n                VVLOG(\"GC=>%p %d %p -> %p,%p\", p, numwords, nf, nf ? nf->nextFree : 0,\n                      nf ? (void *)nf->vtable : 0);\n                GC_CHECK(!nf || !nf->nextFree || !isReadOnly((TValue)nf->nextFree), 48);\n                inGC &= ~IN_GC_ALLOC;\n                return p;\n            }\n            prev = p;\n        }\n\n        // we didn't find anything, try GC\n        if (i == 0)\n            gc(0);\n        // GC didn't help, try new block\n        else if (i == 1)\n            allocateBlock();\n        else\n            // the block allocated was apparently too small\n            target_panic(PANIC_GC_OOM);\n    }\n}\n\nstatic void removePtr(TValue v) {\n    int len = gcRoots.getLength();\n    auto data = gcRoots.getData();\n    // scan from the back, as this is often used as a stack\n    for (int i = len - 1; i >= 0; --i) {\n        if (data[i] == v) {\n            if (i == len - 1) {\n                gcRoots.pop();\n            } else {\n                data[i] = gcRoots.pop();\n            }\n            return;\n        }\n    }\n    oops(40);\n}\n\nvoid registerGC(TValue *root, int numwords) {\n    if (!numwords)\n        return;\n\n    if (numwords > 1) {\n        while (numwords-- > 0) {\n            registerGC(root++, 1);\n        }\n        return;\n    }\n\n    gcRoots.push((TValue)((uintptr_t)root | 1));\n}\n\nvoid unregisterGC(TValue *root, int numwords) {\n    if (!numwords)\n        return;\n    if (numwords > 1) {\n        while (numwords-- > 0) {\n            unregisterGC(root++, 1);\n        }\n        return;\n    }\n\n    removePtr((TValue)((uintptr_t)root | 1));\n}\n\nvoid registerGCPtr(TValue ptr) {\n    if (isReadOnly(ptr))\n        return;\n    gcRoots.push(ptr);\n}\n\nvoid unregisterGCPtr(TValue ptr) {\n    if (isReadOnly(ptr))\n        return;\n    removePtr(ptr);\n}\n\nvoid RefImage::scan(RefImage *t) {\n    gcScan((TValue)t->buffer);\n}\n\nvoid RefCollection::scan(RefCollection *t) {\n    gcScanSegment(t->head);\n}\n\nvoid RefAction::scan(RefAction *t) {\n    gcScanMany(t->fields, t->len);\n}\n\nvoid RefRefLocal::scan(RefRefLocal *t) {\n    gcScan(t->v);\n}\n\nvoid RefMap::scan(RefMap *t) {\n    gcScanSegment(t->keys);\n    gcScanSegment(t->values);\n}\n\nvoid RefRecord_scan(RefRecord *r) {\n    VTable *tbl = getVTable(r);\n    gcScanMany(r->fields, BYTES_TO_WORDS(tbl->numbytes - sizeof(RefRecord)));\n}\n\n#define SIZE(off) TOWORDS(sizeof(*t) + (off))\n\nunsigned RefImage::gcsize(RefImage *t) {\n    return SIZE(0);\n}\n\nunsigned RefCollection::gcsize(RefCollection *t) {\n    return SIZE(0);\n}\n\nunsigned RefAction::gcsize(RefAction *t) {\n    return SIZE(WORDS_TO_BYTES(t->len));\n}\n\nunsigned RefRefLocal::gcsize(RefRefLocal *t) {\n    return SIZE(0);\n}\n\nunsigned RefMap::gcsize(RefMap *t) {\n    return SIZE(0);\n}\n\n} // namespace pxt\n",
             "gcstats.ts": "namespace control {\n    //% shim=pxt::getGCStats\n    function getGCStats(): Buffer {\n        return null\n    }\n\n    export interface GCStats {\n        numGC: number;\n        numBlocks: number;\n        totalBytes: number;\n        lastFreeBytes: number;\n        lastMaxBlockBytes: number;\n        minFreeBytes: number;\n    }\n\n    /**\n     * Get various statistics about the garbage collector (GC)\n     */\n    export function gcStats(): GCStats {\n        const buf = getGCStats()\n        if (!buf)\n            return null\n        let off = 0\n        const res: any = {}\n\n        addField(\"numGC\")\n        addField(\"numBlocks\")\n        addField(\"totalBytes\")\n        addField(\"lastFreeBytes\")\n        addField(\"lastMaxBlockBytes\")\n        addField(\"minFreeBytes\")\n\n        return res\n\n        function addField(name: string) {\n            res[name] = buf.getNumber(NumberFormat.UInt32LE, off)\n            off += 4\n        }\n    }    \n}",
@@ -2712,7 +2732,7 @@ var pxtTargetBundle = {
             "pxt-python.d.ts": "/// <reference no-default-lib=\"true\"/>\n\ndeclare namespace _py {\n    interface Array {\n        //% py2tsOverride=\"push($0)\"\n        append(value: any): void;\n\n        //% py2tsOverride=\"concat($0)\"\n        extend(other: Array): void;\n\n        //% py2tsOverride=\"insertAt($0, $1)\"\n        insert(index: number, value: any): void;\n\n        //% py2tsOverride=\"removeElement($0)\"\n        remove(value: any): void;\n\n        //% py2tsOverride=\"sort()\"\n        sort(): void;\n\n        //% py2tsOverride=\"reverse()\"\n        reverse(): void;\n\n        //% py2tsOverride=\"slice()\"\n        copy(): void;\n\n        //% pyHelper=\"py_array_pop\"\n        pop(index?: number): any;\n\n        //% pyHelper=\"py_array_clear\"\n        clear(): void;\n\n        //% pyHelper=\"py_array_index\"\n        index(value: any, start?: number, end?: number): number;\n\n        //% pyHelper=\"py_array_count\"\n        count(value: any): number;\n    }\n\n    interface String {\n        //% pyHelper=\"py_string_capitalize\"\n        capitalize(): string;\n\n        //% pyHelper=\"py_string_casefold\"\n        casefold(): string;\n\n        //% pyHelper=\"py_string_center\"\n        center(width: number, fillChar?: string): string;\n\n        //% pyHelper=\"py_string_count\"\n        count(sub: string, start?: number, end?: number): number;\n\n        //% pyHelper=\"py_string_endswith\"\n        endswith(suffix: string, start?: number, end?: number): boolean;\n\n        //% pyHelper=\"py_string_find\"\n        find(sub: string, start?: number, end?: number): number;\n\n        //% pyHelper=\"py_string_index\"\n        index(sub: string, start?: number, end?: number): number;\n\n        //% pyHelper=\"py_string_isalnum\"\n        isalnum(): boolean;\n\n        //% pyHelper=\"py_string_isalpha\"\n        isalpha(): boolean;\n\n        //% pyHelper=\"py_string_isascii\"\n        isascii(): boolean;\n\n        //% pyHelper=\"py_string_isdigit\"\n        isdigit(): boolean;\n\n        //% pyHelper=\"py_string_isnumeric\"\n        isnumeric(): boolean;\n\n        //% pyHelper=\"py_string_isspace\"\n        isspace(): boolean;\n\n        //% pyHelper=\"py_string_isdecimal\"\n        isdecimal(): boolean;\n\n        //% pyHelper=\"py_string_isidentifier\"\n        isidentifier(): boolean;\n\n        //% pyHelper=\"py_string_islower\"\n        islower(): boolean;\n\n        //% pyHelper=\"py_string_isprintable\"\n        isprintable(): boolean;\n\n        //% pyHelper=\"py_string_istitle\"\n        istitle(): boolean;\n\n        //% pyHelper=\"py_string_isupper\"\n        isupper(): boolean;\n\n        //% pyHelper=\"py_string_join\"\n        join(iterable: any[]): string;\n\n        //% pyHelper=\"py_string_ljust\"\n        ljust(width: number, fillChar?: string): string;\n\n        //% pyHelper=\"py_string_lower\"\n        lower(): string;\n\n        //% pyHelper=\"py_string_lstrip\"\n        lstrip(chars?: string): string;\n\n        //% pyHelper=\"py_string_replace\"\n        replace(oldString: string, newString: string, count?: number): string;\n\n        //% pyHelper=\"py_string_rfind\"\n        rfind(sub: string, start?: number, end?: number): number;\n\n        //% pyHelper=\"py_string_rindex\"\n        rindex(sub: string, start?: number, end?: number): number;\n\n        //% pyHelper=\"py_string_rjust\"\n        rjust(width: number, fillChar?: string): string;\n\n        //% pyHelper=\"py_string_rsplit\"\n        rsplit(sep?: string, maxSplit?: number): string[];\n\n        //% pyHelper=\"py_string_rstrip\"\n        rstrip(chars?: string): string;\n\n        //% pyHelper=\"py_string_split\"\n        split(sep?: string, maxsplit?: number): string[];\n\n        //% pyHelper=\"py_string_splitlines\"\n        splitlines(keepends?: boolean): string[];\n\n        //% pyHelper=\"py_string_startswith\"\n        startswith(prefix: string, start?: number, end?: number): boolean;\n\n        //% pyHelper=\"py_string_strip\"\n        strip(chars?: string): string;\n\n        //% pyHelper=\"py_string_swapcase\"\n        swapcase(): string;\n\n        //% pyHelper=\"py_string_title\"\n        title(): string;\n\n        //% pyHelper=\"py_string_upper\"\n        upper(): string;\n\n        //% pyHelper=\"py_string_zfill\"\n        zfill(width: number): string;\n    }\n\n    interface Dict {\n        clear(): void;\n        copy(): void;\n        get(key: string, defaultValue?: any): any;\n        // items(): [string, any][];\n        keys(): string[];\n        pop(key: string, defaultValue?: any): any;\n        // popitem(): [string, any];\n        setdefault(key: string, defaultValue?: any): any;\n        update(other: Dict): void;\n        values(): any[];\n    }\n\n    interface Set {\n        isdisjoint(other: Set): boolean;\n        issubset(other: Set): boolean;\n        issuperset(other: Set): boolean;\n        union(other: Set): Set;\n        intersection(other: Set): Set;\n        difference(other: Set): Set;\n        symmetric_difference(other: Set): Set;\n        copy(): Set;\n        update(other: Set): void;\n        intersection_update(other: Set): void;\n        difference_update(other: Set): void;\n        symmetric_difference_update(other: Set): void;\n        add(elem: any): void;\n        remove(elem: any): void;\n        discard(elem: any): void;\n        pop(): any;\n        clear(): void;\n    }\n}",
             "pxt.cpp": "#include \"pxtbase.h\"\n\nusing namespace std;\n\nnamespace pxt {\n\nAction mkAction(int totallen, RefAction *act) {\n    check(getVTable(act)->classNo == BuiltInType::RefAction, PANIC_INVALID_BINARY_HEADER, 1);\n#ifdef PXT_VM\n    check(act->initialLen == totallen, PANIC_INVALID_BINARY_HEADER, 13);\n#endif\n\n    if (totallen == 0) {\n        return (TValue)act; // no closure needed\n    }\n\n    void *ptr = gcAllocate(sizeof(RefAction) + totallen * sizeof(void *));\n    RefAction *r = new (ptr) RefAction();\n    r->len = totallen;\n#ifdef PXT_VM\n    r->numArgs = act->numArgs;\n    r->initialLen = act->initialLen;\n    r->reserved = act->reserved;\n#endif\n    r->func = act->func;\n    memset(r->fields, 0, r->len * sizeof(void *));\n\n    MEMDBG(\"mkAction: start=%p => %p\", act, r);\n\n    return (Action)r;\n}\n\nRefRecord *mkClassInstance(VTable *vtable) {\n    intcheck(vtable->methods[0] == &RefRecord_destroy, PANIC_SIZE, 3);\n    // intcheck(vtable->methods[1] == &RefRecord_print, PANIC_SIZE, 4);\n\n    void *ptr = gcAllocate(vtable->numbytes);\n    RefRecord *r = new (ptr) RefRecord(vtable);\n    memset(r->fields, 0, vtable->numbytes - sizeof(RefRecord));\n    MEMDBG(\"mkClass: vt=%p => %p\", vtable, r);\n    return r;\n}\n\nTValue RefRecord::ld(int idx) {\n    // intcheck((reflen == 255 ? 0 : reflen) <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 1);\n    return fields[idx];\n}\n\nTValue RefRecord::ldref(int idx) {\n    // DMESG(\"LD %p len=%d reflen=%d idx=%d\", this, len, reflen, idx);\n    // intcheck(0 <= idx && idx < reflen, PANIC_OUT_OF_BOUNDS, 2);\n    return fields[idx];\n}\n\nvoid RefRecord::st(int idx, TValue v) {\n    // intcheck((reflen == 255 ? 0 : reflen) <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 3);\n    fields[idx] = v;\n}\n\nvoid RefRecord::stref(int idx, TValue v) {\n    // DMESG(\"ST %p len=%d reflen=%d idx=%d\", this, len, reflen, idx);\n    // intcheck(0 <= idx && idx < reflen, PANIC_OUT_OF_BOUNDS, 4);\n    fields[idx] = v;\n}\n\nvoid RefObject::destroyVT() {\n    ((RefObjectMethod)getVTable(this)->methods[0])(this);\n}\n\n//%\nvoid deleteRefObject(RefObject *obj) {\n    obj->destroyVT();\n}\n\nvoid RefObject::printVT() {\n    ((RefObjectMethod)getVTable(this)->methods[1])(this);\n}\n\nvoid RefRecord_destroy(RefRecord *) {}\n\nvoid RefRecord_print(RefRecord *r) {\n    DMESG(\"RefRecord %p size=%d bytes\", r, getVTable(r)->numbytes);\n}\n\nvoid Segment::set(unsigned i, TValue value) {\n    if (i < size) {\n        data[i] = value;\n    } else if (i < Segment::MaxSize) {\n        growByMin(i + 1);\n        data[i] = value;\n    } else {\n        return;\n    }\n    if (length <= i) {\n        length = i + 1;\n    }\n\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::set\");\n    this->print();\n#endif\n\n    return;\n}\n\nstatic inline int growthFactor(int size) {\n    if (size == 0) {\n        return 4;\n    }\n    if (size < 64) {\n        return size * 2; // Double\n    }\n    if (size < 512) {\n        return size * 5 / 3; // Grow by 1.66 rate\n    }\n    // Grow by constant rate\n    if ((unsigned)size + 256 < Segment::MaxSize)\n        return size + 256;\n    else\n        return Segment::MaxSize;\n}\n\nvoid LLSegment::setLength(unsigned newLen) {\n    if (newLen > Segment::MaxSize)\n        return;\n\n    if (newLen > size) {\n        int newSize = growthFactor(size);\n        if (newSize < (int)newLen)\n            newSize = newLen;\n\n        // this will throw if unable to allocate\n        TValue *tmp = (TValue *)(xmalloc(newSize * sizeof(TValue)));\n\n        // Copy existing data\n        if (size) {\n            memcpy(tmp, data, size * sizeof(TValue));\n        }\n        // fill the rest with default value\n        memset(tmp + size, 0, (newSize - size) * sizeof(TValue));\n\n        // free older segment;\n        xfree(data);\n\n        data = tmp;\n        size = newSize;\n    } else if (newLen < length) {\n        memset(data + newLen, 0, (length - newLen) * sizeof(TValue));\n    }\n\n    length = newLen;\n}\n\nvoid LLSegment::set(unsigned idx, TValue v) {\n    if (idx >= Segment::MaxSize)\n        return;\n    if (idx >= length)\n        setLength(idx + 1);\n    data[idx] = v;\n}\n\nTValue LLSegment::pop() {\n    if (length > 0) {\n        --length;\n        TValue value = data[length];\n        data[length] = 0;\n        return value;\n    }\n    return 0;\n}\n\nvoid LLSegment::destroy() {\n    length = size = 0;\n    xfree(data);\n    data = nullptr;\n}\n\nvoid Segment::growByMin(ramint_t minSize) {\n    ramint_t newSize = max(minSize, (ramint_t)growthFactor(size));\n\n    if (size < newSize) {\n        // this will throw if unable to allocate\n        TValue *tmp = (TValue *)(gcAllocateArray(newSize * sizeof(TValue)));\n\n        // Copy existing data\n        if (size)\n            memcpy(tmp, data, size * sizeof(TValue));\n        // fill the rest with default value\n        memset(tmp + size, 0, (newSize - size) * sizeof(TValue));\n\n        data = tmp;\n        size = newSize;\n\n#ifdef DEBUG_BUILD\n        DMESG(\"growBy - after reallocation\");\n        this->print();\n#endif\n    }\n    // else { no shrinking yet; }\n    return;\n}\n\nvoid Segment::ensure(ramint_t newSize) {\n    if (newSize < size) {\n        return;\n    }\n    growByMin(newSize);\n}\n\nvoid Segment::setLength(unsigned newLength) {\n    if (newLength > size) {\n        ensure(newLength);\n    }\n    length = newLength;\n    return;\n}\n\nTValue Segment::pop() {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::pop\");\n    this->print();\n#endif\n\n    if (length > 0) {\n        --length;\n        TValue value = data[length];\n        data[length] = Segment::DefaultValue;\n        return value;\n    }\n    return Segment::DefaultValue;\n}\n\n// this function removes an element at index i and shifts the rest of the elements to\n// left to fill the gap\nTValue Segment::remove(unsigned i) {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::remove index:%d\", i);\n    this->print();\n#endif\n    if (i < length) {\n        // value to return\n        TValue ret = data[i];\n        if (i + 1 < length) {\n            // Move the rest of the elements to fill in the gap.\n            memmove(data + i, data + i + 1, (length - i - 1) * sizeof(void *));\n        }\n        length--;\n        data[length] = Segment::DefaultValue;\n#ifdef DEBUG_BUILD\n        DMESG(\"After Segment::remove index:%d\", i);\n        this->print();\n#endif\n        return ret;\n    }\n    return Segment::DefaultValue;\n}\n\n// this function inserts element value at index i by shifting the rest of the elements right.\nvoid Segment::insert(unsigned i, TValue value) {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::insert index:%d value:%d\", i, value);\n    this->print();\n#endif\n\n    if (i < length) {\n        ensure(length + 1);\n\n        // Move the rest of the elements to fill in the gap.\n        memmove(data + i + 1, data + i, (length - i) * sizeof(void *));\n\n        data[i] = value;\n        length++;\n    } else {\n        // This is insert beyond the length, just call set which will adjust the length\n        set(i, value);\n    }\n#ifdef DEBUG_BUILD\n    DMESG(\"After Segment::insert index:%d\", i);\n    this->print();\n#endif\n}\n\nvoid Segment::print() {\n    DMESG(\"Segment: %p, length: %d, size: %d\", data, (unsigned)length, (unsigned)size);\n    for (unsigned i = 0; i < size; i++) {\n        DMESG(\"-> %d\", (unsigned)(uintptr_t)data[i]);\n    }\n}\n\nvoid Segment::destroy() {\n#ifdef DEBUG_BUILD\n    DMESG(\"In Segment::destroy\");\n    this->print();\n#endif\n    length = size = 0;\n    data = nullptr;\n}\n\nPXT_VTABLE_CTOR(RefCollection) {}\n\nvoid RefCollection::destroy(RefCollection *t) {\n    t->head.destroy();\n}\n\nvoid RefCollection::print(RefCollection *t) {\n    DMESG(\"RefCollection %p size=%d\", t, t->head.getLength());\n    t->head.print();\n}\n\nPXT_VTABLE(RefAction, ValType::Function)\nRefAction::RefAction() : PXT_VTABLE_INIT(RefAction) {}\n\n// fields[] contain captured locals\nvoid RefAction::destroy(RefAction *t) {}\n\nvoid RefAction::print(RefAction *t) {\n#ifdef PXT_VM\n    DMESG(\"RefAction %p pc=%X size=%d\", t,\n          (const uint8_t *)t->func - (const uint8_t *)vmImg->dataStart, t->len);\n#else\n    DMESG(\"RefAction %p pc=%X size=%d\", t, (const uint8_t *)t->func - (const uint8_t *)bytecode,\n          t->len);\n#endif\n}\n\nPXT_VTABLE_CTOR(RefRefLocal) {\n    v = 0;\n}\n\nvoid RefRefLocal::print(RefRefLocal *t) {\n    DMESG(\"RefRefLocal %p v=%p\", t, (void *)t->v);\n}\n\nvoid RefRefLocal::destroy(RefRefLocal *t) {\n    decr(t->v);\n}\n\nPXT_VTABLE_CTOR(RefMap) {}\n\nvoid RefMap::destroy(RefMap *t) {\n    t->keys.destroy();\n    t->values.destroy();\n}\n\nint RefMap::findIdx(String key) {\n    auto len = keys.getLength();\n    auto data = (String *)keys.getData();\n\n    // fast path\n    for (unsigned i = 0; i < len; ++i) {\n        if (data[i] == key)\n            return i;\n    }\n\n    // slow path\n    auto keylen = key->getUTF8Size();\n    auto keydata = key->getUTF8Data();\n    for (unsigned i = 0; i < len; ++i) {\n        auto s = data[i];\n        if (s->getUTF8Size() == keylen && memcmp(keydata, s->getUTF8Data(), keylen) == 0)\n            return i;\n    }\n\n    return -1;\n}\n\nvoid RefMap::print(RefMap *t) {\n    DMESG(\"RefMap %p size=%d\", t, t->keys.getLength());\n}\n\nvoid debugMemLeaks() {}\n\nvoid error(PXT_PANIC code, int subcode) {\n    DMESG(\"Error: %d [%d]\", code, subcode);\n    target_panic(code);\n}\n\n#ifndef PXT_VM\nuint16_t *bytecode;\n#endif\nTValue *globals;\n\nvoid checkStr(bool cond, const char *msg) {\n    if (!cond) {\n        while (true) {\n            // uBit.display.scroll(msg, 100);\n            // uBit.sleep(100);\n        }\n    }\n}\n\n#ifdef PXT_VM\nint templateHash() {\n    return (int)vmImg->infoHeader->hexHash;\n}\n\nint programHash() {\n    return (int)vmImg->infoHeader->programHash;\n}\n\nint getNumGlobals() {\n    return (int)vmImg->infoHeader->allocGlobals;\n}\n\nString programName() {\n    return mkString((char *)vmImg->infoHeader->name);\n}\n#else\nint templateHash() {\n    return ((int *)bytecode)[4];\n}\n\nint programHash() {\n    return ((int *)bytecode)[6];\n}\n\nint getNumGlobals() {\n    return bytecode[16];\n}\n\nString programName() {\n    return ((String *)bytecode)[15];\n}\n#endif\n\n#ifndef PXT_VM\nvoid variantNotSupported(const char *v) {\n    DMESG(\"variant not supported: %s\", v);\n    target_panic(PANIC_VARIANT_NOT_SUPPORTED);\n}\n\nvoid exec_binary(unsigned *pc) {\n    // XXX re-enable once the calibration code is fixed and [editor/embedded.ts]\n    // properly prepends a call to [internal_main].\n    // ::touch_develop::internal_main();\n\n    // unique group for radio based on source hash\n    // ::touch_develop::micro_bit::radioDefaultGroup = programHash();\n\n    unsigned ver = *pc++;\n    checkStr(ver == 0x4210, \":( Bad runtime version\");\n\n    bytecode = *((uint16_t **)pc++); // the actual bytecode is here\n\n    if (((uint32_t *)bytecode)[0] == 0x923B8E71) {\n        variantNotSupported((const char *)bytecode + 16);\n        return;\n    }\n\n    globals = (TValue *)app_alloc(sizeof(TValue) * getNumGlobals());\n    memset(globals, 0, sizeof(TValue) * getNumGlobals());\n\n    // can be any valid address, best in RAM for speed\n    globals[0] = (TValue)&globals;\n\n    // just compare the first word\n    // TODO\n    checkStr(((uint32_t *)bytecode)[0] == 0x923B8E70 && (unsigned)templateHash() == *pc,\n             \":( Failed partial flash\");\n\n    uintptr_t startptr = (uintptr_t)bytecode;\n\n    startptr += 64; // header\n\n    initPerfCounters();\n\n    initRuntime();\n\n    runAction0((Action)startptr);\n\n    pxt::releaseFiber();\n}\n\nvoid start() {\n    exec_binary((unsigned *)functionsAndBytecode);\n}\n#endif\n\n} // namespace pxt\n\nnamespace Array_ {\n//%\nbool isArray(TValue arr) {\n    auto vt = getAnyVTable(arr);\n    return vt && vt->classNo == BuiltInType::RefCollection;\n}\n} // namespace Array_\n\nnamespace pxtrt {\n//% expose\nRefCollection *keysOf(TValue v) {\n    auto r = NEW_GC(RefCollection);\n    MEMDBG(\"mkColl[keys]: => %p\", r);\n    if (getAnyVTable(v) != &RefMap_vtable)\n        return r;\n    auto rm = (RefMap *)v;\n    auto len = rm->keys.getLength();\n    if (!len)\n        return r;\n    registerGCObj(r);\n    r->setLength(len);\n    auto dst = r->getData();\n    memcpy(dst, rm->keys.getData(), len * sizeof(TValue));\n    unregisterGCObj(r);\n    return r;\n}\n//% expose\nTValue mapDeleteByString(RefMap *map, String key) {\n    if (getAnyVTable((TValue)map) != &RefMap_vtable)\n        target_panic(PANIC_DELETE_ON_CLASS);\n    int i = map->findIdx(key);\n    if (i >= 0) {\n        map->keys.remove(i);\n        map->values.remove(i);\n    }\n    return TAG_TRUE;\n}\n\n} // namespace pxtrt\n",
             "pxt.h": "#ifndef __PXT_H\r\n#define __PXT_H\r\n\r\n//#define DEBUG_MEMLEAKS 1\r\n\r\n#pragma GCC diagnostic ignored \"-Wunused-parameter\"\r\n\r\n#include \"pxtbase.h\"\r\n\r\nnamespace pxt {\r\n\r\nclass RefMImage : public RefObject {\r\n  public:\r\n    ImageData *img;\r\n\r\n    RefMImage(ImageData *d);\r\n    void makeWritable();\r\n    static void destroy(RefMImage *map);\r\n    static void print(RefMImage *map);\r\n    static void scan(RefMImage *t);\r\n    static unsigned gcsize(RefMImage *t);\r\n};\r\n\r\n#define MSTR(s) ManagedString((s)->getUTF8Data(), (s)->getUTF8Size())\r\n\r\nstatic inline String PSTR(ManagedString s) {\r\n    return mkString(s.toCharArray(), s.length());\r\n}\r\n\r\ntypedef uint32_t ImageLiteral_;\r\n\r\nstatic inline ImageData *imageBytes(ImageLiteral_ lit) {\r\n    return (ImageData *)lit;\r\n}\r\n\r\n#if MICROBIT_CODAL\r\n// avoid clashes with codal-defined classes\r\n#define Image MImage\r\n#define Button MButton\r\n#endif\r\n\r\ntypedef MicroBitPin DevicePin;\r\n\r\ntypedef RefMImage *Image;\r\n\r\nextern MicroBit uBit;\r\nextern MicroBitEvent lastEvent;\r\n\r\nMicroBitPin *getPin(int id);\r\n\r\nstatic inline int min_(int a, int b) {\r\n    if (a < b)\r\n        return a;\r\n    else\r\n        return b;\r\n}\r\n\r\nstatic inline int max_(int a, int b) {\r\n    if (a > b)\r\n        return a;\r\n    else\r\n        return b;\r\n}\r\n\r\nvoid initMicrobitGC();\r\n\r\n} // namespace pxt\r\n\r\nusing namespace pxt;\r\n\r\n#define DEVICE_EVT_ANY 0\r\n\r\n#undef PXT_MAIN\r\n#define PXT_MAIN                                                                                   \\\r\n    int main() {                                                                                   \\\r\n        pxt::initMicrobitGC();                                                                     \\\r\n        pxt::start();                                                                              \\\r\n        return 0;                                                                                  \\\r\n    }\r\n\r\n#endif\r\n\r\n// vim: ts=2 sw=2 expandtab\r\n",
-            "pxt.json": "{\n    \"name\": \"core\",\n    \"description\": \"The microbit core library\",\n    \"dependencies\": {},\n    \"files\": [\n        \"README.md\",\n        \"platform.h\",\n        \"pxt.cpp\",\n        \"pxt.h\",\n        \"pxtbase.h\",\n        \"pxtcore.h\",\n        \"math.ts\",\n        \"dal.d.ts\",\n        \"enums.d.ts\",\n        \"shims.d.ts\",\n        \"pxt-core.d.ts\",\n        \"core.cpp\",\n        \"pxt-helpers.ts\",\n        \"helpers.ts\",\n        \"pxt-python.d.ts\",\n        \"pxt-python-helpers.ts\",\n        \"pinscompat.ts\",\n        \"configkeys.h\",\n        \"gc.cpp\",\n        \"codal.cpp\",\n        \"images.cpp\",\n        \"basic.cpp\",\n        \"basic.ts\",\n        \"icons.ts\",\n        \"icons.jres\",\n        \"input.cpp\",\n        \"input.ts\",\n        \"gestures.jres\",\n        \"control.ts\",\n        \"control.cpp\",\n        \"interval.ts\",\n        \"gcstats.ts\",\n        \"console.ts\",\n        \"game.ts\",\n        \"led.cpp\",\n        \"led.ts\",\n        \"music.ts\",\n        \"melodies.ts\",\n        \"pins.cpp\",\n        \"pins.ts\",\n        \"serial.cpp\",\n        \"serial.ts\",\n        \"buffer.cpp\",\n        \"buffer.ts\",\n        \"pxtparts.json\",\n        \"advmath.cpp\",\n        \"trig.cpp\",\n        \"fixed.ts\",\n        \"templates.ts\",\n        \"sendbuffer.s\",\n        \"light.cpp\",\n        \"parts/speaker.svg\",\n        \"parts/headphone.svg\",\n        \"bBoard.ts\",\n        \"bBoardMic.ts\",\n        \"bBoardMotor.ts\",\n        \"bBoardMusic.ts\",\n        \"neopixel.ts\",\n        \"ws2812b.ts\",\n        \"sendBuffer.asm\",\n        \"wifi_ble.ts\",\n        \"LCD_Mini.ts\"\n    ],\n    \"testFiles\": [],\n    \"public\": true,\n    \"targetVersions\": {\n        \"target\": \"2.3.52\"\n    },\n    \"dalDTS\": {\n        \"compileServiceVariant\": \"mbcodal\",\n        \"includeDirs\": [\n            \"libraries/codal-core/inc\",\n            \"libraries/codal-microbit/inc\",\n            \"libraries/codal-microbit/model\",\n            \"libraries/codal-microbit/inc/compat\",\n            \"pxtapp\"\n        ],\n        \"excludePrefix\": [\n            \"USB_\",\n            \"REQUEST_\",\n            \"LIS3DH_\",\n            \"FXOS8700_\",\n            \"MMA8\",\n            \"LSM303_\",\n            \"MAG_\",\n            \"MPU6050_\",\n            \"REF_TAG_\",\n            \"HF2_\",\n            \"PXT_REF_TAG_\",\n            \"MS_\",\n            \"SCSI_\"\n        ]\n    },\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"fiber_user_data\": 1\n            }\n        },\n        \"optionalConfig\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"private_addressing\": 0,\n                    \"advertising_timeout\": 0,\n                    \"tx_power\": 6,\n                    \"dfu_service\": 1,\n                    \"event_service\": 1,\n                    \"device_info_service\": 1,\n                    \"eddystone_url\": 1,\n                    \"eddystone_uid\": 1,\n                    \"open\": 0,\n                    \"pairing_mode\": 1,\n                    \"whitelist\": 1,\n                    \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\",\n                    \"partial_flashing\": 1\n                }\n            }\n        },\n        \"userConfigs\": [\n            {\n                \"description\": \"No Pairing Required: Anyone can connect via Bluetooth.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 1,\n                            \"whitelist\": 0,\n                            \"security_level\": null\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"JustWorks pairing (default): Pairing is automatic once the pairing is initiated.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\"\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"Passkey pairing: Pairing requires 6 digit key to pair.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_WITH_MITM\"\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"partial\": true\n}\n",
+            "pxt.json": "{\n    \"name\": \"core\",\n    \"description\": \"The microbit core library\",\n    \"dependencies\": {},\n    \"files\": [\n        \"README.md\",\n        \"platform.h\",\n        \"pxt.cpp\",\n        \"pxt.h\",\n        \"pxtbase.h\",\n        \"pxtcore.h\",\n        \"math.ts\",\n        \"dal.d.ts\",\n        \"enums.d.ts\",\n        \"shims.d.ts\",\n        \"pxt-core.d.ts\",\n        \"core.cpp\",\n        \"pxt-helpers.ts\",\n        \"helpers.ts\",\n        \"pxt-python.d.ts\",\n        \"pxt-python-helpers.ts\",\n        \"pinscompat.ts\",\n        \"configkeys.h\",\n        \"gc.cpp\",\n        \"codal.cpp\",\n        \"images.cpp\",\n        \"basic.cpp\",\n        \"basic.ts\",\n        \"icons.ts\",\n        \"icons.jres\",\n        \"input.cpp\",\n        \"input.ts\",\n        \"gestures.jres\",\n        \"control.ts\",\n        \"control.cpp\",\n        \"interval.ts\",\n        \"gcstats.ts\",\n        \"console.ts\",\n        \"game.ts\",\n        \"led.cpp\",\n        \"led.ts\",\n        \"music.ts\",\n        \"melodies.ts\",\n        \"pins.cpp\",\n        \"pins.ts\",\n        \"serial.cpp\",\n        \"serial.ts\",\n        \"buffer.cpp\",\n        \"buffer.ts\",\n        \"pxtparts.json\",\n        \"advmath.cpp\",\n        \"trig.cpp\",\n        \"fixed.ts\",\n        \"templates.ts\",\n        \"sendbuffer.s\",\n        \"light.cpp\",\n        \"parts/speaker.svg\",\n        \"parts/headphone.svg\",\n        \"bBoard.ts\",\n        \"bBoardMic.ts\",\n        \"bBoardMotor.ts\",\n        \"bBoardMusic.ts\",\n        \"neopixel.ts\",\n        \"ws2812b.ts\",\n        \"sendBuffer.asm\",\n        \"wifi_ble.ts\",\n        \"force.ts\",\n        \"Water_Detect.ts\",\n        \"uv3.ts\",\n        \"Touchpad.ts\",\n        \"Thermo_6.ts\",\n        \"Temp_Log_2.ts\",\n        \"Stepper_5.ts\",\n        \"Servo.ts\",\n        \"Relay.ts\",\n        \"Reed.ts\",\n        \"Proximity_2.ts\",\n        \"Noise.ts\",\n        \"NFC_Tag_2.ts\",\n        \"Motion.ts\",\n        \"Line_Follower.ts\",\n        \"Keylock.ts\",\n        \"K8.ts\",\n        \"IrThermo_3.ts\",\n        \"IR_sense3.ts\",\n        \"IR_Distance.ts\",\n        \"Button_G.ts\",\n        \"DC_Motor3.ts\"\n    ],\n    \"testFiles\": [],\n    \"public\": true,\n    \"targetVersions\": {\n        \"target\": \"2.3.52\"\n    },\n    \"dalDTS\": {\n        \"compileServiceVariant\": \"mbcodal\",\n        \"includeDirs\": [\n            \"libraries/codal-core/inc\",\n            \"libraries/codal-microbit/inc\",\n            \"libraries/codal-microbit/model\",\n            \"libraries/codal-microbit/inc/compat\",\n            \"pxtapp\"\n        ],\n        \"excludePrefix\": [\n            \"USB_\",\n            \"REQUEST_\",\n            \"LIS3DH_\",\n            \"FXOS8700_\",\n            \"MMA8\",\n            \"LSM303_\",\n            \"MAG_\",\n            \"MPU6050_\",\n            \"REF_TAG_\",\n            \"HF2_\",\n            \"PXT_REF_TAG_\",\n            \"MS_\",\n            \"SCSI_\"\n        ]\n    },\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"fiber_user_data\": 1\n            }\n        },\n        \"optionalConfig\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"private_addressing\": 0,\n                    \"advertising_timeout\": 0,\n                    \"tx_power\": 6,\n                    \"dfu_service\": 1,\n                    \"event_service\": 1,\n                    \"device_info_service\": 1,\n                    \"eddystone_url\": 1,\n                    \"eddystone_uid\": 1,\n                    \"open\": 0,\n                    \"pairing_mode\": 1,\n                    \"whitelist\": 1,\n                    \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\",\n                    \"partial_flashing\": 1\n                }\n            }\n        },\n        \"userConfigs\": [\n            {\n                \"description\": \"No Pairing Required: Anyone can connect via Bluetooth.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 1,\n                            \"whitelist\": 0,\n                            \"security_level\": null\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"JustWorks pairing (default): Pairing is automatic once the pairing is initiated.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_NO_MITM\"\n                        }\n                    }\n                }\n            },\n            {\n                \"description\": \"Passkey pairing: Pairing requires 6 digit key to pair.\",\n                \"config\": {\n                    \"microbit-dal\": {\n                        \"bluetooth\": {\n                            \"open\": 0,\n                            \"whitelist\": 1,\n                            \"security_level\": \"SECURITY_MODE_ENCRYPTION_WITH_MITM\"\n                        }\n                    }\n                }\n            }\n        ]\n    },\n    \"partial\": true\n}\n",
             "pxtbase.h": "#ifndef __PXTBASE_H\n#define __PXTBASE_H\n\n#pragma GCC diagnostic ignored \"-Wunused-parameter\"\n#pragma GCC diagnostic ignored \"-Wformat\"\n#pragma GCC diagnostic ignored \"-Warray-bounds\"\n\n// needed for gcc6; not sure why\n#undef min\n#undef max\n\n#define NOLOG(...)                                                                                 \\\n    do {                                                                                           \\\n    } while (0)\n\n#define MEMDBG NOLOG\n//#define MEMDBG DMESG\n#define MEMDBG2 NOLOG\n\n#include \"pxtconfig.h\"\n#include \"configkeys.h\"\n\n#ifndef PXT_UTF8\n#define PXT_UTF8 0\n#endif\n\n#if defined(PXT_VM)\n#include <stdint.h>\n#if UINTPTR_MAX == 0xffffffff\n#define PXT32 1\n#elif UINTPTR_MAX == 0xffffffffffffffff\n#define PXT64 1\n#else\n#error \"UINTPTR_MAX has invalid value\"\n#endif\n#endif\n\n#define intcheck(...) check(__VA_ARGS__)\n//#define intcheck(...) do {} while (0)\n\n#ifdef PXT_USE_FLOAT\n#define NUMBER float\n#else\n#define NUMBER double\n#endif\n\n#include <string.h>\n#include <stdint.h>\n#include <math.h>\n\n#ifdef POKY\nvoid *operator new(size_t size, void *ptr);\nvoid *operator new(size_t size);\n#else\n#include <new>\n#endif\n\n#include \"platform.h\"\n#include \"pxtcore.h\"\n\n#ifndef PXT_REGISTER_RESET\n#define PXT_REGISTER_RESET(fn) ((void)0)\n#endif\n\n#define PXT_REFCNT_FLASH 0xfffe\n\n#define CONCAT_1(a, b) a##b\n#define CONCAT_0(a, b) CONCAT_1(a, b)\n// already provided in some platforms, like mbedos\n#ifndef STATIC_ASSERT\n#define STATIC_ASSERT(e) enum { CONCAT_0(_static_assert_, __LINE__) = 1 / ((e) ? 1 : 0) };\n#endif\n\n#ifndef ramint_t\n// this type limits size of arrays\n#if defined(__linux__) || defined(PXT_VM)\n// TODO fix the inline array accesses to take note of this!\n#define ramint_t uint32_t\n#else\n#define ramint_t uint16_t\n#endif\n#endif\n\n#ifndef PXT_IN_ISR\n#define PXT_IN_ISR() (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk)\n#endif\n\n#ifdef POKY\ninline void *operator new(size_t, void *p) {\n    return p;\n}\ninline void *operator new[](size_t, void *p) {\n    return p;\n}\n#endif\n\nnamespace pxt {\n\ntemplate <typename T> inline const T &max(const T &a, const T &b) {\n    if (a < b)\n        return b;\n    return a;\n}\n\ntemplate <typename T> inline const T &min(const T &a, const T &b) {\n    if (a < b)\n        return a;\n    return b;\n}\n\ntemplate <typename T> inline void swap(T &a, T &b) {\n    T tmp = a;\n    a = b;\n    b = tmp;\n}\n\n//\n// Tagged values (assume 4 bytes for now, Cortex-M0)\n//\nstruct TValueStruct {};\ntypedef TValueStruct *TValue;\n\ntypedef TValue TNumber;\ntypedef TValue Action;\ntypedef TValue ImageLiteral;\n\n// To be implemented by the target\nextern \"C\" void target_panic(int error_code);\nextern \"C\" void target_reset();\nvoid sleep_ms(unsigned ms);\nvoid sleep_us(uint64_t us);\nvoid releaseFiber();\nuint64_t current_time_us();\nint current_time_ms();\nvoid initRuntime();\nvoid initSystemTimer();\nvoid sendSerial(const char *data, int len);\nvoid setSendToUART(void (*f)(const char *, int));\nuint64_t getLongSerialNumber();\nvoid registerWithDal(int id, int event, Action a, int flags = 16); // EVENT_LISTENER_DEFAULT_FLAGS\nvoid runInParallel(Action a);\nvoid runForever(Action a);\nvoid waitForEvent(int id, int event);\n//%\nunsigned afterProgramPage();\n//%\nvoid dumpDmesg();\nuint32_t hash_fnv1(const void *data, unsigned len);\n\n// also defined DMESG macro\n// end\n\n#define TAGGED_SPECIAL(n) (TValue)(void *)((n << 2) | 2)\n#define TAG_FALSE TAGGED_SPECIAL(2) // 10\n#define TAG_TRUE TAGGED_SPECIAL(16) // 66\n#define TAG_UNDEFINED (TValue)0\n#define TAG_NULL TAGGED_SPECIAL(1) // 6\n#define TAG_NAN TAGGED_SPECIAL(3)  // 14\n#define TAG_NUMBER(n) (TNumber)(void *)(((uintptr_t)(uint32_t)(n) << 1) | 1)\n#define TAG_NON_VALUE TAGGED_SPECIAL(4) // 18; doesn't represent any JS value\n\n#ifdef PXT_VM\ninline bool isEncodedDouble(uint64_t v) {\n    return (v >> 48) != 0;\n}\n#endif\n\ninline bool isDouble(TValue v) {\n#ifdef PXT64\n    return ((uintptr_t)v >> 48) != 0;\n#else\n    (void)v;\n    return false;\n#endif\n}\n\ninline bool isPointer(TValue v) {\n    return !isDouble(v) && v != 0 && ((intptr_t)v & 3) == 0;\n}\n\ninline bool isTagged(TValue v) {\n    return (!isDouble(v) && ((intptr_t)v & 3)) || !v;\n}\n\ninline bool isInt(TValue v) {\n    return !isDouble(v) && ((intptr_t)v & 1);\n}\n\ninline bool isSpecial(TValue v) {\n    return !isDouble(v) && ((intptr_t)v & 2);\n}\n\ninline bool bothNumbers(TValue a, TValue b) {\n    return !isDouble(a) && !isDouble(b) && ((intptr_t)a & (intptr_t)b & 1);\n}\n\ninline int numValue(TValue n) {\n    return (int)((intptr_t)n >> 1);\n}\n\ninline bool canBeTagged(int v) {\n    (void)v;\n#ifdef PXT_BOX_DEBUG\n    return false;\n#elif defined(PXT64)\n    return true;\n#else\n    return (v << 1) >> 1 == v;\n#endif\n}\n\n// see https://anniecherkaev.com/the-secret-life-of-nan\n\n#define NanBoxingOffset 0x1000000000000LL\n\ntemplate <typename TO, typename FROM> TO bitwise_cast(FROM in) {\n    STATIC_ASSERT(sizeof(TO) == sizeof(FROM));\n    union {\n        FROM from;\n        TO to;\n    } u;\n    u.from = in;\n    return u.to;\n}\n\ninline double decodeDouble(uint64_t v) {\n    return bitwise_cast<double>(v - NanBoxingOffset);\n}\n\n#ifdef PXT64\nSTATIC_ASSERT(sizeof(void *) == 8);\ninline double doubleVal(TValue v) {\n    return bitwise_cast<double>((uint64_t)v - NanBoxingOffset);\n}\n\ninline TValue tvalueFromDouble(double d) {\n    return (TValue)(bitwise_cast<uint64_t>(d) + NanBoxingOffset);\n}\n#else\nSTATIC_ASSERT(sizeof(void *) == 4);\n#endif\n\n// keep in sym with sim/control.ts\ntypedef enum {\n    PANIC_CODAL_OOM = 20,\n    PANIC_GC_OOM = 21,\n    PANIC_GC_TOO_BIG_ALLOCATION = 22,\n    PANIC_CODAL_HEAP_ERROR = 30,\n    PANIC_CODAL_NULL_DEREFERENCE = 40,\n    PANIC_CODAL_USB_ERROR = 50,\n    PANIC_CODAL_HARDWARE_CONFIGURATION_ERROR = 90,\n\n    PANIC_INVALID_BINARY_HEADER = 901,\n    PANIC_OUT_OF_BOUNDS = 902,\n    PANIC_REF_DELETED = 903,\n    PANIC_SIZE = 904,\n    PANIC_INVALID_VTABLE = 905,\n    PANIC_INTERNAL_ERROR = 906,\n    PANIC_NO_SUCH_CONFIG = 907,\n    PANIC_NO_SUCH_PIN = 908,\n    PANIC_INVALID_ARGUMENT = 909,\n    PANIC_MEMORY_LIMIT_EXCEEDED = 910,\n    PANIC_SCREEN_ERROR = 911,\n    PANIC_MISSING_PROPERTY = 912,\n    PANIC_INVALID_IMAGE = 913,\n    PANIC_CALLED_FROM_ISR = 914,\n    PANIC_HEAP_DUMPED = 915,\n    PANIC_STACK_OVERFLOW = 916,\n    PANIC_BLOCKING_TO_STRING = 917,\n    PANIC_VM_ERROR = 918,\n    PANIC_SETTINGS_CLEARED = 920,\n    PANIC_SETTINGS_OVERLOAD = 921,\n    PANIC_SETTINGS_SECRET_MISSING = 922,\n    PANIC_DELETE_ON_CLASS = 923,\n    PANIC_OUT_OF_TIMERS = 924,\n    PANIC_JACDAC = 925,\n    PANIC_MICROPHONE_MISSING = 926,\n    PANIC_VARIANT_NOT_SUPPORTED = 927,\n\n    PANIC_CAST_FIRST = 980,\n    PANIC_CAST_FROM_UNDEFINED = 980,\n    PANIC_CAST_FROM_BOOLEAN = 981,\n    PANIC_CAST_FROM_NUMBER = 982,\n    PANIC_CAST_FROM_STRING = 983,\n    PANIC_CAST_FROM_OBJECT = 984,\n    PANIC_CAST_FROM_FUNCTION = 985,\n    PANIC_CAST_FROM_NULL = 989,\n\n    PANIC_UNHANDLED_EXCEPTION = 999,\n\n} PXT_PANIC;\n\nextern const uintptr_t functionsAndBytecode[];\nextern TValue *globals;\nextern uint16_t *bytecode;\nclass RefRecord;\n\n// Utility functions\n\ntypedef TValue (*RunActionType)(Action a, TValue arg0, TValue arg1, TValue arg2);\n\n#define asmRunAction3 ((RunActionType)(((uintptr_t *)bytecode)[12]))\n\nstatic inline TValue runAction3(Action a, TValue arg0, TValue arg1, TValue arg2) {\n    return asmRunAction3(a, arg0, arg1, 0);\n}\nstatic inline TValue runAction2(Action a, TValue arg0, TValue arg1) {\n    return asmRunAction3(a, arg0, arg1, 0);\n}\nstatic inline TValue runAction1(Action a, TValue arg0) {\n    return asmRunAction3(a, arg0, 0, 0);\n}\nstatic inline TValue runAction0(Action a) {\n    return asmRunAction3(a, 0, 0, 0);\n}\n\nclass RefAction;\nclass BoxedString;\nstruct VTable;\n\n//%\nAction mkAction(int totallen, RefAction *act);\n//% expose\nint templateHash();\n//% expose\nint programHash();\n//% expose\nBoxedString *programName();\n//% expose\nunsigned programSize();\n//%\nint getNumGlobals();\n//%\nRefRecord *mkClassInstance(VTable *vt);\n//%\nvoid debugMemLeaks();\n//%\nvoid anyPrint(TValue v);\n\n//%\nint getConfig(int key, int defl = -1);\n\n//%\nint toInt(TNumber v);\n//%\nunsigned toUInt(TNumber v);\n//%\nNUMBER toDouble(TNumber v);\n//%\nfloat toFloat(TNumber v);\n//%\nTNumber fromDouble(NUMBER r);\n//%\nTNumber fromFloat(float r);\n\n//%\nTNumber fromInt(int v);\n//%\nTNumber fromUInt(unsigned v);\n//%\nTValue fromBool(bool v);\n//%\nbool eq_bool(TValue a, TValue b);\n//%\nbool eqq_bool(TValue a, TValue b);\n\n//%\nvoid failedCast(TValue v);\n//%\nvoid missingProperty(TValue v);\n\nvoid error(PXT_PANIC code, int subcode = 0);\nvoid exec_binary(unsigned *pc);\nvoid start();\n\nstruct HandlerBinding {\n    HandlerBinding *next;\n    int source;\n    int value;\n    Action action;\n};\nHandlerBinding *findBinding(int source, int value);\nHandlerBinding *nextBinding(HandlerBinding *curr, int source, int value);\nvoid setBinding(int source, int value, Action act);\n\n// Legacy stuff; should no longer be used\n//%\nTValue incr(TValue e);\n//%\nvoid decr(TValue e);\n\ninline TValue incr(TValue e) {\n    return e;\n}\ninline void decr(TValue e) {}\n\nclass RefObject;\n\nstatic inline RefObject *incrRC(RefObject *r) {\n    return r;\n}\nstatic inline void decrRC(RefObject *) {\n}\n\ninline void *ptrOfLiteral(int offset) {\n    return &bytecode[offset];\n}\n\n// Checks if object is ref-counted, and has a custom PXT vtable in front\n// TODO\ninline bool isRefCounted(TValue e) {\n    return isPointer(e);\n}\n\ninline void check(int cond, PXT_PANIC code, int subcode = 0) {\n    if (!cond)\n        error(code, subcode);\n}\n\ninline void oops(int subcode = 0) {\n    target_panic(800 + subcode);\n}\n\nclass RefObject;\n\ntypedef void (*RefObjectMethod)(RefObject *self);\ntypedef unsigned (*RefObjectSizeMethod)(RefObject *self);\ntypedef void *PVoid;\ntypedef void **PPVoid;\n\ntypedef void *Object_;\n\n#define VTABLE_MAGIC 0xF9\n\nenum class ValType : uint8_t {\n    Undefined,\n    Boolean,\n    Number,\n    String,\n    Object,\n    Function,\n};\n\n// keep in sync with pxt-core (search for the type name)\nenum class BuiltInType : uint16_t {\n    BoxedString = 1,\n    BoxedNumber = 2,\n    BoxedBuffer = 3,\n    RefAction = 4,\n    RefImage = 5,\n    RefCollection = 6,\n    RefRefLocal = 7,\n    RefMap = 8,\n    RefMImage = 9,\n    MMap = 10, // linux, mostly ev3\n    User0 = 16,\n};\n\nstruct VTable {\n    uint16_t numbytes;\n    ValType objectType;\n    uint8_t magic;\n#ifdef PXT_VM\n    uint16_t ifaceHashEntries;\n    BuiltInType lastClassNo;\n#else\n    PVoid *ifaceTable;\n#endif\n    BuiltInType classNo;\n    uint16_t reserved;\n    uint32_t ifaceHashMult;\n\n    // we only use the first few methods here; pxt will generate more\n    PVoid methods[8];\n};\n\n//%\nextern const VTable string_inline_ascii_vt;\n#if PXT_UTF8\n//%\nextern const VTable string_inline_utf8_vt;\n//%\nextern const VTable string_cons_vt;\n//%\nextern const VTable string_skiplist16_vt;\n#endif\n//%\nextern const VTable buffer_vt;\n//%\nextern const VTable number_vt;\n//%\nextern const VTable RefAction_vtable;\n\n#define PXT_VTABLE_TO_INT(vt) ((uintptr_t)(vt))\n\n// allocate 1M of heap on iOS\n#define PXT_IOS_HEAP_ALLOC_BITS 20\n\n#ifdef PXT_IOS\nextern uint8_t *gcBase;\n#endif\n\ninline bool isReadOnly(TValue v) {\n#ifdef PXT64\n#ifdef PXT_IOS\n    return !isPointer(v) || (((uintptr_t)v - (uintptr_t)gcBase) >> PXT_IOS_HEAP_ALLOC_BITS) != 0;\n#else\n    return !isPointer(v) || !((uintptr_t)v >> 37);\n#endif\n#else\n    return isTagged(v) || !((uintptr_t)v >> 28);\n#endif\n}\n\n// A base abstract class for ref-counted objects.\nclass RefObject {\n  public:\n    uintptr_t vtable;\n\n    RefObject(const VTable *vt) {\n#if defined(PXT32) && defined(PXT_VM)\n        if ((uint32_t)vt & 0xf0000000)\n            target_panic(PANIC_INVALID_VTABLE);\n#endif\n        vtable = PXT_VTABLE_TO_INT(vt);\n    }\n\n    void destroyVT();\n    void printVT();\n\n    inline void ref() {}\n    inline void unref() {}\n    inline bool isReadOnly() { return pxt::isReadOnly((TValue)this); }\n};\n\nclass Segment {\n  private:\n    TValue *data;\n    ramint_t length;\n    ramint_t size;\n\n    // this just gives max value of ramint_t\n    void growByMin(ramint_t minSize);\n    void ensure(ramint_t newSize);\n\n  public:\n    static constexpr ramint_t MaxSize = (((1U << (8 * sizeof(ramint_t) - 1)) - 1) << 1) + 1;\n    static constexpr TValue DefaultValue = TAG_UNDEFINED; // == NULL\n\n    Segment() : data(nullptr), length(0), size(0) {}\n\n    TValue get(unsigned i) { return i < length ? data[i] : NULL; }\n    void set(unsigned i, TValue value);\n\n    unsigned getLength() { return length; };\n    void setLength(unsigned newLength);\n\n    void push(TValue value) { set(length, value); }\n    TValue pop();\n\n    TValue remove(unsigned i);\n    void insert(unsigned i, TValue value);\n\n    void destroy();\n\n    void print();\n\n    TValue *getData() { return data; }\n};\n\n// Low-Level segment using system malloc\nclass LLSegment {\n  private:\n    TValue *data;\n    ramint_t length;\n    ramint_t size;\n\n  public:\n    LLSegment() : data(nullptr), length(0), size(0) {}\n\n    void set(unsigned idx, TValue v);\n    void push(TValue value) { set(length, value); }\n    TValue pop();\n    void destroy();\n    void setLength(unsigned newLen);\n\n    TValue get(unsigned i) { return i < length ? data[i] : NULL; }\n    unsigned getLength() { return length; };\n    TValue *getData() { return data; }\n};\n\n// A ref-counted collection of either primitive or ref-counted objects (String, Image,\n// user-defined record, another collection)\nclass RefCollection : public RefObject {\n  public:\n    Segment head;\n\n    RefCollection();\n\n    static void destroy(RefCollection *coll);\n    static void scan(RefCollection *coll);\n    static unsigned gcsize(RefCollection *coll);\n    static void print(RefCollection *coll);\n\n    unsigned length() { return head.getLength(); }\n    void setLength(unsigned newLength) { head.setLength(newLength); }\n    TValue getAt(int i) { return head.get(i); }\n    TValue *getData() { return head.getData(); }\n};\n\nclass RefMap : public RefObject {\n  public:\n    Segment keys;\n    Segment values;\n\n    RefMap();\n    static void destroy(RefMap *map);\n    static void scan(RefMap *map);\n    static unsigned gcsize(RefMap *coll);\n    static void print(RefMap *map);\n    int findIdx(BoxedString *key);\n};\n\n// A ref-counted, user-defined JS object.\nclass RefRecord : public RefObject {\n  public:\n    // The object is allocated, so that there is space at the end for the fields.\n    TValue fields[];\n\n    RefRecord(VTable *v) : RefObject(v) {}\n\n    TValue ld(int idx);\n    TValue ldref(int idx);\n    void st(int idx, TValue v);\n    void stref(int idx, TValue v);\n};\n\nstatic inline VTable *getVTable(RefObject *r) {\n    return (VTable *)(r->vtable & ~1);\n}\n\nstatic inline VTable *getAnyVTable(TValue v) {\n    if (!isRefCounted(v))\n        return NULL;\n    auto vt = getVTable((RefObject *)v);\n    if (vt->magic == VTABLE_MAGIC)\n        return vt;\n    return NULL;\n}\n\n// these are needed when constructing vtables for user-defined classes\n//%\nvoid RefRecord_destroy(RefRecord *r);\n//%\nvoid RefRecord_print(RefRecord *r);\n//%\nvoid RefRecord_scan(RefRecord *r);\n//%\nunsigned RefRecord_gcsize(RefRecord *r);\n\ntypedef TValue (*ActionCB)(TValue *captured, TValue arg0, TValue arg1, TValue arg2);\n\n// Ref-counted function pointer.\nclass RefAction : public RefObject {\n  public:\n#if defined(PXT_VM) && defined(PXT32)\n    uint32_t _padding; // match binary format in .pxt64 files\n#endif\n    uint16_t len;\n    uint16_t numArgs;\n#ifdef PXT_VM\n    uint16_t initialLen;\n    uint16_t reserved;\n#endif\n    ActionCB func; // The function pointer\n    // fields[] contain captured locals\n    TValue fields[];\n\n    static void destroy(RefAction *act);\n    static void scan(RefAction *act);\n    static unsigned gcsize(RefAction *coll);\n    static void print(RefAction *act);\n\n    RefAction();\n\n    inline void stCore(int idx, TValue v) {\n        // DMESG(\"ST [%d] = %d \", idx, v); this->print();\n        intcheck(0 <= idx && idx < len, PANIC_OUT_OF_BOUNDS, 10);\n        intcheck(fields[idx] == 0, PANIC_OUT_OF_BOUNDS, 11); // only one assignment permitted\n        fields[idx] = v;\n    }\n};\n\n// These two are used to represent locals written from inside inline functions\nclass RefRefLocal : public RefObject {\n  public:\n    TValue v;\n    static void destroy(RefRefLocal *l);\n    static void scan(RefRefLocal *l);\n    static unsigned gcsize(RefRefLocal *l);\n    static void print(RefRefLocal *l);\n    RefRefLocal();\n};\n\ntypedef int color;\n\n// note: this is hardcoded in PXT (hexfile.ts)\n\nclass BoxedNumber : public RefObject {\n  public:\n    NUMBER num;\n    BoxedNumber() : RefObject(&number_vt) {}\n} __attribute__((packed));\n\nclass BoxedString : public RefObject {\n  public:\n    union {\n        struct {\n            uint16_t length;\n            char data[0];\n        } ascii;\n#if PXT_UTF8\n        struct {\n            uint16_t length;\n            char data[0];\n        } utf8;\n        struct {\n            BoxedString *left;\n            BoxedString *right;\n        } cons;\n        struct {\n            uint16_t size;\n            uint16_t length;\n            uint16_t *list;\n        } skip;\n#endif\n    };\n\n#if PXT_UTF8\n    uintptr_t runMethod(int idx) {\n        return ((uintptr_t(*)(BoxedString *))((VTable *)this->vtable)->methods[idx])(this);\n    }\n    const char *getUTF8Data() { return (const char *)runMethod(4); }\n    uint32_t getUTF8Size() { return (uint32_t)runMethod(5); }\n    // in characters\n    uint32_t getLength() { return (uint32_t)runMethod(6); }\n    const char *getUTF8DataAt(uint32_t pos) {\n        auto meth =\n            ((const char *(*)(BoxedString *, uint32_t))((VTable *)this->vtable)->methods[7]);\n        return meth(this, pos);\n    }\n#else\n    const char *getUTF8Data() { return ascii.data; }\n    uint32_t getUTF8Size() { return ascii.length; }\n    uint32_t getLength() { return ascii.length; }\n    const char *getUTF8DataAt(uint32_t pos) { return pos < ascii.length ? ascii.data + pos : NULL; }\n#endif\n\n    TNumber charCodeAt(int pos);\n\n    BoxedString(const VTable *vt) : RefObject(vt) {}\n};\n\n// cross version compatible way of accessing string data\n#ifndef PXT_STRING_DATA\n#define PXT_STRING_DATA(str) str->getUTF8Data()\n#endif\n\n// cross version compatible way of accessing string length\n#ifndef PXT_STRING_DATA_LENGTH\n#define PXT_STRING_DATA_LENGTH(str) str->getUTF8Size()\n#endif\n\nclass BoxedBuffer : public RefObject {\n  public:\n    // data needs to be word-aligned, so we use 32 bits for length\n    int length;\n#ifdef PXT_VM\n    // VM can be 64 bit and it compiles as such\n    int32_t _padding;\n#endif\n    uint8_t data[0];\n    BoxedBuffer() : RefObject(&buffer_vt) {}\n};\n\n// cross version compatible way of access data field\n#ifndef PXT_BUFFER_DATA\n#define PXT_BUFFER_DATA(buffer) buffer->data\n#endif\n\n// cross version compatible way of access data length\n#ifndef PXT_BUFFER_LENGTH\n#define PXT_BUFFER_LENGTH(buffer) buffer->length\n#endif\n\n#ifndef PXT_CREATE_BUFFER\n#define PXT_CREATE_BUFFER(data, len) pxt::mkBuffer(data, len)\n#endif\n\n// Legacy format:\n// the first byte of data indicates the format - currently 0xE1 or 0xE4 to 1 or 4 bit bitmaps\n// second byte indicates width in pixels\n// third byte indicates the height (which should also match the size of the buffer)\n// just like ordinary buffers, these can be layed out in flash\n\n// Current format:\n// 87 BB WW WW HH HH 00 00 DATA\n// that is: 0x87, 0x01 or 0x04 - bpp, width in little endian, height, 0x00, 0x00 followed by data\n// for 4 bpp images, rows are word-aligned (as in legacy)\n\n#define IMAGE_HEADER_MAGIC 0x87\n\nstruct ImageHeader {\n    uint8_t magic;\n    uint8_t bpp;\n    uint16_t width;\n    uint16_t height;\n    uint16_t padding;\n    uint8_t pixels[0];\n};\n\nclass RefImage : public RefObject {\n  public:\n    BoxedBuffer *buffer;\n\n    RefImage(BoxedBuffer *buf);\n    RefImage(uint32_t sz);\n\n    void setBuffer(BoxedBuffer *b);\n\n    uint8_t *data() { return buffer->data; }\n    int length() { return (int)buffer->length; }\n\n    ImageHeader *header() { return (ImageHeader *)buffer->data; }\n    int pixLength() { return length() - sizeof(ImageHeader); }\n\n    int width() { return header()->width; }\n    int height() { return header()->height; }\n    int wordHeight();\n    int bpp() { return header()->bpp; }\n\n    bool hasPadding() { return (height() & 0x7) != 0; }\n\n    uint8_t *pix() { return header()->pixels; }\n\n    int byteHeight() {\n        if (bpp() == 1)\n            return (height() + 7) >> 3;\n        else if (bpp() == 4)\n            return ((height() * 4 + 31) >> 5) << 2;\n        else {\n            oops(21);\n            return -1;\n        }\n    }\n\n    uint8_t *pix(int x, int y) {\n        uint8_t *d = &pix()[byteHeight() * x];\n        if (y) {\n            if (bpp() == 1)\n                d += y >> 3;\n            else if (bpp() == 4)\n                d += y >> 1;\n        }\n        return d;\n    }\n\n    uint8_t fillMask(color c);\n    bool inRange(int x, int y);\n    void clamp(int *x, int *y);\n    void makeWritable();\n\n    static void destroy(RefImage *t);\n    static void scan(RefImage *t);\n    static unsigned gcsize(RefImage *t);\n    static void print(RefImage *t);\n};\n\nRefImage *mkImage(int w, int h, int bpp);\n\ntypedef BoxedBuffer *Buffer;\ntypedef BoxedString *String;\ntypedef RefImage *Image_;\n\nuint32_t toRealUTF8(String str, uint8_t *dst);\n\n// keep in sync with github/pxt/pxtsim/libgeneric.ts\nenum class NumberFormat {\n    Int8LE = 1,\n    UInt8LE,\n    Int16LE,\n    UInt16LE,\n    Int32LE,\n    Int8BE,\n    UInt8BE,\n    Int16BE,\n    UInt16BE,\n    Int32BE,\n\n    UInt32LE,\n    UInt32BE,\n    Float32LE,\n    Float64LE,\n    Float32BE,\n    Float64BE,\n};\n\n// this will, unlike mkStringCore, UTF8-canonicalize the data\nString mkString(const char *data, int len = -1);\n// data can be NULL in both cases\nBuffer mkBuffer(const void *data, int len);\nString mkStringCore(const char *data, int len = -1);\n\nTNumber getNumberCore(uint8_t *buf, int size, NumberFormat format);\nvoid setNumberCore(uint8_t *buf, int size, NumberFormat format, TNumber value);\n\nvoid seedRandom(unsigned seed);\nvoid seedAddRandom(unsigned seed);\n// max is inclusive\nunsigned getRandom(unsigned max);\n\nValType valType(TValue v);\n\n// this is equivalent to JS `throw v`; it will leave\n// the current function(s), all the way until the nearest try block and\n// ignore all destructors (think longjmp())\nvoid throwValue(TValue v);\n\nvoid registerGC(TValue *root, int numwords = 1);\nvoid unregisterGC(TValue *root, int numwords = 1);\nvoid registerGCPtr(TValue ptr);\nvoid unregisterGCPtr(TValue ptr);\nstatic inline void registerGCObj(RefObject *ptr) {\n    registerGCPtr((TValue)ptr);\n}\nstatic inline void unregisterGCObj(RefObject *ptr) {\n    unregisterGCPtr((TValue)ptr);\n}\nvoid gc(int flags);\n\nstruct StackSegment {\n    void *top;\n    void *bottom;\n    StackSegment *next;\n};\n\n#define NUM_TRY_FRAME_REGS 3\nstruct TryFrame {\n    TryFrame *parent;\n    uintptr_t registers[NUM_TRY_FRAME_REGS];\n};\n\nstruct ThreadContext {\n    TValue *globals;\n    StackSegment stack;\n    TryFrame *tryFrame;\n    TValue thrownValue;\n#ifdef PXT_GC_THREAD_LIST\n    ThreadContext *next;\n    ThreadContext *prev;\n#endif\n};\n\n#ifdef PXT_GC_THREAD_LIST\nextern ThreadContext *threadContexts;\nvoid *threadAddressFor(ThreadContext *, void *sp);\n#endif\n\nvoid releaseThreadContext(ThreadContext *ctx);\nThreadContext *getThreadContext();\nvoid setThreadContext(ThreadContext *ctx);\n\n#ifndef PXT_GC_THREAD_LIST\nvoid gcProcessStacks(int flags);\n#endif\n\nvoid gcProcess(TValue v);\nvoid gcFreeze();\n#ifdef PXT_VM\nvoid gcStartup();\nvoid gcPreStartup();\nvoid *gcPrealloc(int numbytes);\nbool inGCPrealloc();\n#else\nstatic inline bool inGCPrealloc() {\n    return false;\n}\n#endif\n\nvoid coreReset();\nvoid gcReset();\nvoid systemReset();\n\nvoid *gcAllocate(int numbytes);\nvoid *gcAllocateArray(int numbytes);\nextern \"C\" void *app_alloc(int numbytes);\nextern \"C\" void *app_free(void *ptr);\nvoid gcPreAllocateBlock(uint32_t sz);\n\n#ifdef PXT64\n#define TOWORDS(bytes) (((bytes) + 7) >> 3)\n#else\n#define TOWORDS(bytes) (((bytes) + 3) >> 2)\n#endif\n\n#ifndef PXT_VM\n#define soft_panic target_panic\n#endif\n\nextern int debugFlags;\n\nenum class PerfCounters {\n    GC,\n};\n\n#ifdef PXT_PROFILE\n#ifndef PERF_NOW\n#error \"missing platform timer support\"\n#endif\n\nstruct PerfCounter {\n    uint32_t value;\n    uint32_t numstops;\n    uint32_t start;\n};\n\nextern struct PerfCounter *perfCounters;\n\nvoid initPerfCounters();\n//%\nvoid dumpPerfCounters();\n//%\nvoid startPerfCounter(PerfCounters n);\n//%\nvoid stopPerfCounter(PerfCounters n);\n#else\ninline void startPerfCounter(PerfCounters n) {}\ninline void stopPerfCounter(PerfCounters n) {}\ninline void initPerfCounters() {}\ninline void dumpPerfCounters() {}\n#endif\n\n#ifdef PXT_VM\nString mkInternalString(const char *str);\n#define PXT_DEF_STRING(name, val) String name = mkInternalString(val);\n#else\n#define PXT_DEF_STRING(name, val)                                                                  \\\n    static const char name[] __attribute__((aligned(4))) = \"@PXT@:\" val;\n#endif\n\n} // namespace pxt\n\nusing namespace pxt;\n\nnamespace numops {\n//%\nString toString(TValue v);\n//%\nint toBool(TValue v);\n//%\nint toBoolDecr(TValue v);\n} // namespace numops\n\nnamespace pxt {\ninline bool toBoolQuick(TValue v) {\n    if (v == TAG_TRUE)\n        return true;\n    if (v == TAG_FALSE || v == TAG_UNDEFINED || v == TAG_NULL)\n        return false;\n    return numops::toBool(v);\n}\n} // namespace pxt\n\nnamespace pxtrt {\n//%\nRefMap *mkMap();\n//%\nTValue mapGetByString(RefMap *map, String key);\n//%\nint lookupMapKey(String key);\n//%\nTValue mapGet(RefMap *map, unsigned key);\n//%\nvoid mapSetByString(RefMap *map, String key, TValue val);\n//%\nvoid mapSet(RefMap *map, unsigned key, TValue val);\n} // namespace pxtrt\n\nnamespace pins {\nBuffer createBuffer(int size);\n}\n\nnamespace String_ {\n//%\nint compare(String a, String b);\n} // namespace String_\n\nnamespace Array_ {\n//%\nRefCollection *mk();\n//%\nint length(RefCollection *c);\n//%\nvoid setLength(RefCollection *c, int newLength);\n//%\nvoid push(RefCollection *c, TValue x);\n//%\nTValue pop(RefCollection *c);\n//%\nTValue getAt(RefCollection *c, int x);\n//%\nvoid setAt(RefCollection *c, int x, TValue y);\n//%\nTValue removeAt(RefCollection *c, int x);\n//%\nvoid insertAt(RefCollection *c, int x, TValue value);\n//%\nint indexOf(RefCollection *c, TValue x, int start);\n//%\nbool removeElement(RefCollection *c, TValue x);\n} // namespace Array_\n\n#define NEW_GC(T, ...) new (gcAllocate(sizeof(T))) T(__VA_ARGS__)\n\n// The ARM Thumb generator in the JavaScript code is parsing\n// the hex file and looks for the magic numbers as present here.\n//\n// Then it fetches function pointer addresses from there.\n//\n// The vtable pointers are there, so that the ::emptyData for various types\n// can be patched with the right vtable.\n//\n#define PXT_SHIMS_BEGIN                                                                            \\\n    namespace pxt {                                                                                \\\n    const uintptr_t functionsAndBytecode[]                                                         \\\n        __attribute__((aligned(0x20))) = {0x08010801, 0x42424242, 0x08010801, 0x8de9d83e,\n\n#define PXT_SHIMS_END                                                                              \\\n    }                                                                                              \\\n    ;                                                                                              \\\n    }\n\n#if !defined(X86_64) && !defined(PXT_VM)\n#pragma GCC diagnostic ignored \"-Wpmf-conversions\"\n#endif\n\n#ifdef PXT_VM\n#define DEF_VTABLE(name, tp, valtype, ...)                                                         \\\n    const VTable name = {sizeof(tp), valtype, VTABLE_MAGIC, 0, BuiltInType::tp, BuiltInType::tp,   \\\n                         0,          0,       {__VA_ARGS__}};\n#else\n#define DEF_VTABLE(name, tp, valtype, ...)                                                         \\\n    const VTable name = {sizeof(tp), valtype, VTABLE_MAGIC, 0, BuiltInType::tp,                    \\\n                         0,          0,       {__VA_ARGS__}};\n#endif\n\n#define PXT_VTABLE(classname, valtp)                                                               \\\n    DEF_VTABLE(classname##_vtable, classname, valtp, (void *)&classname::destroy,                  \\\n               (void *)&classname::print, (void *)&classname::scan, (void *)&classname::gcsize)\n\n#define PXT_VTABLE_INIT(classname) RefObject(&classname##_vtable)\n\n#define PXT_VTABLE_CTOR(classname)                                                                 \\\n    PXT_VTABLE(classname, ValType::Object)                                                         \\\n    classname::classname() : PXT_VTABLE_INIT(classname)\n\n#define PXT_MAIN                                                                                   \\\n    int main() {                                                                                   \\\n        pxt::start();                                                                              \\\n        return 0;                                                                                  \\\n    }\n\n#define PXT_FNPTR(x) (uintptr_t)(void *)(x)\n\n#define PXT_ABI(...)\n\n#define JOIN(a, b) a##b\n/// Defines getClassName() function to fetch the singleton\n#define SINGLETON(ClassName)                                                                       \\\n    static ClassName *JOIN(inst, ClassName);                                                       \\\n    ClassName *JOIN(get, ClassName)() {                                                            \\\n        if (!JOIN(inst, ClassName))                                                                \\\n            JOIN(inst, ClassName) = new ClassName();                                               \\\n        return JOIN(inst, ClassName);                                                              \\\n    }\n\n/// Defines getClassName() function to fetch the singleton if PIN present\n#define SINGLETON_IF_PIN(ClassName, pin)                                                           \\\n    static ClassName *JOIN(inst, ClassName);                                                       \\\n    ClassName *JOIN(get, ClassName)() {                                                            \\\n        if (!JOIN(inst, ClassName) && LOOKUP_PIN(pin))                                             \\\n            JOIN(inst, ClassName) = new ClassName();                                               \\\n        return JOIN(inst, ClassName);                                                              \\\n    }\n\n#ifdef PXT_VM\n#include \"vm.h\"\n#endif\n\n#endif\n",
             "pxtcore.h": "#ifndef __PXTCORE_H\r\n#define __PXTCORE_H\r\n\r\n#include \"MicroBit.h\"\r\n#include \"MicroBitImage.h\"\r\n#include \"ManagedString.h\"\r\n#include \"ManagedType.h\"\r\n\r\nnamespace pxt {\r\nvoid debuglog(const char *format, ...);\r\n}\r\n\r\n// #define GC_GET_HEAP_SIZE() device_heap_size(0)\r\n#define xmalloc malloc\r\n#define xfree free\r\n\r\n#define GC_MAX_ALLOC_SIZE 9000\r\n\r\n#define NON_GC_HEAP_RESERVATION 1024\r\n\r\n#ifdef CODAL_CONFIG_H\r\n#define MICROBIT_CODAL 1\r\n#else\r\n#define MICROBIT_CODAL 0\r\n#define GC_BLOCK_SIZE 256\r\n#endif\r\n\r\n#if !MICROBIT_CODAL\r\n#undef DMESG\r\n#define DMESG NOLOG\r\n#endif\r\n\r\n#undef BYTES_TO_WORDS\r\n\r\n#endif\r\n",
             "pxtparts.json": "{\n    \"buttonpair\": {\n        \"simulationBehavior\": \"buttonpair\",\n        \"visual\": {\n            \"builtIn\": \"buttonpair\",\n            \"width\": 75,\n            \"height\": 45,\n            \"pinDistance\": 15,\n            \"pinLocations\": [\n                {\n                    \"x\": 0,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 45\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 75,\n                    \"y\": 45\n                }\n            ]\n        },\n        \"numberOfPins\": 4,\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P14\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"P15\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    2,\n                    3\n                ]\n            }\n        ]\n    },\n    \"microservo\": {\n        \"simulationBehavior\": \"microservo\",\n        \"visual\": {\n            \"builtIn\": \"microservo\",\n            \"width\": 74.85,\n            \"height\": 200,\n            \"pinDistance\": 10,\n            \"pinLocations\": [\n                {\n                    \"x\": 30,\n                    \"y\": 5\n                },\n                {\n                    \"x\": 37,\n                    \"y\": 5\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 5\n                }\n            ]\n        },\n        \"numberOfPins\": 3,\n        \"pinDefinitions\": [\n            {\n                \"target\": {\n                    \"pinInstantiationIdx\": 0\n                },\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"threeVolt\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            }\n        ],\n        \"instantiations\": [\n            {\n                \"kind\": \"function\",\n                \"fullyQualifiedName\": \"pins.servoWritePin,pins.servoSetPulse,PwmOnlyPin.servoWrite,PwmOnlyPin.servoSetPulse,servos.Servo.setAngle,servos.Servo.run,servos.Servo.setPulse\",\n                \"argumentRoles\": [\n                    {\n                        \"pinInstantiationIdx\": 0,\n                        \"partParameter\": \"name\"\n                    }\n                ]\n            }\n        ],\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    2\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            }\n        ]\n    },\n    \"neopixel\": {\n        \"simulationBehavior\": \"neopixel\",\n        \"visual\": {\n            \"builtIn\": \"neopixel\",\n            \"width\": 58,\n            \"height\": 113,\n            \"pinDistance\": 9,\n            \"pinLocations\": [\n                {\n                    \"x\": 10,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 19,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 28,\n                    \"y\": 0\n                }\n            ]\n        },\n        \"numberOfPins\": 3,\n        \"pinDefinitions\": [\n            {\n                \"target\": {\n                    \"pinInstantiationIdx\": 0\n                },\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"threeVolt\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"+Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"function\",\n            \"fullyQualifiedName\": \"neopixel.create\",\n            \"argumentRoles\": [\n                {\n                    \"pinInstantiationIdx\": 0,\n                    \"partParameter\": \"pin\"\n                },\n                {\n                    \"partParameter\": \"mode\"\n                }\n            ]\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    2\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1\n                ]\n            }\n        ]\n    },\n    \"ledmatrix\": {\n        \"visual\": {\n            \"builtIn\": \"ledmatrix\",\n            \"width\": 105,\n            \"height\": 105,\n            \"pinDistance\": 15,\n            \"pinLocations\": [\n                {\n                    \"x\": 0,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 15,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 0\n                },\n                {\n                    \"x\": 105,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 0,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 15,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 30,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 45,\n                    \"y\": 105\n                },\n                {\n                    \"x\": 60,\n                    \"y\": 0\n                }\n            ]\n        },\n        \"simulationBehavior\": \"ledmatrix\",\n        \"numberOfPins\": 10,\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P6\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P7\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P8\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P9\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P10\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 0\n            },\n            {\n                \"target\": \"P12\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P13\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P16\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P19\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            },\n            {\n                \"target\": \"P20\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\",\n                \"colorGroup\": 1\n            }\n        ],\n        \"assembly\": [\n            {\n                \"part\": true\n            },\n            {\n                \"pinIndices\": [\n                    0,\n                    1,\n                    2,\n                    3,\n                    4\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    5,\n                    6,\n                    7,\n                    8,\n                    9\n                ]\n            }\n        ]\n    },\n    \"headphone\": {\n        \"numberOfPins\": 2,\n        \"visual\": {\n            \"image\": \"parts/headphone.svg\",\n            \"width\": 142,\n            \"height\": 180,\n            \"pinDistance\": 20,\n            \"pinLocations\": [\n                {\n                    \"x\": 17,\n                    \"y\": 11\n                },\n                {\n                    \"x\": 55,\n                    \"y\": 50\n                }\n            ]\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P0\",\n                \"style\": \"croc\",\n                \"orientation\": \"Y\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"croc\",\n                \"orientation\": \"Y\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    0\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    1\n                ]\n            }\n        ]\n    },\n    \"speaker\": {\n        \"numberOfPins\": 2,\n        \"visual\": {\n            \"image\": \"parts/speaker.svg\",\n            \"width\": 500,\n            \"height\": 500,\n            \"pinDistance\": 70,\n            \"pinLocations\": [\n                {\n                    \"x\": 180,\n                    \"y\": 135\n                },\n                {\n                    \"x\": 320,\n                    \"y\": 135\n                }\n            ]\n        },\n        \"pinDefinitions\": [\n            {\n                \"target\": \"P0\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            },\n            {\n                \"target\": \"ground\",\n                \"style\": \"male\",\n                \"orientation\": \"-Z\"\n            }\n        ],\n        \"instantiation\": {\n            \"kind\": \"singleton\"\n        },\n        \"assembly\": [\n            {\n                \"part\": true,\n                \"pinIndices\": [\n                    0\n                ]\n            },\n            {\n                \"pinIndices\": [\n                    1\n                ]\n            }\n        ]\n    }\n}",
@@ -2723,6 +2743,7 @@ var pxtTargetBundle = {
             "shims.d.ts": "// Auto-generated. Do not edit.\n\n\n    /**\n     * Creation, manipulation and display of LED images.\n     */\n    //% color=#7600A8 weight=31 icon=\"\\uf03e\"\n    //% advanced=true\ndeclare namespace images {\n\n    /**\n     * Creates an image that fits on the LED screen.\n     */\n    //% weight=75 help=images/create-image\n    //% blockId=device_build_image block=\"create image\"\n    //% parts=\"ledmatrix\" imageLiteral=1 shim=images::createImage\n    function createImage(leds: string): Image;\n\n    /**\n     * Creates an image with 2 frames.\n     */\n    //% weight=74 help=images/create-big-image\n    //% blockId=device_build_big_image block=\"create big image\" imageLiteral=2\n    //% parts=\"ledmatrix\" shim=images::createBigImage\n    function createBigImage(leds: string): Image;\n}\n\n\ndeclare interface Image {\n    /**\n     * Plots the image at a given column to the screen\n     */\n    //% help=images/plot-image\n    //% parts=\"ledmatrix\" xOffset.defl=0 shim=ImageMethods::plotImage\n    plotImage(xOffset?: int32): void;\n\n    /**\n     * Shows an frame from the image at offset ``x offset``.\n     * @param xOffset column index to start displaying the image\n     */\n    //% help=images/show-image weight=80 blockNamespace=images\n    //% blockId=device_show_image_offset block=\"show image %sprite(myImage)|at offset %offset\"\n    //% blockGap=8 parts=\"ledmatrix\" async interval.defl=400 shim=ImageMethods::showImage\n    showImage(xOffset: int32, interval?: int32): void;\n\n    /**\n     * Draws the ``index``-th frame of the image on the screen.\n     * @param xOffset column index to start displaying the image\n     */\n    //% help=images/plot-frame weight=80\n    //% parts=\"ledmatrix\" shim=ImageMethods::plotFrame\n    plotFrame(xOffset: int32): void;\n\n    /**\n     * Scrolls an image .\n     * @param frameOffset x offset moved on each animation step, eg: 1, 2, 5\n     * @param interval time between each animation step in milli seconds, eg: 200\n     */\n    //% help=images/scroll-image weight=79 async blockNamespace=images\n    //% blockId=device_scroll_image\n    //% block=\"scroll image %sprite(myImage)|with offset %frameoffset|and interval (ms) %delay\"\n    //% blockGap=8 parts=\"ledmatrix\" shim=ImageMethods::scrollImage\n    scrollImage(frameOffset: int32, interval: int32): void;\n\n    /**\n     * Sets all pixels off.\n     */\n    //% help=images/clear\n    //% parts=\"ledmatrix\" shim=ImageMethods::clear\n    clear(): void;\n\n    /**\n     * Sets a specific pixel brightness at a given position\n     */\n    //%\n    //% parts=\"ledmatrix\" shim=ImageMethods::setPixelBrightness\n    setPixelBrightness(x: int32, y: int32, value: int32): void;\n\n    /**\n     * Gets the pixel brightness ([0..255]) at a given position\n     */\n    //%\n    //% parts=\"ledmatrix\" shim=ImageMethods::pixelBrightness\n    pixelBrightness(x: int32, y: int32): int32;\n\n    /**\n     * Gets the width in columns\n     */\n    //% help=functions/width shim=ImageMethods::width\n    width(): int32;\n\n    /**\n     * Gets the height in rows (always 5)\n     */\n    //% shim=ImageMethods::height\n    height(): int32;\n\n    /**\n     * Set a pixel state at position ``(x,y)``\n     * @param x pixel column\n     * @param y pixel row\n     * @param value pixel state\n     */\n    //% help=images/set-pixel\n    //% parts=\"ledmatrix\" shim=ImageMethods::setPixel\n    setPixel(x: int32, y: int32, value: boolean): void;\n\n    /**\n     * Get the pixel state at position ``(x,y)``\n     * @param x pixel column\n     * @param y pixel row\n     */\n    //% help=images/pixel\n    //% parts=\"ledmatrix\" shim=ImageMethods::pixel\n    pixel(x: int32, y: int32): boolean;\n\n    /**\n     * Show a particular frame of the image strip.\n     * @param frame image frame to show\n     */\n    //% weight=70 help=images/show-frame\n    //% parts=\"ledmatrix\" interval.defl=400 shim=ImageMethods::showFrame\n    showFrame(frame: int32, interval?: int32): void;\n}\n\n\n    /**\n     * Provides access to basic micro:bit functionality.\n     */\n    //% color=#1E90FF weight=116 icon=\"\\uf00a\"\ndeclare namespace basic {\n\n    /**\n     * Draws an image on the LED screen.\n     * @param leds the pattern of LED to turn on/off\n     * @param interval time in milliseconds to pause after drawing\n     */\n    //% help=basic/show-leds\n    //% weight=95 blockGap=8\n    //% imageLiteral=1 async\n    //% blockId=device_show_leds\n    //% block=\"show leds\" icon=\"\\uf00a\"\n    //% parts=\"ledmatrix\" interval.defl=400 shim=basic::showLeds\n    function showLeds(leds: string, interval?: int32): void;\n\n    /**\n     * Display text on the display, one character at a time. If the string fits on the screen (i.e. is one letter), does not scroll.\n     * @param text the text to scroll on the screen, eg: \"Hello!\"\n     * @param interval how fast to shift characters; eg: 150, 100, 200, -100\n     */\n    //% help=basic/show-string\n    //% weight=87 blockGap=16\n    //% block=\"show|string %text\"\n    //% async\n    //% blockId=device_print_message\n    //% parts=\"ledmatrix\"\n    //% text.shadowOptions.toString=true interval.defl=150 shim=basic::showString\n    function showString(text: string, interval?: int32): void;\n\n    /**\n     * Turn off all LEDs\n     */\n    //% help=basic/clear-screen weight=79\n    //% blockId=device_clear_display block=\"clear screen\"\n    //% parts=\"ledmatrix\" shim=basic::clearScreen\n    function clearScreen(): void;\n\n    /**\n     * Shows a sequence of LED screens as an animation.\n     * @param leds pattern of LEDs to turn on/off\n     * @param interval time in milliseconds between each redraw\n     */\n    //% help=basic/show-animation imageLiteral=1 async\n    //% parts=\"ledmatrix\" interval.defl=400 shim=basic::showAnimation\n    function showAnimation(leds: string, interval?: int32): void;\n\n    /**\n     * Draws an image on the LED screen.\n     * @param leds pattern of LEDs to turn on/off\n     */\n    //% help=basic/plot-leds weight=80\n    //% parts=\"ledmatrix\" imageLiteral=1 shim=basic::plotLeds\n    function plotLeds(leds: string): void;\n\n    /**\n     * Repeats the code forever in the background. On each iteration, allows other codes to run.\n     * @param body code to execute\n     */\n    //% help=basic/forever weight=55 blockGap=16 blockAllowMultiple=1 afterOnStart=true\n    //% blockId=device_forever block=\"forever\" icon=\"\\uf01e\" shim=basic::forever\n    function forever(a: () => void): void;\n\n    /**\n     * Pause for the specified time in milliseconds\n     * @param ms how long to pause for, eg: 100, 200, 500, 1000, 2000\n     */\n    //% help=basic/pause weight=54\n    //% async block=\"pause (ms) %pause\" blockGap=16\n    //% blockId=device_pause icon=\"\\uf110\"\n    //% pause.shadow=timePicker shim=basic::pause\n    function pause(ms: int32): void;\n}\n\n\n\n    //% color=#D400D4 weight=111 icon=\"\\uf192\"\ndeclare namespace input {\n\n    /**\n     * Do something when a button (A, B or both A+B) is pushed down and released again.\n     * @param button the button that needs to be pressed\n     * @param body code to run when event is raised\n     */\n    //% help=input/on-button-pressed weight=85 blockGap=16\n    //% blockId=device_button_event block=\"on button|%NAME|pressed\"\n    //% parts=\"buttonpair\" shim=input::onButtonPressed\n    function onButtonPressed(button: Button, body: () => void): void;\n\n    /**\n     * Do something when when a gesture is done (like shaking the micro:bit).\n     * @param gesture the type of gesture to track, eg: Gesture.Shake\n     * @param body code to run when gesture is raised\n     */\n    //% help=input/on-gesture weight=84 blockGap=16\n    //% blockId=device_gesture_event block=\"on |%NAME\"\n    //% parts=\"accelerometer\"\n    //% NAME.fieldEditor=\"gestures\" NAME.fieldOptions.columns=4 shim=input::onGesture\n    function onGesture(gesture: Gesture, body: () => void): void;\n\n    /**\n     * Tests if a gesture is currently detected.\n     * @param gesture the type of gesture to detect, eg: Gesture.Shake\n     */\n    //% help=input/is-gesture weight=10 blockGap=8\n    //% blockId=deviceisgesture block=\"is %gesture gesture\"\n    //% parts=\"accelerometer\"\n    //% gesture.fieldEditor=\"gestures\" gesture.fieldOptions.columns=4 shim=input::isGesture\n    function isGesture(gesture: Gesture): boolean;\n\n    /**\n     * Do something when a pin is touched and released again (while also touching the GND pin).\n     * @param name the pin that needs to be pressed, eg: TouchPin.P0\n     * @param body the code to run when the pin is pressed\n     */\n    //% help=input/on-pin-pressed weight=83 blockGap=32\n    //% blockId=device_pin_event block=\"on pin %name|pressed\" shim=input::onPinPressed\n    function onPinPressed(name: TouchPin, body: () => void): void;\n\n    /**\n     * Do something when a pin is released.\n     * @param name the pin that needs to be released, eg: TouchPin.P0\n     * @param body the code to run when the pin is released\n     */\n    //% help=input/on-pin-released weight=6 blockGap=16\n    //% blockId=device_pin_released block=\"on pin %NAME|released\"\n    //% advanced=true shim=input::onPinReleased\n    function onPinReleased(name: TouchPin, body: () => void): void;\n\n    /**\n     * Get the button state (pressed or not) for ``A`` and ``B``.\n     * @param button the button to query the request, eg: Button.A\n     */\n    //% help=input/button-is-pressed weight=60\n    //% block=\"button|%NAME|is pressed\"\n    //% blockId=device_get_button2\n    //% icon=\"\\uf192\" blockGap=8\n    //% parts=\"buttonpair\" shim=input::buttonIsPressed\n    function buttonIsPressed(button: Button): boolean;\n\n    /**\n     * Get the pin state (pressed or not). Requires to hold the ground to close the circuit.\n     * @param name pin used to detect the touch, eg: TouchPin.P0\n     */\n    //% help=input/pin-is-pressed weight=58\n    //% blockId=\"device_pin_is_pressed\" block=\"pin %NAME|is pressed\"\n    //% blockGap=8 shim=input::pinIsPressed\n    function pinIsPressed(name: TouchPin): boolean;\n\n    /**\n     * Get the acceleration value in milli-gravitys (when the board is laying flat with the screen up, x=0, y=0 and z=-1024)\n     * @param dimension x, y, or z dimension, eg: Dimension.X\n     */\n    //% help=input/acceleration weight=58\n    //% blockId=device_acceleration block=\"acceleration (mg)|%NAME\" blockGap=8\n    //% parts=\"accelerometer\" shim=input::acceleration\n    function acceleration(dimension: Dimension): int32;\n\n    /**\n     * Reads the light level applied to the LED screen in a range from ``0`` (dark) to ``255`` bright.\n     */\n    //% help=input/light-level weight=57\n    //% blockId=device_get_light_level block=\"light level\" blockGap=8\n    //% parts=\"ledmatrix\" shim=input::lightLevel\n    function lightLevel(): int32;\n\n    /**\n     * Get the current compass heading in degrees.\n     */\n    //% help=input/compass-heading\n    //% weight=56\n    //% blockId=device_heading block=\"compass heading (°)\" blockGap=8\n    //% parts=\"compass\" shim=input::compassHeading\n    function compassHeading(): int32;\n\n    /**\n     * Gets the temperature in Celsius degrees (°C).\n     */\n    //% weight=55\n    //% help=input/temperature\n    //% blockId=device_temperature block=\"temperature (°C)\" blockGap=8\n    //% parts=\"thermometer\" shim=input::temperature\n    function temperature(): int32;\n\n    /**\n     * The pitch or roll of the device, rotation along the ``x-axis`` or ``y-axis``, in degrees.\n     * @param kind pitch or roll\n     */\n    //% help=input/rotation weight=52\n    //% blockId=device_get_rotation block=\"rotation (°)|%NAME\" blockGap=8\n    //% parts=\"accelerometer\" advanced=true shim=input::rotation\n    function rotation(kind: Rotation): int32;\n\n    /**\n     * Get the magnetic force value in ``micro-Teslas`` (``µT``). This function is not supported in the simulator.\n     * @param dimension the x, y, or z dimension, eg: Dimension.X\n     */\n    //% help=input/magnetic-force weight=51\n    //% blockId=device_get_magnetic_force block=\"magnetic force (µT)|%NAME\" blockGap=8\n    //% parts=\"compass\"\n    //% advanced=true shim=input::magneticForce\n    function magneticForce(dimension: Dimension): number;\n\n    /**\n     * Obsolete, compass calibration is automatic.\n     */\n    //% help=input/calibrate-compass advanced=true\n    //% blockId=\"input_compass_calibrate\" block=\"calibrate compass\"\n    //% weight=45 shim=input::calibrateCompass\n    function calibrateCompass(): void;\n\n    /**\n     * Sets the accelerometer sample range in gravities.\n     * @param range a value describe the maximum strengh of acceleration measured\n     */\n    //% help=input/set-accelerometer-range\n    //% blockId=device_set_accelerometer_range block=\"set accelerometer|range %range\"\n    //% weight=5\n    //% parts=\"accelerometer\"\n    //% advanced=true shim=input::setAccelerometerRange\n    function setAccelerometerRange(range: AcceleratorRange): void;\n}\n\n\n\n    //% weight=1 color=\"#333333\"\n    //% advanced=true\ndeclare namespace control {\n\n    /**\n     * Gets the number of milliseconds elapsed since power on.\n     */\n    //% help=control/millis weight=50\n    //% blockId=control_running_time block=\"millis (ms)\" shim=control::millis\n    function millis(): int32;\n\n    /**\n     * Gets current time in microseconds. Overflows every ~18 minutes.\n     */\n    //% shim=control::micros\n    function micros(): int32;\n\n    /**\n     * Schedules code that run in the background.\n     */\n    //% help=control/in-background blockAllowMultiple=1 afterOnStart=true\n    //% blockId=\"control_in_background\" block=\"run in background\" blockGap=8 shim=control::inBackground\n    function inBackground(a: () => void): void;\n\n    /**\n     * Blocks the calling thread until the specified event is raised.\n     */\n    //% help=control/wait-for-event async\n    //% blockId=control_wait_for_event block=\"wait for event|from %src|with value %value\" shim=control::waitForEvent\n    function waitForEvent(src: int32, value: int32): void;\n\n    /**\n     * Resets the BBC micro:bit.\n     */\n    //% weight=30 async help=control/reset blockGap=8\n    //% blockId=\"control_reset\" block=\"reset\" shim=control::reset\n    function reset(): void;\n\n    /**\n     * Blocks the current fiber for the given microseconds\n     * @param micros number of micro-seconds to wait. eg: 4\n     */\n    //% help=control/wait-micros weight=29\n    //% blockId=\"control_wait_us\" block=\"wait (µs)%micros\" shim=control::waitMicros\n    function waitMicros(micros: int32): void;\n\n    /**\n     * Raises an event in the event bus.\n     * @param src ID of the MicroBit Component that generated the event e.g. MICROBIT_ID_BUTTON_A.\n     * @param value Component specific code indicating the cause of the event.\n     * @param mode optional definition of how the event should be processed after construction (default is CREATE_AND_FIRE).\n     */\n    //% weight=21 blockGap=12 blockId=\"control_raise_event\" block=\"raise event|from source %src=control_event_source_id|with value %value=control_event_value_id\" blockExternalInputs=1\n    //% help=control/raise-event\n    //% mode.defl=1 shim=control::raiseEvent\n    function raiseEvent(src: int32, value: int32, mode?: EventCreationMode): void;\n\n    /**\n     * Registers an event handler.\n     */\n    //% weight=20 blockGap=8 blockId=\"control_on_event\" block=\"on event|from %src=control_event_source_id|with value %value=control_event_value_id\"\n    //% help=control/on-event\n    //% blockExternalInputs=1 flags.defl=0 shim=control::onEvent\n    function onEvent(src: int32, value: int32, handler: () => void, flags?: int32): void;\n\n    /**\n     * Gets the value of the last event executed on the bus\n     */\n    //% blockId=control_event_value\" block=\"event value\"\n    //% help=control/event-value\n    //% weight=18 shim=control::eventValue\n    function eventValue(): int32;\n\n    /**\n     * Gets the timestamp of the last event executed on the bus\n     */\n    //% blockId=control_event_timestamp\" block=\"event timestamp\"\n    //% help=control/event-timestamp\n    //% weight=19 blockGap=8 shim=control::eventTimestamp\n    function eventTimestamp(): int32;\n\n    /**\n     * Make a friendly name for the device based on its serial number\n     */\n    //% blockId=\"control_device_name\" block=\"device name\" weight=10 blockGap=8\n    //% help=control/device-name\n    //% advanced=true shim=control::deviceName\n    function deviceName(): string;\n\n    /**\n     * Derive a unique, consistent serial number of this device from internal data.\n     */\n    //% blockId=\"control_device_serial_number\" block=\"device serial number\" weight=9\n    //% help=control/device-serial-number\n    //% advanced=true shim=control::deviceSerialNumber\n    function deviceSerialNumber(): int32;\n\n    /**\n     * Informs simulator/runtime of a MIDI message\n     * Internal function to support the simulator.\n     */\n    //% part=midioutput blockHidden=1 shim=control::__midiSend\n    function __midiSend(buffer: Buffer): void;\n\n    /**\n     *\n     */\n    //% shim=control::__log\n    function __log(text: string): void;\n}\n\n\n\n    //% color=#7600A8 weight=101 icon=\"\\uf205\"\ndeclare namespace led {\n\n    /**\n     * Turn on the specified LED using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED starting at 0\n     * @param y the vertical coordinate of the LED starting at 0\n     */\n    //% help=led/plot weight=78\n    //% blockId=device_plot block=\"plot|x %x|y %y\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1 shim=led::plot\n    function plot(x: int32, y: int32): void;\n\n    /**\n     * Turn on the specified LED with specific brightness using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED starting at 0\n     * @param y the vertical coordinate of the LED starting at 0\n     * @param brightness the brightness from 0 (off) to 255 (bright), eg:255\n     */\n    //% help=led/plot-brightness weight=78\n    //% blockId=device_plot_brightness block=\"plot|x %x|y %y|brightness %brightness\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4 brightness.min=0 brightness.max=255\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1\n    //% advanced=true shim=led::plotBrightness\n    function plotBrightness(x: int32, y: int32, brightness: int32): void;\n\n    /**\n     * Turn off the specified LED using x, y coordinates (x is horizontal, y is vertical). (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED\n     * @param y the vertical coordinate of the LED\n     */\n    //% help=led/unplot weight=77\n    //% blockId=device_unplot block=\"unplot|x %x|y %y\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1 shim=led::unplot\n    function unplot(x: int32, y: int32): void;\n\n    /**\n     * Get the brightness state of the specified LED using x, y coordinates. (0,0) is upper left.\n     * @param x the horizontal coordinate of the LED\n     * @param y the vertical coordinate of the LED\n     */\n    //% help=led/point-brightness weight=76\n    //% blockId=device_point_brightness block=\"point|x %x|y %y brightness\"\n    //% parts=\"ledmatrix\"\n    //% x.min=0 x.max=4 y.min=0 y.max=4\n    //% x.fieldOptions.precision=1 y.fieldOptions.precision=1\n    //% advanced=true shim=led::pointBrightness\n    function pointBrightness(x: int32, y: int32): int32;\n\n    /**\n     * Get the screen brightness from 0 (off) to 255 (full bright).\n     */\n    //% help=led/brightness weight=60\n    //% blockId=device_get_brightness block=\"brightness\" blockGap=8\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=led::brightness\n    function brightness(): int32;\n\n    /**\n     * Set the screen brightness from 0 (off) to 255 (full bright).\n     * @param value the brightness value, eg:255, 127, 0\n     */\n    //% help=led/set-brightness weight=59\n    //% blockId=device_set_brightness block=\"set brightness %value\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true\n    //% value.min=0 value.max=255 shim=led::setBrightness\n    function setBrightness(value: int32): void;\n\n    /**\n     * Cancels the current animation and clears other pending animations.\n     */\n    //% weight=50 help=led/stop-animation\n    //% blockId=device_stop_animation block=\"stop animation\"\n    //% parts=\"ledmatrix\"\n    //% advanced=true shim=led::stopAnimation\n    function stopAnimation(): void;\n\n    /**\n     * Sets the display mode between black and white and greyscale for rendering LEDs.\n     * @param mode mode the display mode in which the screen operates\n     */\n    //% weight=1 help=led/set-display-mode\n    //% parts=\"ledmatrix\" advanced=true weight=1\n    //% blockId=\"led_set_display_mode\" block=\"set display mode $mode\" shim=led::setDisplayMode\n    function setDisplayMode(mode: DisplayMode): void;\n\n    /**\n     * Gets the current display mode\n     */\n    //% weight=1 parts=\"ledmatrix\" advanced=true shim=led::displayMode\n    function displayMode(): DisplayMode;\n\n    /**\n     * Turns on or off the display\n     */\n    //% help=led/enable blockId=device_led_enable block=\"led enable %on\"\n    //% advanced=true parts=\"ledmatrix\" shim=led::enable\n    function enable(on: boolean): void;\n\n    /**\n     * Takes a screenshot of the LED screen and returns an image.\n     */\n    //% help=led/screenshot\n    //% parts=\"ledmatrix\" shim=led::screenshot\n    function screenshot(): Image;\n}\ndeclare namespace pins {\n\n    /**\n     * Read the specified pin or connector as either 0 or 1\n     * @param name pin to read from, eg: DigitalPin.P0\n     */\n    //% help=pins/digital-read-pin weight=30\n    //% blockId=device_get_digital_pin block=\"digital read|pin %name\" blockGap=8\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::digitalReadPin\n    function digitalReadPin(name: DigitalPin): int32;\n\n    /**\n     * Set a pin or connector value to either 0 or 1.\n     * @param name pin to write to, eg: DigitalPin.P0\n     * @param value value to set on the pin, 1 eg,0\n     */\n    //% help=pins/digital-write-pin weight=29\n    //% blockId=device_set_digital_pin block=\"digital write|pin %name|to %value\"\n    //% value.min=0 value.max=1\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::digitalWritePin\n    function digitalWritePin(name: DigitalPin, value: int32): void;\n\n    /**\n     * Read the connector value as analog, that is, as a value comprised between 0 and 1023.\n     * @param name pin to write to, eg: AnalogPin.P0\n     */\n    //% help=pins/analog-read-pin weight=25\n    //% blockId=device_get_analog_pin block=\"analog read|pin %name\" blockGap=\"8\"\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogReadPin\n    function analogReadPin(name: AnalogPin): int32;\n\n    /**\n     * Set the connector value as analog. Value must be comprised between 0 and 1023.\n     * @param name pin name to write to, eg: AnalogPin.P0\n     * @param value value to write to the pin between ``0`` and ``1023``. eg:1023,0\n     */\n    //% help=pins/analog-write-pin weight=24\n    //% blockId=device_set_analog_pin block=\"analog write|pin %name|to %value\" blockGap=8\n    //% value.min=0 value.max=1023\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogWritePin\n    function analogWritePin(name: AnalogPin, value: int32): void;\n\n    /**\n     * Configure the pulse-width modulation (PWM) period of the analog output in microseconds.\n     * If this pin is not configured as an analog output (using `analog write pin`), the operation has no effect.\n     * @param name analog pin to set period to, eg: AnalogPin.P0\n     * @param micros period in micro seconds. eg:20000\n     */\n    //% help=pins/analog-set-period weight=23 blockGap=8\n    //% blockId=device_set_analog_period block=\"analog set period|pin %pin|to (µs)%micros\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" shim=pins::analogSetPeriod\n    function analogSetPeriod(name: AnalogPin, micros: int32): void;\n\n    /**\n     * Configure the pin as a digital input and generate an event when the pin is pulsed either high or low.\n     * @param name digital pin to register to, eg: DigitalPin.P0\n     * @param pulse the value of the pulse, eg: PulseValue.High\n     */\n    //% help=pins/on-pulsed weight=22 blockGap=16 advanced=true\n    //% blockId=pins_on_pulsed block=\"on|pin %pin|pulsed %pulse\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::onPulsed\n    function onPulsed(name: DigitalPin, pulse: PulseValue, body: () => void): void;\n\n    /**\n     * Get the duration of the last pulse in microseconds. This function should be called from a ``onPulsed`` handler.\n     */\n    //% help=pins/pulse-duration advanced=true\n    //% blockId=pins_pulse_duration block=\"pulse duration (µs)\"\n    //% weight=21 blockGap=8 shim=pins::pulseDuration\n    function pulseDuration(): int32;\n\n    /**\n     * Return the duration of a pulse at a pin in microseconds.\n     * @param name the pin which measures the pulse, eg: DigitalPin.P0\n     * @param value the value of the pulse, eg: PulseValue.High\n     * @param maximum duration in microseconds\n     */\n    //% blockId=\"pins_pulse_in\" block=\"pulse in (µs)|pin %name|pulsed %value\"\n    //% weight=20 advanced=true\n    //% help=pins/pulse-in\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" maxDuration.defl=2000000 shim=pins::pulseIn\n    function pulseIn(name: DigitalPin, value: PulseValue, maxDuration?: int32): int32;\n\n    /**\n     * Write a value to the servo, controlling the shaft accordingly. On a standard servo, this will set the angle of the shaft (in degrees), moving the shaft to that orientation. On a continuous rotation servo, this will set the speed of the servo (with ``0`` being full-speed in one direction, ``180`` being full speed in the other, and a value near ``90`` being no movement).\n     * @param name pin to write to, eg: AnalogPin.P0\n     * @param value angle or rotation speed, eg:180,90,0\n     */\n    //% help=pins/servo-write-pin weight=20\n    //% blockId=device_set_servo_pin block=\"servo write|pin %name|to %value\" blockGap=8\n    //% parts=microservo trackArgs=0\n    //% value.min=0 value.max=180\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::servoWritePin\n    function servoWritePin(name: AnalogPin, value: int32): void;\n\n    /**\n     * Specifies that a continuous servo is connected.\n     */\n    //% shim=pins::servoSetContinuous\n    function servoSetContinuous(name: AnalogPin, value: boolean): void;\n\n    /**\n     * Configure the IO pin as an analog/pwm output and set a pulse width. The period is 20 ms period and the pulse width is set based on the value given in **microseconds** or `1/1000` milliseconds.\n     * @param name pin name\n     * @param micros pulse duration in micro seconds, eg:1500\n     */\n    //% help=pins/servo-set-pulse weight=19\n    //% blockId=device_set_servo_pulse block=\"servo set pulse|pin %value|to (µs) %micros\"\n    //% value.fieldEditor=\"gridpicker\" value.fieldOptions.columns=4\n    //% value.fieldOptions.tooltips=\"false\" value.fieldOptions.width=\"250\" shim=pins::servoSetPulse\n    function servoSetPulse(name: AnalogPin, micros: int32): void;\n\n    /**\n     * Set the pin used when using analog pitch or music.\n     * @param name pin to modulate pitch from\n     */\n    //% blockId=device_analog_set_pitch_pin block=\"analog set pitch pin %name\"\n    //% help=pins/analog-set-pitch-pin weight=3 advanced=true\n    //% name.fieldEditor=\"gridpicker\" name.fieldOptions.columns=4\n    //% name.fieldOptions.tooltips=\"false\" name.fieldOptions.width=\"250\" shim=pins::analogSetPitchPin\n    function analogSetPitchPin(name: AnalogPin): void;\n\n    /**\n     * Sets the volume on the pitch pin\n     * @param volume the intensity of the sound from 0..255\n     */\n    //% blockId=device_analog_set_pitch_volume block=\"analog set pitch volume $volume\"\n    //% help=pins/analog-set-pitch-volume weight=3 advanced=true\n    //% volume.min=0 volume.max=255 shim=pins::analogSetPitchVolume\n    function analogSetPitchVolume(volume: int32): void;\n\n    /**\n     * Gets the volume the pitch pin from 0..255\n     */\n    //% blockId=device_analog_pitch_volume block=\"analog pitch volume\"\n    //% help=pins/analog-pitch-volume weight=3 advanced=true shim=pins::analogPitchVolume\n    function analogPitchVolume(): int32;\n\n    /**\n     * Emit a plse-width modulation (PWM) signal to the current pitch pin. Use `analog set pitch pin` to define the pitch pin.\n     * @param frequency frequency to modulate in Hz.\n     * @param ms duration of the pitch in milli seconds.\n     */\n    //% blockId=device_analog_pitch block=\"analog pitch %frequency|for (ms) %ms\"\n    //% help=pins/analog-pitch weight=4 async advanced=true blockGap=8 shim=pins::analogPitch\n    function analogPitch(frequency: int32, ms: int32): void;\n\n    /**\n     * Configure the pull directiion of of a pin.\n     * @param name pin to set the pull mode on, eg: DigitalPin.P0\n     * @param pull one of the mbed pull configurations, eg: PinPullMode.PullUp\n     */\n    //% help=pins/set-pull weight=3 advanced=true\n    //% blockId=device_set_pull block=\"set pull|pin %pin|to %pull\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::setPull\n    function setPull(name: DigitalPin, pull: PinPullMode): void;\n\n    /**\n     * Configure the events emitted by this pin. Events can be subscribed to\n     * using ``control.onEvent()``.\n     * @param name pin to set the event mode on, eg: DigitalPin.P0\n     * @param type the type of events for this pin to emit, eg: PinEventType.Edge\n     */\n    //% help=pins/set-events weight=4 advanced=true\n    //% blockId=device_set_pin_events block=\"set pin %pin|to emit %type|events\"\n    //% pin.fieldEditor=\"gridpicker\" pin.fieldOptions.columns=4\n    //% pin.fieldOptions.tooltips=\"false\" pin.fieldOptions.width=\"250\" shim=pins::setEvents\n    function setEvents(name: DigitalPin, type: PinEventType): void;\n\n    /**\n     * Create a new zero-initialized buffer.\n     * @param size number of bytes in the buffer\n     */\n    //% shim=pins::createBuffer\n    function createBuffer(size: int32): Buffer;\n\n    /**\n     * Read `size` bytes from a 7-bit I2C `address`.\n     */\n    //% repeat.defl=0 shim=pins::i2cReadBuffer\n    function i2cReadBuffer(address: int32, size: int32, repeat?: boolean): Buffer;\n\n    /**\n     * Write bytes to a 7-bit I2C `address`.\n     */\n    //% repeat.defl=0 shim=pins::i2cWriteBuffer\n    function i2cWriteBuffer(address: int32, buf: Buffer, repeat?: boolean): int32;\n\n    /**\n     * Write to the SPI slave and return the response\n     * @param value Data to be sent to the SPI slave\n     */\n    //% help=pins/spi-write weight=5 advanced=true\n    //% blockId=spi_write block=\"spi write %value\" shim=pins::spiWrite\n    function spiWrite(value: int32): int32;\n\n    /**\n     * Write to and read from the SPI slave at the same time\n     * @param command Data to be sent to the SPI slave (can be null)\n     * @param response Data received from the SPI slave (can be null)\n     */\n    //% help=pins/spi-transfer argsNullable shim=pins::spiTransfer\n    function spiTransfer(command: Buffer, response: Buffer): void;\n\n    /**\n     * Set the SPI frequency\n     * @param frequency the clock frequency, eg: 1000000\n     */\n    //% help=pins/spi-frequency weight=4 advanced=true\n    //% blockId=spi_frequency block=\"spi frequency %frequency\" shim=pins::spiFrequency\n    function spiFrequency(frequency: int32): void;\n\n    /**\n     * Set the SPI bits and mode\n     * @param bits the number of bits, eg: 8\n     * @param mode the mode, eg: 3\n     */\n    //% help=pins/spi-format weight=3 advanced=true\n    //% blockId=spi_format block=\"spi format|bits %bits|mode %mode\" shim=pins::spiFormat\n    function spiFormat(bits: int32, mode: int32): void;\n\n    /**\n     * Set the MOSI, MISO, SCK pins used by the SPI connection\n     *\n     */\n    //% help=pins/spi-pins weight=2 advanced=true\n    //% blockId=spi_pins block=\"spi set pins|MOSI %mosi|MISO %miso|SCK %sck\"\n    //% mosi.fieldEditor=\"gridpicker\" mosi.fieldOptions.columns=4\n    //% mosi.fieldOptions.tooltips=\"false\" mosi.fieldOptions.width=\"250\"\n    //% miso.fieldEditor=\"gridpicker\" miso.fieldOptions.columns=4\n    //% miso.fieldOptions.tooltips=\"false\" miso.fieldOptions.width=\"250\"\n    //% sck.fieldEditor=\"gridpicker\" sck.fieldOptions.columns=4\n    //% sck.fieldOptions.tooltips=\"false\" sck.fieldOptions.width=\"250\" shim=pins::spiPins\n    function spiPins(mosi: DigitalPin, miso: DigitalPin, sck: DigitalPin): void;\n\n    /**\n     * Mounts a push button on the given pin\n     */\n    //% help=pins/push-button advanced=true shim=pins::pushButton\n    function pushButton(pin: DigitalPin): void;\n}\n\n\n\n    //% weight=2 color=#002050 icon=\"\\uf287\"\n    //% advanced=true\ndeclare namespace serial {\n\n    /**\n     * Read a line of text from the serial port and return the buffer when the delimiter is met.\n     * @param delimiter text delimiter that separates each text chunk\n     */\n    //% help=serial/read-until\n    //% blockId=serial_read_until block=\"serial|read until %delimiter=serial_delimiter_conv\"\n    //% weight=19 shim=serial::readUntil\n    function readUntil(delimiter: string): string;\n\n    /**\n     * Read the buffered received data as a string\n     */\n    //% help=serial/read-string\n    //% blockId=serial_read_buffer block=\"serial|read string\"\n    //% weight=18 shim=serial::readString\n    function readString(): string;\n\n    /**\n     * Register an event to be fired when one of the delimiter is matched.\n     * @param delimiters the characters to match received characters against.\n     */\n    //% help=serial/on-data-received\n    //% weight=18 blockId=serial_on_data_received block=\"serial|on data received %delimiters=serial_delimiter_conv\" shim=serial::onDataReceived\n    function onDataReceived(delimiters: string, body: () => void): void;\n\n    /**\n     * Send a piece of text through the serial connection.\n     */\n    //% help=serial/write-string\n    //% weight=87 blockGap=8\n    //% blockId=serial_writestring block=\"serial|write string %text\"\n    //% text.shadowOptions.toString=true shim=serial::writeString\n    function writeString(text: string): void;\n\n    /**\n     * Send a buffer through serial connection\n     */\n    //% blockId=serial_writebuffer block=\"serial|write buffer %buffer=serial_readbuffer\"\n    //% help=serial/write-buffer advanced=true weight=6 shim=serial::writeBuffer\n    function writeBuffer(buffer: Buffer): void;\n\n    /**\n     * Read multiple characters from the receive buffer. Pause until enough characters are present.\n     * @param length default buffer length, eg: 64\n     */\n    //% blockId=serial_readbuffer block=\"serial|read buffer %length\"\n    //% help=serial/read-buffer advanced=true weight=5 shim=serial::readBuffer\n    function readBuffer(length: int32): Buffer;\n\n    /**\n     * Set the serial input and output to use pins instead of the USB connection.\n     * @param tx the new transmission pin, eg: SerialPin.P0\n     * @param rx the new reception pin, eg: SerialPin.P1\n     * @param rate the new baud rate. eg: 115200\n     */\n    //% weight=10\n    //% help=serial/redirect\n    //% blockId=serial_redirect block=\"serial|redirect to|TX %tx|RX %rx|at baud rate %rate\"\n    //% blockExternalInputs=1\n    //% tx.fieldEditor=\"gridpicker\" tx.fieldOptions.columns=3\n    //% tx.fieldOptions.tooltips=\"false\"\n    //% rx.fieldEditor=\"gridpicker\" rx.fieldOptions.columns=3\n    //% rx.fieldOptions.tooltips=\"false\"\n    //% blockGap=8 shim=serial::redirect\n    function redirect(tx: SerialPin, rx: SerialPin, rate: BaudRate): void;\n\n    /**\n    Set the baud rate of the serial port\n     */\n    //% weight=10\n    //% blockId=serial_setbaudrate block=\"serial|set baud rate %rate\"\n    //% blockGap=8 inlineInputMode=inline\n    //% help=serial/set-baud-rate\n    //% group=\"Configuration\" advanced=true shim=serial::setBaudRate\n    function setBaudRate(rate: BaudRate): void;\n\n    /**\n     * Direct the serial input and output to use the USB connection.\n     */\n    //% weight=9 help=serial/redirect-to-usb\n    //% blockId=serial_redirect_to_usb block=\"serial|redirect to USB\" shim=serial::redirectToUSB\n    function redirectToUSB(): void;\n\n    /**\n     * Sets the size of the RX buffer in bytes\n     * @param size length of the rx buffer in bytes, eg: 32\n     */\n    //% help=serial/set-rx-buffer-size\n    //% blockId=serialSetRxBufferSize block=\"serial set rx buffer size to $size\"\n    //% advanced=true shim=serial::setRxBufferSize\n    function setRxBufferSize(size: uint8): void;\n\n    /**\n     * Sets the size of the TX buffer in bytes\n     * @param size length of the tx buffer in bytes, eg: 32\n     */\n    //% help=serial/set-tx-buffer-size\n    //% blockId=serialSetTxBufferSize block=\"serial set tx buffer size to $size\"\n    //% advanced=true shim=serial::setTxBufferSize\n    function setTxBufferSize(size: uint8): void;\n}\n\n\n\n    //% indexerGet=BufferMethods::getByte indexerSet=BufferMethods::setByte\ndeclare interface Buffer {\n    /**\n     * Reads an unsigned byte at a particular location\n     */\n    //% shim=BufferMethods::getUint8\n    getUint8(off: int32): int32;\n\n    /**\n     * Returns false when the buffer can be written to.\n     */\n    //% shim=BufferMethods::isReadOnly\n    isReadOnly(): boolean;\n\n    /**\n     * Writes an unsigned byte at a particular location\n     */\n    //% shim=BufferMethods::setUint8\n    setUint8(off: int32, v: int32): void;\n\n    /**\n     * Write a number in specified format in the buffer.\n     */\n    //% shim=BufferMethods::setNumber\n    setNumber(format: NumberFormat, offset: int32, value: number): void;\n\n    /**\n     * Read a number in specified format from the buffer.\n     */\n    //% shim=BufferMethods::getNumber\n    getNumber(format: NumberFormat, offset: int32): number;\n\n    /** Returns the length of a Buffer object. */\n    //% property shim=BufferMethods::length\n    length: int32;\n\n    /**\n     * Fill (a fragment) of the buffer with given value.\n     */\n    //% offset.defl=0 length.defl=-1 shim=BufferMethods::fill\n    fill(value: int32, offset?: int32, length?: int32): void;\n\n    /**\n     * Return a copy of a fragment of a buffer.\n     */\n    //% offset.defl=0 length.defl=-1 shim=BufferMethods::slice\n    slice(offset?: int32, length?: int32): Buffer;\n\n    /**\n     * Shift buffer left in place, with zero padding.\n     * @param offset number of bytes to shift; use negative value to shift right\n     * @param start start offset in buffer. Default is 0.\n     * @param length number of elements in buffer. If negative, length is set as the buffer length minus\n     * start. eg: -1\n     */\n    //% start.defl=0 length.defl=-1 shim=BufferMethods::shift\n    shift(offset: int32, start?: int32, length?: int32): void;\n\n    /**\n     * Convert a buffer to string assuming UTF8 encoding\n     */\n    //% shim=BufferMethods::toString\n    toString(): string;\n\n    /**\n     * Convert a buffer to its hexadecimal representation.\n     */\n    //% shim=BufferMethods::toHex\n    toHex(): string;\n\n    /**\n     * Rotate buffer left in place.\n     * @param offset number of bytes to shift; use negative value to shift right\n     * @param start start offset in buffer. Default is 0.\n     * @param length number of elements in buffer. If negative, length is set as the buffer length minus\n     * start. eg: -1\n     */\n    //% start.defl=0 length.defl=-1 shim=BufferMethods::rotate\n    rotate(offset: int32, start?: int32, length?: int32): void;\n\n    /**\n     * Write contents of `src` at `dstOffset` in current buffer.\n     */\n    //% shim=BufferMethods::write\n    write(dstOffset: int32, src: Buffer): void;\n\n    /**\n     * Compute k-bit FNV-1 non-cryptographic hash of the buffer.\n     */\n    //% shim=BufferMethods::hash\n    hash(bits: int32): uint32;\n}\ndeclare namespace control {\n\n    /**\n     * Create a new zero-initialized buffer.\n     * @param size number of bytes in the buffer\n     */\n    //% deprecated=1 shim=control::createBuffer\n    function createBuffer(size: int32): Buffer;\n\n    /**\n     * Create a new buffer with UTF8-encoded string\n     * @param str the string to put in the buffer\n     */\n    //% deprecated=1 shim=control::createBufferFromUTF8\n    function createBufferFromUTF8(str: string): Buffer;\n}\ndeclare namespace light {\n\n    /**\n     * Sends a color buffer to a light strip\n     **/\n    //% advanced=true\n    //% shim=light::sendWS2812Buffer\n    function sendWS2812Buffer(buf: Buffer, pin: int32): void;\n\n    /**\n     * Sets the light mode of a pin\n     **/\n    //% advanced=true\n    //% shim=light::setMode\n    function setMode(pin: int32, mode: int32): void;\n}\n\n// Auto-generated. Do not edit. Really.\n",
             "templates.ts": "/**\n * Tagged hex literal converter\n */\n//% shim=@hex\nfunction hex(lits: any, ...args: any[]): Buffer { return null }\n",
             "trig.cpp": "#include \"pxtbase.h\"\n#include <limits.h>\n#include <stdlib.h>\n\nusing namespace std;\n\nnamespace Math_ {\n\n#define SINGLE(op) return fromDouble(::op(toDouble(x)));\n\n//%\nTNumber atan2(TNumber y, TNumber x) {\n    return fromDouble(::atan2(toDouble(y), toDouble(x)));\n}\n\n//%\nTNumber tan(TNumber x){SINGLE(tan)}\n\n//%\nTNumber sin(TNumber x){SINGLE(sin)}\n\n//%\nTNumber cos(TNumber x){SINGLE(cos)}\n\n//%\nTNumber atan(TNumber x){SINGLE(atan)}\n\n//%\nTNumber asin(TNumber x){SINGLE(asin)}\n\n//%\nTNumber acos(TNumber x){SINGLE(acos)}\n\n//%\nTNumber sqrt(TNumber x){SINGLE(sqrt)}\n\n}",
+            "uv3.ts": "\r\n\r\n\r\n  /**\r\n * Custom blocks\r\n */\r\n//% weight=100 color=#33BEBB icon=\"\"\r\n//% advanced=true\r\nnamespace UV3{\r\n\r\n    /**\r\n     * Sets UV3 Click object.\r\n     * @param boardID the boardID\r\n     * @param clickID the ClickID\r\n     *  @param UV3 the UV3 Object\r\n     */\r\n    //% block=\" $boardID $clickID\"\r\n    //% blockSetVariable=\"UV3\"\r\n    //% weight=110\r\n    export function createUV3(boardID: BoardID, clickID:ClickID): UV3 {\r\n        return new UV3(boardID, clickID);\r\n   }\r\n\r\n\r\n    export class UV3 extends bBoard.I2CSettings{\r\n    private readonly VEML6070_ADDR_ARA =(0x18 >> 1)\r\n    private readonly  VEML6070_ADDR_CMD =(0x70 >> 1)\r\n    private readonly  VEML6070_ADDR_DATA_LSB =(0x71 >> 1)\r\n    private readonly  VEML6070_ADDR_DATA_MSB =(0x73 >> 1)\r\n    // VEML6070 command register bits\r\n    private readonly  VEML6070_CMD_SD =0x01\r\n    private readonly  VEML6070_CMD_IT_0_5T = 0x00\r\n    private readonly  VEML6070_CMD_IT_1T = 0x04\r\n    private readonly  VEML6070_CMD_IT_2T= 0x08\r\n    private readonly  VEML6070_CMD_IT_4T =0x0C\r\n    private readonly  VEML6070_CMD_DEFAULT= 0x02\r\n    private controlReg : number;\r\n    \r\n      \r\n    \r\n    private isInitialized : Array<number>;\r\n    private deviceAddress : Array<number>;\r\n\r\n    private boardIDGlobalT:number\r\n    private clickIDNumGlobal:number \r\n    \r\n    constructor(boardID: BoardID, clickID:ClickID){\r\n    super(boardID, clickID);\r\n    this.controlReg=0;\r\n    this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];\r\n    this.boardIDGlobalT=boardID*3+clickID\r\n    this.clickIDNumGlobal=clickID\r\n    }\r\n    \r\n    \r\n    initialize()\r\n    {\r\n    \r\n        this.isInitialized[this.boardIDGlobalT]  = 1\r\n       \r\n        this.controlReg = this.VEML6070_CMD_DEFAULT; //Int disabled, 1/2T (~ 60ms) and shutdown disabled. \r\n\r\n        this.writeVEML6070(this.controlReg)\r\n    }\r\n\r\n\r\n    \r\n    \r\n       \r\n            //%blockId=VEML6070_write\r\n            //%block=\"$this Write $value to VEML6070 control register\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            writeVEML6070(value:number)\r\n            {\r\n                this.i2cWriteNumber(this.VEML6070_ADDR_CMD,value,NumberFormat.UInt8LE,false)   \r\n             \r\n            }\r\n           \r\n\r\n            //%blockId=VEML6070_UVSteps\r\n            //%block=\"$this Get UV value\"\r\n            //% blockGap=7\r\n            //% advanced=false\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            UVSteps()\r\n            {\r\n                \r\n           \r\n                if(this.isInitialized[this.boardIDGlobalT] == 0)\r\n                {\r\n                    this.initialize();\r\n                }\r\n                let MSB = this.readVEML6070(this.VEML6070_ADDR_DATA_MSB);\r\n                let LSB = this.readVEML6070(this.VEML6070_ADDR_DATA_LSB);\r\n\r\n                return ((MSB << 8) | LSB) \r\n             \r\n             \r\n            }\r\n\r\n            //%blockId=VEML6070_enable\r\n            //%block=\"$this Turn off device\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            enableShutdown()\r\n            {\r\n            \r\n                \r\n                this.controlReg = this.controlReg & 0xFE; \r\n                this.writeVEML6070(this.controlReg);\r\n             \r\n             \r\n            }\r\n    \r\n\r\n            //%blockId=VEML6070_disable\r\n            //%block=\"$this Turn on device\"\r\n            //% blockGap=7\r\n            //% advanced=true\r\n            //% blockNamespace=UV3\r\n            //% this.shadow=variables_get\r\n            //% this.defl=\"UV3\"\r\n            disableShutdown()\r\n            {\r\n            \r\n                \r\n                this.controlReg = this.controlReg | 0x01; \r\n                this.writeVEML6070(this.controlReg);\r\n             \r\n             \r\n            }\r\n        \r\n    \r\n     \r\n        \r\n                //%blockId=VEML6070_read\r\n                //%block=\"$this Read from slave address$slaveAddress\"\r\n                //% blockGap=7\r\n                //% advanced=true\r\n                //% blockNamespace=UV3\r\n                //% this.shadow=variables_get\r\n                //% this.defl=\"UV3\"\r\n                readVEML6070 (slaveAddress:number):number\r\n                {\r\n                   \r\n\r\n                   \r\n                   let i2cBuffer = this.I2CreadNoMem(slaveAddress ,1);\r\n\r\n                   let data:number; //A number variable to hold our value to return\r\n                 \r\n                    data= i2cBuffer.getUint8(0); //Extract the data from the buffer and store it in our variable\r\n                \r\n                    return  data\r\n            \r\n                        \r\n                \r\n                }\r\n                \r\n        \r\n        setVEML6070Addr(deviceAddr:number)\r\n        {\r\n            this.deviceAddress[this.boardIDGlobalT] = deviceAddr;\r\n        }\r\n        getVEML6070Addr():number\r\n        {\r\n            return this.deviceAddress[this.boardIDGlobalT];\r\n        }\r\n    \r\n    }\r\n}\r\n    \r\n    ",
             "wifi_ble.ts": "namespace WiFiSetResponses{\n\n\n\n\n    export class SetResponse extends bBoard.UARTSettings{\n    \n    readonly defaultWiFiTimeoutmS :number ; \n    response : number;\n    receivedData : string\n    MQTTMessageRetrieveState : number ;\n    \n    MQTTMessage : string;\n\n    private clickBoardNumGlobal:number\n    private clickSlotNumGlobal:number\n    private clickBoardNumGlobalSetResponse:number\n\n    constructor(boardID: BoardID, clickID:ClickID){\n    super(boardID, clickID)\n    this.defaultWiFiTimeoutmS = 10000; //default time alloted for timeout on WiFi communication\n    this.response = 2;\n    this.receivedData = \"\"; //A place to store the response from the WiFi clickwhen requestting HTTP data\n    this.MQTTMessageRetrieveState = 0; //Track MQTT message retrieval state.\n    this.MQTTMessage = \"\"; //Used to store the retrieved message\n    this.clickBoardNumGlobal=boardID;\n    this.clickSlotNumGlobal=clickID;\n    this.clickBoardNumGlobalSetResponse=boardID*3+clickID;   \n    }\n    \n    clearSerialBuffer() {\n        //   serial.clearRxBuffer()\n    }\n    \n    WiFiResponse(\n        expectedResponse: string,\n        IPDResponseTrue: boolean,\n        timeoutmS: number\n    ) {\n        \n        let IPDLengthIndexStart = 0; \n        let receivedStr = \"\"; //The built string\n        let tempIndex = 0; \n        this.receivedData = \"\";\n        let IPDResponseLength = 0; //IPD Response length\n    \n    \n        let expectedResponseIndex = 0; //The current position of the expected response comparison\n    \n        let responseState = 0; //Used to track where we are in parsing the response\n        let startTime = input.runningTime(); //Get the time when this was called\n       \n        while (input.runningTime() < (startTime + timeoutmS)) {\n            //Do the code below while timeout hasn't occured\n          \n    \n    \n            if(this.isUARTDataAvailable())\n            {\n               \n                receivedStr = receivedStr + this.getUARTData(); //Read the serial port for any received responses\n              \n            }\n             \n                    switch (responseState) {\n                        case 0:\n                       \n                            if (receivedStr.indexOf(expectedResponse) != -1)\n                            {\n                               \n                                responseState = 1; //Move to the next stage of response comparison\n                               \n                            }\n                            break;\n    \n                        case 1:\n                       \n                                    if (IPDResponseTrue == true) {\n                                      \n                                        expectedResponseIndex = 0; //Reset the expected response index as we need to start over\n    \n                                        responseState = 3;\n                                    } \n                                    else {\n                                        \n                                        this.receivedData = receivedStr\n                                        return 1; //Succesfully matched\n                                    }\n                               \n                            break;\n                  \n    \n                        case 3:\n                            tempIndex = receivedStr.indexOf(\"+IPD\");\n                           \n                            if ( tempIndex != -1)\n                                  {\n                                  \n                                      expectedResponseIndex = tempIndex;\n                                      responseState = 4;\n                                  }\n                             \n                            break;\n    \n                        case 4:\n                            tempIndex = receivedStr.indexOf(\",\",expectedResponseIndex);\n                           \n                            if (tempIndex != -1) {\n                              \n                                IPDLengthIndexStart = tempIndex + 1;\n                                responseState = 5;\n                            }\n                            break;\n    \n                        case 5:\n                            tempIndex = receivedStr.indexOf(\":\",expectedResponseIndex);\n                    \n                            if (tempIndex != -1) {\n                               \n                                expectedResponseIndex = tempIndex;\n                                IPDResponseLength = parseInt(receivedStr.substr(IPDLengthIndexStart,(expectedResponseIndex - IPDLengthIndexStart))); //Convert the characters we received representing the length of the IPD response to an integer\n                                \n                                \n                             \n                                responseState = 6;\n                            }\n                              \n                            break;\n    \n                        case 6:\n                            if(receivedStr.length >= IPDResponseLength){  //Make sure all of the message has arrived\n                                this.receivedData = receivedStr.slice(expectedResponseIndex+1); //Remove everything except the message\n                                return 1; //Successfully read\n    \n                            }\n                         \n                        \n    \n                            break;\n                    } //Switch\n               \n            \n        }\n    \n        return 0;\n    }\n    \n    \n    \n    ThingSpeakResponse() {\n        let data = 0;\n        let dataStr = \"\";\n        let responseState = 0; //Used to track where we are in parsing the response\n        let currentCharIndex = 0; //Used to track the character we are currently looking at\n    \n        let expectedResponseStr = \"\\\"feeds\\\"\"; //Used to hold the desired response we are looking for\n        let expectedResponseLen = expectedResponseStr.length; //Length of the expected Response we are looking for\n        let expectedResponseIndex = 0; //Used to track the character we are currently looking at for the expected response\n    \n        let receivedDataLen = this.receivedData.length; //Length of the response\n    \n        for (\n            let currentCharIndex = 0;\n            currentCharIndex < receivedDataLen;\n            currentCharIndex++\n        ) {\n            switch (responseState) {\n                case 0:\n                    if (\n                        this.receivedData\n                            .charAt(currentCharIndex)\n                            .compare(\n                                expectedResponseStr.charAt(expectedResponseIndex)\n                            ) == 0\n                    ) {\n                        expectedResponseIndex++; //Look at the next character in the expected response next time through\n    \n                        if (expectedResponseIndex == expectedResponseLen) {\n                            expectedResponseStr = \"field1\\\":\\\"\"; //Used to hold the desired response we are looking for\n                            expectedResponseLen = expectedResponseStr.length; //Length of the expected Response we are looking for\n                            expectedResponseIndex = 0; //Used to track the character we are currently looking at for the expected response\n                            responseState = 1; //Move to the next stage of response comparison\n                        }\n                    }\n                    break;\n    \n                case 1:\n                    if (\n                        this.receivedData\n                            .charAt(currentCharIndex)\n                            .compare(\n                                expectedResponseStr.charAt(expectedResponseIndex)\n                            ) == 0\n                    ) {\n                        expectedResponseIndex++; //Look at the next character in the expected response next time through\n    \n                        if (expectedResponseIndex == expectedResponseLen) {\n                            expectedResponseStr = \"\\\"\"; //Used to hold the desired response we are looking for\n                            expectedResponseLen = expectedResponseStr.length; //Length of the expected Response we are looking for\n                            expectedResponseIndex = 0; //Used to track the character we are currently looking at for the expected response\n                            responseState = 2; //Move to the next stage of response comparison\n                        }\n                    }\n                    break;\n                case 2:\n                    if (\n                        this.receivedData\n                            .charAt(currentCharIndex)\n                            .compare(expectedResponseStr.charAt(0)) == 0\n                    ) {\n                        data = parseInt(dataStr); //Convert the characters we received representing the length of the IPD response to an integer\n                        return dataStr;\n                    } else {\n                        dataStr = dataStr.concat(\n                            this.receivedData.charAt(currentCharIndex)\n                        );\n                    }\n                    break;\n            }\n        }\n    \n        return \"\";\n    \n        }\n    \n        }\n    }\n\n\n\n\n///////////////////////////////////////////////////////////////////////////////////////////////////////////\n/**\n * Custom blocks\n */\n//% weight=100 color=#FF2F92 icon=\"\"\n//% advanced=true\nnamespace Wireless {\n\n        //% groups=\" 'Initialize and Connect' weight=200 , 'IFTTT', 'Thingspeak','MQTT Adafruit', 'Brilliant Labs Cloud','Bluetooth Click Board' weight=50, 'RFID Click Board', 'NFC Click Board' 'LoRaWAN Click, '3G Click Board' \"\n\n    /**\n     * Initializes WiFi_BLE capabilities\n     * @param boardID the board\n     * @param clickID the click\n     *  @param WiFi_BLE the WiFi_BLE Object\n     */\n    //% block=\"$boardID $clickID\"\n    //% blockSetVariable=\"wireless\"\n    //% clickID.defl=ClickID.Zero\n    //% weight=110\n    //% group=\"Initialize and Connect\"\n    export function createWiFiBLE(boardID: BoardID, clickID:ClickID): WiFi_BLE {\n        return new WiFi_BLE(boardID, clickID);\n    }\n\n    let MQTTMessageObject ={\n        topic:\"\", //Topic\n   \n        key:\"\", //Project Key\n \n        cmd:\"\", //Command Name\n  \n        feedName:\"\", //Feed name\n \n        value:\"\" //Value received \n        \n     }\n\n    let mqttMessageList = [MQTTMessageObject]; //Create a blank array of MQTTMessageObject objects\n    mqttMessageList.pop(); \n\n\n    export enum Command\n    {\n          \n            //% block=\"Add Feed Data\"\n            Add_Data = 0,\n            //% block=\"Create Feed\"\n            Create_Feed = 1,\n             //% block=\"Delete Feed\"\n             Delete_Feed = 2,\n            //% block=\"Delete Data\"\n           Delete_Feed_Data = 3,\n           //% block=\"Get Feed Data\"\n           Get_Feed_Data = 4,\n\n                 \n    \n    }\n\n\n    export class WiFi_BLE extends WiFiSetResponses.SetResponse{\n        \n        private UARTRawData  :  string\n        private flag : boolean;\n        private BLMQTTMessage : string\n        private clickBoardNumGlobalWiFi:number\n        private clickSlotNumGlobalWiFi:number\n        private clickBoardNumGlobalW:number\n        private BLpingActive : boolean;\n        private prevTime :number;\n\n        private pingActive : boolean;\n        private lastPing : number;\n        private pingActiveAdafruit : boolean;\n        private lastPingAdafruit : number; \n\n        //% groups=\" 'MQTT' weight=100, 'HTTPS' \"\n\n        constructor(boardID: BoardID, clickID:ClickID){\n            super(boardID, clickID)\n            this.MQTTMessage = \"\"\n            this.UARTRawData  = \"\"\n            this.flag = true;\n            this.BLMQTTMessage = \"\"\n            this.clickBoardNumGlobalWiFi=boardID;\n            this.clickSlotNumGlobalWiFi=clickID;\n            this.clickBoardNumGlobalW=boardID*3+clickID; \n            this.BLpingActive = false;\n            this.prevTime = 0;\n            this.pingActive = false;\n            this.lastPing = 0;\n            this.pingActiveAdafruit = false;\n            this.lastPingAdafruit = 0; \n      \n        }\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=publishBLMQTT\n    //% block=\"$this BL MQTT publish$command|feed $feedName data$data|project key $topic\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% group=\"MQTT\"\n    //% weight=70   \n    //% blockGap=7\n    //% command.min=0 command.max=2\n    //% this.defl=\"wireless\" \n    publishBLMQTT(command:Command,feedName: string, data: number,topic: string): void {\n        let publishPacketSize = 0\n        let controlPacket = pins.createBuffer(1);\n        controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x30); //Publish Control Packet header\n\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\n        let topicLength = pins.createBuffer(2);\n        topicLength.setNumber(NumberFormat.UInt8LE, 0, topic.length >> 8);\n        topicLength.setNumber(NumberFormat.UInt8LE, 1, topic.length & 0xFF);\n        let cmd = \"\"\n        switch(command)\n        {\n            case Command.Add_Data:\n                cmd = \"ADD_FEED_DATA\";\n                break;\n\n            case Command.Create_Feed:\n                cmd = \"CREATE_FEED\";\n                break;     \n            \n            case Command.Delete_Feed:\n                cmd = \"DELETE_FEED\";\n                break;           \n\n                case Command.Delete_Feed_Data:\n                cmd = \"DELETE_FEED_DATA\";\n                break;        \n\n       \n\n        }\n        let i = 0\n        let encodedByte = 0\n        let X = 0\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\n        let mqttBody = \"{\\n    \\\"key\\\": \\\"\"+topic+ \"\\\",\\n    \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\n    \\\"value\\\": \"+data.toString()+\",\\n    \\\"name\\\": \\\"\"+feedName+\"\\\"\\n}\";\n        if(command == Command.Create_Feed)\n        {\n            mqttBody = \"{\\n    \\\"key\\\": \\\"\"+topic+ \"\\\",\\n    \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\n    \\\"name\\\": \\\"\"+feedName+\"\\\"\\n}\";\n        }\n\n\n        X = 0x02 + topic.length + mqttBody.length\n\n        for (i = 0; i < 4; i++) {\n            if (X >= 128) {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, 0xFF)\n                X -= 127\n            }\n            else {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, X)\n                break;\n\n            }\n\n        }\n\n\n        let remainingLength = pins.createBuffer(i + 1)\n        for (let j = 0; j < i + 1; j++) {\n            remainingLength.setNumber(NumberFormat.UInt8LE, j, remainingLengthTemp.getNumber(NumberFormat.UInt8LE, j))\n\n        }\n\n        publishPacketSize = 1 + remainingLength.length + 2 + topic.length + mqttBody.length\n\n\n\n        this.sendString(\"AT+CIPSEND=0,\" + publishPacketSize.toString() + \"\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendBuffer(controlPacket)\n        this.sendBuffer(remainingLength)\n        this.sendBuffer(topicLength)\n        this.sendString(topic)\n        this.sendString(mqttBody)\n        // UARTs.sendString(\"\\r\\n\",boardID)\n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        basic.pause(200)\n\n\n        //  UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",boardID)\n        //  SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response \"OK\"\n\n\n\n    }\n\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=connectBLMQTT\n    //% block=\"$this|BL MQTT connect\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% weight=200   \n    //% blockGap=7\n    //% this.defl=\"wireless\" \n    connectBLMQTT(): void {\n\n        let connectPacketSize = 0\n        let controlPacket = pins.createBuffer(1);\n        controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x10); //Publish Control Packet header\n\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\n        let protocolName = \"MQTT\"\n\n        let protocolNameLength = pins.createBuffer(2);\n        protocolNameLength.setNumber(NumberFormat.UInt8LE, 0, protocolName.length >> 8);\n        protocolNameLength.setNumber(NumberFormat.UInt8LE, 1, protocolName.length & 0xFF);\n\n\n        let protocolLevel = pins.createBuffer(1);\n        protocolLevel.setNumber(NumberFormat.UInt8LE, 0, 0x04);\n\n        let protocolFlags = pins.createBuffer(1);\n        protocolFlags.setNumber(NumberFormat.UInt8LE, 0, 0x02);\n\n\n        let keepAliveSeconds = 60\n\n        let keepAlive = pins.createBuffer(2);\n        keepAlive.setNumber(NumberFormat.UInt8LE, 0, keepAliveSeconds >> 8);\n        keepAlive.setNumber(NumberFormat.UInt8LE, 1, keepAliveSeconds & 0xFF);\n\n\n        let clientID = control.deviceSerialNumber().toString();\n        let clientIDLength = pins.createBuffer(2);\n        clientIDLength.setNumber(NumberFormat.UInt8LE, 0, clientID.length >> 8);\n        clientIDLength.setNumber(NumberFormat.UInt8LE, 1, clientID.length & 0xFF);\n\n        let i = 0\n        let encodedByte = 0\n        let X = 0\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\n\n\n        X = protocolNameLength.length + protocolName.length + protocolLevel.length + protocolFlags.length + keepAlive.length + clientIDLength.length + clientID.length //Add up all of the bytes to determine the connect packet size\n        connectPacketSize = X\n\n        for (i = 0; i < 4; i++) { //This for loop determines if we need more than one byte to store the remaining length. With MQTT, you can use up to 4 bytes to say how long your remaining length is. \n            if (X >= 128) { //If your remaining length is greater than or equal to 128 bytes (making the 8th bit a 1), the MQTT broker automatically knows that the remaining length will expand another byte\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, 0xFF)\n                X -= 127\n            }\n            else {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, X)\n                break;\n\n            }\n\n        }\n\n\n        let remainingLength = pins.createBuffer(i + 1) //Now that we've determined \n        for (let j = 0; j < i + 1; j++) {\n            remainingLength.setNumber(NumberFormat.UInt8LE, j, remainingLengthTemp.getNumber(NumberFormat.UInt8LE, j))\n\n        }\n\n        connectPacketSize = controlPacket.length + remainingLength.length + connectPacketSize; //The total size of the packet to send\n\n\n        this.clearSerialBuffer()\n\n        this.sendString(\"AT+CIPMUX=1\\r\\n\")\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        this.clearSerialBuffer()\n        this.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"cloud.brilliantlabs.ca\\\",1883,30\\r\\n\")\n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        this.clearSerialBuffer()\n        this.sendString(\"AT+CIPSEND=0,\" + connectPacketSize.toString() + \"\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendBuffer(controlPacket)\n        this.sendBuffer(remainingLength)\n        this.sendBuffer(protocolNameLength)\n        this.sendString(protocolName)\n        this.sendBuffer(protocolLevel)\n        this.sendBuffer(protocolFlags)\n        this.sendBuffer(keepAlive)\n        this.sendBuffer(clientIDLength)\n        this.sendString(clientID)\n \n        // basic.pause(1)\n        //UARTs.sendString(\"\\r\\n\", boardID)\n\n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        basic.pause(200)\n\n\n\n        \n\n\n\n    }\n\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=subscribeBLMQTT\n    //% block=\"$this| BL MQTT subscribe to project key $topic\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% weight=199   \n    //% blockGap=7\n    //% this.defl=\"wireless\"  \n    subscribeBLMQTT(topic: string): void {\n        if (topic.indexOf(\"-rsp\") == 0)\n        {\n            topic = topic + \"-rsp\"; //append -rsp to the API key as this is the proper subscription topic name\n        }\n        \n        let subscribePacketSize = 0\n        let controlPacket = pins.createBuffer(1);\n        controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0x82); //Subscribe Control Packet header\n\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\n        let packetID = pins.createBuffer(2); // packet ID \n        packetID.setNumber(NumberFormat.UInt8LE, 0, 0);\n        packetID.setNumber(NumberFormat.UInt8LE, 1, 1);\n\n        let topicLength = pins.createBuffer(2);\n\n        topicLength.setNumber(NumberFormat.UInt8LE, 0, topic.length >> 8);\n        topicLength.setNumber(NumberFormat.UInt8LE, 1, topic.length & 0xFF);\n\n        let QS = pins.createBuffer(1);\n        QS.setNumber(NumberFormat.UInt8LE, 0, 0); //Set QOS to 0\n\n        let i = 0\n        let encodedByte = 0\n        let X = 0\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\n\n\n        X = 0x02 + 2 + topic.length + 1\n\n        for (i = 0; i < 4; i++) {\n            if (X >= 128) {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, 0xFF)\n                X -= 127\n            }\n            else {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE, i, X)\n                break;\n\n            }\n\n        }\n\n\n        let remainingLength = pins.createBuffer(i + 1)\n        for (let j = 0; j < i + 1; j++) {\n            remainingLength.setNumber(NumberFormat.UInt8LE, j, remainingLengthTemp.getNumber(NumberFormat.UInt8LE, j))\n\n        }\n\n        subscribePacketSize = 1 + remainingLength.length + 2 + 2 + topic.length + 1\n\n\n\n        this.sendString(\"AT+CIPSEND=0,\" + subscribePacketSize.toString() + \"\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendBuffer(controlPacket)\n        this.sendBuffer(remainingLength)\n        this.sendBuffer(packetID)\n        this.sendBuffer(topicLength)\n        this.sendString(topic)\n        this.sendBuffer(QS) //Quality of service\n\n\n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        basic.pause(200)\n        this.clearUARTRxBuffer();\n     \n\n        control.inBackground(function () {\n            while(1){\n                basic.pause(10000);\n                this.pingBLMQTT(50);\n\n            }\n\n            \n        })\n\n\n    }\n    \n\n   \n    // -------------- 3. Cloud ----------------\n    //% blockId=getBLMQTTMessage\n    //% block=\"$this| BL MQTT get new data from feed $feedName\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    getBLMQTTMessage(feedName: string): number {\n        let returnValue = 0\n        for(let i=0; i < mqttMessageList.length; i++)\n        {\n            if(mqttMessageList[i].feedName == feedName)\n            {\n                returnValue =  parseInt(mqttMessageList[i].value)\n                mqttMessageList.removeAt(i);\n                return returnValue\n            }\n        \n        }\n        return returnValue = null\n       \n    }\n\n \n\n \n   \n\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=isBLMQTTMessage\n    //% block=\"$this| BL MQTT is new data available for feed $feedName?\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\"  \n    isBLMQTTMessage(feedName: string): boolean {\n        let startIndex = 0;\n        let endIndex = 0;\n        let remainingLength = 0;\n        let topicLength = 0;\n     \n\n        if (this.UARTRawData.length > 500) {\n            this.UARTRawData = \"\"\n        }\n       \n        if (this.isUARTDataAvailable() || this.UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?\n        {\n          \n            this.UARTRawData = this.UARTRawData + this.getUARTData(); // Retrieve the new data and append it\n\n            let IPDIndex = this.UARTRawData.indexOf(\"+IPD,0,\") //Look for the ESP WiFi response +IPD which indicates data was received\n            if (IPDIndex != -1) //If +IPD, was found \n            {\n\n     \n                startIndex = this.UARTRawData.indexOf(\":\") //Look for beginning of MQTT message (which comes after the :)\n\n                if (startIndex != -1) //If a : was found\n                {\n                    let IPDSizeStr = this.UARTRawData.substr(IPDIndex + 7, startIndex - IPDIndex - 7) //The length of the IPD message is between the , and the :\n\n\n                    let IPDSize = parseInt(IPDSizeStr)\n                    if (this.UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?\n                    {\n\n                        startIndex += 1; // Add 1 to the start index to get the first character after the \":\"\n\n                        if (this.UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet\n                        {\n                            \n                            this.UARTRawData = this.UARTRawData.substr(startIndex, startIndex); //Remove all data other than the last character (in case there is no more data)\n                            return false; //Not a publish packet\n\n                        }\n \n                        remainingLength = this.UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127) *Need to address this for RL >127\n\n                        topicLength = this.UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)\n                        MQTTMessageObject.topic = this.UARTRawData.substr(startIndex + 4,topicLength) //Extract the topic \n                      \n                        this.MQTTMessage = this.UARTRawData.substr(startIndex + 4 + topicLength, remainingLength - topicLength - 2)\n\n                        startIndex = this.MQTTMessage.indexOf(\"\\\"key\\\":\")+8; //Retrieve the start of the word \"key\" and then add 8 to bring it to the first character of the key\n                        endIndex = this.MQTTMessage.indexOf(\"\\\"\",startIndex)-1; //Retrieve the end of the key by looking for the ' \" ' and then subtracting 1 to get the last character of the key\n\n                        MQTTMessageObject.key = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1)  //Extract the key \n                     \n                        startIndex = this.MQTTMessage.indexOf(\"\\\"cmd\\\":\")+8; //Retrieve the start of the word \"cmd\" and then add 8 to bring it to the first character of the command\n                        endIndex = this.MQTTMessage.indexOf(\"\\\"\",startIndex)-1; //Retrieve the end of the command name by looking for the ' \" ' and then subtracting 1 to get the last character of the command\n\n                        MQTTMessageObject.cmd = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the command name \n                    \n                        startIndex = this.MQTTMessage.indexOf(\"\\\"name\\\":\")+9; //Retrieve the start of the word \"name\" and then add 9 to bring it to the first character of variable name\n                        endIndex = this.MQTTMessage.indexOf(\"\\\"\",startIndex)-1; //Retrieve the end of the variable name by looking for the ' \" ' and then subtracting 1 to get the last character of the name\n\n                        MQTTMessageObject.feedName = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable name \n                       \n                        startIndex = this.MQTTMessage.indexOf(\"\\\"value\\\":\")+9; //Retrieve the start of the word \"value\" and then add 9 to bring it to the first character of variable value\n                        endIndex = this.MQTTMessage.indexOf(\"}\",startIndex)-2; //Retrieve the end of the variable value by looking for the ' \" ' and then subtracting 2 to get the last character of the value\n\n                        MQTTMessageObject.value = this.MQTTMessage.substr(startIndex,endIndex-startIndex+1) //Extract the variable value\n   \n                        if(MQTTMessageObject.cmd  == \"ADD_FEED_DATA\") //We are only concerned with the case where an existing variable had a new value added to it (for now)\n                        {\n                       \n                            mqttMessageList.push(MQTTMessageObject); //Add the latest message to our list\n                            \n                        }\n                        \n\n                        this.UARTRawData = this.UARTRawData.substr(IPDSize + startIndex, this.UARTRawData.length - 1) //Remove all data other than the last character (in case there is no more data)\n\n                        \n\n                    }\n\n\n                }\n            }\n            else\n            {\n                this.UARTRawData = \"\"\n            }\n\n\n        }\n       \n        let results = mqttMessageList.filter(tempResults => tempResults.feedName === feedName)\n        if(results.length >= 1) //If a value was found\n        {\n            return true; \n        }\n        return false;\n\n    }\n\n\n\n    // -------------- 3. Cloud ----------------\n\n    pingBLMQTT(pingInterval: number) {\n        let PINs = new bBoard.PinSettings(this.clickBoardNumGlobalWiFi, this.clickSlotNumGlobalWiFi);\n        if (this.BLpingActive == false) {\n            this.lastPing = input.runningTime();\n            let controlPacket = pins.createBuffer(1);\n            controlPacket.setNumber(NumberFormat.UInt8LE, 0, 0xC0); //Subscribe Control Packet header\n            let remainingLength = pins.createBuffer(1) //size of remaining Length packet\n            remainingLength.setNumber(NumberFormat.UInt8LE, 0, 0x00); //Remaining Length = 0 \n\n            this.sendString(\"AT+CIPSEND=0,2\\r\\n\")\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n            this.sendBuffer(controlPacket);\n            this.sendBuffer(remainingLength);\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n            this.BLpingActive = true;\n        }\n        else //If a ping has been sent\n        {\n            if ((input.runningTime() - this.lastPing) > pingInterval * 1000) {\n                this.BLpingActive = false;\n            }\n        }\n\n\n\n\n    }\n    // -------------- 2. WiFi ----------------\n    //% blockId=WiFi_BLE_WiFiConnect\n    //% block=\"$this| connect to ssid %ssid| with password %pwd\"\n    //% weight=100\n    //% group=\"Initialize and Connect\"\n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    WifiConnect(ssid: string, pwd: string): void {\n        let PINs = new bBoard.PinSettings(this.clickBoardNumGlobalWiFi, this.clickSlotNumGlobalWiFi);\n        PINs.clearPin(clickIOPin.CS)\n        PINs.setPin(clickIOPin.CS)\n        basic.pause(1000)\n        this.clearUARTRxBuffer();\n \n\n\n        this.sendString(\"AT+CWMODE=1\\r\\n\"); //Put the clickinto station (client) mode\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\n        this.sendString(\"AT+CIPMUX=1\\r\\n\");  //Enable multiple connections\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\n        this.sendString(\"AT+CWJAP=\\\"\" + ssid + \"\\\",\\\"\" + pwd + \"\\\"\\r\\n\");  //Connect to WiFi Network\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\n        this.sendString(\"AT+CIPSTATUS\\r\\n\");  //Get information about the connection status\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.clearSerialBuffer(); //Clear any characters from the RX Buffer that came after the previous Response\n        this.sendString(\"AT+CIFSR\\r\\n\");  //Get local IP Address\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n    }\n\n\n    // --------------  Dual Auth----------------\n    //% blockId=WiFi_BLE_dualAuth\n    //% block=\"$this PNB-Internet username $username and password $password\"\n    //% weight=90\n    //% group=\"Initialize and Connect\"\n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    \n    dualAuth(\n    username: string,\n    password: string\n    ): void {\n    let body =  \"username=\"+username+\"&password=\"+password+\"&buttonClicked=4\"\n    let getData =\n        \"POST /login.html? HTTP/1.1\\r\\n\" +\n        \"Host: auth.gnb.ca\\r\\n\" +\n        \"Content-Type: application/x-www-form-urlencoded\\r\\n\" +\n        \"cache-control: no-cache\\r\\n\" +\n        \"redirect_url: msn.ca\\r\\n\" +\n        \"Content-Length: \"+body.length.toString()+\"\\r\\n\\r\\n\" +\n        body\n\n        this.sendString(\"AT+CIPSTART=0,\\\"SSL\\\",\\\"auth.gnb.ca\\\",443\\r\\n\") //Make a SSL connection to the auth.gnb.ca\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n        this.sendString(\n        \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\"); //Get ready to send a packet and specifiy the size\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n        this.sendString(getData); //Send the contents of the packet\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n        this.sendString(\"AT+CIPCLOSE=0\\r\\n\"); //Close your TCP connection\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n}\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=BLTest_set_thingspeak\n    //% block=\"$this| ThingSpeak send data$data to fieldNum$fieldNum with key$key\"\n    //% weight=90\n    //% subcategory=\"Thingspeak\"\n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    sendThingspeak(\n        key: string,\n        fieldNum: number,\n        data: string\n    ): void {\n        let getData =\n            \"GET /update?api_key=\" +\n            key +\n            \"&field\" +\n            fieldNum.toString() +\n            \"=\" +\n            data +\n            \"\\r\\n\";\n\n            this.sendString(\"AT+CIPMUX=1\\r\\n\"); \n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n            this.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"api.thingspeak.com\\\",80\\r\\n\"); \n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n            this.sendString(\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\");\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n            this.sendString(getData);\n            this.response = this.WiFiResponse(\"OK\", true, this.defaultWiFiTimeoutmS);\n        //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */\n        // UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",boardID)\n        //response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response \"OK\"\n    }\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=WiFi_BLE_HTTPSsendCommand\n    //% block=\"$this| BL HTTPS command %command|feed name %feedName|data %data|project key %topic|\"\n    //% weight=90\n    //% group=\"HTTPS\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    HTTPSsendCommand(\n        command:Command,\n        feedName: string,\n        data: number,\n        topic: string\n    ): void {\n        let cmd = ''\n        switch(command)\n        {\n            case Command.Add_Data:\n                cmd = \"ADD_FEED_DATA\";\n                break;\n\n            case Command.Create_Feed:\n                cmd = \"CREATE_FEED\";\n                break;     \n            \n            case Command.Delete_Feed:\n                cmd = \"DELETE_FEED\";\n                break;           \n\n                case Command.Delete_Feed_Data:\n                cmd = \"DELETE_FEED_DATA\";\n                break;        \n\n       \n\n\n\n        }\n\n        let bodyString = \"{\\n    \\\"key\\\": \\\"\"+topic+ \"\\\",\\n   \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\n    \\\"value\\\": \"+data.toString()+\",\\n    \\\"name\\\": \\\"\"+feedName+\"\\\"\\n}\";\n        if(command = Command.Create_Feed)\n        {\n            bodyString = \"{\\n    \\\"key\\\": \\\"\"+topic+ \"\\\",\\n   \\\"cmd\\\": \\\"\"+cmd+\"\\\",\\n   \\\"type\\\": \\\"LINE\\\",\\n    \\\"value\\\": \"+data.toString()+\",\\n    \\\"name\\\": \\\"\"+feedName+\"\\\"\\n}\";\n        }\n        let getData =\"GET /api? HTTP/1.1\\r\\n\" +\n            \"Host: cloud.brilliantlabs.ca\\r\\n\" +\n            \"Content-Type: application/json\\r\\n\" +\n            \"cache-control: no-cache\\r\\n\" +\n            \"Content-Length: \"+bodyString.length.toString()+\"\\r\\n\\r\\n\" + bodyString;\n            \n        \n        if( this.isConnected() == 0){\n\n            this.sendString(\"AT+CIPSTART=0,\\\"SSL\\\",\\\"cloud.brilliantlabs.ca\\\",443\\r\\n\"); \n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n        }\n     \n\n        this.sendString(\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\");\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n            this.sendString(getData);\n\n            this.response = this.WiFiResponse(\"OK\", true, this.defaultWiFiTimeoutmS);\n\n\n\n    }\n\n        isConnected():number{\n            this.sendString(\"AT+CIPSTATUS\\r\\n\"); \n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n        \n        let statusStartIndex = this.receivedData.indexOf(\"STATUS:\")\n       \n        let connected = parseInt(this.receivedData.substr(statusStartIndex+7,1)); //Convert the characters we received representing the length of the IPD response to an integer\n      \n        if (connected == 3)\n        {\n          \n           \n            return 1;\n        }\n     \n        \n        return 0;\n     }\n       \n  \n    //% blockId=WiFi_BLE_getVariable\n    //% block=\"$this| BL HTTPS get feed $feedName with project key$key\"\n    //% weight=90\n    //% group=\"HTTPS\"\n    //% subcategory=\"Brilliant Labs Cloud\"\n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    BLgetVariable(\n        feedName: string,\n        key: string\n    ): number {\n        let bodyString = \"{\\n    \\\"key\\\": \\\"\"+key+ \"\\\",\\n   \\\"cmd\\\": \\\"GET_VARIABLE\\\",\\n    \\\"name\\\": \\\"\"+feedName+\"\\\"\\n}\";\n\n        let getData =\"GET /api? HTTP/1.1\\r\\n\" +\n            \"Host: cloud.brilliantlabs.ca\\r\\n\" +\n            \"Content-Type: application/json\\r\\n\" +\n            \"cache-control: no-cache\\r\\n\" +\n            \"Content-Length: \"+bodyString.length.toString()+\"\\r\\n\\r\\n\" + bodyString;\n\n            if( this.isConnected() == 0){\n\n                this.sendString(\"AT+CIPSTART=0,\\\"SSL\\\",\\\"cloud.brilliantlabs.ca\\\",443\\r\\n\"); \n                this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n            }\n\n            this.sendString(\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\");\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS);\n\n            this.sendString(getData);\n\n            this.response = this.WiFiResponse(\"OK\", true, this.defaultWiFiTimeoutmS);\n\n        let startIndex = this.receivedData.indexOf(\"\\\"\"+feedName+\"\\\":\")+feedName.length+3; \n\n        let endIndex = this.receivedData.indexOf(\"}\",startIndex)-1;\n      \n\n        return parseInt(this.receivedData.substr(startIndex,endIndex-startIndex+1))\n\n\n\n    }\n\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=BLTest_get_thingspeak\n    //% block=\"$this|ThingSpeak get channelID $channelID fieldNum $fieldNum \"\n    //% weight=90\n    //% subcategory=\"Thingspeak\"\n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    getThingspeak(channelID: number, fieldNum: number): string {\n        let getData =\n            \"GET /channels/\" +\n            channelID.toString() +\n            \"/fields/\" +\n            fieldNum.toString() +\n            \".json?results=1\\r\\n\";\n        let data = \"\";\n\n        this.sendString(\"AT+CIPMUX=1\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"api.thingspeak.com\\\",80\\r\\n\"); \n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendString(\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\"\n        );\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendString(getData);\n        this.response = this.WiFiResponse(\"OK\", true, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        data = this.ThingSpeakResponse();\n\n        //*** Need to address this. Use CIPSTATUS to see when TCP connection is closed as thingspeak automatically closes it when message sent/received */\n        // UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",boardID)\n        // SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response \"OK\" //Wait for the response \"OK\"\n\n        return data;\n    }\n\n    //% blockId=BL_set_ifttt\n    //% block=\"$this IFTTT send key $key event_name $event data $value1 \"\n    //% subcategory=\"IFTTT\"\n    //% weight=90\n    //% this.defl=\"wireless\"\n    sendIFTTT(\n        key: string,\n        eventname: string,\n        value1: number\n    ): void {\n        let getData =\n            \"GET /trigger/\" +\n            eventname +\n            \"/with/key/\" +\n            key +\n            \"?value1=\" +\n            value1.toString() +\n            \" HTTP/1.1\\r\\nHost: maker.ifttt.com\\r\\n\\r\\n\";\n\n            this.sendString(\"AT+CIPMUX=1\\r\\n\");  //Multiple connections enabled\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n            this.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"maker.ifttt.com\\\",80\\r\\n\");  //Make a TCP connection to the host\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n            this.sendString(\n            \"AT+CIPSEND=0,\" + getData.length.toString() + \"\\r\\n\"\n        ); //Get ready to send a packet and specifiy the size\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendString(getData); //Send the contents of the packet\n        this.response = this.WiFiResponse(\"OK\", true, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendString(\"AT+CIPCLOSE=0\\r\\n\");  //Close your TCP connection\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n    }\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=publishAdafruitMQTT\n    //% block=\"$this Adafruit MQTT publish data %data to topic %topic  \"\n    //% group=\"MQTT\"\n    //% subcategory=\"Adafruit.io\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\"  \n    publishAdafruitMQTT(topic: string, data: number): void {\n        let publishPacketSize = 0\n        let controlPacket = pins.createBuffer(1);\n        controlPacket.setNumber(NumberFormat.UInt8LE,0,0x30); //Publish Control Packet header\n\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\n        let topicLength = pins.createBuffer(2);\n        topicLength.setNumber(NumberFormat.UInt8LE,0,topic.length >> 8); \n        topicLength.setNumber(NumberFormat.UInt8LE,1,topic.length & 0xFF); \n\n        let i = 0\n        let encodedByte = 0\n        let X = 0\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\n\n\n        X = 0x02 + topic.length + data.toString().length \n\n        for (i = 0; i < 4; i++) {\n            if (X >= 128) {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,0xFF)\n                X -= 127\n            }\n            else {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,X)\n                break;\n\n            }\n\n        }\n\n\n        let remainingLength = pins.createBuffer(i + 1)\n        for (let j = 0; j < i + 1; j++) {\n            remainingLength.setNumber(NumberFormat.UInt8LE,j,remainingLengthTemp.getNumber(NumberFormat.UInt8LE,j))\n\n        }\n\n        publishPacketSize = 1 + remainingLength.length + 2 + topic.length + data.toString().length\n\n\n  \n        this.sendString(\"AT+CIPSEND=0,\" + publishPacketSize.toString() + \"\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendBuffer(controlPacket)\n        this.sendBuffer(remainingLength)\n        this.sendBuffer(topicLength)\n        this.sendString(topic)\n        this.sendString(data.toString())\n       // UARTs.sendString(\"\\r\\n\",boardID)\n\n\n       this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        basic.pause(200)\n\n\n      //  UARTs.sendString(\"AT+CIPCLOSE=0\\r\\n\",boardID)\n      //  SetResponseObj.response = SetResponseObj.WiFiResponse(\"OK\", false, SetResponseObj.defaultWiFiTimeoutmS,boardID); //Wait for the response \"OK\"\n\n\n\n    }\n\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=connectMQTT\n    //% block=\"$this|Adafruit MQTT connect with username$userName and AIO Key$password \"\n    //% group=\"MQTT\"\n    //% subcategory=\"Adafruit.io\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\" \n    connectMQTT(userName: string, password: string): void {\n\n        let connectPacketSize = 0\n        let controlPacket = pins.createBuffer(1);\n        controlPacket.setNumber(NumberFormat.UInt8LE,0,0x10); //Publish Control Packet header\n\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\n        let protocolName = \"MQTT\"\n\n        let protocolNameLength = pins.createBuffer(2);\n        protocolNameLength.setNumber(NumberFormat.UInt8LE,0,protocolName.length >> 8); \n        protocolNameLength.setNumber(NumberFormat.UInt8LE,1,protocolName.length & 0xFF); \n\n\n        let protocolLevel = pins.createBuffer(1);\n        protocolLevel.setNumber(NumberFormat.UInt8LE,0,0x04); \n      \n        let protocolFlags = pins.createBuffer(1);\n        protocolFlags.setNumber(NumberFormat.UInt8LE,0,0xC2); \n      \n     \n        let keepAliveSeconds = 60\n\n        let keepAlive = pins.createBuffer(2);\n        keepAlive.setNumber(NumberFormat.UInt8LE,0,keepAliveSeconds >> 8); \n        keepAlive.setNumber(NumberFormat.UInt8LE,1,keepAliveSeconds & 0xFF); \n\n     \n        let clientID = control.deviceSerialNumber().toString();\n        let clientIDLength = pins.createBuffer(2);\n        clientIDLength.setNumber(NumberFormat.UInt8LE,0,clientID.length >> 8); \n        clientIDLength.setNumber(NumberFormat.UInt8LE,1,clientID.length & 0xFF); \n        \n            \n        let userNameLength = pins.createBuffer(2);\n        userNameLength.setNumber(NumberFormat.UInt8LE,0,userName.length >> 8); \n        userNameLength.setNumber(NumberFormat.UInt8LE,1,userName.length & 0xFF); \n\n        let passwordLength = pins.createBuffer(2);\n        passwordLength.setNumber(NumberFormat.UInt8LE,0,password.length >> 8); \n        passwordLength.setNumber(NumberFormat.UInt8LE,1,password.length & 0xFF); \n\n    \n\n        let i = 0\n        let encodedByte = 0\n        let X = 0\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\n\n\n        X = 0x02 + 0x02 + protocolName.length + 0x01 + 0x01 + 0x02 + 0x02 + clientID.length + 0x02 + userName.length + 0x02 + password.length \n        connectPacketSize = X\n\n        for (i = 0; i < 4; i++) {\n            if (X >= 128) {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,0xFF)\n                X -= 127\n            }\n            else {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,X)\n                break;\n\n            }\n\n        }\n\n\n        let remainingLength = pins.createBuffer(i + 1)\n        for (let j = 0; j < i + 1; j++) {\n            remainingLength.setNumber(NumberFormat.UInt8LE,j,remainingLengthTemp.getNumber(NumberFormat.UInt8LE,j))\n\n        }\n\n        connectPacketSize = connectPacketSize + 1 + remainingLength.length //The total size of the packet to send\n\n\n        this.clearSerialBuffer()\n\n        this.sendString(\"AT+CIPMUX=1\\r\\n\")\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        this.clearSerialBuffer()\n        this.sendString(\"AT+CIPSTART=0,\\\"TCP\\\",\\\"io.adafruit.com\\\",1883,30\\r\\n\")\n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        this.clearSerialBuffer()\n        this.sendString(\"AT+CIPSEND=0,\" + connectPacketSize.toString() + \"\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n       \n        this.sendBuffer(controlPacket)\n        this.sendBuffer(remainingLength)\n        this.sendBuffer(protocolNameLength)\n        this.sendString(protocolName)\n        this.sendBuffer(protocolLevel)\n        this.sendBuffer(protocolFlags)\n        this.sendBuffer(keepAlive)\n        this.sendBuffer(clientIDLength)\n        this.sendString(clientID)\n        this.sendBuffer(userNameLength)\n        this.sendString(userName)\n        this.sendBuffer(passwordLength)\n        \n        this.sendString(password)\n        \n        this.sendString(\"\\r\\n\")\n\n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        basic.pause(200)\n\n\n\n    }\n\n\n    // -------------- 3. Cloud ----------------\n    //% blockId=subscribeAdafruitMQTT\n    //% block=\"$this|Adafruit MQTT subscribe to topic $topic\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Adafruit.io\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\" \n    subscribeAdafruitMQTT(topic: string): void {\n\n        let subscribePacketSize = 0\n        let controlPacket = pins.createBuffer(1);\n        controlPacket.setNumber(NumberFormat.UInt8LE,0,0x82); //Subscribe Control Packet header\n\n        let remainingLengthTemp = pins.createBuffer(4) //Max size of remaining Length packet\n        let packetID = pins.createBuffer(2); // packet ID \n        packetID.setNumber(NumberFormat.UInt8LE,0,0);\n        packetID.setNumber(NumberFormat.UInt8LE,1,1);\n\n        let topicLength = pins.createBuffer(2);\n\n        topicLength.setNumber(NumberFormat.UInt8LE,0,topic.length >> 8); \n        topicLength.setNumber(NumberFormat.UInt8LE,1,topic.length & 0xFF); \n\n        let QS = pins.createBuffer(1);\n        QS.setNumber(NumberFormat.UInt8LE,0,0); //Set QOS to 0\n\n        let i = 0\n        let encodedByte = 0\n        let X = 0\n        let remainingLengthBytes = 1 //At least 1 byte of RL is necessary for packet\n\n\n        X = 0x02 + 2 + topic.length + 1\n\n        for (i = 0; i < 4; i++) {\n            if (X >= 128) {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,0xFF)\n                X -= 127\n            }\n            else {\n                remainingLengthTemp.setNumber(NumberFormat.UInt8LE,i,X)\n                break;\n\n            }\n\n        }\n\n\n        let remainingLength = pins.createBuffer(i + 1)\n        for (let j = 0; j < i + 1; j++) {\n            remainingLength.setNumber(NumberFormat.UInt8LE,j,remainingLengthTemp.getNumber(NumberFormat.UInt8LE,j))\n\n        }\n\n        subscribePacketSize = 1 + remainingLength.length + 2 + 2 + topic.length +1\n\n\n  \n        this.sendString(\"AT+CIPSEND=0,\" + subscribePacketSize.toString() + \"\\r\\n\")\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n        this.sendBuffer(controlPacket)\n        this.sendBuffer(remainingLength)\n        this.sendBuffer(packetID)\n        this.sendBuffer(topicLength)\n        this.sendString(topic)\n        this.sendBuffer(QS) //Quality of service\n\n     \n\n\n        this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n        basic.pause(200)\n        this.clearUARTRxBuffer();\n\n        control.inBackground(function () {\n            while(1){\n                basic.pause(10000);\n                \n                this.pingAdafruitMQTT(50);\n\n            }\n\n            \n        })\n        \n    }\n    \n    // -------------- 3. Cloud ----------------\n    //% blockId=getMQTTMessage\n    //% block=\"$this Adafruit MQTT get message\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Adafruit.io\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\" \n    getMQTTMessage(): string {\n        return this.MQTTMessage\n    }\n  \n     \n\n\n   // -------------- 3. Cloud ----------------\n    //% blockId=isMQTTMessage\n    //% block=\"$this Adafruit MQTT is message available?\"\n    //% group=\"MQTT\"\n    //% subcategory=\"Adafruit.io\"\n    //% weight=70   \n    //% blockGap=7\n    //% this.defl=\"wireless\"\n    isMQTTMessage(): boolean{\n        let startIndex = 0;\n        let remainingLength = 0;\n        let topicLength = 0;\n       if(this.UARTRawData.length > 300){\n        this.UARTRawData = \"\"\n       }\n      if(this.isUARTDataAvailable() || this.UARTRawData.length > 0) //Is new data available OR is there still unprocessed data?\n      {\n    \n            this.UARTRawData = this.UARTRawData + this.getUARTData(); // Retrieve the new data and append it\n   \n            let IPDIndex = this.UARTRawData.indexOf(\"+IPD,0,\") //Look for the ESP WiFi response +IPD which indicates data was received\n            if(IPDIndex !== -1) //If +IPD, was found \n            {\n            \n                \n                startIndex = this.UARTRawData.indexOf(\":\") //Look for beginning of MQTT message (which comes after the :)\n               \n                if(startIndex != -1) //If a : was found\n                {\n                    let IPDSizeStr = this.UARTRawData.substr(IPDIndex+7,startIndex-IPDIndex-7) //The length of the IPD message is between the , and the :\n                   \n                    \n                    let IPDSize = parseInt(IPDSizeStr)\n                    if(this.UARTRawData.length >= IPDSize + startIndex + 1) //Is the whole message here?\n                    {\n\n                        startIndex += 1; // Add 1 to the start index to get the first character after the \":\"\n\n                        if(this.UARTRawData.charCodeAt(startIndex) != 0x30) //If message type is not a publish packet\n                        {\n\n                            return false; //Not a publish packet\n\n                        }\n                        \n                        remainingLength = this.UARTRawData.charCodeAt(startIndex + 1); //Extract the remaining length from the MQTT message (assuming RL < 127)\n        \n                        topicLength = this.UARTRawData.charCodeAt(startIndex + 3); //Extract the topic length from the MQTT message (assuming TL < 127)\n                    \n                        this.MQTTMessage  = this.UARTRawData.substr(startIndex + 4+topicLength,remainingLength-topicLength-2)\n                    \n                        this.UARTRawData = this.UARTRawData.substr(IPDSize + startIndex,this.UARTRawData.length-1) //Remove all data other than the last character (in case there is no more data)\n                 \n                        return true; //Message retrieved\n                      \n                    }\n              \n                    \n                }\n            }\n     \n\n        }\n            return false;\n            \n    }\n\n\n\n    pingAdafruitMQTT(pingInterval: number) \n    {\n        if(this.pingActiveAdafruit == false)\n        {\n            this.lastPingAdafruit = input.runningTime();\n            let controlPacket = pins.createBuffer(1);\n            controlPacket.setNumber(NumberFormat.UInt8LE,0,0xC0); //Subscribe Control Packet header\n            let remainingLength = pins.createBuffer(1) //size of remaining Length packet\n            remainingLength.setNumber(NumberFormat.UInt8LE,0,0x00); //Remaining Length = 0 \n    \n            this.sendString(\"AT+CIPSEND=0,2\\r\\n\")\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n            this.sendBuffer(controlPacket);\n            this.sendBuffer(remainingLength);\n            this.response = this.WiFiResponse(\"OK\", false, this.defaultWiFiTimeoutmS); //Wait for the response \"OK\"\n\n            this.pingActiveAdafruit = true;\n        }\n        else //If a ping has been sent\n        {\n            if ((input.runningTime() - this.lastPingAdafruit) > pingInterval*1000) \n            {\n                this.pingActiveAdafruit = false;\n            }\n        }\n        \n    \n            \n        \n    }\n}\n}\n",
             "ws2812b.ts": "namespace ws2812b {\n    //% shim=sendBufferAsm\n    export function sendBuffer(buf: Buffer, pin: DigitalPin) {\n    }\n\n    //% shim=setBufferMode\n    export function setBufferMode(pin: DigitalPin, mode: number) {\n\n    }\n}\n"
         },
@@ -28571,7 +28592,9 @@ var pxtTargetBundle = {
                     "bBoard.SPIsetting": {
                         "kind": 8,
                         "retType": "bBoard.SPIsetting",
-                        "extendsTypes": []
+                        "extendsTypes": [
+                            "bBoard.SPIsetting"
+                        ]
                     },
                     "bBoard.SPIsetting.SPI_WRITE_id": {
                         "kind": 2,
@@ -29078,7 +29101,9 @@ var pxtTargetBundle = {
                     "bBoard.I2CSettings": {
                         "kind": 8,
                         "retType": "bBoard.I2CSettings",
-                        "extendsTypes": []
+                        "extendsTypes": [
+                            "bBoard.I2CSettings"
+                        ]
                     },
                     "bBoard.I2CSettings.I2C_WRITE_id": {
                         "kind": 2,
@@ -34536,192 +34561,29 @@ var pxtTargetBundle = {
                         "isInstance": true,
                         "pyQName": "Wireless.WiFi_BLE.ping_adafruit_mqtt"
                     },
-                    "lineNumber": {
-                        "kind": 6,
-                        "retType": "lineNumber",
-                        "extendsTypes": [
-                            "lineNumber",
-                            "Number"
-                        ]
-                    },
-                    "lineNumber.one": {
-                        "retType": "lineNumber.one",
-                        "attributes": {
-                            "block": "1",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "1",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "lineNumber.one",
-                            "Number"
-                        ],
-                        "pyQName": "lineNumber.ONE"
-                    },
-                    "lineNumber.two": {
-                        "retType": "lineNumber.two",
-                        "attributes": {
-                            "block": "2",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "2",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "lineNumber.two",
-                            "Number"
-                        ],
-                        "pyQName": "lineNumber.TWO"
-                    },
-                    "LCDSettings": {
-                        "kind": 6,
-                        "retType": "LCDSettings",
-                        "extendsTypes": [
-                            "LCDSettings",
-                            "Number"
-                        ]
-                    },
-                    "LCDSettings.one": {
-                        "retType": "LCDSettings.one",
-                        "attributes": {
-                            "block": "1",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "1",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "LCDSettings.one",
-                            "Number"
-                        ],
-                        "pyQName": "LCDSettings.ONE"
-                    },
-                    "LCDSettings.two": {
-                        "retType": "LCDSettings.two",
-                        "attributes": {
-                            "block": "2",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "2",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "LCDSettings.two",
-                            "Number"
-                        ],
-                        "pyQName": "LCDSettings.TWO"
-                    },
-                    "LCDSettings.three": {
-                        "retType": "LCDSettings.three",
-                        "attributes": {
-                            "block": "3",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "3",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "LCDSettings.three",
-                            "Number"
-                        ],
-                        "pyQName": "LCDSettings.THREE"
-                    },
-                    "LCDSettings.four": {
-                        "retType": "LCDSettings.four",
-                        "attributes": {
-                            "block": "4",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "4",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "LCDSettings.four",
-                            "Number"
-                        ],
-                        "pyQName": "LCDSettings.FOUR"
-                    },
-                    "LCDSettings.five": {
-                        "retType": "LCDSettings.five",
-                        "attributes": {
-                            "block": "5",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "label",
-                                        "text": "5",
-                                        "style": []
-                                    }
-                                ],
-                                "parameters": []
-                            }
-                        },
-                        "extendsTypes": [
-                            "LCDSettings.five",
-                            "Number"
-                        ],
-                        "pyQName": "LCDSettings.FIVE"
-                    },
-                    "LCD_Mini": {
+                    "Force": {
                         "kind": 5,
                         "retType": "",
                         "attributes": {
-                            "weight": 100,
-                            "color": "#D400D4",
-                            "icon": "",
-                            "advanced": true
+                            "color": "#1E90FF",
+                            "weight": 98,
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "//* Provides access to basic micro:bit functionality.\n//"
                         }
                     },
-                    "LCD_Mini.createLCDSettings": {
+                    "Force.createForceSettings": {
                         "kind": -3,
-                        "retType": "LCD_Mini.LCDSettings",
+                        "retType": "Force.Force",
                         "attributes": {
-                            "block": " $clickBoardNum $clickSlot",
-                            "blockSetVariable": "LCDSettings",
-                            "blockId": "LCDSettings",
-                            "weight": 110,
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Force",
                             "paramHelp": {
-                                "clickBoardNum": "the clickBoardNum",
-                                "LCDSettings": "the LCDSettings"
+                                "boardID": "the boardID",
+                                "clickID": "the ClickID",
+                                "Force": "the Force Object"
                             },
-                            "jsDoc": "Sets LCD object.",
+                            "jsDoc": "Sets Force Click object.",
                             "_def": {
                                 "parts": [
                                     {
@@ -34731,7 +34593,7 @@ var pxtTargetBundle = {
                                     },
                                     {
                                         "kind": "param",
-                                        "name": "clickBoardNum",
+                                        "name": "boardID",
                                         "ref": true
                                     },
                                     {
@@ -34741,19 +34603,19 @@ var pxtTargetBundle = {
                                     },
                                     {
                                         "kind": "param",
-                                        "name": "clickSlot",
+                                        "name": "clickID",
                                         "ref": true
                                     }
                                 ],
                                 "parameters": [
                                     {
                                         "kind": "param",
-                                        "name": "clickBoardNum",
+                                        "name": "boardID",
                                         "ref": true
                                     },
                                     {
                                         "kind": "param",
-                                        "name": "clickSlot",
+                                        "name": "clickID",
                                         "ref": true
                                     }
                                 ]
@@ -34761,273 +34623,87 @@ var pxtTargetBundle = {
                         },
                         "parameters": [
                             {
-                                "name": "clickBoardNum",
-                                "description": "the clickBoardNum",
+                                "name": "boardID",
+                                "description": "the boardID",
                                 "type": "BoardID",
                                 "isEnum": true
                             },
                             {
-                                "name": "clickSlot",
+                                "name": "clickID",
+                                "description": "the ClickID",
                                 "type": "ClickID",
                                 "isEnum": true
                             }
                         ],
-                        "pyQName": "LCD_Mini.create_lcd_settings"
+                        "pyQName": "Force.create_force_settings"
                     },
-                    "LCD_Mini.LCDSettings": {
+                    "Force.Force": {
                         "kind": 8,
-                        "retType": "LCD_Mini.LCDSettings",
-                        "extendsTypes": []
+                        "retType": "Force.Force",
+                        "extendsTypes": [
+                            "Force.Force",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
                     },
-                    "LCD_Mini.LCDSettings.__constructor": {
+                    "Force.Force.A": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "Force.Force.sumA": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "Force.Force.sum_a"
+                    },
+                    "Force.Force.Force_voltage": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "Force.Force.Force_val": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "Force.Force.rangefactor": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "Force.Force.Vadc_3": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "Force.Force.__constructor": {
                         "kind": -3,
                         "parameters": [
                             {
-                                "name": "clickBoardNum",
+                                "name": "boardID",
                                 "type": "BoardID",
                                 "isEnum": true
                             },
                             {
-                                "name": "clickSlot",
+                                "name": "clickID",
                                 "type": "ClickID",
                                 "isEnum": true
                             }
                         ],
                         "isInstance": true
                     },
-                    "LCD_Mini.LCDSettings.LOWval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.lo_wval"
-                    },
-                    "LCD_Mini.LCDSettings.LOWval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.lo_wval@set"
-                    },
-                    "LCD_Mini.LCDSettings.HIGHval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.hig_hval"
-                    },
-                    "LCD_Mini.LCDSettings.HIGHval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.hig_hval@set"
-                    },
-                    "LCD_Mini.LCDSettings.LCDInitializeval": {
-                        "kind": -2,
-                        "retType": "boolean",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.lcd_initializeval"
-                    },
-                    "LCD_Mini.LCDSettings.LCDInitializeval@set": {
-                        "kind": -2,
-                        "retType": "boolean",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.lcd_initializeval@set"
-                    },
-                    "LCD_Mini.LCDSettings.CSval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.csval"
-                    },
-                    "LCD_Mini.LCDSettings.CSval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.csval@set"
-                    },
-                    "LCD_Mini.LCDSettings.CS2val": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.cs_2val"
-                    },
-                    "LCD_Mini.LCDSettings.CS2val@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.cs_2val@set"
-                    },
-                    "LCD_Mini.LCDSettings.RSTval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.rs_tval"
-                    },
-                    "LCD_Mini.LCDSettings.RSTval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.rs_tval@set"
-                    },
-                    "LCD_Mini.LCDSettings.IODIRBval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.iodir_bval"
-                    },
-                    "LCD_Mini.LCDSettings.IODIRBval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.iodir_bval@set"
-                    },
-                    "LCD_Mini.LCDSettings.OLATBval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true,
-                        "pyQName": "LCD_Mini.LCDSettings.olat_bval"
-                    },
-                    "LCD_Mini.LCDSettings.OLATBval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "pyQName": "LCD_Mini.LCDSettings.olat_bval@set"
-                    },
-                    "LCD_Mini.LCDSettings.WRITE_BYTEval": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true,
-                        "isReadOnly": true
-                    },
-                    "LCD_Mini.LCDSettings.WRITE_BYTEval@set": {
-                        "kind": -2,
-                        "retType": "number",
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.__delay_us": {
+                    "Force.Force.forceclickstring": {
                         "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "delayuS"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_sendNibble": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "nibble"
-                            },
-                            {
-                                "name": "RSbit"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_sendByte": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "byte"
-                            },
-                            {
-                                "name": "RSbit"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_returnHome": {
-                        "kind": -1,
-                        "parameters": [],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_setAddr": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "row"
-                            },
-                            {
-                                "name": "character"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_writeChar": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "character",
-                                "type": "string"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_setContrast": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "contrast"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_setup": {
-                        "kind": -1,
-                        "parameters": [],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.expander_sendByte": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "addr"
-                            },
-                            {
-                                "name": "byte"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.expander_setup": {
-                        "kind": -1,
-                        "parameters": [],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.expander_setOutput": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "output"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.digipot_setWiper": {
-                        "kind": -1,
-                        "parameters": [
-                            {
-                                "name": "val"
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_writeString": {
-                        "kind": -1,
+                        "retType": "string",
                         "attributes": {
                             "paramDefl": {
-                                "this": "LCDSettings"
+                                "this": "Force"
                             },
-                            "block": "$this Write a $LCDstring to line $lineNum",
-                            "blockId": "LCDWriteString",
-                            "blockNamespace": "LCD_Mini",
+                            "help": "Force/Force/forceclickstring",
+                            "block": "Get string value at $this of force",
+                            "blockId": "forceS",
+                            "blockNamespace": "Force",
                             "_shadowOverrides": {
                                 "this": "variables_get"
                             },
@@ -35038,97 +34714,12 @@ var pxtTargetBundle = {
                             "blockGap": "12",
                             "color": "#9E4894",
                             "icon": "",
-                            "paramHelp": {
-                                "LCDstring": "the string",
-                                "lineNum": "the lineNum"
-                            },
-                            "jsDoc": "Writes string value.",
-                            "_def": {
-                                "parts": [
-                                    {
-                                        "kind": "param",
-                                        "name": "this",
-                                        "shadowBlockId": "variables_get",
-                                        "ref": true
-                                    },
-                                    {
-                                        "kind": "label",
-                                        "text": " Write a ",
-                                        "style": []
-                                    },
-                                    {
-                                        "kind": "param",
-                                        "name": "LCDstring",
-                                        "ref": true
-                                    },
-                                    {
-                                        "kind": "label",
-                                        "text": " to line ",
-                                        "style": []
-                                    },
-                                    {
-                                        "kind": "param",
-                                        "name": "lineNum",
-                                        "ref": true
-                                    }
-                                ],
-                                "parameters": [
-                                    {
-                                        "kind": "param",
-                                        "name": "this",
-                                        "shadowBlockId": "variables_get",
-                                        "ref": true
-                                    },
-                                    {
-                                        "kind": "param",
-                                        "name": "LCDstring",
-                                        "ref": true
-                                    },
-                                    {
-                                        "kind": "param",
-                                        "name": "lineNum",
-                                        "ref": true
-                                    }
-                                ]
-                            }
-                        },
-                        "parameters": [
-                            {
-                                "name": "LCDstring",
-                                "description": "the string",
-                                "type": "string"
-                            },
-                            {
-                                "name": "lineNum",
-                                "description": "the lineNum",
-                                "type": "lineNumber",
-                                "isEnum": true
-                            }
-                        ],
-                        "isInstance": true
-                    },
-                    "LCD_Mini.LCDSettings.lcd_clearDisplay": {
-                        "kind": -1,
-                        "attributes": {
-                            "paramDefl": {
-                                "this": "LCDSettings"
-                            },
-                            "blockId": "LCD_Clear",
-                            "block": "Clear $this LCD",
-                            "weight": 80,
-                            "blockGap": "7",
-                            "blockNamespace": "LCD_Mini",
-                            "_shadowOverrides": {
-                                "this": "variables_get"
-                            },
-                            "explicitDefaults": [
-                                "this"
-                            ],
+                            "jsDoc": "Measures force and returns string value.",
                             "_def": {
                                 "parts": [
                                     {
                                         "kind": "label",
-                                        "text": "Clear ",
+                                        "text": "Get string value at ",
                                         "style": []
                                     },
                                     {
@@ -35139,7 +34730,7 @@ var pxtTargetBundle = {
                                     },
                                     {
                                         "kind": "label",
-                                        "text": " LCD",
+                                        "text": " of force",
                                         "style": []
                                     }
                                 ],
@@ -35155,10 +34746,8923 @@ var pxtTargetBundle = {
                         },
                         "parameters": [],
                         "isInstance": true
+                    },
+                    "Force.Force.forceclick": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Force"
+                            },
+                            "help": "Force/Force/forceclickstring",
+                            "block": "Get value at $this of force",
+                            "blockId": "force",
+                            "blockNamespace": "Force",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "weight": 90,
+                            "blockGap": "12",
+                            "color": "#9E4894",
+                            "icon": "",
+                            "jsDoc": "Measures force and returns value.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Get value at ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " of force",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Water_Detect": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Water_Detect.createWaterDetect": {
+                        "kind": -3,
+                        "retType": "Water_Detect.Water_Detect",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Water_Detect",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "clickID": "the ClickID",
+                                "Water_Detect": "the Water_Detect Object"
+                            },
+                            "jsDoc": "Sets Water_Detect Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "description": "the ClickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Water_Detect.create_water_detect"
+                    },
+                    "Water_Detect.Water_Detect": {
+                        "kind": 8,
+                        "retType": "Water_Detect.Water_Detect",
+                        "extendsTypes": [
+                            "Water_Detect.Water_Detect",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Water_Detect.Water_Detect.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Water_Detect.Water_Detect.isWater": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Water_Detect"
+                            },
+                            "blockId": "Water_Detect_isWater",
+                            "block": "$this Is water detected",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Water_Detect",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Is water detected",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Water_Detect.Water_Detect.is_water"
+                    },
+                    "Water_Detect.Water_Detect.isWater1": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Water_Detect"
+                            },
+                            "blockId": "Water_Detect_isWater1",
+                            "block": "$this Is water detected",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Water_Detect",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Is water detected",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Water_Detect.Water_Detect.is_water1"
+                    },
+                    "UV3": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "UV3.createUV3": {
+                        "kind": -3,
+                        "retType": "UV3.UV3",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "UV3",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "clickID": "the ClickID",
+                                "UV3": "the UV3 Object"
+                            },
+                            "jsDoc": "Sets UV3 Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "description": "the ClickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "UV3.create_uv3"
+                    },
+                    "UV3.UV3": {
+                        "kind": 8,
+                        "retType": "UV3.UV3",
+                        "extendsTypes": [
+                            "UV3.UV3",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "UV3.UV3.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "UV3.UV3.initialize": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "UV3.UV3.writeVEML6070": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_write",
+                            "block": "$this Write $value to VEML6070 control register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to VEML6070 control register",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.write_veml6070"
+                    },
+                    "UV3.UV3.UVSteps": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_UVSteps",
+                            "block": "$this Get UV value",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get UV value",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.uv_steps"
+                    },
+                    "UV3.UV3.enableShutdown": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_enable",
+                            "block": "$this Turn off device",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn off device",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.enable_shutdown"
+                    },
+                    "UV3.UV3.disableShutdown": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_disable",
+                            "block": "$this Turn on device",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn on device",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.disable_shutdown"
+                    },
+                    "UV3.UV3.readVEML6070": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "UV3"
+                            },
+                            "blockId": "VEML6070_read",
+                            "block": "$this Read from slave address$slaveAddress",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "UV3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from slave address",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "slaveAddress",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "slaveAddress",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "slaveAddress"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.read_veml6070"
+                    },
+                    "UV3.UV3.setVEML6070Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.set_veml6070_addr"
+                    },
+                    "UV3.UV3.getVEML6070Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "UV3.UV3.get_veml6070_addr"
+                    },
+                    "Touchpad": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F4B820",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Touchpad.createTouchpad": {
+                        "kind": -3,
+                        "retType": "Touchpad.Touchpad",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Touchpad",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Touchpad": "the Touchpad Object"
+                            },
+                            "jsDoc": "Sets Touchpad Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Touchpad.create_touchpad"
+                    },
+                    "Touchpad.Touchpad": {
+                        "kind": 8,
+                        "retType": "Touchpad.Touchpad",
+                        "extendsTypes": [
+                            "Touchpad.Touchpad",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Touchpad.Touchpad.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Touchpad.Touchpad.initialize": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_initialize",
+                            "block": "$this Initalize touchpad with i2c address $deviceAddr",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Initalize touchpad with i2c address ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Touchpad.Touchpad.getX": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getX",
+                            "block": "$this Get X position",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get X position",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_x"
+                    },
+                    "Touchpad.Touchpad.getY": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getY",
+                            "block": "$this Get Y position",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get Y position",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_y"
+                    },
+                    "Touchpad.Touchpad.isTouched": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_isTouched",
+                            "block": "$this Has touch occured",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has touch occured",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.is_touched"
+                    },
+                    "Touchpad.Touchpad.isGesture": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_isGesture",
+                            "block": "$this Has gesture occured",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has gesture occured",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.is_gesture"
+                    },
+                    "Touchpad.Touchpad.getGestureName": {
+                        "kind": -1,
+                        "retType": "string",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getGestureName",
+                            "block": "$this Convert gesture ID $gestureID to a friendly name",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Convert gesture ID ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "gestureID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to a friendly name",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "gestureID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "gestureID"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_gesture_name"
+                    },
+                    "Touchpad.Touchpad.getTouchState": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getTouchState",
+                            "block": "$this Get touch status",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get touch status",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_touch_state"
+                    },
+                    "Touchpad.Touchpad.getGesture": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_getGesture",
+                            "block": "$this Get gesture",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get gesture",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_gesture"
+                    },
+                    "Touchpad.Touchpad.writeMTCH6102": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_write",
+                            "block": "$this Write $value to register$register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.write_mtch6102"
+                    },
+                    "Touchpad.Touchpad.readMTCH6102": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Touchpad"
+                            },
+                            "blockId": "Touchpad_read",
+                            "block": "$this Read from register$register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Touchpad",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.read_mtch6102"
+                    },
+                    "Touchpad.Touchpad.setMTCH6102Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.set_mtch6102_addr"
+                    },
+                    "Touchpad.Touchpad.getMTCH6102Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Touchpad.Touchpad.get_mtch6102_addr"
+                    },
+                    "Thermo_6": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Thermo_6.createThermo": {
+                        "kind": -3,
+                        "retType": "Thermo_6.Thermo",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Thermo",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "clickID": "the ClickID",
+                                "Thermo": "the Thermo Object"
+                            },
+                            "jsDoc": "Sets Thermo Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "description": "the ClickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Thermo_6.create_thermo"
+                    },
+                    "Thermo_6.Thermo": {
+                        "kind": 8,
+                        "retType": "Thermo_6.Thermo",
+                        "extendsTypes": [
+                            "Thermo_6.Thermo",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Thermo_6.Thermo.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Thermo_6.Thermo.getTempC": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "Thermo6_getTempC",
+                            "block": "$this Get the temperature in Celcius",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get the temperature in Celcius",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.get_temp_c"
+                    },
+                    "Thermo_6.Thermo.getTempF": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "Thermo6_getTempF",
+                            "block": "$this Get the temperature in Fahrenheit",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get the temperature in Fahrenheit",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.get_temp_f"
+                    },
+                    "Thermo_6.Thermo.initialize": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "Thermo6_initialize",
+                            "block": "$this Initalize with i2c address $deviceAddr",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Initalize with i2c address ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "deviceAddr",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Thermo_6.Thermo.writeMAX31875": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "MAX31875_write",
+                            "block": "$this Write $value to register$register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            },
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.write_max31875"
+                    },
+                    "Thermo_6.Thermo.readMAX31875": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Thermo"
+                            },
+                            "blockId": "MAX31875_read",
+                            "block": "$this Read from register$register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Thermo_6",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.read_max31875"
+                    },
+                    "Thermo_6.Thermo.setMAX31875Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.set_max31875_addr"
+                    },
+                    "Thermo_6.Thermo.getMAX31875Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Thermo_6.Thermo.get_max31875_addr"
+                    },
+                    "Temp_Log_2": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Temp_Log_2.createTemp_Log": {
+                        "kind": -3,
+                        "retType": "Temp_Log_2.Temp_Log",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Temp_Log",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Temp_Log": "the Temp_Log Object"
+                            },
+                            "jsDoc": "Sets Temp_Log Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Temp_Log_2.Temp_Log": {
+                        "kind": 8,
+                        "retType": "Temp_Log_2.Temp_Log",
+                        "extendsTypes": [
+                            "Temp_Log_2.Temp_Log",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Temp_Log_2.Temp_Log.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Temp_Log_2.Temp_Log.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Temp_Log_2.Temp_Log.setTMP116Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.set_tmp116_addr"
+                    },
+                    "Temp_Log_2.Temp_Log.getTMP116Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.get_tmp116_addr"
+                    },
+                    "Temp_Log_2.Temp_Log.readTMP116Reg": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_tmp116_reg"
+                    },
+                    "Temp_Log_2.Temp_Log.readT": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_t"
+                    },
+                    "Temp_Log_2.Temp_Log.writeTMP116": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "register"
+                            },
+                            {
+                                "name": "value"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.write_tmp116"
+                    },
+                    "Temp_Log_2.Temp_Log.readTMP116": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_tmp116"
+                    },
+                    "Temp_Log_2.Temp_Log.readTemperatureC": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Temp_Log"
+                            },
+                            "blockId": "Temp_Log_readTemperatureC",
+                            "block": "$this Get temperature in Celcius",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Temp_Log_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get temperature in Celcius",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_temperature_c"
+                    },
+                    "Temp_Log_2.Temp_Log.readTemperatureF": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Temp_Log"
+                            },
+                            "blockId": "Temp_Log_readTemperatureF",
+                            "block": "$this Get temperature in Fahrenheit",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Temp_Log_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get temperature in Fahrenheit",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_temperature_f"
+                    },
+                    "Temp_Log_2.Temp_Log.readHighLimit": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_high_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.readLowLimit": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_low_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.writeHighLimit": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "limit"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.write_high_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.writeLowLimit": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "limit"
+                            },
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.write_low_limit"
+                    },
+                    "Temp_Log_2.Temp_Log.readDeviceId": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Temp_Log_2.Temp_Log.read_device_id"
+                    },
+                    "Stepper_5": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#EF697B",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Stepper_5.Rotation": {
+                        "kind": 6,
+                        "retType": "Stepper_5.Rotation",
+                        "extendsTypes": [
+                            "Stepper_5.Rotation",
+                            "Number"
+                        ]
+                    },
+                    "Stepper_5.Rotation.Forward": {
+                        "retType": "Stepper_5.Rotation.Forward",
+                        "attributes": {
+                            "block": "Forward",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Forward",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Stepper_5.Rotation.Forward",
+                            "Number"
+                        ],
+                        "pyQName": "Stepper_5.Rotation.FORWARD"
+                    },
+                    "Stepper_5.Rotation.Backwards": {
+                        "retType": "Stepper_5.Rotation.Backwards",
+                        "attributes": {
+                            "block": "Backwards",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Backwards",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Stepper_5.Rotation.Backwards",
+                            "Number"
+                        ],
+                        "pyQName": "Stepper_5.Rotation.BACKWARDS"
+                    },
+                    "Stepper_5.createStepper": {
+                        "kind": -3,
+                        "retType": "Stepper_5.Stepper",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Stepper",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Stepper_5.create_stepper"
+                    },
+                    "Stepper_5.Stepper": {
+                        "kind": 8,
+                        "retType": "Stepper_5.Stepper",
+                        "extendsTypes": [
+                            "Stepper_5.Stepper",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Stepper_5.Stepper.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Stepper_5.Stepper.step": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Stepper"
+                            },
+                            "blockId": "step",
+                            "block": "$this Single step motor $direction on click$boardID",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Stepper_5",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Single step motor ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "direction",
+                                "type": "Stepper_5.Rotation",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Stepper_5.Stepper.stepNumber": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Stepper"
+                            },
+                            "blockId": "stepNum",
+                            "block": "$this Step motor $numSteps times $direction on click$boardID",
+                            "weight": 100,
+                            "blockGap": "7",
+                            "blockNamespace": "Stepper_5",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Step motor ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numSteps",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " times ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " on click",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numSteps",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "numSteps"
+                            },
+                            {
+                                "name": "direction",
+                                "type": "Stepper_5.Rotation",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Stepper_5.Stepper.step_number"
+                    },
+                    "Servo": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#EF697B",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Servo.createLCDSettings": {
+                        "kind": -3,
+                        "retType": "Servo.Servo",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Servo",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Servo": "the Servo Object"
+                            },
+                            "jsDoc": "Sets Servo Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Servo.create_lcd_settings"
+                    },
+                    "Servo.Servo": {
+                        "kind": 8,
+                        "retType": "Servo.Servo",
+                        "extendsTypes": []
+                    },
+                    "Servo.Servo.PCA9685_DEFAULT_I2C_ADDRESS": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.LTC2497_DEFAULT_I2C_ADDRESS": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.PCA9685_SUBADR1": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.PCA9685_SUBADR2": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.PCA9685_SUBADR3": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.PCA9685_MODE1": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.PCA9685_MODE2": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.PCA9685_PRESCALE": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.LED0_ON_L": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.LED0_ON_H": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.LED0_OFF_L": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.LED0_OFF_H": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.ALLLED_ON_L": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.ALLLED_ON_H": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.ALLLED_OFF_L": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.ALLLED_OFF_H": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Servo.Servo.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.is_initialized"
+                    },
+                    "Servo.Servo.deviceAddress": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.device_address"
+                    },
+                    "Servo.Servo.servoPulseMin": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.servo_pulse_min"
+                    },
+                    "Servo.Servo.servoPulseMax": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.servo_pulse_max"
+                    },
+                    "Servo.Servo.servoAngleMin": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.servo_angle_min"
+                    },
+                    "Servo.Servo.servoAngleMax": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.servo_angle_max"
+                    },
+                    "Servo.Servo.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Servo.Servo.setServoPulse": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "servoNumber"
+                            },
+                            {
+                                "name": "pulse"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_servo_pulse"
+                    },
+                    "Servo.Servo.getServoAngleMin": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.get_servo_angle_min"
+                    },
+                    "Servo.Servo.getServoAngleMax": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.get_servo_angle_max"
+                    },
+                    "Servo.Servo.getServoPulseMin": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.get_servo_pulse_min"
+                    },
+                    "Servo.Servo.getServoPulseMax": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.get_servo_pulse_max"
+                    },
+                    "Servo.Servo.reset": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Servo.Servo.sleep": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Servo.Servo.wakeup": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Servo.Servo.setExtClk": {
+                        "kind": -1,
+                        "attributes": {
+                            "jsDoc": "**********************************************************************************************************************************************"
+                        },
+                        "parameters": [
+                            {
+                                "name": "prescale"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_ext_clk"
+                    },
+                    "Servo.Servo.setPWMFreq": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "freq"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_pwm_freq"
+                    },
+                    "Servo.Servo.setOutputMode": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "totempole",
+                                "type": "boolean"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_output_mode"
+                    },
+                    "Servo.Servo.setPWM": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "servoNumber"
+                            },
+                            {
+                                "name": "on"
+                            },
+                            {
+                                "name": "off"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_pwm"
+                    },
+                    "Servo.Servo.setPin": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "servoNumber"
+                            },
+                            {
+                                "name": "val"
+                            },
+                            {
+                                "name": "invert",
+                                "type": "boolean"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_pin"
+                    },
+                    "Servo.Servo.setPCA9685Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_pca9685_addr"
+                    },
+                    "Servo.Servo.getPCA9685Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.get_pca9685_addr"
+                    },
+                    "Servo.Servo.initialize": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Servo"
+                            },
+                            "blockId": "Servo_initialize",
+                            "block": "Initalize $this PCA9685 to i2c address $PCA9685Addr and LTC2497 to i2c address $LTC2497Addr",
+                            "blockGap": "7",
+                            "weight": 90,
+                            "color": "#9E4894",
+                            "icon": "",
+                            "blockNamespace": "Servo",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "advanced": true,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Initalize ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " PCA9685 to i2c address ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "PCA9685Addr",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " and LTC2497 to i2c address ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "LTC2497Addr",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "PCA9685Addr",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "LTC2497Addr",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "PCA9685Addr"
+                            },
+                            {
+                                "name": "LTC2497Addr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Servo.Servo.setServoAngle": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Servo"
+                            },
+                            "blockId": "Servo_Angle",
+                            "block": "Set $this servo $n to $angle",
+                            "blockGap": "7",
+                            "weight": 90,
+                            "color": "#9E4894",
+                            "icon": "",
+                            "advanced": false,
+                            "blockNamespace": "Servo",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Set ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " servo ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "n",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "angle",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "n",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "angle",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "servoNumber"
+                            },
+                            {
+                                "name": "angle"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_servo_angle"
+                    },
+                    "Servo.Servo.setServoAngleAdjusted": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "servoNumber": "1",
+                                "this": "Servo"
+                            },
+                            "blockId": "Servo_AngleAdjusted",
+                            "block": "Set $this Servo Number $servoNumber to $angle with pulse range min $pulseMin and max $pulseMax",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "paramMin": {
+                                "servoNumber": "1"
+                            },
+                            "paramMax": {
+                                "servoNumber": "16"
+                            },
+                            "explicitDefaults": [
+                                "servoNumber",
+                                "this"
+                            ],
+                            "blockNamespace": "Servo",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Set ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Servo Number ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "servoNumber",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "angle",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " with pulse range min ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pulseMin",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " and max ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pulseMax",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "servoNumber",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "angle",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pulseMin",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "pulseMax",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "servoNumber",
+                                "initializer": "1",
+                                "default": "1",
+                                "options": {
+                                    "min": {
+                                        "value": "1"
+                                    },
+                                    "max": {
+                                        "value": "16"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "angle"
+                            },
+                            {
+                                "name": "pulseMin"
+                            },
+                            {
+                                "name": "pulseMax"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.set_servo_angle_adjusted"
+                    },
+                    "Servo.Servo.userSetPWM": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "servoNumber": "1",
+                                "this": "Servo"
+                            },
+                            "blockId": "Servo_setPWM",
+                            "block": "Set $this servo $servoNumber to be on $on and off $off",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "paramMin": {
+                                "servoNumber": "1"
+                            },
+                            "paramMax": {
+                                "servoNumber": "16"
+                            },
+                            "explicitDefaults": [
+                                "servoNumber",
+                                "this"
+                            ],
+                            "blockNamespace": "Servo",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Set ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " servo ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "servoNumber",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to be on ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "on",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " and off ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "off",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "servoNumber",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "on",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "off",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "servoNumber",
+                                "initializer": "1",
+                                "default": "1",
+                                "options": {
+                                    "min": {
+                                        "value": "1"
+                                    },
+                                    "max": {
+                                        "value": "16"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "on"
+                            },
+                            {
+                                "name": "off"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.user_set_pwm"
+                    },
+                    "Servo.Servo.writePCA9685Array": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Servo"
+                            },
+                            "blockId": "PCA9685_write",
+                            "block": "$this Write array $values to PCA9685 register$register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Servo",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to PCA9685 register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.write_pca9685_array"
+                    },
+                    "Servo.Servo.readPCA9685": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Servo"
+                            },
+                            "blockId": "PCA9685_read",
+                            "block": "$this Read from register$register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Servo",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Servo.Servo.read_pca9685"
+                    },
+                    "Relay": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#66791B",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Relay.relay": {
+                        "kind": 6,
+                        "retType": "Relay.relay",
+                        "extendsTypes": [
+                            "Relay.relay",
+                            "Number"
+                        ]
+                    },
+                    "Relay.relay.Relay1": {
+                        "retType": "Relay.relay.Relay1",
+                        "extendsTypes": [
+                            "Relay.relay.Relay1",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.relay.RELAY1"
+                    },
+                    "Relay.relay.Relay2": {
+                        "retType": "Relay.relay.Relay2",
+                        "extendsTypes": [
+                            "Relay.relay.Relay2",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.relay.RELAY2"
+                    },
+                    "Relay.onOff": {
+                        "kind": 6,
+                        "retType": "Relay.onOff",
+                        "extendsTypes": [
+                            "Relay.onOff",
+                            "Number"
+                        ]
+                    },
+                    "Relay.onOff.On": {
+                        "retType": "Relay.onOff.On",
+                        "extendsTypes": [
+                            "Relay.onOff.On",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.onOff.ON"
+                    },
+                    "Relay.onOff.Off": {
+                        "retType": "Relay.onOff.Off",
+                        "extendsTypes": [
+                            "Relay.onOff.Off",
+                            "Number"
+                        ],
+                        "pyQName": "Relay.onOff.OFF"
+                    },
+                    "Relay.createRelay": {
+                        "kind": -3,
+                        "retType": "Relay.Relay",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Relay",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Relay": "the Relay Object"
+                            },
+                            "jsDoc": "Sets Relay Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Relay.create_relay"
+                    },
+                    "Relay.Relay": {
+                        "kind": 8,
+                        "retType": "Relay.Relay",
+                        "extendsTypes": [
+                            "Relay.Relay",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Relay.Relay.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Relay.Relay.relayOn": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Relay"
+                            },
+                            "blockId": "Relay_relayOn",
+                            "block": "$this Turn on relay $relayNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Relay",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn on relay ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "relayNum",
+                                "type": "Relay.relay",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Relay.Relay.relay_on"
+                    },
+                    "Relay.Relay.relayOff": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Relay"
+                            },
+                            "blockId": "Relay_relayOff",
+                            "block": "$this Turn off relay $relayNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Relay",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn off relay ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "relayNum",
+                                "type": "Relay.relay",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Relay.Relay.relay_off"
+                    },
+                    "Relay.Relay.relayOnOff": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Relay"
+                            },
+                            "blockId": "Relay_relayOnOff",
+                            "block": "$this Turn $onOff relay $relayNum",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Relay",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " relay ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "relayNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "onOff",
+                                "type": "Relay.onOff",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "relayNum",
+                                "type": "Relay.relay",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Relay.Relay.relay_on_off"
+                    },
+                    "Reed": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Reed.createReed": {
+                        "kind": -3,
+                        "retType": "Reed.Reed",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Reed",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Reed": "the Reed Object"
+                            },
+                            "jsDoc": "Sets Reed Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Reed.create_reed"
+                    },
+                    "Reed.Reed": {
+                        "kind": 8,
+                        "retType": "Reed.Reed",
+                        "extendsTypes": [
+                            "Reed.Reed",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Reed.Reed.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Reed.Reed.is_initialized"
+                    },
+                    "Reed.Reed.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Reed.Reed.initialize": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Reed.Reed.isActivated": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Reed"
+                            },
+                            "blockId": "Reed_isActivated",
+                            "block": "For $this Has reed been activated",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Reed",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "For ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has reed been activated",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Reed.Reed.is_activated"
+                    },
+                    "Proximity_2": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "↦",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Proximity_2.createProximity2Settings": {
+                        "kind": -3,
+                        "retType": "Proximity_2.Proximity2",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Proximity2",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Proximity2": "the Proximity2 Object"
+                            },
+                            "jsDoc": "Sets Proximity2 Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Proximity_2.create_proximity2_settings"
+                    },
+                    "Proximity_2.Proximity2": {
+                        "kind": 8,
+                        "retType": "Proximity_2.Proximity2",
+                        "extendsTypes": [
+                            "Proximity_2.Proximity2",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "Proximity_2.Proximity2.INTERRUPT_STATUS": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.MAIN_CONFIGURATION": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.RECEIVE_CONFIGURATION": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.TRANSMIT_CONFIGURATION": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ADC_HIGH_ALS": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ADC_LOW_ALS": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ADC_BYTE_PROX": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ALS_UPPER_THRESHOLD_HIGH": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ALS_UPPER_THRESHOLD_LOW": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ALS_LOWER_THRESHOLD_HIGH": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ALS_LOWER_THRESHOLD_LOW": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.THRESHOLD_PERSIST_TIMER": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.PROX_THRESHOLD_INDICATOR": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.PROX_THRESHOLD": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.DIGITAL_GAIN_TRIM_GREEN": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.DIGITAL_GAIN_TRIM_INFRARED": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.ADDRESS": {
+                        "kind": 2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "Proximity_2.Proximity2.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Proximity_2.Proximity2.is_initialized"
+                    },
+                    "Proximity_2.Proximity2.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Read_Proximity": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Proximity2"
+                            },
+                            "blockId": "Proximity2_ReadProximity",
+                            "block": "Get $this proximity reading",
+                            "blockGap": "7",
+                            "weight": 90,
+                            "color": "#9E4894",
+                            "icon": "",
+                            "advanced": false,
+                            "blockNamespace": "Proximity_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Get ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " proximity reading",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Read_Als": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Proximity2"
+                            },
+                            "blockId": "Proximity2_ReadALS",
+                            "block": "Get $this ambient light reading",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Proximity_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Get ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ambient light reading",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Read_Proximity2_Register": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "reg"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Write_Proximity2_Register": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "reg"
+                            },
+                            {
+                                "name": "byte"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Read_Interrupt": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Set_Threshold": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "thresh"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Initialize": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Set_Als_Upper_Threshold": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "thresh"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Proximity_2.Proximity2.Proximity2_Set_Als_Lower_Threshold": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "thresh"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Noise": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F20D0D",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Noise.createNoise": {
+                        "kind": -3,
+                        "retType": "Noise.Noise",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Noise",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Noise": "the Noise Object"
+                            },
+                            "jsDoc": "Sets Noise Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Noise.create_noise"
+                    },
+                    "Noise.Noise": {
+                        "kind": 8,
+                        "retType": "Noise.Noise",
+                        "extendsTypes": [
+                            "Noise.Noise",
+                            "bBoard.SPIsetting"
+                        ]
+                    },
+                    "Noise.Noise.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.is_initialized"
+                    },
+                    "Noise.Noise.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Noise.Noise.initialize": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Noise.Noise.getNoiseLevel": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_getNoiseLevel",
+                            "block": "$this Get raw noise level",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get raw noise level",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.get_noise_level"
+                    },
+                    "Noise.Noise.isThresholdTriggered": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_isThresholdTriggered",
+                            "block": "$this Has noise threshold been triggered",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has noise threshold been triggered",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.is_threshold_triggered"
+                    },
+                    "Noise.Noise.setThreshold": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_setThreshold",
+                            "block": "$this Set noise threshold to $threshold",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "paramMin": {
+                                "threshold": "0"
+                            },
+                            "paramMax": {
+                                "threshold": "100"
+                            },
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Set noise threshold to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "threshold",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Noise.Noise.set_threshold"
+                    },
+                    "Noise.Noise.write": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Noise"
+                            },
+                            "blockId": "Noise_write",
+                            "block": "$this Write $value",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Noise",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "value",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "value"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "NFC_Tag_2": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#FF2F92",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "NFC_Tag_2.URICode": {
+                        "kind": 6,
+                        "retType": "NFC_Tag_2.URICode",
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode",
+                            "Number"
+                        ]
+                    },
+                    "NFC_Tag_2.URICode.zero": {
+                        "retType": "NFC_Tag_2.URICode.zero",
+                        "attributes": {
+                            "block": "Full URL",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Full URL",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.zero",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.ZERO"
+                    },
+                    "NFC_Tag_2.URICode.one": {
+                        "retType": "NFC_Tag_2.URICode.one",
+                        "attributes": {
+                            "block": "http://www.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "http://www.",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.one",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.ONE"
+                    },
+                    "NFC_Tag_2.URICode.two": {
+                        "retType": "NFC_Tag_2.URICode.two",
+                        "attributes": {
+                            "block": "https://www.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "https://www.",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.two",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.TWO"
+                    },
+                    "NFC_Tag_2.URICode.three": {
+                        "retType": "NFC_Tag_2.URICode.three",
+                        "attributes": {
+                            "block": "http://",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "http://",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.three",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.THREE"
+                    },
+                    "NFC_Tag_2.URICode.four": {
+                        "retType": "NFC_Tag_2.URICode.four",
+                        "attributes": {
+                            "block": "https://",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "https://",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "NFC_Tag_2.URICode.four",
+                            "Number"
+                        ],
+                        "pyQName": "NFC_Tag_2.URICode.FOUR"
+                    },
+                    "NFC_Tag_2.createNFC_Tag": {
+                        "kind": -3,
+                        "retType": "NFC_Tag_2.NFC_Tag",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "NFC_Tag",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "NFC_Tag": "the NFC_Tag Object"
+                            },
+                            "jsDoc": "Sets NFC_Tag Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "NFC_Tag_2.NFC_Tag": {
+                        "kind": 8,
+                        "retType": "NFC_Tag_2.NFC_Tag",
+                        "extendsTypes": [
+                            "NFC_Tag_2.NFC_Tag",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "NFC_Tag_2.NFC_Tag.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "NFC_Tag_2.NFC_Tag.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "NFC_Tag_2.NFC_Tag.readCoveringPage": {
+                        "kind": -1,
+                        "retType": "number[]",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.read_covering_page"
+                    },
+                    "NFC_Tag_2.NFC_Tag.setURI": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_setURI",
+                            "block": "Write URL %URL to NFC device",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write URL ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "URL",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to NFC device",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "URL",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "URL",
+                                "type": "string"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.set_uri"
+                    },
+                    "NFC_Tag_2.NFC_Tag.readUID": {
+                        "kind": -1,
+                        "retType": "number[]",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.read_uid"
+                    },
+                    "NFC_Tag_2.NFC_Tag.writeBlock": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_writeBlock",
+                            "block": "Write array %values to block %blockAddr",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to block ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "blockAddr",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "blockAddr",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            },
+                            {
+                                "name": "blockAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.write_block"
+                    },
+                    "NFC_Tag_2.NFC_Tag.writeNT3H2111": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_write",
+                            "block": "Write array %values to NT3H2111 register%register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to NT3H2111 register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            },
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.write_nt3h2111"
+                    },
+                    "NFC_Tag_2.NFC_Tag.findI2C": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.find_i2c"
+                    },
+                    "NFC_Tag_2.NFC_Tag.readNT3H2111": {
+                        "kind": -1,
+                        "retType": "number[]",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "NFC_Tag"
+                            },
+                            "blockId": "NT3H2111_read",
+                            "block": "Read %numBytes bytes from register%register",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "NFC_Tag_2",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Read ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "numBytes",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " bytes from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "numBytes",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "numBytes"
+                            },
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.read_nt3h2111"
+                    },
+                    "NFC_Tag_2.NFC_Tag.setNT3H2111Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.set_nt3h2111_addr"
+                    },
+                    "NFC_Tag_2.NFC_Tag.getNT3H2111Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "NFC_Tag_2.NFC_Tag.get_nt3h2111_addr"
+                    },
+                    "Motion": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "➠",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Motion.createThermo": {
+                        "kind": -3,
+                        "retType": "Motion.Motion",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Motion",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "clickID": "the ClickID",
+                                "Thermo": "the Motion Object"
+                            },
+                            "jsDoc": "Sets Thermo Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "description": "the ClickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Motion.create_thermo"
+                    },
+                    "Motion.Motion": {
+                        "kind": 8,
+                        "retType": "Motion.Motion",
+                        "extendsTypes": []
+                    },
+                    "Motion.Motion.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Motion.Motion.isDetected": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Motion"
+                            },
+                            "blockId": "Motion_isDetected",
+                            "block": "$this Has motion been detected?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Motion",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has motion been detected?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Motion.Motion.is_detected"
+                    },
+                    "Line_Follower": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "⇈",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "Line_Follower.lineDetection": {
+                        "kind": 6,
+                        "retType": "Line_Follower.lineDetection",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.lineDetection.soft_right_turn": {
+                        "retType": "Line_Follower.lineDetection.soft_right_turn",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.soft_right_turn",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.SOFT_RIGHT_TURN"
+                    },
+                    "Line_Follower.lineDetection.medium_right_turn": {
+                        "retType": "Line_Follower.lineDetection.medium_right_turn",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.medium_right_turn",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.MEDIUM_RIGHT_TURN"
+                    },
+                    "Line_Follower.lineDetection.hard_right_turn": {
+                        "retType": "Line_Follower.lineDetection.hard_right_turn",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.hard_right_turn",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.HARD_RIGHT_TURN"
+                    },
+                    "Line_Follower.lineDetection.hard_left_turn": {
+                        "retType": "Line_Follower.lineDetection.hard_left_turn",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.hard_left_turn",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.HARD_LEFT_TURN"
+                    },
+                    "Line_Follower.lineDetection.medium_left_turn": {
+                        "retType": "Line_Follower.lineDetection.medium_left_turn",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.medium_left_turn",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.MEDIUM_LEFT_TURN"
+                    },
+                    "Line_Follower.lineDetection.soft_left_turn": {
+                        "retType": "Line_Follower.lineDetection.soft_left_turn",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.soft_left_turn",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.SOFT_LEFT_TURN"
+                    },
+                    "Line_Follower.lineDetection.no_correction": {
+                        "retType": "Line_Follower.lineDetection.no_correction",
+                        "extendsTypes": [
+                            "Line_Follower.lineDetection.no_correction",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.lineDetection.NO_CORRECTION"
+                    },
+                    "Line_Follower.reflection": {
+                        "kind": 6,
+                        "retType": "Line_Follower.reflection",
+                        "extendsTypes": [
+                            "Line_Follower.reflection",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.reflection.reflected": {
+                        "retType": "Line_Follower.reflection.reflected",
+                        "extendsTypes": [
+                            "Line_Follower.reflection.reflected",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.reflection.REFLECTED"
+                    },
+                    "Line_Follower.reflection.not_reflected": {
+                        "retType": "Line_Follower.reflection.not_reflected",
+                        "extendsTypes": [
+                            "Line_Follower.reflection.not_reflected",
+                            "Number"
+                        ],
+                        "pyQName": "Line_Follower.reflection.NOT_REFLECTED"
+                    },
+                    "Line_Follower.IRsensor": {
+                        "kind": 6,
+                        "retType": "Line_Follower.IRsensor",
+                        "extendsTypes": [
+                            "Line_Follower.IRsensor",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.IRsensor.U1": {
+                        "retType": "Line_Follower.IRsensor.U1",
+                        "extendsTypes": [
+                            "Line_Follower.IRsensor.U1",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.IRsensor.U2": {
+                        "retType": "Line_Follower.IRsensor.U2",
+                        "extendsTypes": [
+                            "Line_Follower.IRsensor.U2",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.IRsensor.U3": {
+                        "retType": "Line_Follower.IRsensor.U3",
+                        "extendsTypes": [
+                            "Line_Follower.IRsensor.U3",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.IRsensor.U4": {
+                        "retType": "Line_Follower.IRsensor.U4",
+                        "extendsTypes": [
+                            "Line_Follower.IRsensor.U4",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.IRsensor.U5": {
+                        "retType": "Line_Follower.IRsensor.U5",
+                        "extendsTypes": [
+                            "Line_Follower.IRsensor.U5",
+                            "Number"
+                        ]
+                    },
+                    "Line_Follower.createLineFollower": {
+                        "kind": -3,
+                        "retType": "Line_Follower.LineFollower",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "LineFollower",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "clickClot": "the bus number",
+                                "LineFollower": "the LineFollower Object"
+                            },
+                            "jsDoc": "Sets LineFollower Click object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "Line_Follower.create_line_follower"
+                    },
+                    "Line_Follower.LineFollower": {
+                        "kind": 8,
+                        "retType": "Line_Follower.LineFollower",
+                        "extendsTypes": [
+                            "Line_Follower.LineFollower",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Line_Follower.LineFollower.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.is_initialized"
+                    },
+                    "Line_Follower.LineFollower.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Line_Follower.LineFollower.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Line_Follower.LineFollower.getDirectionEnum": {
+                        "kind": -1,
+                        "retType": "Line_Follower.lineDetection",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "LineFollower"
+                            },
+                            "blockId": "Line_Follower_lineDetection",
+                            "block": "$this $enumName",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Line_Follower",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "enumName",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "enumName",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "enumName",
+                                "type": "Line_Follower.lineDetection",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_direction_enum"
+                    },
+                    "Line_Follower.LineFollower.getWhiteDirection": {
+                        "kind": -1,
+                        "retType": "Line_Follower.lineDetection",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "LineFollower"
+                            },
+                            "blockId": "Line_Follower_getWhiteDirection",
+                            "block": "$this Correction required to follow white line",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Line_Follower",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Correction required to follow white line",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_white_direction"
+                    },
+                    "Line_Follower.LineFollower.getBlackDirection": {
+                        "kind": -1,
+                        "retType": "Line_Follower.lineDetection",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "LineFollower"
+                            },
+                            "blockId": "Line_Follower_getBlackDirection",
+                            "block": "$this Correction required to follow black line",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "Line_Follower",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Correction required to follow black line",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_black_direction"
+                    },
+                    "Line_Follower.LineFollower.getU1": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_u1"
+                    },
+                    "Line_Follower.LineFollower.getU2": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_u2"
+                    },
+                    "Line_Follower.LineFollower.getU3": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_u3"
+                    },
+                    "Line_Follower.LineFollower.getU4": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_u4"
+                    },
+                    "Line_Follower.LineFollower.getU5": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.get_u5"
+                    },
+                    "Line_Follower.LineFollower.isReflected": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "LineFollower"
+                            },
+                            "blockId": "Line_Follower_isReflected",
+                            "block": "$this Has light been reflected on $sensorNum",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "Line_Follower",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has light been reflected on ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "sensorNum",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "sensorNum",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "sensorNum",
+                                "type": "Line_Follower.IRsensor",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Line_Follower.LineFollower.is_reflected"
+                    },
+                    "Keylock": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F4B820",
+                            "icon": "",
+                            "advanced": true
+                        }
+                    },
+                    "Keylock.MotorDirection": {
+                        "kind": 6,
+                        "retType": "Keylock.MotorDirection",
+                        "extendsTypes": [
+                            "Keylock.MotorDirection",
+                            "Number"
+                        ]
+                    },
+                    "Keylock.MotorDirection.Forward": {
+                        "retType": "Keylock.MotorDirection.Forward",
+                        "attributes": {
+                            "block": "Forward",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Forward",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Keylock.MotorDirection.Forward",
+                            "Number"
+                        ],
+                        "pyQName": "Keylock.MotorDirection.FORWARD"
+                    },
+                    "Keylock.MotorDirection.Reverse": {
+                        "retType": "Keylock.MotorDirection.Reverse",
+                        "attributes": {
+                            "block": "Reverse",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Reverse",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Keylock.MotorDirection.Reverse",
+                            "Number"
+                        ],
+                        "pyQName": "Keylock.MotorDirection.REVERSE"
+                    },
+                    "Keylock.createkeylock": {
+                        "kind": -3,
+                        "retType": "Keylock.keylock",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "keylock",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Keylock.keylock": {
+                        "kind": 8,
+                        "retType": "Keylock.keylock",
+                        "extendsTypes": [
+                            "Keylock.keylock",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Keylock.keylock.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Keylock.keylock.getLockPosition": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "keylock"
+                            },
+                            "blockId": "Keylock_getLockPosition",
+                            "block": "$this Get lock position",
+                            "weight": 60,
+                            "color": "#0fbc11",
+                            "blockNamespace": "Keylock",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get lock position",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Keylock.keylock.get_lock_position"
+                    },
+                    "IRSensor": {
+                        "kind": 6,
+                        "retType": "IRSensor",
+                        "extendsTypes": [
+                            "IRSensor",
+                            "Number"
+                        ]
+                    },
+                    "IRSensor.LEFT": {
+                        "retType": "IRSensor.LEFT",
+                        "attributes": {
+                            "block": "left",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "left",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRSensor.LEFT",
+                            "Number"
+                        ]
+                    },
+                    "IRSensor.MIDDLE": {
+                        "retType": "IRSensor.MIDDLE",
+                        "attributes": {
+                            "block": "middle",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "middle",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRSensor.MIDDLE",
+                            "Number"
+                        ]
+                    },
+                    "IRSensor.RIGHT": {
+                        "retType": "IRSensor.RIGHT",
+                        "attributes": {
+                            "block": "right",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "right",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRSensor.RIGHT",
+                            "Number"
+                        ]
+                    },
+                    "IRColour": {
+                        "kind": 6,
+                        "retType": "IRColour",
+                        "extendsTypes": [
+                            "IRColour",
+                            "Number"
+                        ]
+                    },
+                    "IRColour.BLACK": {
+                        "retType": "IRColour.BLACK",
+                        "attributes": {
+                            "block": "black",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "black",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRColour.BLACK",
+                            "Number"
+                        ]
+                    },
+                    "IRColour.WHITE": {
+                        "retType": "IRColour.WHITE",
+                        "attributes": {
+                            "block": "white",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "white",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "IRColour.WHITE",
+                            "Number"
+                        ]
+                    },
+                    "Motor": {
+                        "kind": 6,
+                        "retType": "Motor",
+                        "extendsTypes": [
+                            "Motor",
+                            "Number"
+                        ]
+                    },
+                    "Motor.LEFT": {
+                        "retType": "Motor.LEFT",
+                        "attributes": {
+                            "block": "left",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "left",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Motor.LEFT",
+                            "Number"
+                        ]
+                    },
+                    "Motor.RIGHT": {
+                        "retType": "Motor.RIGHT",
+                        "attributes": {
+                            "block": "right",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "right",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Motor.RIGHT",
+                            "Number"
+                        ]
+                    },
+                    "MotorDirection": {
+                        "kind": 6,
+                        "retType": "MotorDirection",
+                        "extendsTypes": [
+                            "MotorDirection",
+                            "Number"
+                        ]
+                    },
+                    "MotorDirection.FORWARD": {
+                        "retType": "MotorDirection.FORWARD",
+                        "attributes": {
+                            "block": "forward",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "forward",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorDirection.FORWARD",
+                            "Number"
+                        ]
+                    },
+                    "MotorDirection.REVERSE": {
+                        "retType": "MotorDirection.REVERSE",
+                        "attributes": {
+                            "block": "reverse",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "reverse",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorDirection.REVERSE",
+                            "Number"
+                        ]
+                    },
+                    "MotorPower": {
+                        "kind": 6,
+                        "retType": "MotorPower",
+                        "extendsTypes": [
+                            "MotorPower",
+                            "Number"
+                        ]
+                    },
+                    "MotorPower.ON": {
+                        "retType": "MotorPower.ON",
+                        "attributes": {
+                            "block": "on",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "on",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorPower.ON",
+                            "Number"
+                        ]
+                    },
+                    "MotorPower.OFF": {
+                        "retType": "MotorPower.OFF",
+                        "attributes": {
+                            "block": "off",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "off",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "MotorPower.OFF",
+                            "Number"
+                        ]
+                    },
+                    "Comparison": {
+                        "kind": 6,
+                        "retType": "Comparison",
+                        "extendsTypes": [
+                            "Comparison",
+                            "Number"
+                        ]
+                    },
+                    "Comparison.CLOSER": {
+                        "retType": "Comparison.CLOSER",
+                        "attributes": {
+                            "block": "closer",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "closer",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Comparison.CLOSER",
+                            "Number"
+                        ]
+                    },
+                    "Comparison.FURTHER": {
+                        "retType": "Comparison.FURTHER",
+                        "attributes": {
+                            "block": "further",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "further",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "Comparison.FURTHER",
+                            "Number"
+                        ]
+                    },
+                    "k8": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 0,
+                            "color": "#421C52",
+                            "icon": "",
+                            "advanced": true
+                        }
+                    },
+                    "k8.IR_SENSOR_LEFT": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.IR_SENSOR_MIDDLE": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.SPEAKER": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.IR_SENSOR_RIGHT": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.SERVO_2": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.SONAR": {
+                        "kind": 4,
+                        "retType": "DigitalPin"
+                    },
+                    "k8.SERVO_1": {
+                        "kind": 4,
+                        "retType": "AnalogPin"
+                    },
+                    "k8.M2_PWR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.M2_DIR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.M1_PWR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.M1_DIR": {
+                        "kind": 4,
+                        "retType": "number"
+                    },
+                    "k8.createK8": {
+                        "kind": -3,
+                        "retType": "k8.K8",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "K8",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "k8.create_k8"
+                    },
+                    "k8.K8": {
+                        "kind": 8,
+                        "retType": "k8.K8",
+                        "extendsTypes": []
+                    },
+                    "k8.K8.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "k8.K8.checkSensor": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this $sensor| sensor is $colour|",
+                            "blockId": "line_check_sensor",
+                            "weight": 60,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "paramHelp": {
+                                "sensor": "which of the three sensors",
+                                "colour": "whether the sensor looks for black or white"
+                            },
+                            "jsDoc": "Check if a chosen sensor is reading black or white",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "sensor",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " sensor is ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "colour",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "sensor",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "colour",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "sensor",
+                                "description": "which of the three sensors",
+                                "type": "IRSensor",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "colour",
+                                "description": "whether the sensor looks for black or white",
+                                "type": "IRColour",
+                                "initializer": "IRColour.WHITE",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.check_sensor"
+                    },
+                    "k8.K8.displaySensors": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "blockId": "Line_Sensor",
+                            "block": "$this Display Current Status",
+                            "group": "Line Sensor",
+                            "weight": 50,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Displays current status of all line sensors",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Display Current Status",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.display_sensors"
+                    },
+                    "k8.K8.plotBar": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "x"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.plot_bar"
+                    },
+                    "k8.K8.unplotBar": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "x"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.unplot_bar"
+                    },
+                    "k8.K8.checkSonar": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "true",
+                            "group": "Sonar",
+                            "weight": 50,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Returns the distance the robot is from an object (in centimetres)\r\nMax range 150cm",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "true",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.check_sonar"
+                    },
+                    "k8.K8.isSonar": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this sonar is $comparison| than $threshold cm",
+                            "group": "Sonar",
+                            "blockId": "sonar_is",
+                            "weight": 60,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Test that sonar is closer or further than the threshold in cm.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " sonar is ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "comparison",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " than ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " cm",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "comparison",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "threshold",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "comparison",
+                                "type": "Comparison",
+                                "initializer": "Comparison.FURTHER",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "threshold"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.is_sonar"
+                    },
+                    "k8.K8.displaySonar": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "true",
+                            "group": "Sonar",
+                            "weight": 40,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Display the current sonar reading to leds.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "true",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.display_sonar"
+                    },
+                    "k8.K8.ping": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "k8.K8.driveStraight": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this drive straight |speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_drive_straight",
+                            "paramMin": {
+                                "speed": "-100"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 70,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Drives the robot straight at a specified speed",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " drive straight ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "-100"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.drive_straight"
+                    },
+                    "k8.K8.turnLeft": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this turn left |speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_turn_left",
+                            "paramMin": {
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 60,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Turns the robot to the left at a specified speed",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " turn left ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.turn_left"
+                    },
+                    "k8.K8.turnRight": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this turn right |speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_turn_right",
+                            "paramMin": {
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 50,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Turns the robot to the right at a specified speed",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " turn right ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.turn_right"
+                    },
+                    "k8.K8.stop": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this stop motors",
+                            "group": "Motion",
+                            "blockId": "motion_stop",
+                            "weight": 45,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Stop the motors",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " stop motors",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "k8.K8.drive": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this drive |left: $leftWheelSpeed|right: $rightWheelSpeed",
+                            "group": "Motion",
+                            "blockId": "motion_drive",
+                            "paramMin": {
+                                "leftWheelSpeed": "-100",
+                                "rightWheelSpeed": "-100"
+                            },
+                            "paramMax": {
+                                "leftWheelSpeed": "100",
+                                "rightWheelSpeed": "100"
+                            },
+                            "weight": 40,
+                            "advanced": false,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Control both wheels in one function.\r\nSpeeds range from -100 to 100.\r\nNegative speeds go backwards, positive go forwards.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " drive ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "left: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "leftWheelSpeed",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "right: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rightWheelSpeed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "leftWheelSpeed",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "rightWheelSpeed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "leftWheelSpeed",
+                                "options": {
+                                    "min": {
+                                        "value": "-100"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "rightWheelSpeed",
+                                "options": {
+                                    "min": {
+                                        "value": "-100"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "k8.K8.driveWheel": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this drive |wheel: $wheel|speed: $speed",
+                            "group": "Motion",
+                            "blockId": "motion_single",
+                            "paramMin": {
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "speed": "100"
+                            },
+                            "weight": 30,
+                            "advanced": false,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Control the speed and direction of a single wheel",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " drive ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "wheel: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "wheel",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "speed: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "wheel",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "wheel",
+                                "type": "Motor",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.drive_wheel"
+                    },
+                    "k8.K8.setPowers": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "K8"
+                            },
+                            "block": "$this turn motors |power: $power",
+                            "group": "Motion",
+                            "blockId": "motion_power",
+                            "weight": 20,
+                            "advanced": false,
+                            "blockNamespace": "k8",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "jsDoc": "Turn the motors on/off - default on",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " turn motors ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "break"
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": "power: ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "power",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "power",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "power",
+                                "type": "MotorPower",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.set_powers"
+                    },
+                    "k8.K8.motorControl": {
+                        "kind": -1,
+                        "attributes": {
+                            "jsDoc": "Advanced control of an individual motor. PWM is set to constant value."
+                        },
+                        "parameters": [
+                            {
+                                "name": "whichMotor",
+                                "type": "Motor",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "speed"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.motor_control"
+                    },
+                    "k8.K8.remapSpeed": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "s"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "k8.K8.remap_speed"
+                    },
+                    "IrThermo_3": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "IrThermo_3.createIrThermo": {
+                        "kind": -3,
+                        "retType": "IrThermo_3.IrThermo",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "IrThermo",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "pyQName": "IrThermo_3.create_ir_thermo"
+                    },
+                    "IrThermo_3.IrThermo": {
+                        "kind": 8,
+                        "retType": "IrThermo_3.IrThermo",
+                        "extendsTypes": [
+                            "IrThermo_3.IrThermo",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "IrThermo_3.IrThermo.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.P_Rval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "IrThermo_3.IrThermo.P_Gval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "IrThermo_3.IrThermo.P_Tval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "IrThermo_3.IrThermo.P_Oval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "IrThermo_3.IrThermo.Eaval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.eaval"
+                    },
+                    "IrThermo_3.IrThermo.Ebval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.ebval"
+                    },
+                    "IrThermo_3.IrThermo.Faval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.faval"
+                    },
+                    "IrThermo_3.IrThermo.Fbval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.fbval"
+                    },
+                    "IrThermo_3.IrThermo.Gaval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.gaval"
+                    },
+                    "IrThermo_3.IrThermo.Gbval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.gbval"
+                    },
+                    "IrThermo_3.IrThermo.Kaval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.kaval"
+                    },
+                    "IrThermo_3.IrThermo.Haval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.haval"
+                    },
+                    "IrThermo_3.IrThermo.Hbval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.hbval"
+                    },
+                    "IrThermo_3.IrThermo.TOdutval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.todutval"
+                    },
+                    "IrThermo_3.IrThermo.TO0val": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.to_0val"
+                    },
+                    "IrThermo_3.IrThermo.TA0val": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.ta_0val"
+                    },
+                    "IrThermo_3.IrThermo.sensorTempval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "IrThermo_3.IrThermo.sensor_tempval"
+                    },
+                    "IrThermo_3.IrThermo.MLX90632_DEFAULT_ADDRESSval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true
+                    },
+                    "IrThermo_3.IrThermo.P_Rval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.P_Gval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.P_Tval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.P_Oval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.Eaval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.eaval@set"
+                    },
+                    "IrThermo_3.IrThermo.Ebval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.ebval@set"
+                    },
+                    "IrThermo_3.IrThermo.Faval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.faval@set"
+                    },
+                    "IrThermo_3.IrThermo.Fbval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.fbval@set"
+                    },
+                    "IrThermo_3.IrThermo.Gaval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.gaval@set"
+                    },
+                    "IrThermo_3.IrThermo.Gbval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.gbval@set"
+                    },
+                    "IrThermo_3.IrThermo.Kaval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.kaval@set"
+                    },
+                    "IrThermo_3.IrThermo.Haval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.haval@set"
+                    },
+                    "IrThermo_3.IrThermo.Hbval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.hbval@set"
+                    },
+                    "IrThermo_3.IrThermo.TOdutval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.todutval@set"
+                    },
+                    "IrThermo_3.IrThermo.TO0val@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.to_0val@set"
+                    },
+                    "IrThermo_3.IrThermo.TA0val@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.ta_0val@set"
+                    },
+                    "IrThermo_3.IrThermo.sensorTempval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.sensor_tempval@set"
+                    },
+                    "IrThermo_3.IrThermo.MLX90632_DEFAULT_ADDRESSval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.begin": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "IrThermo_3.IrThermo.getObjectTemp": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IrThermo"
+                            },
+                            "blockId": "IRThermo_getObjectTemp",
+                            "block": "$this Get surface temperature in Celcius",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "IrThermo_3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get surface temperature in Celcius",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.get_object_temp"
+                    },
+                    "IrThermo_3.IrThermo.getObjectTempF": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IrThermo"
+                            },
+                            "blockId": "IRThermo_getObjectTempF",
+                            "block": "$this Get surface temperature in Fahrenheit",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "IrThermo_3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get surface temperature in Fahrenheit",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.get_object_temp_f"
+                    },
+                    "IrThermo_3.IrThermo.getSensorTemp": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.get_sensor_temp"
+                    },
+                    "IrThermo_3.IrThermo.gatherSensorTemp": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.gather_sensor_temp"
+                    },
+                    "IrThermo_3.IrThermo.deviceBusy": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.device_busy"
+                    },
+                    "IrThermo_3.IrThermo.eepromBusy": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.eeprom_busy"
+                    },
+                    "IrThermo_3.IrThermo.getCyclePosition": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.get_cycle_position"
+                    },
+                    "IrThermo_3.IrThermo.dataAvailable": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.data_available"
+                    },
+                    "IrThermo_3.IrThermo.setBrownOut": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.set_brown_out"
+                    },
+                    "IrThermo_3.IrThermo.clearNewData": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.clear_new_data"
+                    },
+                    "IrThermo_3.IrThermo.getStatus": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.get_status"
+                    },
+                    "IrThermo_3.IrThermo.sleepMode": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.sleep_mode"
+                    },
+                    "IrThermo_3.IrThermo.stepMode": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.step_mode"
+                    },
+                    "IrThermo_3.IrThermo.continuousMode": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.continuous_mode"
+                    },
+                    "IrThermo_3.IrThermo.setSOC": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.set_soc"
+                    },
+                    "IrThermo_3.IrThermo.setMode": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "mode"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.set_mode"
+                    },
+                    "IrThermo_3.IrThermo.getMode": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.get_mode"
+                    },
+                    "IrThermo_3.IrThermo.readRegister16": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "addr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.read_register16"
+                    },
+                    "IrThermo_3.IrThermo.readRegister32": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [
+                            {
+                                "name": "addr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.read_register32"
+                    },
+                    "IrThermo_3.IrThermo.writeRegister16": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "addr"
+                            },
+                            {
+                                "name": "val"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.write_register16"
+                    },
+                    "IrThermo_3.IrThermo.writeEEPROM": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "addr"
+                            },
+                            {
+                                "name": "val"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IrThermo_3.IrThermo.write_eeprom"
+                    },
+                    "IR_Sense_3": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "∿",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "IR_Sense_3.createIR_Sense": {
+                        "kind": -3,
+                        "retType": "IR_Sense_3.IR_Sense",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "IR_Sense",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "IR_Sense_3.IR_Sense": {
+                        "kind": 8,
+                        "retType": "IR_Sense_3.IR_Sense",
+                        "extendsTypes": [
+                            "IR_Sense_3.IR_Sense",
+                            "bBoard.I2CSettings"
+                        ]
+                    },
+                    "IR_Sense_3.IR_Sense.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.is_initialized"
+                    },
+                    "IR_Sense_3.IR_Sense.deviceAddress": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.device_address"
+                    },
+                    "IR_Sense_3.IR_Sense.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "IR_Sense_3.IR_Sense.initialize": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "IR_Sense_3.IR_Sense.writeAK9754": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IR_Sense"
+                            },
+                            "blockId": "AK9754_write",
+                            "block": "$this Write array $values to AK9754 register$register ?",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "IR_Sense_3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Write array ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " to AK9754 register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "values",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "values",
+                                "type": "number[]"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.write_ak9754"
+                    },
+                    "IR_Sense_3.IR_Sense.isHumanDetected": {
+                        "kind": -1,
+                        "retType": "boolean",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IR_Sense"
+                            },
+                            "blockId": "IR_Sense_3_isHumandDetected",
+                            "block": "$this Has a human been detected ?",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "IR_Sense_3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Has a human been detected ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.is_human_detected"
+                    },
+                    "IR_Sense_3.IR_Sense.readAK9754": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IR_Sense"
+                            },
+                            "blockId": "AK9754_read",
+                            "block": "$this Read from register$register ?",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "IR_Sense_3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read from register",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ?",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "register",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "register"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.read_ak9754"
+                    },
+                    "IR_Sense_3.IR_Sense.setAK9754Addr": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "deviceAddr"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.set_ak9754_addr"
+                    },
+                    "IR_Sense_3.IR_Sense.getAK9754Addr": {
+                        "kind": -1,
+                        "retType": "number",
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IR_Sense_3.IR_Sense.get_ak9754_addr"
+                    },
+                    "IR_Distance": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#33BEBB",
+                            "icon": "↔",
+                            "advanced": true,
+                            "jsDoc": "Custom blocks"
+                        }
+                    },
+                    "IR_Distance.createIR_Distance": {
+                        "kind": -3,
+                        "retType": "IR_Distance.IR_Distance1",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "IR_Distance",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "IR_Distance.IR_Distance1": {
+                        "kind": 8,
+                        "retType": "IR_Distance.IR_Distance1",
+                        "extendsTypes": [
+                            "IR_Distance.IR_Distance1",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "IR_Distance.IR_Distance1.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "IR_Distance.IR_Distance1.is_initialized"
+                    },
+                    "IR_Distance.IR_Distance1.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "IR_Distance.IR_Distance1.initialize": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "IR_Distance.IR_Distance1.getDistance": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IR_Distance"
+                            },
+                            "blockId": "IRDistance_getDistance",
+                            "block": "$this Get distance",
+                            "blockGap": "7",
+                            "advanced": false,
+                            "blockNamespace": "IR_Distance",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Get distance",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "IR_Distance.IR_Distance1.get_distance"
+                    },
+                    "IR_Distance.IR_Distance1.enable": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IR_Distance"
+                            },
+                            "blockId": "IRDistance_enable",
+                            "block": "$this Enable device",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "IR_Distance",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Enable device",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "IR_Distance.IR_Distance1.disable": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "IR_Distance"
+                            },
+                            "blockId": "IRDistance_disable",
+                            "block": "$this Disable device",
+                            "blockGap": "7",
+                            "advanced": true,
+                            "blockNamespace": "IR_Distance",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Disable device",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "Button_G": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#F4B820",
+                            "icon": "",
+                            "advanced": true
+                        }
+                    },
+                    "Button_G.Light": {
+                        "kind": 6,
+                        "retType": "Button_G.Light",
+                        "extendsTypes": [
+                            "Button_G.Light",
+                            "Number"
+                        ]
+                    },
+                    "Button_G.Light.Off": {
+                        "retType": "Button_G.Light.Off",
+                        "extendsTypes": [
+                            "Button_G.Light.Off",
+                            "Number"
+                        ],
+                        "pyQName": "Button_G.Light.OFF"
+                    },
+                    "Button_G.Light.On": {
+                        "retType": "Button_G.Light.On",
+                        "extendsTypes": [
+                            "Button_G.Light.On",
+                            "Number"
+                        ],
+                        "pyQName": "Button_G.Light.ON"
+                    },
+                    "Button_G.createButton_G": {
+                        "kind": -3,
+                        "retType": "Button_G.Button_G",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "Button_G",
+                            "weight": 110,
+                            "paramHelp": {
+                                "boardID": "the boardID",
+                                "Button_G": "the Button_G Object"
+                            },
+                            "jsDoc": "Sets Button G object.",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "description": "the boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "Button_G.Button_G": {
+                        "kind": 8,
+                        "retType": "Button_G.Button_G",
+                        "extendsTypes": [
+                            "Button_G.Button_G",
+                            "bBoard.PinSettings",
+                            "bBoard.IOSettings"
+                        ]
+                    },
+                    "Button_G.Button_G.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "Button_G.Button_G.setLight": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Button_G"
+                            },
+                            "blockId": "ButtonG_SetLight",
+                            "block": "$this Turn button light $onOff",
+                            "blockNamespace": "Button_G",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Turn button light ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "onOff",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "onOff",
+                                "type": "Button_G.Light",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Button_G.Button_G.set_light"
+                    },
+                    "Button_G.Button_G.setLightPWM": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Button_G"
+                            },
+                            "blockId": "ButtonG_SetLight_PWM",
+                            "block": "$this Set button light to $PWMValue brightness",
+                            "paramMin": {
+                                "PWMValue": "0"
+                            },
+                            "paramMax": {
+                                "PWMValue": "100"
+                            },
+                            "blockNamespace": "Button_G",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Set button light to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "PWMValue",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " brightness",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "PWMValue",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "PWMValue",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "Button_G.Button_G.set_light_pwm"
+                    },
+                    "Button_G.Button_G.getSwitch": {
+                        "kind": -1,
+                        "retType": "number",
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "Button_G"
+                            },
+                            "blockId": "ButtonG_getSwitch",
+                            "block": "$this Read button state",
+                            "blockNamespace": "Button_G",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " Read button state",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [],
+                        "isInstance": true,
+                        "pyQName": "Button_G.Button_G.get_switch"
+                    },
+                    "DC_Motor3": {
+                        "kind": 5,
+                        "retType": "",
+                        "attributes": {
+                            "weight": 100,
+                            "color": "#EF697B",
+                            "icon": "",
+                            "advanced": true
+                        }
+                    },
+                    "DC_Motor3.createDC_MOTOR": {
+                        "kind": -3,
+                        "retType": "DC_Motor3.DC_MOTOR",
+                        "attributes": {
+                            "block": " $boardID $clickID",
+                            "blockSetVariable": "DC_MOTOR",
+                            "weight": 110,
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "boardID",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "clickID",
+                                        "ref": true
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ]
+                    },
+                    "DC_Motor3.MotorDirection": {
+                        "kind": 6,
+                        "retType": "DC_Motor3.MotorDirection",
+                        "extendsTypes": [
+                            "DC_Motor3.MotorDirection",
+                            "Number"
+                        ]
+                    },
+                    "DC_Motor3.MotorDirection.Forward": {
+                        "retType": "DC_Motor3.MotorDirection.Forward",
+                        "attributes": {
+                            "block": "Forward",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Forward",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "DC_Motor3.MotorDirection.Forward",
+                            "Number"
+                        ],
+                        "pyQName": "DC_Motor3.MotorDirection.FORWARD"
+                    },
+                    "DC_Motor3.MotorDirection.Reverse": {
+                        "retType": "DC_Motor3.MotorDirection.Reverse",
+                        "attributes": {
+                            "block": "Reverse",
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Reverse",
+                                        "style": []
+                                    }
+                                ],
+                                "parameters": []
+                            }
+                        },
+                        "extendsTypes": [
+                            "DC_Motor3.MotorDirection.Reverse",
+                            "Number"
+                        ],
+                        "pyQName": "DC_Motor3.MotorDirection.REVERSE"
+                    },
+                    "DC_Motor3.DC_MOTOR": {
+                        "kind": 8,
+                        "retType": "DC_Motor3.DC_MOTOR",
+                        "extendsTypes": [
+                            "DC_Motor3.DC_MOTOR",
+                            "bBoard.PWMSettings"
+                        ]
+                    },
+                    "DC_Motor3.DC_MOTOR.isInitialized": {
+                        "kind": 2,
+                        "retType": "number[]",
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.is_initialized"
+                    },
+                    "DC_Motor3.DC_MOTOR.__constructor": {
+                        "kind": -3,
+                        "parameters": [
+                            {
+                                "name": "boardID",
+                                "type": "BoardID",
+                                "isEnum": true
+                            },
+                            {
+                                "name": "clickID",
+                                "type": "ClickID",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true
+                    },
+                    "DC_Motor3.DC_MOTOR.IN1val": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.in_1val"
+                    },
+                    "DC_Motor3.DC_MOTOR.IN1val@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.in_1val@set"
+                    },
+                    "DC_Motor3.DC_MOTOR.IN2val": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.in_2val"
+                    },
+                    "DC_Motor3.DC_MOTOR.IN2val@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.in_2val@set"
+                    },
+                    "DC_Motor3.DC_MOTOR.SLPval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.sl_pval"
+                    },
+                    "DC_Motor3.DC_MOTOR.SLPval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.sl_pval@set"
+                    },
+                    "DC_Motor3.DC_MOTOR.PWMval": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "isReadOnly": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.pw_mval"
+                    },
+                    "DC_Motor3.DC_MOTOR.PWMval@set": {
+                        "kind": -2,
+                        "retType": "number",
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.pw_mval@set"
+                    },
+                    "DC_Motor3.DC_MOTOR.initialize": {
+                        "kind": -1,
+                        "parameters": [],
+                        "isInstance": true
+                    },
+                    "DC_Motor3.DC_MOTOR.motorSpeed": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "Speed"
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.motor_speed"
+                    },
+                    "DC_Motor3.DC_MOTOR.motorSpeedDirection": {
+                        "kind": -1,
+                        "attributes": {
+                            "paramDefl": {
+                                "this": "DC_MOTOR"
+                            },
+                            "blockId": "Motor_speedDirection",
+                            "block": "Set $this speed to %speed with direction%direction",
+                            "paramMin": {
+                                "Speed": "0",
+                                "speed": "0"
+                            },
+                            "paramMax": {
+                                "Speed": "100",
+                                "speed": "100"
+                            },
+                            "advanced": false,
+                            "blockNamespace": "DC_Motor3",
+                            "_shadowOverrides": {
+                                "this": "variables_get"
+                            },
+                            "explicitDefaults": [
+                                "this"
+                            ],
+                            "_def": {
+                                "parts": [
+                                    {
+                                        "kind": "label",
+                                        "text": "Set ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " speed to ",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "label",
+                                        "text": " with direction",
+                                        "style": []
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": false
+                                    }
+                                ],
+                                "parameters": [
+                                    {
+                                        "kind": "param",
+                                        "name": "this",
+                                        "shadowBlockId": "variables_get",
+                                        "ref": true
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "speed",
+                                        "ref": false
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "name": "direction",
+                                        "ref": false
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": [
+                            {
+                                "name": "speed",
+                                "options": {
+                                    "min": {
+                                        "value": "0"
+                                    },
+                                    "max": {
+                                        "value": "100"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "direction",
+                                "type": "DC_Motor3.MotorDirection",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.motor_speed_direction"
+                    },
+                    "DC_Motor3.DC_MOTOR.motorRotation": {
+                        "kind": -1,
+                        "parameters": [
+                            {
+                                "name": "direction",
+                                "type": "DC_Motor3.MotorDirection",
+                                "isEnum": true
+                            }
+                        ],
+                        "isInstance": true,
+                        "pyQName": "DC_Motor3.DC_MOTOR.motor_rotation"
                     }
                 }
             },
-            "sha": "f23374b8d9f18204458eb8324cb9254f161311b55a2493ffa5978344c0a91733"
+            "sha": "5675bc537dea5f2bd795d5b3f883d42e7c0e664ed835f0274bf39c1575b42d4d"
         },
         "libs/radio": {
             "apis": {
@@ -36574,7 +45078,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "5743010684fc2d978e54dc2bd4ddcdeb1e3916a8a46b9bc5c4653d966c0529f0"
+            "sha": "8e26b230b8ad0bea300fd91dfe834e8e92d2e3dd6e3d32f0b0476200b4d04681"
         },
         "libs/devices": {
             "apis": {
@@ -38611,7 +47115,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "6ba887bdfb750fff1347c8a0a5a731bea504b7b4cbc2e228a03db282d9462b0f"
+            "sha": "c480d17db4c09a66224a7c30ec2c929c75c7b8d7c6bf6768a15dd749898ec969"
         },
         "libs/bluetooth": {
             "apis": {
@@ -39562,7 +48066,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "ced9e7456c21b36ffc375278a62f0a52045f7062e13025ea91abda6d22b16086"
+            "sha": "d4fdf1c3041e08c7208ae51e22af1f669d00c36c91ba101456aff27fc3f89ad4"
         },
         "libs/servo": {
             "apis": {
@@ -40204,7 +48708,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "a22cdbb4bf592b4e450a2fa62314ca97607b88f237b4a8d36b0b011cfd8d74fe"
+            "sha": "c3079c455ea4aa92bd181b60de2244b47c4bc1e3be44d0e57a0a75761d2a7387"
         },
         "libs/radio-broadcast": {
             "apis": {
@@ -41763,7 +50267,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "53a9fa999123a108975dc07183b40d2e4035f29b831c701eca70f15e23bfd544"
+            "sha": "6f95995330cb5dc353742b1710615209dc5a372e580520f36e187939c175a6b3"
         },
         "libs/microphone": {
             "apis": {
@@ -41929,7 +50433,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "cd1f565b24fd96fad1664f33f8591b9dcce366c7167c493c4279241bd9fefda5"
+            "sha": "a85b27ff2155205a8089d7b9cb468faa0782f5c75101c37fe0fc348a2d4494fc"
         },
         "libs\\blocksprj": {
             "apis": {
@@ -43345,7 +51849,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "d188b0a476bcfecc6874357bf3599d72770309b66d4b99d2032f0a10239a4836"
+            "sha": "68f48cb3d710e429693c2e057dad434862534f26f3775a04dbc4307401a422ed"
         },
         "libs\\bluetoothprj": {
             "apis": {
@@ -44296,7 +52800,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "dbe8e29fd368e4bbcdbea45f3e4aa9269356882e7b2c10b02bf5100d995095ae"
+            "sha": "c1e2d896e977666e19671b28b0f3ed2ab7b5e5ce8058f726d640197d02f3cd16"
         },
         "libs\\tsprj": {
             "apis": {
@@ -45712,7 +54216,7 @@ var pxtTargetBundle = {
                     }
                 }
             },
-            "sha": "ed9ccd763ec4a534acefbae6719c13372db8e560224a0e9225f397dd3e1da4ae"
+            "sha": "abe1bdeace7aeef31696776fe1462395c1b3005fd2b5caa1c7d60e4290e7c2a1"
         }
     }
 }

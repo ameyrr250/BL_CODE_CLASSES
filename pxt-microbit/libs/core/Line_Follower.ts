@@ -37,29 +37,29 @@ namespace Line_Follower{
 
     /**
      * Sets LineFollower Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      * @param clickClot the bus number
      *  @param LineFollower the LineFollower Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="LineFollower"
     //% weight=110
-    export function createLineFollower(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): LineFollower {
-        return new LineFollower(clickBoardNum, clickSlot);
+    export function createLineFollower(boardID: BoardID, clickID:ClickID): LineFollower {
+        return new LineFollower(boardID, clickID);
     }
 
     export class LineFollower extends bBoard.PinSettings{
    
    
     isInitialized : Array<number>;
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobalT:number
+    private clickIDNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-        super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+        super(boardID, clickID);
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum;
-        this.clickSlotNumGlobal=clickSlot;
+        this.boardIDGlobalT=boardID*3+clickID;
+        this.clickIDNumGlobal=clickID;
     }
  
 
@@ -68,7 +68,7 @@ namespace Line_Follower{
         initialize(deviceAddr:number)
         {
            
-            this.isInitialized[this.clickBoardNumGlobal]  = 1
+            this.isInitialized[this.boardIDGlobalT]  = 1
 
         
         }

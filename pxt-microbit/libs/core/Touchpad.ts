@@ -44,14 +44,14 @@ namespace Touchpad{
 
     /**
      * Sets Touchpad Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Touchpad the Touchpad Object
     */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Touchpad"
     //% weight=110
-    export function createTouchpad(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Touchpad {
-        return new Touchpad(clickBoardNum, clickSlot);
+    export function createTouchpad(boardID: BoardID, clickID:ClickID): Touchpad {
+        return new Touchpad(boardID, clickID);
    }
 
     export class Touchpad extends bBoard.I2CSettings{
@@ -78,16 +78,16 @@ namespace Touchpad{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobalT:number
+    private clickIDNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID);
 
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    this.clickBoardNumGlobal=clickBoardNum
-    this.clickSlotNumGlobal=clickSlot;
+    this.boardIDGlobalT=boardID*3+clickID
+    this.clickIDNumGlobal=clickID;
     }
     
         //%blockId=Touchpad_initialize
@@ -99,8 +99,8 @@ namespace Touchpad{
         //% this.defl="Touchpad"
     initialize(deviceAddr:number)
     {
-        //setTMP116Addr(deviceAddr,clickBoardNum)
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        //setTMP116Addr(deviceAddr,boardID)
+        this.isInitialized[this.boardIDGlobalT]  = 1
         this.setMTCH6102Addr(deviceAddr)
         this.writeMTCH6102(0b0011,this.MODE) //Set the mode to full 
     
@@ -116,7 +116,7 @@ namespace Touchpad{
         //% this.defl="Touchpad"
     getX():number
     {
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobalT] == 0)
         {
             this.initialize(this.DEFAULT_I2C_ADDRESS)
             
@@ -133,7 +133,7 @@ namespace Touchpad{
         //% this.defl="Touchpad"
     getY():number
     {
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobalT] == 0)
         {
             this.initialize(this.DEFAULT_I2C_ADDRESS)
             
@@ -150,7 +150,7 @@ namespace Touchpad{
         //% this.defl="Touchpad"
         isTouched():boolean
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobalT] == 0)
             {
                 this.initialize(this.DEFAULT_I2C_ADDRESS)
                 
@@ -169,7 +169,7 @@ namespace Touchpad{
         //% this.defl="Touchpad"
         isGesture():boolean
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobalT] == 0)
             {
                 this.initialize(this.DEFAULT_I2C_ADDRESS)
                 
@@ -265,7 +265,7 @@ namespace Touchpad{
         //% this.defl="Touchpad"
         getGesture():number
         {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobalT] == 0)
             {
                 this.initialize(this.DEFAULT_I2C_ADDRESS)
                 
@@ -318,11 +318,11 @@ namespace Touchpad{
     
     setMTCH6102Addr(deviceAddr:number)
     {
-        this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+        this.deviceAddress[this.boardIDGlobalT] = deviceAddr;
     }
     getMTCH6102Addr():number
     {
-        return this.deviceAddress[this.clickBoardNumGlobal];
+        return this.deviceAddress[this.boardIDGlobalT];
     }
     
     }

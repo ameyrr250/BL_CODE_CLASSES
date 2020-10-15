@@ -59,11 +59,11 @@ namespace k8 {
     export let M1_PWR: number = DigitalPin.P15
     export let M1_DIR: number = DigitalPin.P16
 
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="K8"
     //% weight=110
-    export function createK8(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): K8 {
-        return new K8(clickBoardNum, clickSlot);
+    export function createK8(boardID: BoardID, clickID:ClickID): K8 {
+        return new K8(boardID, clickID);
    }
 
 
@@ -71,13 +71,13 @@ namespace k8 {
 
         private MAX_PULSE : number
         private motorState: MotorPower
-        private clickBoardNumGlobal:number
-        private clickSlotNumGlobal:number 
+        private boardIDGlobal:number
+        private clickIDNumGlobal:number 
 
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    constructor(boardID: BoardID, clickID:ClickID){
         this.MAX_PULSE = 7800;
-        this.clickBoardNumGlobal=clickBoardNum;
-        this.clickSlotNumGlobal=clickSlot;
+        this.boardIDGlobal=boardID;
+        this.clickIDNumGlobal=clickID;
         this.motorState = MotorPower.ON;
     }
 

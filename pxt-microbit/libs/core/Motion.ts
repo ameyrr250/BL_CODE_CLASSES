@@ -14,38 +14,40 @@ namespace Motion{
         none = 0,
     }
 
+     /**
+     * Sets Thermo Click object.
+     * @param boardID the boardID
+     * @param clickID the ClickID
+     * @param Thermo the Motion Object
+    */
+    //% block=" $boardID $clickID"
+    //% blockSetVariable="Motion"
+    //% weight=110
+    export function createThermo(boardID: BoardID, clickID:ClickID): Motion {
+        return new Motion(boardID, clickID);
+   }
+
+
     export class Motion{
 
-    //On/Off do not seem to enable/disable the device.
-
-//      //%blockId=Motion_On
-//     //%block="Turn on detector on click%clickBoardNum ?"
-//     //% blockGap=7
-//     //% advanced=true
-// export function turnOn(clickBoardNum:clickBoardID)
-// {
-//   bBoard.setPin(clickIOPin.RST,clickBoardNum)
-
-// }
-
-//   //%blockId=Motion_Off
-//     //%block="Turn off detector on click%clickBoardNum ?"
-//     //% blockGap=7
-//     //% advanced=true
-//     export function turnOff(clickBoardNum:clickBoardID)
-//     {
-//       bBoard.clearPin(clickIOPin.RST,clickBoardNum)
-    
-//     }
+        private boardIDGlobal : BoardID
+        private clickIDGlobal : ClickID
+        constructor(boardID: BoardID, clickID:ClickID){
+            this.boardIDGlobal=boardID;
+            this.clickIDGlobal=clickID;
+        }
     
     
         //%blockId=Motion_isDetected
-        //%block="Has motion been detected on click%clickBoardNum ?"
+        //%block="$this Has motion been detected?"
         //% blockGap=7
         //% advanced=false
-    isDetected(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot):boolean
+        //% blockNamespace=Motion
+        //% this.shadow=variables_get
+        //% this.defl="Motion"
+    isDetected():boolean
     {
-        let PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
+        let PINs = new bBoard.PinSettings(this.boardIDGlobal, this.clickIDGlobal);
         if(PINs.digitalReadPin(clickIOPin.INT) == motion.detected)
         {
             return true

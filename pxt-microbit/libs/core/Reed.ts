@@ -13,34 +13,34 @@ namespace Reed{
 
     /**
      * Sets Reed Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Reed the Reed Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Reed"
     //% weight=110
-    export function createReed(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Reed {
-        return new Reed(clickBoardNum, clickSlot);
+    export function createReed(boardID: BoardID, clickID:ClickID): Reed {
+        return new Reed(boardID, clickID);
     }
 
     export class Reed extends bBoard.PinSettings{
 
     isInitialized : Array<number>;
     
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number 
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number 
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-        super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+        super(boardID, clickID);
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum;
-        this.clickSlotNumGlobal=clickSlot;
+        this.boardIDGlobal=boardID;
+        this.clickIDNumGlobal=clickID;
     }
 
 initialize()
 {
 
-    this.isInitialized[this.clickBoardNumGlobal]  = 1
+    this.isInitialized[this.boardIDGlobal]  = 1
     this.setPullDirection(clickIOPin.CS, IOPullDirection.two)
 }
     
@@ -57,7 +57,7 @@ initialize()
         //% this.defl="Reed"
     isActivated():boolean
     {
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
             this.initialize()
             

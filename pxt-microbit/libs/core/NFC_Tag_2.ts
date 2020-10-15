@@ -22,14 +22,14 @@ namespace NFC_Tag_2{
 
     /**
      * Sets NFC_Tag Click object.
-     *  @param clickBoardNum the clickBoardNum
+     *  @param boardID the boardID
      *  @param NFC_Tag the NFC_Tag Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="NFC_Tag"
     //% weight=110
-    export function createNFC_Tag(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): NFC_Tag {
-        return new NFC_Tag(clickBoardNum, clickSlot);
+    export function createNFC_Tag(boardID: BoardID, clickID:ClickID): NFC_Tag {
+        return new NFC_Tag(boardID, clickID);
     }
 
     export class NFC_Tag extends bBoard.I2CSettings{
@@ -54,11 +54,11 @@ namespace NFC_Tag_2{
 
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-            super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+            super(boardID, clickID);
             this.DEFAULT_I2C_ADDRESS =  0x55  
             this.COVERING_PAGE_REG = 0x0
             this.USER_START_REG =0x1
@@ -70,8 +70,8 @@ namespace NFC_Tag_2{
             this.SRAM_END_REG  = 0xFB // just the first 8 bytes
             this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-            this.clickBoardNumGlobal=clickBoardNum;
-            this.clickSlotNumGlobal=clickSlot;
+            this.boardIDGlobal=boardID;
+            this.clickIDNumGlobal=clickID;
         }
 
   
@@ -79,7 +79,7 @@ namespace NFC_Tag_2{
      
         initialize(deviceAddr:number)
         {     
-            this.isInitialized[this.clickBoardNumGlobal]  = 1
+            this.isInitialized[this.boardIDGlobal]  = 1
             this.setNT3H2111Addr(deviceAddr)  
             let arrayTest = this.readNT3H2111(16, 0) //Need to read the first page of the tag memory
             arrayTest[0] = this.DEFAULT_I2C_ADDRESS<<1 //Set the very first byte (the i2c address). The chip always returns 0x04 (manufacturer ID) and not the I2C address (0x55)
@@ -105,7 +105,7 @@ namespace NFC_Tag_2{
         //% this.defl="NFC_Tag"
     setURI(URL:string)
     {
-    if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+    if(this.isInitialized[this.boardIDGlobal] == 0)
     {
         this.initialize(this.DEFAULT_I2C_ADDRESS)
         
@@ -174,9 +174,9 @@ TLVValue[1] = TLVLength; //Now write this length to the TLV length field
 //Now we need to append the NDEF payload to our TLVBlock message.
 
    // arrayTest = [0x3, 21, 0xd1, 0x1, 17, 0x55, 0x02, 0x62, 0x72, 0x69, 0x6c, 0x6c, 0x69, 0x61, 0x6e, 0x74]
-   // NFC_Tag_2.writeNT3H2111(arrayTest, 1, clickBoardID.one)
+   // NFC_Tag_2.writeNT3H2111(arrayTest, 1, BoardID.one)
     //arrayTest = [0x6c, 0x61, 0x62, 0x73, 0x2e, 0x63, 0x61, 0xfe, 0, 0, 0, 0, 0, 0, 0, 0]
-   // NFC_Tag_2.writeNT3H2111(arrayTest, 2, clickBoardID.one)
+   // NFC_Tag_2.writeNT3H2111(arrayTest, 2, BoardID.one)
 
 readUID():number[] { //Extracts the first 7 bytes of the 
     return this.readNT3H2111(this.UID_SIZE, this.COVERING_PAGE_REG);
@@ -290,11 +290,11 @@ readUID():number[] { //Extracts the first 7 bytes of the
         
         setNT3H2111Addr(deviceAddr:number)
         {
-            this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+            this.deviceAddress[this.boardIDGlobal] = deviceAddr;
         }
         getNT3H2111Addr():number
         {
-            return this.deviceAddress[this.clickBoardNumGlobal];
+            return this.deviceAddress[this.boardIDGlobal];
         }
     }
 }

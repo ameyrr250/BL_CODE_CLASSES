@@ -7,14 +7,14 @@
 namespace Servo{
     /**
      * Sets Servo Click object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param Servo the Servo Object
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Servo"
     //% weight=110
-    export function createLCDSettings(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Servo {
-      return new Servo(clickBoardNum, clickSlot);
+    export function createLCDSettings(boardID: BoardID, clickID:ClickID): Servo {
+      return new Servo(boardID, clickID);
  }
 
     export class Servo{
@@ -48,13 +48,13 @@ namespace Servo{
     servoAngleMin : Array<number>;
     servoAngleMax : Array<number>;
     
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number
 
     private PINs : bBoard.PinSettings
     private I2Cs : bBoard.I2CSettings
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    constructor(boardID: BoardID, clickID:ClickID){
     this.PCA9685_DEFAULT_I2C_ADDRESS =  0x40  
     this.LTC2497_DEFAULT_I2C_ADDRESS =  0x48  
     this.PCA9685_SUBADR1 =0x2 /**< i2c bus address 1 */
@@ -85,11 +85,11 @@ namespace Servo{
     this.servoAngleMin  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.servoAngleMax = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
-    this.clickBoardNumGlobal=clickBoardNum;
-    this.clickSlotNumGlobal=clickSlot;
+    this.boardIDGlobal=boardID;
+    this.clickIDNumGlobal=clickID;
     
-    this.PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
-    this.I2Cs= new bBoard.I2CSettings(clickBoardNum, clickSlot);
+    this.PINs = new bBoard.PinSettings(boardID, clickID);
+    this.I2Cs= new bBoard.I2CSettings(boardID, clickID);
     }
     
     // you can use this if you'd like to set the pulse length in seconds
@@ -111,19 +111,19 @@ namespace Servo{
     
      getServoAngleMin():number
       {
-        return this.servoAngleMin[this.clickBoardNumGlobal];
+        return this.servoAngleMin[this.boardIDGlobal];
       }
       getServoAngleMax():number
       {
-        return this.servoAngleMax[this.clickBoardNumGlobal];
+        return this.servoAngleMax[this.boardIDGlobal];
       }
       getServoPulseMin():number
       {
-        return this.servoPulseMin[this.clickBoardNumGlobal];
+        return this.servoPulseMin[this.boardIDGlobal];
       }
       getServoPulseMax():number
       {
-        return this.servoPulseMax[this.clickBoardNumGlobal];
+        return this.servoPulseMax[this.boardIDGlobal];
       }
     
     
@@ -251,7 +251,7 @@ namespace Servo{
       
     setPWM(servoNumber:number, on:number, off:number)  {
     
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
           this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS);
         }
@@ -310,11 +310,11 @@ namespace Servo{
     
             setPCA9685Addr(deviceAddr:number)
             {
-                this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+                this.deviceAddress[this.boardIDGlobal] = deviceAddr;
             }
             getPCA9685Addr():number
             {
-                return this.deviceAddress[this.clickBoardNumGlobal];
+                return this.deviceAddress[this.boardIDGlobal];
             }
 
 
@@ -330,7 +330,7 @@ namespace Servo{
             initialize(PCA9685Addr:number, LTC2497Addr:number)
             {
                
-                this.isInitialized[this.clickBoardNumGlobal]  = 1;
+                this.isInitialized[this.boardIDGlobal]  = 1;
                 this.setPCA9685Addr(PCA9685Addr);
                 this.PINs.clearPin(clickIOPin.CS);
                 this.setPWMFreq(60);
@@ -353,7 +353,7 @@ namespace Servo{
             //% this.defl="Servo"
         setServoAngle( servoNumber:number, angle:number) {
         
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
             this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS)
             
@@ -384,7 +384,7 @@ namespace Servo{
         //% this.defl="Servo"
         setServoAngleAdjusted( servoNumber:number=1,  angle:number,pulseMin:number,pulseMax:number) {
         
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
             this.initialize(this.PCA9685_DEFAULT_I2C_ADDRESS,this.LTC2497_DEFAULT_I2C_ADDRESS)
             

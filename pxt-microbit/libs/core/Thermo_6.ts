@@ -8,14 +8,15 @@ namespace Thermo_6{
 
     /**
      * Sets Thermo Click object.
-     * @param clickBoardNum the clickBoardNum
-     *  @param Thermo the Thermo Object
+     * @param boardID the boardID
+     * @param clickID the ClickID
+     * @param Thermo the Thermo Object
     */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="Thermo"
     //% weight=110
-    export function createThermo(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): Thermo {
-        return new Thermo(clickBoardNum, clickSlot);
+    export function createThermo(boardID: BoardID, clickID:ClickID): Thermo {
+        return new Thermo(boardID, clickID);
    }
 
     export class Thermo extends bBoard.I2CSettings{
@@ -30,15 +31,16 @@ namespace Thermo_6{
     private isInitialized : Array<number>;
     private deviceAddress : Array<number>;
 
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobalT:number
+    private clickIDNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-    super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+    super(boardID, clickID);
     this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    this.clickBoardNumGlobal=clickBoardNum
-    this.clickSlotNumGlobal=clickSlot;
+    this.boardIDGlobalT=boardID*3+clickID
+    this.clickIDNumGlobal=clickID;
+    this.initialize(this.DEFAULT_I2C_ADDRESS)
     }
    
     //%blockId=Thermo6_getTempC
@@ -50,12 +52,7 @@ namespace Thermo_6{
     //% this.defl="Thermo"
        getTempC():number
        {
-          
-           if(this.isInitialized[this.clickBoardNumGlobal] == 0)
-           {
-            this.initialize(this.DEFAULT_I2C_ADDRESS)
                
-           }
            let temp = this.readMAX31875( this.TEMP_REG)
            return temp/256
        
@@ -72,7 +69,7 @@ namespace Thermo_6{
        getTempF():number
        {
           
-           if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+           if(this.isInitialized[this.boardIDGlobalT] == 0)
            {
             this.initialize(this.DEFAULT_I2C_ADDRESS)
                
@@ -95,7 +92,7 @@ namespace Thermo_6{
    initialize(deviceAddr:number)
    {
       
-    this.isInitialized[this.clickBoardNumGlobal]  = 1
+    this.isInitialized[this.boardIDGlobalT]  = 1
     this.setMAX31875Addr(deviceAddr)
     this.writeMAX31875(0x0066,this.CONFIG_REG) //Set PEC to off, 12 bit resolution and 8 samples/second
    
@@ -151,11 +148,11 @@ namespace Thermo_6{
    
    setMAX31875Addr(deviceAddr:number)
    {
-    this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+    this.deviceAddress[this.boardIDGlobalT] = deviceAddr;
    }
    getMAX31875Addr():number
    {
-       return this.deviceAddress[this.clickBoardNumGlobal];
+       return this.deviceAddress[this.boardIDGlobalT];
    }
 
 

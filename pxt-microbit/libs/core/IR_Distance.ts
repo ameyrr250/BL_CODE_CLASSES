@@ -6,24 +6,24 @@
 //% advanced=true
 namespace IR_Distance{
 
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="IR_Distance"
     //% weight=110
-    export function createIR_Distance(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): IR_Distance1 {
-        return new IR_Distance1(clickBoardNum, clickSlot);
+    export function createIR_Distance(boardID: BoardID, clickID:ClickID): IR_Distance1 {
+        return new IR_Distance1(boardID, clickID);
     }
 
     export class IR_Distance1 extends bBoard.PinSettings{
 
 
     isInitialized : Array<number>;
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number
     
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-        super(clickBoardNum, clickSlot);
-        this.clickBoardNumGlobal=clickBoardNum;
-        this.clickSlotNumGlobal=clickSlot;
+    constructor(boardID: BoardID, clickID:ClickID){
+        super(boardID, clickID);
+        this.boardIDGlobal=boardID;
+        this.clickIDNumGlobal=clickID;
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     }
 
@@ -31,7 +31,7 @@ namespace IR_Distance{
         initialize()
         {
             this.enable() //Enable the module
-            this.isInitialized[this.clickBoardNumGlobal]  = 1
+            this.isInitialized[this.boardIDGlobal]  = 1
 
         }
 
@@ -44,12 +44,12 @@ namespace IR_Distance{
         //% this.defl="IR_Distance"
     getDistance():number
     {
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
             this.initialize()
             
         }
-       return 2700-bBoard.analogRead(clickADCPin.AN, this.clickBoardNumGlobal, this.clickSlotNumGlobal)
+       return 2700-this.analogRead(clickADCPin.AN, this.boardIDGlobal, this.clickIDNumGlobal)
     
     }
 
@@ -62,7 +62,7 @@ namespace IR_Distance{
         //% this.defl="IR_Distance"
         enable()
         {
-            super.setPin(clickIOPin.RST); //Enable the module
+            this.setPin(clickIOPin.RST); //Enable the module
           
         
         }
@@ -76,7 +76,7 @@ namespace IR_Distance{
         //% this.defl="IR_Distance"
         disable()
         {
-            super.clearPin(clickIOPin.RST); //Enable the module
+            this.clearPin(clickIOPin.RST); //Enable the module
           
         
         }

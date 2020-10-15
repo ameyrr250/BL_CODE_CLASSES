@@ -5,11 +5,11 @@
 //% advanced=true
 
 namespace DC_Motor3 {
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="DC_MOTOR"
     //% weight=110
-    export function createDC_MOTOR(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): DC_MOTOR {
-      return new DC_MOTOR(clickBoardNum, clickSlot);
+    export function createDC_MOTOR(boardID: BoardID, clickID:ClickID): DC_MOTOR {
+      return new DC_MOTOR(boardID, clickID);
   }
     
     
@@ -27,23 +27,23 @@ namespace DC_Motor3 {
     private IN2  : number
     private  SLP : number
     private  PWM : number
-    private clickBoardNumGlobal:number 
+    private boardIDGlobal:number 
     private pwms : bBoard.PWMSettings;
     private PINs : bBoard.PinSettings;
-    private clickSlotNumGlobal:number
+    private clickIDNumGlobal:number
     
     isInitialized : Array<number>;
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-        super(clickBoardNum, clickSlot);
+    constructor(boardID: BoardID, clickID:ClickID){
+        super(boardID, clickID);
         this.IN1 = clickIOPin.AN
         this.IN2 = clickIOPin.RST
         this.SLP = clickIOPin.CS
         this.PWM = clickIOPin.PWM
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum
-        this.clickSlotNumGlobal=clickSlot
-        this.PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
-        this.pwms = new bBoard.PWMSettings(clickBoardNum, clickSlot);      
+        this.boardIDGlobal=boardID
+        this.clickIDNumGlobal=clickID
+        this.PINs = new bBoard.PinSettings(boardID, clickID);
+        this.pwms = new bBoard.PWMSettings(boardID, clickID);      
     }
     
     get IN1val() {
@@ -79,7 +79,7 @@ namespace DC_Motor3 {
     initialize()
     {
         this.motorRotation(MotorDirection.Forward)
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.isInitialized[this.boardIDGlobal]  = 1
     
     }
     
@@ -88,7 +88,7 @@ namespace DC_Motor3 {
     
     
     motorSpeed(Speed: number): void {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobal] == 0)
             {
                 this.initialize()
                 
@@ -100,7 +100,7 @@ namespace DC_Motor3 {
             if (Speed < 0) {
                 Speed = 0;
             }
-            this.pwms.PWMOut(clickPWMPin.PWM,Speed);
+            this.pwms.setDuty(clickPWMPin.PWM,Speed);
            
         }
     
@@ -114,7 +114,7 @@ namespace DC_Motor3 {
         //% this.defl="DC_MOTOR"
     
         motorSpeedDirection(speed: number,direction: MotorDirection): void {
-            if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+            if(this.isInitialized[this.boardIDGlobal] == 0)
             {
                 this.initialize()
                 

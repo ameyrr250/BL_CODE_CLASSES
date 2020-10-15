@@ -49,14 +49,14 @@ namespace AirQuality2{
 
     /**
      * Sets LCD object.
-     * @param clickBoardNum the clickBoardNum
+     * @param boardID the boardID
      *  @param AirQuality the LCDSettings
      */
-    //% block=" $clickBoardNum $clickSlot"
+    //% block=" $boardID $clickID"
     //% blockSetVariable="AirQuality"
     //% weight=110
-    export function createAirQuality(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): AirQuality {
-        return new AirQuality(clickBoardNum, clickSlot);
+    export function createAirQuality(boardID: BoardID, clickID:ClickID): AirQuality {
+        return new AirQuality(boardID, clickID);
     }
 
     
@@ -135,13 +135,13 @@ namespace AirQuality2{
     readonly APP_START : number                       
     readonly SW_RESET : number
     readonly CCS811_DEVICE_ADDRESS : number
-    private clickBoardNumGlobal:number
-    private clickSlotNumGlobal:number                        
+    private boardIDGlobal:number
+    private clickIDNumGlobal:number                        
     isInitialized : Array<number>;
     deviceAddress : Array<number>;
     private PINs:bBoard.PinSettings;
     private I2Cs:bBoard.I2CSettings;
-    constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
+    constructor(boardID: BoardID, clickID:ClickID){
         this.STATUS = 0x00
         this.MEAS_MODE = 0x01
         this.ALG_RESULT_DATA =0x02
@@ -163,20 +163,20 @@ namespace AirQuality2{
         this.CCS811_DEVICE_ADDRESS = 0x5A
         this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.deviceAddress = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        this.clickBoardNumGlobal=clickBoardNum
-        this.clickSlotNumGlobal=clickSlot
-        this.PINs = new bBoard.PinSettings(clickBoardNum, clickSlot);
-        this.I2Cs = new bBoard.I2CSettings(clickBoardNum, clickSlot);
+        this.boardIDGlobal=boardID
+        this.clickIDNumGlobal=clickID
+        this.PINs = new bBoard.PinSettings(boardID, clickID);
+        this.I2Cs = new bBoard.I2CSettings(boardID, clickID);
     }
     
      
     initialize(deviceAddr:number)
     {
     
-        this.isInitialized[this.clickBoardNumGlobal]  = 1
+        this.isInitialized[this.boardIDGlobal]  = 1
         this.setCCS811Addr(deviceAddr);
         this.ccs811Init();
-        //writeCCS811([0x20,0xff, 0xfc,0xa9, 0xf8, 0x80, 0xfa, 0xf0, 0x81, 0x0c, 0x80,0xf2, 0xff],clickBoardNum) //Initialize the Config register
+        //writeCCS811([0x20,0xff, 0xfc,0xa9, 0xf8, 0x80, 0xfa, 0xf0, 0x81, 0x0c, 0x80,0xf2, 0xff],boardID) //Initialize the Config register
     
     }
 
@@ -274,7 +274,7 @@ namespace AirQuality2{
     let i:number = 0;
     let ucTemp = [];
     
-    if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+    if(this.isInitialized[this.boardIDGlobal] == 0)
     {
         this.initialize(this.CCS811_DEVICE_ADDRESS)
         
@@ -309,7 +309,7 @@ namespace AirQuality2{
         let eCO2value:number;
         let TVOCvalue:number;
     
-        if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+        if(this.isInitialized[this.boardIDGlobal] == 0)
         {
             this.initialize(this.CCS811_DEVICE_ADDRESS)
             
@@ -424,11 +424,11 @@ namespace AirQuality2{
         
         setCCS811Addr(deviceAddr:number)
         {
-            this.deviceAddress[this.clickBoardNumGlobal] = deviceAddr;
+            this.deviceAddress[this.boardIDGlobal] = deviceAddr;
         }
         getCCS811Addr():number
         {
-            return this.deviceAddress[this.clickBoardNumGlobal];
+            return this.deviceAddress[this.boardIDGlobal];
         }
     
     

@@ -1,10 +1,19 @@
 input.onButtonPressed(Button.A, function () {
-    LCDSettings2.lcd_writeString("100", lineNumber.one)
+    basic.showNumber(Button_G2.getSwitch())
+})
+input.onButtonPressed(Button.AB, function () {
+    AAAA += 1
+    if (AAAA % 2 == 0) {
+        Button_G2.setLight(Button_G.Light.On)
+    } else {
+        Button_G2.setLight(Button_G.Light.Off)
+    }
 })
 input.onButtonPressed(Button.B, function () {
-    LCDSettings2.lcd_writeString("500", lineNumber.one)
+    Button_G2.setLightPWM(10)
 })
-let LCDSettings2: LCD_Mini.LCDSettings = null
-LCDSettings2 = LCD_Mini.createLCDSettings(BoardID.zero, ClickID.A)
-LCDSettings2.lcd_writeString("Hello", lineNumber.one)
-basic.pause(1000)
+let AAAA = 0
+let Button_G2: Button_G.Button_G = null
+Button_G2 = Button_G.createButton_G(BoardID.zero, ClickID.A)
+Button_G2.setLight(Button_G.Light.On)
+AAAA = 0

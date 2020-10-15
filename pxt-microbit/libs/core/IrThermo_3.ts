@@ -37,11 +37,11 @@ namespace IrThermo_3 {
       //...
     } 
 
-     //% block=" $clickBoardNum $clickSlot"
+     //% block=" $boardID $clickID"
     //% blockSetVariable="IrThermo"
     //% weight=110
-    export function createIrThermo(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot): IrThermo {
-        return new IrThermo(clickBoardNum, clickSlot);
+    export function createIrThermo(boardID: BoardID, clickID:ClickID): IrThermo {
+        return new IrThermo(boardID, clickID);
     }
     
 export class IrThermo extends bBoard.I2CSettings{
@@ -114,8 +114,8 @@ private readonly I2C_SPEED_STANDARD  =      100000
 private readonly I2C_SPEED_FAST       =     400000
 
 private readonly MAX_WAIT = 750; //Number of ms to wait before giving up. Some sensor actions take 512ms.
-private clickBoardNumGlobal:number
-private clickSlotNumGlobal:number
+private boardIDGlobalT:number
+private clickIDNumGlobal:number
 
 
 /*
@@ -174,8 +174,8 @@ private MLX90632_DEFAULT_ADDRESS : number;
 private isInitialized : Array<number>;
 private returnError : Array<number>;
 
-constructor(clickBoardNum: clickBoardID, clickSlot:clickBoardSlot){
-super(clickBoardNum, clickSlot);
+constructor(boardID: BoardID, clickID:ClickID){
+super(boardID, clickID);
 this.P_R = 0;
 this.P_G= 0;
 this.P_T= 0;
@@ -197,8 +197,8 @@ this.sensorTemp; //Internal temp of the MLX sensor
 this.MLX90632_DEFAULT_ADDRESS =0x3A
 this.isInitialized  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 this.returnError = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-this.clickBoardNumGlobal=clickBoardNum;
-this.clickSlotNumGlobal=clickSlot;
+this.boardIDGlobalT=boardID*3+clickID;
+this.clickIDNumGlobal=clickID;
 }
 
 get P_Rval(){
@@ -382,7 +382,7 @@ let thisAddress = this.readRegister16(this.EE_I2C_ADDRESS);
     if (counter == this.MAX_WAIT)
     {
     
-        this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_TIMEOUT_ERROR;
+        this.returnError[this.boardIDGlobalT]  = status.SENSOR_TIMEOUT_ERROR;
       
     }
   }
@@ -443,11 +443,11 @@ let thisAddress = this.readRegister16(this.EE_I2C_ADDRESS);
     //% this.defl="IrThermo"
 getObjectTemp():number
 {
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS;
-    if(this.isInitialized[this.clickBoardNumGlobal] == 0)
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS;
+    if(this.isInitialized[this.boardIDGlobalT] == 0)
     {
         this.begin()
-        this.isInitialized[this.clickBoardNumGlobal] = 1; //Device is initialied
+        this.isInitialized[this.boardIDGlobalT] = 1; //Device is initialied
     }
   //If the sensor is not in continuous mode then the tell sensor to take reading
   if(this.getMode() != this.MODE_CONTINUOUS){
@@ -467,13 +467,13 @@ getObjectTemp():number
     if (counter == this.MAX_WAIT)
     {
 basic.showString("E")
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_TIMEOUT_ERROR;
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_TIMEOUT_ERROR;
       return (0.0); //Error
     }
   }
 
   this.gatherSensorTemp( );
-  if (this.returnError[this.clickBoardNumGlobal]  != status.SENSOR_SUCCESS)
+  if (this.returnError[this.boardIDGlobalT]  != status.SENSOR_SUCCESS)
   {
     
     basic.showString("F")
@@ -561,7 +561,7 @@ getObjectTempF():number
 
 getSensorTemp():number
 {
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS;
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS;
 
   //If the sensor is not in continuous mode then the tell sensor to take reading
   if(this.getMode() != this.MODE_CONTINUOUS) {
@@ -578,7 +578,7 @@ getSensorTemp():number
     counter++;
     if (counter == this.MAX_WAIT)
     {
-        this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_TIMEOUT_ERROR;
+        this.returnError[this.boardIDGlobalT]  = status.SENSOR_TIMEOUT_ERROR;
       return (0.0); //Error
     }
   }
@@ -591,7 +591,7 @@ getSensorTemp():number
 //without causing a let read
 gatherSensorTemp( ):number
 {
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS;
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS;
 
   //Get RAM_6 and RAM_9
   let sixRAM = this.readRegister16(this.RAM_6);
@@ -660,7 +660,7 @@ clearNewData()
 
 getStatus()
 {
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
   let deviceStatus   = this.readRegister16(this.REG_STATUS);
 
   return (deviceStatus);
@@ -688,7 +688,7 @@ continuousMode()
 //Sets the Start of Conversion (SOC) bit
 setSOC()
 {
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
   let reg = this.readRegister16(this.REG_CONTROL); //Get current bits
 
   reg |= (1 << 3); //Set the bit
@@ -699,7 +699,7 @@ setSOC()
 //Sets the sensing mode (3 modes availabe)
 setMode(mode:number )
 {
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
     
   let reg = this.readRegister16(this.REG_CONTROL)//Get current bits
    
@@ -713,7 +713,7 @@ setMode(mode:number )
 getMode()
 {
   
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
 let mode = this.readRegister16(this.REG_CONTROL); //Get current register settings
   
   mode = (mode >> 1) & 0x0003; //Clear all other bits
@@ -727,7 +727,7 @@ let mode = this.readRegister16(this.REG_CONTROL); //Get current register setting
 readRegister16( addr:number):number
 {
     let i2cBuffer = pins.createBuffer(2);
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
     super.i2cWriteNumber(this.MLX90632_DEFAULT_ADDRESS,addr,NumberFormat.Int16BE,true)
 
  i2cBuffer = super.I2CreadNoMem(this.MLX90632_DEFAULT_ADDRESS,2);
@@ -738,14 +738,14 @@ readRegister16( addr:number):number
 
 return  (msb << 8 | lsb)
 
- //return  bBoard.I2CreadNoMem(MLX90632_DEFAULT_ADDRESS,2,clickBoardNum).getNumber(NumberFormat.UInt16BE,0)
+ //return  bBoard.I2CreadNoMem(MLX90632_DEFAULT_ADDRESS,2,boardID).getNumber(NumberFormat.UInt16BE,0)
 }
 
 //Reads two 16-bit registers and combines them into 32 bits
 readRegister32(addr:number):number
 {
 
-    this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+    this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
  
   //For the MLX90632 the first 16-bit chunk is LSB, the 2nd is MSB
   let lower = this.readRegister16(addr)
@@ -758,7 +758,7 @@ readRegister32(addr:number):number
 //Write two bytes to a spot
 writeRegister16(addr:number,  val:number)
 {
-  this.returnError[this.clickBoardNumGlobal]  = status.SENSOR_SUCCESS; //By default, return success
+  this.returnError[this.boardIDGlobalT]  = status.SENSOR_SUCCESS; //By default, return success
 let i2cBuffer = pins.createBuffer(4)
 
 i2cBuffer.setNumber(NumberFormat.UInt8LE, 0, addr >> 8 )
